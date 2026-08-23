@@ -206,10 +206,19 @@ Sur le hub Publications et dans les listes d'articles liés : **Date → Titre �
 - Extrait public visible par tous (plusieurs paragraphes), suivi d'un mur d'accès clair : encadré verrouillé + boutons "Créer un compte" / "Se connecter".
 - En dessous du mur, un aperçu du sommaire des sections suivantes, **sous forme de mots-clés / titres de section uniquement** — jamais de contenu réel, juste assez pour donner envie ("la fragrance de la chose", dixit Serge).
 - Nécessite un compte utilisateur réel pour débloquer (le bouton "Créer un compte" lie vers `compte.html?tab=signup`, qui ouvre directement l'onglet inscription ; après connexion ou inscription, l'utilisateur est redirigé vers `mon-compte.html`).
+- **Modèle économique : accès gratuit dans un premier temps** (le temps de générer du trafic), simplement conditionné à la création d'un compte — pas de paiement à ce stade. **Chaque article doit néanmoins avoir, dès la construction du CMS, une option individuelle "gratuit / payant"** que Serge pourra activer plus tard, article par article — pas un interrupteur global pour toute la section. Prévoir cette granularité dès la conception de la base de données, même si elle reste désactivée au lancement.
 
 ### 3.6 Paiement — Stripe uniquement
 
 Serge a déjà un compte Stripe utilisé pour la vente de ses livres. **Toute la logique de paiement du site (livres, goodies, dons) doit passer par Stripe** — un seul prestataire pour l'ensemble, afin de centraliser gestion et tableau de bord. Ne pas introduire un autre service de paiement (HelloAsso ou autre) sans validation explicite de Serge.
+
+### 3.6bis Emails — newsletter et emails transactionnels
+
+Serge utilise déjà, pour le site d'amDG Éditions, deux outils complémentaires qu'il souhaite réutiliser ici plutôt que d'en introduire de nouveaux :
+- **MailerLite** — collecte des abonnés et envoi des campagnes de newsletter (le bloc "ParoleDeViePourVous" présent sur la majorité des pages doit alimenter cette plateforme).
+- **Resend** — envoi des emails transactionnels déclenchés par le site (confirmation de commande, réponse au formulaire de contact, réinitialisation de mot de passe, notification d'avis validé, etc.).
+
+Ne pas proposer un autre service pour ces deux besoins sans validation explicite de Serge — l'objectif est de réutiliser des comptes déjà existants, pas d'ajouter un coût ou un outil supplémentaire.
 
 ### 3.7 Formulaire Invitation
 
@@ -252,7 +261,7 @@ Principe transversal appliqué sur tout le site : quand une information réelle 
 
 ## PARTIE 5 — Prochaines étapes techniques (hors du présent document, à anticiper)
 
-1. **Hébergement + nom de domaine** — sergehapitaministries.org
+1. **Hébergement + nom de domaine** — sergehapitaministries.org. **Serge dispose déjà d'un compte Vercel Pro actif** (équipe "cnkoma-9364's projects", hébergeant déjà 3 autres sites : ActesDesFilsDeDieu, amDG Éditions, La Vie Supérieure d'un autre projet) — le nouveau site doit être ajouté comme projet supplémentaire sur ce même compte, sans souscrire un nouvel abonnement Vercel Pro. Un compte GitHub est également déjà disponible et réutilisable de la même façon.
 2. **Choix et mise en place de l'architecture CMS** — couvrant l'intégralité du site (voir exigence transversale en début de document), pas seulement le contenu éditorial. Options et coûts à présenter à Serge avant décision finale.
 3. **CMS pour le contenu quotidien** — Rosée Matinale (publication quotidienne, archivage automatique de l'ancien contenu)
 4. **CMS pour Publications, Livres, Boutique, navigation, textes d'interface** — ajout/retrait/modification de tout contenu sans toucher au code
