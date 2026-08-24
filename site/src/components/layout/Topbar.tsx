@@ -4,8 +4,8 @@ import { getTickerMessages } from "@/lib/content/ticker";
 // Bandeau ticker défilant. Le défilement CSS en boucle continue exige de dupliquer une fois
 // la liste de messages dans le DOM (détail de rendu — voir cahier §1.2 / exploration §3.9) ;
 // une seule liste de messages est ce qui doit être piloté depuis le CMS en Phase 2.
-export default function Topbar() {
-  const messages = getTickerMessages();
+export default async function Topbar() {
+  const messages = await getTickerMessages();
   const track = [...messages, ...messages];
 
   return (

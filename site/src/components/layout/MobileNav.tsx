@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { getMainNav, isDropdown } from "@/lib/content/nav";
+import { isDropdown, type NavItem } from "@/lib/content/navTypes";
 
 // Le burger existe visuellement dans les maquettes statiques mais n'a aucun comportement
 // (le menu principal disparaît simplement sous 640px, sans alternative de navigation —
 // repéré à l'audit). Ce composant lui donne un vrai comportement : panneau déroulant
 // listant tous les liens (y compris ceux des sous-menus "À propos"/"Publications" à plat),
-// sans changer la charte graphique déjà validée.
-export default function MobileNav() {
+// sans changer la charte graphique déjà validée. `nav` est chargé côté serveur (Header)
+// et transmis en prop, car les libellés viennent de la base (interface_texts).
+export default function MobileNav({ nav }: { nav: NavItem[] }) {
   const [open, setOpen] = useState(false);
-  const nav = getMainNav();
 
   return (
     <>

@@ -1,21 +1,29 @@
-// Bandeau ticker défilant (topbar-track).
-//
-// ⚠️ TEMPORAIRE (Phase 1) : liste codée en dur, reprise telle quelle des maquettes statiques.
-// Le cahier des charges exige explicitement (tête de document) que chaque phrase soit
-// ajoutable/modifiable/supprimable depuis l'administration, sans limite de nombre fixée
-// dans le code. En Phase 2, cette fonction sera remplacée par une lecture de la table
-// `ticker_messages` (texte + lien optionnel + ordre + actif/inactif) — la liste ci-dessous
-// n'est donc pas plafonnée à 3 par design, seulement par le contenu actuel des maquettes.
+import { createClient } from "@/lib/supabase/server";
 
-export type TickerMessage = { text: string; href?: string };
+export type TickerMessage = { id?: string; text: string; href?: string | null };
 
-export function getTickerMessages(): TickerMessage[] {
-  return [
-    { text: "✝ Dernier livre — Ton Corps T'Écoute, disponible maintenant", href: "/livres#ton-corps" },
-    // Lien vers /#newsletter (ancre sur l'accueil) plutôt que #newsletter : corrige un lien
-    // mort repéré à l'audit (le bloc newsletter est absent de 9 pages sur 23, l'ancre locale
-    // n'y existe donc pas — voir cahier-des-charges §1.2 « Bloc newsletter »).
-    { text: "Recevez « ParoleDeViePourVous » chaque semaine — S'inscrire", href: "/#newsletter" },
-    { text: "Un ministère depuis Levallois-Perret, France" },
-  ];
+// Valeurs de repli : utilisées si la table `ticker_messages` n'existe pas encore
+// (migration Supabase pas encore exécutée) ou en cas d'erreur réseau, pour que le
+// site ne casse jamais. Une fois la migration appliquée, ces valeurs ne servent
+// plus qu'en dernier recours.
+const FALLBACK: TickerMessage[] = [
+  { text: "✝ Dernier livre — Ton Corps T'Écoute, disponible maintenant", href: "/livres#ton-corps" },
+  { text: "Recevez « ParoleDeViePourVous » chaque semaine — S'inscrire", href: "/#newsletter" },
+  { text: "Un ministère depuis Levallois-Perret, France" },
+];
+
+export async function getTickerMessages(): Promise<TickerMessage[]> {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("ticker_messages")
+      .select("id, text, href")
+      .eq("active", true)
+      .order("position", { ascending: true });
+
+    if (error || !data || data.length === 0) return FALLBACK;
+    return data;
+  } catch {
+    return FALLBACK;
+  }
 }

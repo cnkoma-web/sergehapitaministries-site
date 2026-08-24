@@ -3,8 +3,8 @@ import Link from "next/link";
 import { getMainNav, isDropdown } from "@/lib/content/nav";
 import MobileNav from "./MobileNav";
 
-export default function Header() {
-  const nav = getMainNav();
+export default async function Header() {
+  const nav = await getMainNav();
 
   return (
     <header>
@@ -20,7 +20,7 @@ export default function Header() {
             👤
           </Link>
           <span title="Panier">🛒</span>
-          <MobileNav />
+          <MobileNav nav={nav} />
         </div>
       </div>
       <div className="nav-row">

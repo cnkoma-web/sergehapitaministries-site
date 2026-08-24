@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getFooterColumns, getLegalLinks } from "@/lib/content/footer";
+import { getFooterColumns, getLegalLinks, getSocialLinks, getFooterTexts } from "@/lib/content/footer";
 
 type FooterProps = {
   /**
@@ -9,10 +9,14 @@ type FooterProps = {
   variant: "light" | "dark";
 };
 
-export default function Footer({ variant }: FooterProps) {
+export default async function Footer({ variant }: FooterProps) {
   const columns = getFooterColumns();
   const legalLinks = getLegalLinks();
-  const year = new Date().getFullYear();
+  const [socialLinks, { description, copyright }] = await Promise.all([
+    getSocialLinks(),
+    getFooterTexts(),
+  ]);
+  columns.find((c) => c.title === "Réseaux")!.links = socialLinks;
 
   return (
     <footer className={variant === "dark" ? "footer--dark" : undefined}>
@@ -21,10 +25,7 @@ export default function Footer({ variant }: FooterProps) {
           <Link href="/" className="logo">
             Serge Hapita <em>Ministries</em>
           </Link>
-          <p>
-            Levallois-Perret, France — un ministère qui révèle Christ au croyant, affermit le
-            chrétien dans l&apos;identité de fils, manifeste Dieu, le Père céleste.
-          </p>
+          <p>{description}</p>
         </div>
         <div className="footer-nav-cols">
           {columns.map((col) => (
@@ -46,7 +47,7 @@ export default function Footer({ variant }: FooterProps) {
         </div>
       </div>
       <div className="wrap footer-bottom">
-        <span>© {year} Serge Hapita Ministries — Levallois-Perret, France</span>
+        <span>{copyright}</span>
         {/* Les 4 liens légaux existent tous comme pages réelles — corrige un défaut des
             maquettes statiques où ce texte n'était jamais un vrai lien cliquable. */}
         <span className="footer-legal-links">

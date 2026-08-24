@@ -1,4 +1,8 @@
-// ⚠️ TEMPORAIRE (Phase 1) — voir nav.ts : à migrer vers `interface_texts` en Phase 2.
+import { getInterfaceTexts } from "./interfaceTexts";
+
+// Structure des colonnes du footer : reste dans le code (architecture du site),
+// comme pour nav.ts. Description, copyright et liens réseaux sont pilotables
+// via `interface_texts`.
 
 export type FooterLink = { label: string; href: string; external?: boolean };
 
@@ -24,14 +28,44 @@ export function getFooterColumns(): { title: string; links: FooterLink[] }[] {
     },
     {
       title: "Réseaux",
-      links: [
-        { label: "YouTube", href: "https://www.youtube.com/@sergehapita", external: true },
-        { label: "Instagram", href: "https://www.instagram.com/sergehapitaministries/", external: true },
-        { label: "TikTok", href: "https://www.tiktok.com/@sergehapitaministries", external: true },
-        { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61582211394401", external: true },
-      ],
+      links: [] as FooterLink[], // rempli dynamiquement par getSocialLinks()
     },
   ];
+}
+
+export async function getSocialLinks(): Promise<FooterLink[]> {
+  const texts = await getInterfaceTexts();
+  const defaults: Record<string, string> = {
+    "social.youtube": "https://www.youtube.com/@sergehapita",
+    "social.instagram": "https://www.instagram.com/sergehapitaministries/",
+    "social.tiktok": "https://www.tiktok.com/@sergehapitaministries",
+    "social.facebook": "https://www.facebook.com/profile.php?id=61582211394401",
+  };
+  const labels: Record<string, string> = {
+    "social.youtube": "YouTube",
+    "social.instagram": "Instagram",
+    "social.tiktok": "TikTok",
+    "social.facebook": "Facebook",
+  };
+  return Object.keys(defaults).map((key) => ({
+    label: labels[key],
+    href: texts[key] ?? defaults[key],
+    external: true,
+  }));
+}
+
+export async function getFooterTexts(): Promise<{ description: string; copyright: string }> {
+  const texts = await getInterfaceTexts();
+  const year = new Date().getFullYear();
+  return {
+    description:
+      texts["footer.description"] ??
+      "Levallois-Perret, France — un ministère qui révèle Christ au croyant, affermit le chrétien dans l'identité de fils, manifeste Dieu, le Père céleste.",
+    copyright: (texts["footer.copyright"] ?? "© {year} Serge Hapita Ministries — Levallois-Perret, France").replace(
+      "{year}",
+      String(year)
+    ),
+  };
 }
 
 export function getLegalLinks(): FooterLink[] {
