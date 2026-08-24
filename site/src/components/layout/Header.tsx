@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getMainNav, isDropdown } from "@/lib/content/nav";
+import { createClient } from "@/lib/supabase/server";
 import MobileNav from "./MobileNav";
 
 export default async function Header() {
-  const nav = await getMainNav();
+  const supabase = await createClient();
+  const [nav, { data }] = await Promise.all([getMainNav(), supabase.auth.getUser()]);
+  const accountHref = data.user ? "/mon-compte" : "/compte";
 
   return (
     <header>
@@ -16,7 +19,7 @@ export default async function Header() {
           <Image src="/logo.png" alt="Serge Hapita Ministries" width={207} height={78} priority />
         </Link>
         <div className="header-icon-zone right">
-          <Link href="/compte" title="Mon compte" style={{ color: "inherit" }}>
+          <Link href={accountHref} title="Mon compte" style={{ color: "inherit" }}>
             👤
           </Link>
           <span title="Panier">🛒</span>
