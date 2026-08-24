@@ -241,7 +241,14 @@ Sur `accueil.html`, la section `stats` affiche 4 cases (chiffre + libellé), act
 
 **Ce bloc doit être conçu comme un système à cases activables/désactivables depuis l'administration**, pas un ensemble figé à 4 éléments : Serge doit pouvoir désactiver une case qu'il juge non significative à un moment donné, ou en ajouter une nouvelle, sans intervention sur le code. Prévoir une bibliothèque de statistiques disponibles (au-delà des 4 ci-dessus) parmi lesquelles Serge choisit celles à afficher.
 
-### 3.9 Contenu jamais inventé
+### 3.9 Métadonnées d'article — vues et temps de lecture
+
+Chaque page d'article (Que Dit la Bible, La Vie Supérieure, Rosée Matinale) affiche sous la date une ligne meta avec deux informations, icône SVG (pas d'emoji, cohérent avec le reste du site) :
+- **Compteur de vues** — actuellement affiché en état honnête (`—`), doit devenir un vrai compteur backend qui s'incrémente à chaque consultation réelle de la page.
+- **Temps de lecture estimé** — actuellement calculé une fois manuellement sur le texte existant (base : ~200 mots/minute), doit être **recalculé automatiquement par le CMS** à chaque nouvel article publié ou modifié, à partir du nombre réel de mots du texte.
+- Pas de bouton "J'aime" ou de compteur de réactions — décision explicite de Serge, à ne pas ajouter.
+
+### 3.10 Contenu jamais inventé
 
 Principe transversal appliqué sur tout le site : quand une information réelle manque (prix, ISBN, description produit, avis, vidéo, ancien contenu), afficher un état honnête et visible ("à venir", "à compléter", "aucun avis pour le moment") plutôt que d'inventer une donnée plausible. Ne pas déroger à ce principe pour "faire joli".
 
