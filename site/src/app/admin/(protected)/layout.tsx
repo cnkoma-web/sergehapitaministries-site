@@ -19,6 +19,11 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
       <div className="admin-topbar">
         <Link href="/admin">Administration — Serge Hapita Ministries</Link>
         <nav>
+          <Link href="/admin/livres">Livres</Link>
+          <Link href="/admin/boutique">Boutique</Link>
+          <Link href="/admin/publications">Publications</Link>
+          <Link href="/admin/rosee-matinale">Rosée Matinale</Link>
+          <Link href="/admin/avis">Avis</Link>
           <Link href="/admin/ticker">Ticker</Link>
           <Link href="/admin/stats">Statistiques</Link>
           <Link href="/admin/textes">Textes</Link>

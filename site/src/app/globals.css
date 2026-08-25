@@ -123,6 +123,248 @@ header{
 .form-block textarea{resize:vertical;min-height:140px;}
 .form-block label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
 
+/* ===== CATALOGUE (livres / boutique) ===== */
+.catalogue-intro-split{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start;}
+.catalogue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.catalogue-book{position:relative;background:#fff;border:1px solid var(--line);border-top:3px solid var(--purple);border-radius:6px;padding:24px 18px 20px;box-shadow:0 12px 28px -18px rgba(27,23,48,.18);display:flex;flex-direction:column;height:100%;}
+.catalogue-book:nth-child(4n+2){border-top-color:var(--blue);}
+.catalogue-book:nth-child(4n+3){border-top-color:var(--teal);}
+.catalogue-book:nth-child(4n+4){border-top-color:var(--magenta);}
+.catalogue-badge{position:absolute;top:-1px;right:16px;background:var(--purple);color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:0 0 6px 6px;z-index:2;text-transform:uppercase;letter-spacing:.03em;}
+.catalogue-thumb{aspect-ratio:2/3;border-radius:2px;overflow:hidden;background-size:cover;background-position:center;position:relative;box-shadow:0 18px 32px -18px rgba(27,23,48,.4);margin:0 auto 20px;max-width:190px;}
+.catalogue-thumb img{width:100%;height:100%;object-fit:cover;}
+.catalogue-thumb.placeholder{background:linear-gradient(135deg,var(--blue),var(--purple));width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;}
+.catalogue-thumb .ph-collection{text-transform:none;color:rgba(255,255,255,.75);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.catalogue-thumb .ph-title{font-family:'Fraunces',serif;color:#fff;font-size:19px;line-height:1.25;font-weight:600;}
+.catalogue-body{padding-top:0;text-align:center;display:flex;flex-direction:column;flex:1;}
+.catalogue-body h3{font-family:'Fraunces',serif;font-size:16px;line-height:1.3;margin-bottom:4px;min-height:42px;display:flex;align-items:center;justify-content:center;}
+.catalogue-body .author{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:10px;}
+.catalogue-body .price{font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:var(--purple);margin-bottom:16px;}
+.catalogue-actions{display:flex;gap:7px;margin-top:auto;}
+.catalogue-actions a, .catalogue-actions button{flex:1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:10px 7px;border-radius:4px;text-align:center;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-family:inherit;}
+.catalogue-actions .add-cart{background:var(--purple);color:#fff;border-color:var(--purple);}
+.catalogue-actions .add-cart:hover{opacity:.85;}
+.catalogue-actions a:hover{background:var(--ink);color:#fff;}
+.catalogue-actions button:disabled{opacity:.5;cursor:not-allowed;}
+@media (max-width:980px){
+  .catalogue-intro-split{grid-template-columns:1fr !important;}
+  .catalogue-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:640px){
+  .catalogue-grid{grid-template-columns:1fr;}
+}
+
+/* ===== BOUTIQUE (goodies) ===== */
+.goodies-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.goodie-card{background:#fff;border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:6px;padding:20px 16px;display:flex;flex-direction:column;height:100%;text-align:center;}
+.goodie-card:nth-child(4n+2){border-top-color:var(--purple);}
+.goodie-card:nth-child(4n+3){border-top-color:var(--blue);}
+.goodie-card:nth-child(4n+4){border-top-color:var(--magenta);}
+.goodie-thumb{aspect-ratio:1/1;border-radius:6px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--lavender);overflow:hidden;}
+.goodie-thumb img{width:100%;height:100%;object-fit:cover;}
+.goodie-card h3{font-size:14.5px;margin-bottom:6px;}
+.goodie-card .soon{font-size:11px;color:var(--ink-soft);font-style:italic;margin-bottom:16px;flex:1;}
+.goodie-card .price{font-family:'Fraunces',serif;font-weight:600;font-size:15px;color:var(--purple);margin-bottom:16px;flex:1;}
+.goodie-card .btn-compact{width:100%;justify-content:center;}
+@media (max-width:980px){
+  .goodies-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:640px){
+  .goodies-grid{grid-template-columns:1fr 1fr;gap:14px;}
+}
+
+/* ===== FICHE PRODUIT (livre / goodie) ===== */
+.product-section{padding-top:56px;padding-bottom:56px;}
+.book-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid var(--line);}
+.book-nav-link{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
+.book-nav-link:hover{color:var(--purple);}
+.book-nav-catalogue{font-size:12.5px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start;}
+.product-cover{aspect-ratio:2/3;max-width:340px;margin:0 auto;border-radius:6px;box-shadow:0 30px 60px -24px rgba(27,23,48,.4);overflow:hidden;}
+.product-cover img{width:100%;height:100%;object-fit:cover;}
+.product-cover.placeholder{display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;background:linear-gradient(135deg,var(--blue),var(--purple));}
+.product-cover .ph-collection{font-size:11px;text-transform:none;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-bottom:10px;}
+.product-cover .ph-title{font-family:'Fraunces',serif;font-weight:600;color:#fff;font-size:22px;line-height:1.3;}
+.product-badge{display:inline-block;background:var(--lavender);color:var(--purple);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:5px 14px;border-radius:100px;margin-bottom:14px;}
+.product-title{font-size:30px;line-height:1.25;margin-bottom:6px;}
+.product-author{font-size:14px;color:var(--ink-soft);margin-bottom:16px;}
+.stars{display:flex;gap:2px;color:#F5B301;font-size:16px;}
+.stars .empty{color:var(--line);}
+.rating-row{display:flex;align-items:center;gap:10px;margin-bottom:22px;}
+.rating-row .count{font-size:13px;color:var(--ink-soft);}
+.price-actions-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
+.product-price{font-family:'Fraunces',serif;font-weight:600;font-size:28px;color:var(--purple);margin-bottom:0;}
+.product-actions{display:flex;align-items:center;gap:8px;}
+.specs-table{border-top:1px solid var(--line);padding-top:20px;}
+.specs-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.specs-row span:first-child{color:var(--ink-soft);}
+.specs-row span:last-child{font-weight:600;color:var(--ink);text-align:right;}
+.product-desc{padding-top:0;padding-bottom:56px;max-width:760px;}
+.product-desc h2{font-size:20px;margin-bottom:16px;}
+.product-desc p{font-size:15.5px;line-height:1.8;color:var(--ink);margin-bottom:16px;white-space:pre-line;}
+.size-options{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+.size-opt{padding:8px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+.size-opt.active{border-color:var(--purple);background:var(--purple);color:#fff;}
+.color-options{display:flex;gap:10px;margin-bottom:18px;}
+.color-opt{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);cursor:pointer;}
+.color-opt.active{box-shadow:0 0 0 2px var(--purple);}
+.selector-label{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:block;}
+@media (max-width:980px){
+  .product-grid{grid-template-columns:1fr;gap:36px;}
+  .product-cover{max-width:260px;}
+}
+@media (max-width:640px){
+  .product-title{font-size:24px;}
+  .price-actions-row{gap:12px;}
+  .reviews-head{flex-direction:column;align-items:flex-start;}
+  .book-nav{font-size:12px;}
+  .book-nav-link{font-size:11.5px;}
+  .book-nav-catalogue{display:none;}
+}
+
+/* ===== AVIS ===== */
+.reviews-section{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
+.reviews-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:32px;max-width:760px;margin-left:auto;margin-right:auto;}
+.reviews-summary{display:flex;align-items:center;gap:16px;}
+.reviews-summary .big-score{font-family:'Fraunces',serif;font-size:36px;font-weight:600;color:var(--ink);}
+.reviews-empty{background:#fff;border:1px dashed var(--line);border-radius:14px;padding:36px;text-align:center;max-width:760px;margin:0 auto 28px;}
+.reviews-empty p{color:var(--ink-soft);font-size:14.5px;margin-bottom:0;}
+.review-form{background:#fff;border-radius:16px;padding:32px;max-width:760px;margin:0 auto;}
+.review-form h3{font-size:17px;margin-bottom:18px;}
+.review-form .star-input{display:flex;gap:6px;margin-bottom:18px;font-size:24px;color:var(--line);cursor:pointer;}
+.review-form .star-input span:hover, .review-form .star-input span.active{color:#F5B301;}
+.review-form textarea{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;min-height:100px;margin-bottom:16px;}
+.review-form input[type="text"]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;margin-bottom:16px;}
+
+/* ===== PUBLICATIONS (hub) ===== */
+.pub-category{padding-top:64px;padding-bottom:64px;}
+.pub-cat-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:36px;flex-wrap:wrap;}
+.pub-cat-head h2{display:flex;align-items:center;gap:12px;font-size:26px;}
+.cat-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--purple);color:#fff;font-family:'Fraunces',serif;font-size:15px;font-weight:600;flex-shrink:0;}
+#vie-superieure .cat-badge{background:var(--ink);}
+#rosee-matinale .cat-badge{background:var(--teal);}
+.pub-cat-head .desc{color:var(--ink-soft);font-size:14.5px;max-width:480px;margin-top:6px;line-height:1.6;}
+.qdlb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.qdlb-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column;height:100%;}
+.qdlb-card .date{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
+.qdlb-card h3{font-size:17px;line-height:1.35;margin-bottom:10px;}
+.qdlb-card p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;margin-bottom:18px;flex:1;}
+.qdlb-card a{font-size:13.5px;font-weight:700;color:var(--purple);}
+.vs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.vs-card{background:var(--ink);border-radius:16px;padding:26px;color:#fff;position:relative;overflow:hidden;}
+.vs-card::after{content:"Réservé";position:absolute;top:20px;right:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.5);}
+.vs-card h3{font-size:16px;color:#fff;margin-bottom:8px;max-width:80%;}
+.vs-card p{font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.55;margin-bottom:18px;}
+.vs-card a{font-size:13px;font-weight:700;color:#fff;border-bottom:1px solid rgba(255,255,255,.4);}
+@media (max-width:980px){
+  .qdlb-grid, .vs-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:640px){
+  .qdlb-grid, .vs-grid{grid-template-columns:1fr;}
+  .pub-category{padding-top:44px;padding-bottom:44px;}
+}
+
+/* ===== ARTICLE (Que Dit la Bible / La Vie Supérieure) ===== */
+.article-cat-badge{display:inline-flex;align-items:center;background:var(--ink);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:7px 16px;border-radius:100px;margin-bottom:20px;}
+.article-header{padding-top:52px;padding-bottom:8px;}
+.article-title{color:var(--ink);font-size:36px;line-height:1.22;max-width:720px;margin-bottom:14px;}
+.article-date{font-size:13px;color:var(--ink-soft);}
+.article-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--ink-soft);margin-top:8px;}
+.article-meta span{display:flex;align-items:center;gap:5px;}
+.article-body{padding-top:48px;padding-bottom:60px;max-width:680px;margin:0 auto;}
+.verse-box{background:var(--lavender);border-left:4px solid var(--purple);border-radius:0 14px 14px 0;padding:30px 34px;margin:0 0 44px;}
+.verse-box .ref{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:12px;}
+.verse-box p{font-family:'Fraunces',serif;font-style:italic;font-size:20px;line-height:1.6;color:var(--ink);margin:0;}
+.article-body h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin:48px 0 22px;}
+.article-body > .wrap > p{font-size:17px;line-height:1.95;color:var(--ink);margin-bottom:30px;white-space:pre-line;}
+.further-verse{margin-bottom:28px;padding-left:20px;border-left:2px solid var(--line);}
+.further-verse .ref{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+.further-verse p{font-style:italic;font-size:15.5px;color:var(--ink-soft);line-height:1.65;margin:0;}
+.blessing{text-align:center;font-weight:700;color:var(--purple);font-size:15px;letter-spacing:.04em;margin-top:52px;padding-top:36px;border-top:1px solid var(--line);}
+.share-cartouche{display:flex;align-items:center;justify-content:center;gap:14px;padding:20px 28px;background:var(--lavender);border-radius:100px;margin:28px auto;max-width:fit-content;flex-wrap:wrap;}
+.share-cartouche .share-label{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
+.share-icon{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;transition:transform .15s;}
+.share-icon:hover{transform:scale(1.08);}
+.share-icon svg{width:20px;height:20px;}
+.back-cta{text-align:center;margin-top:32px;padding-top:28px;border-top:1px solid var(--line);}
+.related-articles{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
+.related-articles h2{font-size:22px;margin-bottom:28px;text-align:center;}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.related-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;}
+.related-card .verse{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
+.related-card h3{font-size:15px;line-height:1.35;margin-bottom:10px;}
+.related-card a{font-size:12.5px;font-weight:700;color:var(--purple);}
+
+/* Gating La Vie Supérieure */
+.excerpt-fade{position:relative;margin-top:-28px;padding-top:0;}
+.excerpt-fade::before{content:"";position:absolute;top:-90px;left:0;right:0;height:110px;background:linear-gradient(0deg,#fff 20%,rgba(255,255,255,0) 100%);pointer-events:none;}
+.gate-box{background:var(--lavender);border-radius:18px;padding:40px 36px;text-align:center;margin:8px 0 48px;border:1px solid var(--line);}
+.gate-box .lock{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:18px;}
+.gate-box h3{font-size:19px;margin-bottom:10px;}
+.gate-box p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;max-width:440px;margin:0 auto 24px;}
+.gate-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.toc-teaser{margin-bottom:44px;}
+.toc-teaser h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:16px;text-align:center;}
+.toc-list{list-style:none;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding:0;}
+.toc-list li{font-size:14.5px;color:var(--ink-soft);padding:10px 16px;background:#fff;border:1px solid var(--line);border-radius:10px;opacity:.7;}
+@media (max-width:980px){
+  .related-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:640px){
+  .article-header{padding-top:36px;padding-bottom:4px;}
+  .article-title{font-size:24px;}
+  .article-body{padding-top:36px;padding-bottom:44px;}
+  .verse-box{padding:22px 22px;margin-bottom:32px;}
+  .verse-box p{font-size:18px;}
+  .article-body > .wrap > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
+  .further-verse{padding-left:16px;}
+  .related-grid{grid-template-columns:1fr;}
+  .gate-box{padding:28px 22px;}
+  .gate-actions{flex-direction:column;}
+}
+
+/* ===== ROSÉE MATINALE ===== */
+.rm-photo-hero{position:relative;min-height:380px;display:flex;align-items:flex-end;background-size:cover;background-position:center center;background-repeat:no-repeat;width:100%;}
+.rm-photo-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(20,16,42,.85) 0%, rgba(20,16,42,.35) 60%, rgba(20,16,42,.1) 100%);}
+.rm-photo-hero .wrap{position:relative;z-index:1;padding:40px 0;}
+.rm-photo-hero .cat{color:#fff;font-family:'Fraunces',serif;font-size:28px;margin-bottom:8px;}
+.rm-photo-hero .date{color:rgba(255,255,255,.8);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.rm-photo-hero .article-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:rgba(255,255,255,.65);margin-top:10px;text-transform:none;letter-spacing:normal;font-weight:400;}
+.rm-photo-hero .article-meta span{display:flex;align-items:center;gap:5px;}
+.rm-quote-zone{padding-top:64px;padding-bottom:64px;background:var(--lavender);}
+.rm-quote-wrap{max-width:640px;margin:0 auto;text-align:center;position:relative;}
+.rm-quote-mark{font-family:'Fraunces',serif;font-size:90px;color:var(--teal);opacity:.25;line-height:1;margin-bottom:-30px;}
+.rm-quote-text{font-family:'Fraunces',serif;font-style:italic;font-size:23px;line-height:1.65;color:var(--ink);}
+.rm-nav-days{display:flex;justify-content:space-between;align-items:center;padding:28px 0;border-bottom:1px solid var(--line);}
+.rm-nav-days a{font-size:13.5px;font-weight:700;color:var(--ink-soft);}
+.rm-nav-days a:hover{color:var(--teal);}
+.rm-nav-days .disabled{color:var(--line);cursor:default;}
+.rm-nav-days .archive-link{color:var(--teal);}
+.rm-archive{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
+.rm-archive h2{font-size:22px;margin-bottom:8px;text-align:center;}
+.rm-archive .sub{text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
+.rm-list{max-width:640px;margin:0 auto;}
+.rm-item{display:flex;gap:20px;align-items:baseline;padding:18px 0;border-top:1px solid var(--line);}
+.rm-item:first-child{border-top:0;}
+.rm-item .date{font-size:13px;font-weight:700;color:var(--teal);width:90px;flex-shrink:0;}
+.rm-item .excerpt{font-size:14.5px;color:var(--ink-soft);flex:1;}
+.rm-empty{text-align:center;color:var(--ink-soft);font-size:14px;font-style:italic;}
+.rm-explore{padding-top:56px;padding-bottom:56px;}
+.rm-explore h2{font-size:22px;text-align:center;margin-bottom:32px;}
+.explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.explore-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;text-align:center;}
+.explore-card .icon{width:38px;height:38px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;margin:0 auto 14px;}
+.explore-card h3{font-size:15px;margin-bottom:8px;}
+.explore-card p{font-size:13px;color:var(--ink-soft);line-height:1.55;margin-bottom:14px;}
+.explore-card a{font-size:12.5px;font-weight:700;color:var(--purple);}
+@media (max-width:640px){
+  .rm-quote-zone{padding-top:48px;padding-bottom:48px;}
+  .rm-quote-text{font-size:19px;}
+  .rm-quote-mark{font-size:70px;}
+  .rm-photo-hero{min-height:260px;}
+  .explore-grid{grid-template-columns:1fr;}
+}
+
 /* ===== COMPTE (connexion / inscription) ===== */
 .account-section{padding-top:56px;padding-bottom:72px;}
 .account-tabs{display:flex;max-width:420px;margin:0 auto 32px;background:var(--lavender);border-radius:100px;padding:5px;}

@@ -1,0 +1,202 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import {
+  getArticleBySlugAnyType,
+  getRelatedArticles,
+  incrementViewCount,
+  ARTICLE_TYPE_LABEL,
+} from "@/lib/content/articles";
+import { createClient } from "@/lib/supabase/server";
+import ArticleMeta from "@/components/articles/ArticleMeta";
+import ShareCartouche from "@/components/articles/ShareCartouche";
+import Newsletter from "@/components/layout/Newsletter";
+import Footer from "@/components/layout/Footer";
+
+const SITE_URL = "https://sergehapitaministries.org";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getArticleBySlugAnyType(slug);
+  if (!article) return {};
+  const title = `${article.title} | ${ARTICLE_TYPE_LABEL[article.type]}`;
+  const description = article.excerpt || article.verse_text || article.title;
+  return {
+    title,
+    description,
+    alternates: { canonical: `/publications/${slug}` },
+    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
+
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const article = await getArticleBySlugAnyType(slug);
+  if (!article) notFound();
+
+  // Incrémenté à chaque consultation réelle de la page (cahier §3.9). Ne bloque
+  // pas le rendu si ça échoue (compteur non critique).
+  incrementViewCount(article.id).catch(() => {});
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const related = await getRelatedArticles(article.type, article.id);
+  const pageUrl = `${SITE_URL}/publications/${slug}`;
+  const paragraphs = (article.body || "").split("\n\n").filter(Boolean);
+
+  if (article.type === "vs") {
+    // Gating (cahier §3.5) : le corps complet n'est renvoyé au client que si
+    // l'utilisateur est connecté — c'est un mur d'accès éditorial, pas un
+    // chiffrement (voir commentaire de la policy RLS `articles`).
+    const unlocked = Boolean(user);
+    return (
+      <>
+        <section className="article-header">
+          <div className="wrap" style={{ maxWidth: 680, margin: "0 auto" }}>
+            <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
+            <h1 className="article-title">{article.title}</h1>
+            <div className="article-date">La Vie Supérieure — enseignement approfondi</div>
+            <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
+          </div>
+        </section>
+
+        <section className="article-body">
+          <div className="wrap">
+            {unlocked
+              ? paragraphs.map((p, i) => <p key={i}>{p}</p>)
+              : paragraphs.slice(0, 4).map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+        </section>
+
+        {!unlocked && (
+          <>
+            <div className="excerpt-fade" />
+            <section className="section" style={{ paddingTop: 0 }}>
+              <div className="wrap" style={{ maxWidth: 680 }}>
+                <div className="gate-box">
+                  <div className="lock">🔒</div>
+                  <h3>La suite est réservée aux membres</h3>
+                  <p>
+                    L&apos;article complet est accessible gratuitement aux personnes disposant
+                    d&apos;un compte sur ce site.
+                  </p>
+                  <div className="gate-actions">
+                    <Link href="/compte?tab=signup" className="btn btn-primary">Créer un compte →</Link>
+                    <Link href="/compte" className="btn btn-outline">Se connecter</Link>
+                  </div>
+                </div>
+
+                {article.toc_keywords.length > 0 && (
+                  <div className="toc-teaser">
+                    <h4>Ce que la suite aborde</h4>
+                    <ul className="toc-list">
+                      {article.toc_keywords.map((k) => (
+                        <li key={k}>{k}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <ShareCartouche title={article.title} url={pageUrl} />
+                <div className="back-cta">
+                  <Link href="/publications#vie-superieure" className="btn btn-outline">← Toutes les publications</Link>
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        {unlocked && (
+          <section className="section" style={{ paddingTop: 0 }}>
+            <div className="wrap" style={{ maxWidth: 680 }}>
+              <ShareCartouche title={article.title} url={pageUrl} />
+              <div className="back-cta">
+                <Link href="/publications#vie-superieure" className="btn btn-outline">← Toutes les publications</Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <Newsletter />
+        <Footer variant="light" />
+      </>
+    );
+  }
+
+  // Gabarit Que Dit la Bible — jamais verrouillé.
+  return (
+    <>
+      <section className="article-header">
+        <div className="wrap" style={{ maxWidth: 680, margin: "0 auto" }}>
+          <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
+          <h1 className="article-title">{article.title}</h1>
+          <div className="article-date">
+            {new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          </div>
+          <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
+        </div>
+      </section>
+
+      <section className="article-body">
+        <div className="wrap">
+          {article.verse_reference && article.verse_text && (
+            <div className="verse-box">
+              <div className="ref">{article.verse_reference}</div>
+              <p>« {article.verse_text} »</p>
+            </div>
+          )}
+
+          {paragraphs.length > 0 && <h2>Parlons-en</h2>}
+          {paragraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+
+          {article.further_verses.length > 0 && (
+            <>
+              <h2>Aller plus loin</h2>
+              {article.further_verses.map((v, i) => (
+                <div className="further-verse" key={i}>
+                  <div className="ref">{v.reference}</div>
+                  <p>« {v.text} »</p>
+                </div>
+              ))}
+            </>
+          )}
+
+          <div className="blessing">Que Dieu te bénisse abondamment</div>
+
+          <ShareCartouche title={article.title} url={pageUrl} />
+          <div className="back-cta">
+            <Link href="/publications#que-dit-la-bible" className="btn btn-outline">← Toutes les publications</Link>
+          </div>
+        </div>
+      </section>
+
+      {related.length > 0 && (
+        <section className="related-articles">
+          <div className="wrap">
+            <h2>Autres articles « Que Dit la Bible ? »</h2>
+            <div className="related-grid">
+              {related.map((a) => (
+                <div className="related-card" key={a.id}>
+                  <div className="verse">
+                    {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+                  </div>
+                  <h3>{a.title}</h3>
+                  <Link href={`/publications/${a.slug}`}>Lire l&apos;article →</Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <Newsletter />
+      <Footer variant="light" />
+    </>
+  );
+}

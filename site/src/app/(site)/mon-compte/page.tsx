@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getPublishedArticles } from "@/lib/content/articles";
 import DashTabs from "@/components/account/DashTabs";
 
 export const metadata: Metadata = {
@@ -15,11 +16,26 @@ export default async function MonComptePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/compte?tab=login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("first_name")
-    .eq("id", user.id)
-    .single();
+  const [{ data: profile }, vsArticles, { data: reviews }] = await Promise.all([
+    supabase.from("profiles").select("first_name").eq("id", user.id).single(),
+    getPublishedArticles("vs"),
+    supabase
+      .from("reviews")
+      .select("id, rating, body, status, created_at, books(title), goodies(title)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
+  ]);
+
+  const myReviews = (reviews ?? []).map((r) => ({
+    id: r.id,
+    rating: r.rating,
+    body: r.body,
+    status: r.status,
+    productTitle:
+      (Array.isArray(r.books) ? r.books[0]?.title : (r.books as { title: string } | null)?.title) ||
+      (Array.isArray(r.goodies) ? r.goodies[0]?.title : (r.goodies as { title: string } | null)?.title) ||
+      "Produit",
+  }));
 
   return (
     <>
@@ -31,7 +47,13 @@ export default async function MonComptePage() {
       </section>
 
       <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
-        <DashTabs userId={user.id} firstName={profile?.first_name ?? ""} email={user.email ?? ""} />
+        <DashTabs
+          userId={user.id}
+          firstName={profile?.first_name ?? ""}
+          email={user.email ?? ""}
+          vsArticles={vsArticles.map((a) => ({ slug: a.slug, title: a.title }))}
+          reviews={myReviews}
+        />
       </section>
     </>
   );

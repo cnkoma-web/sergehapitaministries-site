@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ProfileForm from "./ProfileForm";
@@ -15,13 +16,24 @@ const SECTIONS: { id: Section; label: string }[] = [
   { id: "avis", label: "Mes avis" },
 ];
 
+type VsArticle = { slug: string; title: string };
+type MyReview = { id: string; rating: number | null; body: string | null; status: string; productTitle: string };
+
 type Props = {
   userId: string;
   firstName: string;
   email: string;
+  vsArticles: VsArticle[];
+  reviews: MyReview[];
 };
 
-export default function DashTabs({ userId, firstName, email }: Props) {
+const REVIEW_STATUS_LABEL: Record<string, string> = {
+  pending: "En attente de validation",
+  approved: "Publié",
+  rejected: "Non retenu",
+};
+
+export default function DashTabs({ userId, firstName, email, vsArticles, reviews }: Props) {
   const [section, setSection] = useState<Section>("apercu");
   const router = useRouter();
 
@@ -62,13 +74,13 @@ export default function DashTabs({ userId, firstName, email }: Props) {
             <h2>Aperçu</h2>
             <p className="empty-state">
               Aucune commande récente. Découvrez les{" "}
-              <a href="/livres" style={{ color: "var(--purple)" }}>
+              <Link href="/livres" style={{ color: "var(--purple)" }}>
                 livres
-              </a>{" "}
+              </Link>{" "}
               ou la{" "}
-              <a href="/boutique" style={{ color: "var(--purple)" }}>
+              <Link href="/boutique" style={{ color: "var(--purple)" }}>
                 boutique
-              </a>
+              </Link>
               .
             </p>
           </div>
@@ -94,17 +106,51 @@ export default function DashTabs({ userId, firstName, email }: Props) {
         {section === "acces" && (
           <div className="dash-section active">
             <h2>Mon accès</h2>
-            <p className="empty-state">
-              Vous n&apos;avez pas encore d&apos;enseignement La Vie Supérieure débloqué. Les
-              articles auxquels vous aurez accès apparaîtront ici.
-            </p>
+            <div className="access-card" style={{ marginBottom: 28 }}>
+              <h3>La Vie Supérieure</h3>
+              <p>
+                Statut : accès gratuit actif tant que vous avez un compte. Vous avez accès à
+                l&apos;ensemble des enseignements ci-dessous.
+              </p>
+            </div>
+            {vsArticles.length === 0 ? (
+              <p className="empty-state">Aucun enseignement publié pour le moment.</p>
+            ) : (
+              <div className="vs-library">
+                {vsArticles.map((a) => (
+                  <div className="vs-library-item" key={a.slug}>
+                    <div>
+                      <h4>{a.title}</h4>
+                    </div>
+                    <div className="vs-library-actions">
+                      <a href={`/publications/${a.slug}`} className="btn-compact btn-compact-outline">Lire</a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {section === "avis" && (
           <div className="dash-section active">
             <h2>Mes avis</h2>
-            <p className="empty-state">Vous n&apos;avez publié aucun avis pour le moment.</p>
+            {reviews.length === 0 ? (
+              <p className="empty-state">Vous n&apos;avez publié aucun avis pour le moment.</p>
+            ) : (
+              reviews.map((r) => (
+                <div className="order-row" key={r.id}>
+                  <div>
+                    <div className="num">{r.productTitle}</div>
+                    <div className="date">
+                      {r.rating ? "★".repeat(r.rating) + "☆".repeat(5 - r.rating) : "Sans note"}
+                      {r.body ? ` — ${r.body}` : ""}
+                    </div>
+                  </div>
+                  <span className="order-status">{REVIEW_STATUS_LABEL[r.status] ?? r.status}</span>
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>
