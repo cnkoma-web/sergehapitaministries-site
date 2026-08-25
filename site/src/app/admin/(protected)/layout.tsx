@@ -23,6 +23,7 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
           <Link href="/admin/boutique">Boutique</Link>
           <Link href="/admin/publications">Publications</Link>
           <Link href="/admin/rosee-matinale">Rosée Matinale</Link>
+          <Link href="/admin/videos">Vidéos</Link>
           <Link href="/admin/avis">Avis</Link>
           <Link href="/admin/ticker">Ticker</Link>
           <Link href="/admin/stats">Statistiques</Link>
