@@ -7,6 +7,7 @@ import { getReviewSummary } from "@/lib/content/reviews";
 import { formatPrice } from "@/lib/format";
 import Stars from "@/components/reviews/Stars";
 import ReviewSection from "@/components/reviews/ReviewSection";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -83,9 +84,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
                   <Link href="/livres" className="btn-compact btn-compact-outline" title="Retour au catalogue" aria-label="Retour au catalogue">
                     ←
                   </Link>
-                  <button className="btn-compact btn-compact-primary" disabled title="Le panier arrive bientôt (Phase 5)">
-                    Ajouter au panier
-                  </button>
+                  <AddToCartButton bookId={book.id} className="btn-compact btn-compact-primary" label="Ajouter au panier" />
                 </div>
               </div>
 

@@ -8,6 +8,7 @@ import {
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
 import { createClient } from "@/lib/supabase/server";
+import { isRealUser } from "@/lib/supabase/realUser";
 import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import Newsletter from "@/components/layout/Newsletter";
@@ -52,7 +53,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // Gating (cahier §3.5) : le corps complet n'est renvoyé au client que si
     // l'utilisateur est connecté — c'est un mur d'accès éditorial, pas un
     // chiffrement (voir commentaire de la policy RLS `articles`).
-    const unlocked = Boolean(user);
+    const unlocked = isRealUser(user);
     return (
       <>
         <section className="article-header">

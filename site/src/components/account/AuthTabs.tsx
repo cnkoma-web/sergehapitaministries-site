@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getCartItemsForMerge, mergeCartItemsIntoCurrentUser } from "@/lib/cart/actions";
 import SocialAuthButtons from "./SocialAuthButtons";
 
 type Tab = "login" | "signup";
@@ -57,6 +58,12 @@ function LoginForm() {
 
     const formData = new FormData(e.currentTarget);
     const supabase = createClient();
+
+    // Capturé pendant que la session est encore l'éventuelle session anonyme
+    // (Phase 5) — signInWithPassword la remplace par la vraie session ensuite,
+    // le panier anonyme redeviendrait sinon inaccessible (RLS).
+    const anonymousCartItems = await getCartItemsForMerge();
+
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: String(formData.get("email")),
       password: String(formData.get("password")),
@@ -67,6 +74,11 @@ function LoginForm() {
       setError("E-mail ou mot de passe incorrect.");
       return;
     }
+
+    if (anonymousCartItems.length > 0) {
+      await mergeCartItemsIntoCurrentUser(anonymousCartItems);
+    }
+
     router.push("/mon-compte");
     router.refresh();
   }
@@ -121,16 +133,23 @@ function SignupForm() {
 
     setLoading(true);
     const supabase = createClient();
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email: String(formData.get("email")),
-      password,
-      options: {
-        data: {
-          first_name: String(formData.get("first_name")),
-          last_name: String(formData.get("last_name")),
-        },
-      },
-    });
+    const email = String(formData.get("email"));
+    const first_name = String(formData.get("first_name"));
+    const last_name = String(formData.get("last_name"));
+
+    const {
+      data: { session: existingSession },
+    } = await supabase.auth.getSession();
+
+    // Un visiteur non connecté a déjà une session anonyme (CartSessionBootstrap,
+    // Phase 5) : on la convertit en compte permanent plutôt que d'en créer un
+    // nouveau, pour que son panier le suive automatiquement — même identifiant
+    // technique conservé de bout en bout.
+    const isAnonymousUpgrade = existingSession?.user?.is_anonymous === true;
+
+    const { data, error: signUpError } = isAnonymousUpgrade
+      ? await supabase.auth.updateUser({ email, password, data: { first_name, last_name } })
+      : await supabase.auth.signUp({ email, password, options: { data: { first_name, last_name } } });
 
     setLoading(false);
 
@@ -139,8 +158,11 @@ function SignupForm() {
       return;
     }
 
-    if (data.session) {
-      // Confirmation email désactivée sur ce projet Supabase : session immédiate.
+    // Upgrade anonyme : la session existante reste valide immédiatement (même si
+    // l'e-mail doit encore être confirmé) — inscription classique : une session
+    // n'est renvoyée que si la confirmation par e-mail est désactivée.
+    const hasImmediateSession = isAnonymousUpgrade || ("session" in data && Boolean(data.session));
+    if (hasImmediateSession) {
       router.push("/mon-compte");
       router.refresh();
       return;

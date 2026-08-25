@@ -8,7 +8,7 @@ import { formatPrice } from "@/lib/format";
 import { GoodieIcon } from "@/lib/content/goodieIcons";
 import Stars from "@/components/reviews/Stars";
 import ReviewSection from "@/components/reviews/ReviewSection";
-import VariantSelectors from "@/components/shop/VariantSelectors";
+import GoodiePurchasePanel from "@/components/shop/GoodiePurchasePanel";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -67,21 +67,13 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
                 </span>
               </div>
 
-              {(goodie.sizes.length > 0 || goodie.colors.length > 0) && (
-                <VariantSelectors sizes={goodie.sizes} colors={goodie.colors} />
-              )}
-
-              <div className="price-actions-row">
-                <div className="product-price">{formatPrice(goodie.price_cents)}</div>
-                <div className="product-actions">
-                  <Link href="/boutique" className="btn-compact btn-compact-outline" title="Retour à la boutique" aria-label="Retour à la boutique">
-                    ←
-                  </Link>
-                  <button className="btn-compact btn-compact-primary" disabled title="Le panier arrive bientôt (Phase 5)">
-                    {available ? "Ajouter au panier" : "Bientôt disponible"}
-                  </button>
-                </div>
-              </div>
+              <GoodiePurchasePanel
+                goodieId={goodie.id}
+                sizes={goodie.sizes}
+                colors={goodie.colors}
+                available={available}
+                priceLabel={formatPrice(goodie.price_cents)}
+              />
 
               <div className="specs-table">
                 <div className="specs-row"><span>Matière</span><span>{goodie.material || "À renseigner"}</span></div>

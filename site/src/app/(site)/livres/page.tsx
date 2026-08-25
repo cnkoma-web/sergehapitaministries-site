@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getBooks } from "@/lib/content/books";
 import { formatPrice } from "@/lib/format";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -118,9 +119,7 @@ export default async function LivresPage() {
                     <div className="price">{formatPrice(book.price_cents)}</div>
                     <div className="catalogue-actions">
                       <Link href={`/livres/${book.slug}`}>Voir</Link>
-                      <button disabled title="Le panier arrive bientôt (Phase 5)">
-                        Ajouter
-                      </button>
+                      <AddToCartButton bookId={book.id} className="add-cart" />
                     </div>
                   </div>
                 </div>

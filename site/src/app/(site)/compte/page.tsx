@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isRealUser } from "@/lib/supabase/realUser";
 import AuthTabs from "@/components/account/AuthTabs";
 
 const title = "Mon compte | Serge Hapita Ministries";
@@ -22,7 +23,7 @@ export default async function ComptePage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (user) redirect("/mon-compte");
+  if (isRealUser(user)) redirect("/mon-compte");
 
   const { tab } = await searchParams;
   const initialTab = tab === "signup" ? "signup" : "login";

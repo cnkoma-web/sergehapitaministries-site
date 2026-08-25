@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isRealUser } from "@/lib/supabase/realUser";
 import { getPublishedArticles } from "@/lib/content/articles";
 import DashTabs from "@/components/account/DashTabs";
 
@@ -14,9 +15,9 @@ export default async function MonComptePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/compte?tab=login");
+  if (!isRealUser(user)) redirect("/compte?tab=login");
 
-  const [{ data: profile }, vsArticles, { data: reviews }] = await Promise.all([
+  const [{ data: profile }, vsArticles, { data: reviews }, { data: orders }] = await Promise.all([
     supabase.from("profiles").select("first_name").eq("id", user.id).single(),
     getPublishedArticles("vs"),
     supabase
@@ -24,7 +25,20 @@ export default async function MonComptePage() {
       .select("id, rating, body, status, created_at, books(title), goodies(title)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("orders")
+      .select("id, status, total_cents, created_at, order_items(title_snapshot, quantity)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
   ]);
+
+  const myOrders = (orders ?? []).map((o) => ({
+    id: o.id,
+    status: o.status,
+    totalCents: o.total_cents,
+    createdAt: o.created_at,
+    items: (Array.isArray(o.order_items) ? o.order_items : []).map((i) => `${i.title_snapshot} ×${i.quantity}`),
+  }));
 
   const myReviews = (reviews ?? []).map((r) => ({
     id: r.id,
@@ -53,6 +67,7 @@ export default async function MonComptePage() {
           email={user.email ?? ""}
           vsArticles={vsArticles.map((a) => ({ slug: a.slug, title: a.title }))}
           reviews={myReviews}
+          orders={myOrders}
         />
       </section>
     </>
