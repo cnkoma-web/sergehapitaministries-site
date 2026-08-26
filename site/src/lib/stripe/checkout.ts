@@ -69,7 +69,9 @@ export async function createCartCheckoutSession(): Promise<{ error: string } | n
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
-    customer_email: user.email ?? undefined,
+    // "?? undefined" ne suffit pas : un utilisateur en session anonyme a un
+    // email vide ("", pas null), que Stripe rejette explicitement.
+    customer_email: user.email || undefined,
     line_items: items.map((item) => {
       const title = item.book?.title ?? item.goodie?.title ?? "Produit";
       const variantBits = [item.variant_size, item.variant_color].filter(Boolean);
