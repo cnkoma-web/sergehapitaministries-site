@@ -5,6 +5,12 @@ import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 import { getCartItems, cartSubtotalCents } from "@/lib/cart/cart";
+import {
+  computeDomesticShippingCents,
+  internationalShippingCents,
+  DOMESTIC_COUNTRY,
+  INTERNATIONAL_COUNTRIES,
+} from "@/lib/stripe/shipping";
 
 async function getSiteUrl(): Promise<string> {
   const h = await headers();
@@ -66,6 +72,15 @@ export async function createCartCheckoutSession(): Promise<{ error: string } | n
   const siteUrl = await getSiteUrl();
   const stripe = getStripe();
 
+  // Stripe exige des URLs absolues et publiquement accessibles pour l'image
+  // affichée sur sa page de paiement — les couvertures/photos locales
+  // (/covers/...) doivent être préfixées par le domaine du site.
+  const toAbsoluteUrl = (url: string) => (url.startsWith("http") ? url : `${siteUrl}${url}`);
+
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  const domesticShipping = computeDomesticShippingCents(subtotalCents, totalQuantity);
+  const internationalShipping = internationalShippingCents();
+
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
@@ -75,15 +90,40 @@ export async function createCartCheckoutSession(): Promise<{ error: string } | n
     line_items: items.map((item) => {
       const title = item.book?.title ?? item.goodie?.title ?? "Produit";
       const variantBits = [item.variant_size, item.variant_color].filter(Boolean);
+      const imageUrl = item.book?.cover_url ?? item.goodie?.image_url ?? null;
       return {
         price_data: {
           currency: "eur",
-          product_data: { name: variantBits.length ? `${title} (${variantBits.join(", ")})` : title },
+          product_data: {
+            name: variantBits.length ? `${title} (${variantBits.join(", ")})` : title,
+            images: imageUrl ? [toAbsoluteUrl(imageUrl)] : undefined,
+          },
           unit_amount: item.book?.price_cents ?? item.goodie?.price_cents ?? 0,
         },
         quantity: item.quantity,
       };
     }),
+    // Deux options nommées plutôt qu'un calcul auto par pays (non supporté
+    // nativement par Checkout dans une même session) — voir lib/stripe/shipping.ts.
+    shipping_address_collection: { allowed_countries: [DOMESTIC_COUNTRY, ...INTERNATIONAL_COUNTRIES] },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: domesticShipping, currency: "eur" },
+          display_name: domesticShipping === 0 ? "France métropolitaine — offerte" : "France métropolitaine",
+          delivery_estimate: { minimum: { unit: "business_day", value: 2 }, maximum: { unit: "business_day", value: 5 } },
+        },
+      },
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: internationalShipping, currency: "eur" },
+          display_name: "International (hors France métropolitaine)",
+          delivery_estimate: { minimum: { unit: "business_day", value: 5 }, maximum: { unit: "business_day", value: 12 } },
+        },
+      },
+    ],
     success_url: `${siteUrl}/confirmation?type=paiement&order=${order.id}`,
     cancel_url: `${siteUrl}/panier`,
     metadata: { order_id: order.id },

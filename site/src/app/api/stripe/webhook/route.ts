@@ -36,6 +36,10 @@ export async function POST(request: Request) {
           status: "paid",
           stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
           customer_email: session.customer_details?.email ?? undefined,
+          // Montant réellement facturé par Stripe (frais de port selon l'option
+          // choisie par le client inclus) — source de vérité, pas un recalcul local.
+          shipping_cents: session.shipping_cost?.amount_total ?? 0,
+          total_cents: session.amount_total ?? undefined,
         })
         .eq("id", orderId);
 

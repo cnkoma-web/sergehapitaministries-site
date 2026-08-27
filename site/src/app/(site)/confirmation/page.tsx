@@ -28,13 +28,13 @@ export default async function ConfirmationPage({
   const { type, order: orderId } = await searchParams;
   const [title, text] = (type && MESSAGES[type]) || MESSAGES.contact;
 
-  let orderSummary: { total_cents: number; items: { title_snapshot: string; quantity: number }[] } | null = null;
+  let orderSummary: { total_cents: number; shipping_cents: number; items: { title_snapshot: string; quantity: number }[] } | null = null;
   if (type === "paiement" && orderId) {
     const supabase = await createClient();
-    const { data: order } = await supabase.from("orders").select("total_cents, status").eq("id", orderId).maybeSingle();
+    const { data: order } = await supabase.from("orders").select("total_cents, shipping_cents, status").eq("id", orderId).maybeSingle();
     if (order) {
       const { data: items } = await supabase.from("order_items").select("title_snapshot, quantity").eq("order_id", orderId);
-      orderSummary = { total_cents: order.total_cents, items: items ?? [] };
+      orderSummary = { total_cents: order.total_cents, shipping_cents: order.shipping_cents, items: items ?? [] };
     }
   }
 
@@ -55,6 +55,10 @@ export default async function ConfirmationPage({
                   </span>
                 </div>
               ))}
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, marginBottom: 6, color: "var(--ink-soft)" }}>
+                <span>Livraison</span>
+                <span>{orderSummary.shipping_cents === 0 ? "Offerte" : formatPrice(orderSummary.shipping_cents)}</span>
+              </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--line)" }}>
                 <span>Total</span>
                 <span>{formatPrice(orderSummary.total_cents)}</span>
