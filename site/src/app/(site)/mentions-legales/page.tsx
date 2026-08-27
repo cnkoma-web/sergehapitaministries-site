@@ -43,19 +43,19 @@ export default function MentionsLegalesPage() {
             Le site sergehapitaministries.org est édité par Serge Hapita, dans le cadre de son
             ministère Serge Hapita Ministries, basé à Levallois-Perret, France.
           </p>
-          <div className="todo">
-            À compléter : forme juridique éventuelle (association loi 1901, entreprise
-            individuelle...), numéro SIRET si applicable, adresse postale complète, adresse
-            email de contact du directeur de publication.
-          </div>
+          <p>
+            <strong>SIRET :</strong> 935 354 522 00010
+          </p>
+          <div className="todo">À compléter : adresse postale complète, adresse email de contact du directeur de publication.</div>
           <p>
             <strong>Directeur de la publication :</strong> Serge Hapita
           </p>
 
           <h2>Hébergement</h2>
+          <p>Ce site est hébergé par Vercel Inc., États-Unis.</p>
           <div className="todo">
-            À compléter une fois l&apos;hébergeur du site choisi : raison sociale, adresse,
-            contact.
+            À compléter si besoin : adresse postale complète de Vercel Inc. (disponible sur
+            vercel.com/legal), non reprise ici par prudence pour éviter une adresse erronée.
           </div>
 
           <h2>Propriété intellectuelle</h2>

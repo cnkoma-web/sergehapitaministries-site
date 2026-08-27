@@ -54,10 +54,13 @@ export default function TermesEtConditionsPage() {
             prix sont indiqués en euros, toutes taxes comprises. Une confirmation de commande vous est adressée
             après validation du paiement.
           </p>
+          <p>
+            Les délais de livraison indicatifs sont de 24 à 48h en France métropolitaine, et de quelques jours pour
+            les envois internationaux (zone A).
+          </p>
           <div className="todo">
-            À compléter avec Claude Code : délais de livraison, zones géographiques couvertes, modalités précises
-            de retour et de remboursement, une fois le circuit logistique (livres) et Printful (goodies) mis en
-            place.
+            À compléter avec Claude Code : modalités précises de retour et de remboursement, une fois le circuit
+            logistique (livres) et Printful (goodies) mis en place.
           </div>
 
           <h2>Dons</h2>

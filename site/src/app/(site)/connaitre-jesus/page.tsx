@@ -50,40 +50,16 @@ export default function ConnaitreJesusPage() {
 
       <section className="section" style={{ padding: "44px 0" }}>
         <div className="wrap">
-          {/* Vidéo à venir — aucune vidéo réelle fournie à ce jour (cahier §3.9) :
-              état honnête plutôt qu'un lien inventé. */}
-          <div
-            style={{
-              aspectRatio: "16/9",
-              maxWidth: 760,
-              margin: "0 auto",
-              background: "#16101f",
-              borderRadius: 12,
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 12,
-              color: "rgba(255,255,255,.6)",
-            }}
-          >
-            <div
-              style={{
-                width: 72,
-                height: 72,
-                background: "var(--purple)",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: 26,
-              }}
-            >
-              ▶
-            </div>
-            <span style={{ fontSize: 13 }}>Vidéo à venir</span>
+          <div style={{ aspectRatio: "16/9", maxWidth: 760, margin: "0 auto", borderRadius: 12, overflow: "hidden" }}>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/_8Iucad0hFg"
+              title="Connaître Jésus"
+              style={{ border: 0, display: "block" }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>
