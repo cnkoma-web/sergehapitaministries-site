@@ -1,5 +1,7 @@
 import Stripe from "stripe";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRole";
+import { sendCustomerEmail } from "@/lib/email/resend";
+import { formatPrice } from "@/lib/format";
 
 // Webhook Stripe — seule source de vérité pour confirmer un paiement (jamais le
 // navigateur, cf. commentaire de la policy RLS sur `orders`). La signature est
@@ -32,12 +34,13 @@ export async function POST(request: Request) {
 
     if (orderId) {
       const supabase = createServiceRoleClient();
+      const customerEmail = session.customer_details?.email ?? undefined;
       await supabase
         .from("orders")
         .update({
           status: "paid",
           stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
-          customer_email: session.customer_details?.email ?? undefined,
+          customer_email: customerEmail,
           // Montant réellement facturé par Stripe (frais de port selon l'option
           // choisie par le client inclus) — source de vérité, pas un recalcul local.
           shipping_cents: session.shipping_cost?.amount_total ?? 0,
@@ -51,6 +54,26 @@ export async function POST(request: Request) {
         const { data: cart } = await supabase.from("carts").select("id").eq("user_id", order.user_id).maybeSingle();
         if (cart) await supabase.from("cart_items").delete().eq("cart_id", cart.id);
       }
+
+      const { data: items } = await supabase
+        .from("order_items")
+        .select("title_snapshot, quantity, unit_price_cents")
+        .eq("order_id", orderId);
+      const shippingCents = session.shipping_cost?.amount_total ?? 0;
+      const totalCents = session.amount_total ?? 0;
+      const itemsHtml = (items ?? [])
+        .map((i) => `<tr><td>${i.title_snapshot} × ${i.quantity}</td><td style="text-align:right">${formatPrice(i.unit_price_cents * i.quantity)}</td></tr>`)
+        .join("");
+      await sendCustomerEmail(
+        customerEmail,
+        "Confirmation de votre commande — Serge Hapita Ministries",
+        `<p>Merci pour votre commande !</p>
+         <table style="width:100%;border-collapse:collapse;margin:16px 0;">${itemsHtml}
+           <tr><td>Livraison</td><td style="text-align:right">${shippingCents === 0 ? "Offerte" : formatPrice(shippingCents)}</td></tr>
+           <tr style="font-weight:bold"><td>Total</td><td style="text-align:right">${formatPrice(totalCents)}</td></tr>
+         </table>
+         <p>Vous pouvez suivre votre commande dans votre espace « Mon compte ».</p>`
+      );
     }
 
     if (donationId) {
@@ -58,14 +81,23 @@ export async function POST(request: Request) {
       // "paid" pour un don unique (mode payment), "active" pour un abonnement
       // (mode subscription) — la souscription elle-même est gérée par Stripe,
       // seul son identifiant est conservé pour référence côté admin.
+      const donationEmail = session.customer_details?.email ?? undefined;
       await supabase
         .from("donations")
         .update({
           status: session.mode === "subscription" ? "active" : "paid",
           stripe_subscription_id: typeof session.subscription === "string" ? session.subscription : null,
-          email: session.customer_details?.email ?? undefined,
+          email: donationEmail,
         })
         .eq("id", donationId);
+
+      const isRecurring = session.mode === "subscription";
+      await sendCustomerEmail(
+        donationEmail,
+        "Merci pour votre don — Serge Hapita Ministries",
+        `<p>Merci pour votre don${isRecurring ? " récurrent" : ""} de ${formatPrice(session.amount_total ?? 0)}.</p>
+         <p>Votre générosité soutient concrètement ce ministère.</p>`
+      );
     }
   }
 

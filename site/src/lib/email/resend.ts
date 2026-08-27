@@ -5,18 +5,13 @@
 // Tant que RESEND_API_KEY n'est pas configurée (variable d'environnement
 // Vercel), l'envoi est silencieusement ignoré : les formulaires restent
 // pleinement fonctionnels (la donnée est toujours enregistrée en base), seule
-// la notification par e-mail à Serge est différée jusqu'à la configuration
-// de la clé.
+// la notification par e-mail est différée jusqu'à la configuration de la clé.
 const SENDER = "Serge Hapita Ministries <notifications@amdgeditions.fr>";
 
-export async function sendNotificationEmail(subject: string, htmlBody: string): Promise<void> {
+async function sendEmail(to: string, subject: string, htmlBody: string): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  // Adresse de Serge qui doit recevoir les notifications de formulaires —
-  // configurable sans toucher au code, jamais codée en dur (cahier : aucune
-  // donnée réelle ne doit être inventée).
-  const notifyTo = process.env.NOTIFICATION_EMAIL;
-  if (!apiKey || !notifyTo) {
-    console.warn(`[email] RESEND_API_KEY ou NOTIFICATION_EMAIL absente — notification "${subject}" non envoyée.`);
+  if (!apiKey) {
+    console.warn(`[email] RESEND_API_KEY absente — e-mail "${subject}" (à ${to}) non envoyé.`);
     return;
   }
 
@@ -29,17 +24,36 @@ export async function sendNotificationEmail(subject: string, htmlBody: string): 
       },
       body: JSON.stringify({
         from: SENDER,
-        to: [notifyTo],
+        to: [to],
         subject,
         html: htmlBody,
       }),
     });
     if (!res.ok) {
-      console.error(`[email] Échec envoi Resend (${res.status}) : ${await res.text()}`);
+      console.error(`[email] Échec envoi Resend (${res.status}) à ${to} : ${await res.text()}`);
     }
   } catch (err) {
-    // Une notification email ratée ne doit jamais faire échouer la soumission
-    // du formulaire elle-même (la donnée est déjà enregistrée en base).
+    // Un envoi raté ne doit jamais faire échouer l'opération qui le déclenche
+    // (commande déjà enregistrée, formulaire déjà soumis, etc.).
     console.error("[email] Erreur d'envoi Resend :", err);
   }
+}
+
+/** Notifie Serge (adresse configurée via NOTIFICATION_EMAIL) — contact,
+ * invitation, prière, don. */
+export async function sendNotificationEmail(subject: string, htmlBody: string): Promise<void> {
+  const notifyTo = process.env.NOTIFICATION_EMAIL;
+  if (!notifyTo) {
+    console.warn(`[email] NOTIFICATION_EMAIL absente — notification "${subject}" non envoyée.`);
+    return;
+  }
+  await sendEmail(notifyTo, subject, htmlBody);
+}
+
+/** Envoie un e-mail transactionnel directement à un client (confirmation de
+ * commande, avis approuvé...). N'envoie rien si l'adresse est vide/absente
+ * (ex. session anonyme sans e-mail réel). */
+export async function sendCustomerEmail(to: string | null | undefined, subject: string, htmlBody: string): Promise<void> {
+  if (!to) return;
+  await sendEmail(to, subject, htmlBody);
 }
