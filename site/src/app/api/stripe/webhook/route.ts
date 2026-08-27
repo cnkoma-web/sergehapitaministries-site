@@ -28,6 +28,8 @@ export async function POST(request: Request) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const orderId = session.metadata?.order_id;
+    const donationId = session.metadata?.donation_id;
+
     if (orderId) {
       const supabase = createServiceRoleClient();
       await supabase
@@ -50,14 +52,40 @@ export async function POST(request: Request) {
         if (cart) await supabase.from("cart_items").delete().eq("cart_id", cart.id);
       }
     }
+
+    if (donationId) {
+      const supabase = createServiceRoleClient();
+      // "paid" pour un don unique (mode payment), "active" pour un abonnement
+      // (mode subscription) — la souscription elle-même est gérée par Stripe,
+      // seul son identifiant est conservé pour référence côté admin.
+      await supabase
+        .from("donations")
+        .update({
+          status: session.mode === "subscription" ? "active" : "paid",
+          stripe_subscription_id: typeof session.subscription === "string" ? session.subscription : null,
+          email: session.customer_details?.email ?? undefined,
+        })
+        .eq("id", donationId);
+    }
   }
 
   if (event.type === "checkout.session.expired" || event.type === "payment_intent.payment_failed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const orderId = session.metadata?.order_id;
-    if (orderId) {
+    const donationId = session.metadata?.donation_id;
+    const supabase = createServiceRoleClient();
+    if (orderId) await supabase.from("orders").update({ status: "failed" }).eq("id", orderId);
+    if (donationId) await supabase.from("donations").update({ status: "failed" }).eq("id", donationId);
+  }
+
+  // Un abonnement de don annulé (résiliation, échec de paiement récurrent
+  // definitif) — Stripe envoie cet événement indépendamment du checkout initial.
+  if (event.type === "customer.subscription.deleted") {
+    const subscription = event.data.object as Stripe.Subscription;
+    const donationId = subscription.metadata?.donation_id;
+    if (donationId) {
       const supabase = createServiceRoleClient();
-      await supabase.from("orders").update({ status: "failed" }).eq("id", orderId);
+      await supabase.from("donations").update({ status: "canceled" }).eq("id", donationId);
     }
   }
 

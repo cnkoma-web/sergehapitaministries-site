@@ -1,14 +1,17 @@
 "use client";
 
-// TODO Phase 6 : soumission réelle (Resend + enregistrement en base) puis redirection
-// vers /confirmation?type=contact, à la place de l'alert() ci-dessous — voir le plan
-// d'implémentation (cahier-des-charges §Partie 5, point 8).
+import { useTransition } from "react";
+import { submitContactForm } from "@/lib/forms/actions";
+
 export default function ContactForm() {
+  const [isPending, startTransition] = useTransition();
+
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        alert("Merci ! Votre message a bien été envoyé.");
+      action={(formData) => {
+        startTransition(() => {
+          submitContactForm(formData);
+        });
       }}
     >
       <label htmlFor="contact-nom">Nom *</label>
@@ -34,8 +37,13 @@ export default function ContactForm() {
       <textarea id="contact-message" name="message" required />
 
       <div style={{ textAlign: "center" }}>
-        <button type="submit" className="btn btn-primary" style={{ paddingLeft: 36, paddingRight: 36 }}>
-          Envoyer →
+        <button
+          type="submit"
+          className="btn btn-primary"
+          style={{ paddingLeft: 36, paddingRight: 36 }}
+          disabled={isPending}
+        >
+          {isPending ? "Envoi…" : "Envoyer →"}
         </button>
       </div>
     </form>
