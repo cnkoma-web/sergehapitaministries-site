@@ -27,7 +27,7 @@ export default async function MonComptePage() {
       .order("created_at", { ascending: false }),
     supabase
       .from("orders")
-      .select("id, status, total_cents, created_at, order_items(title_snapshot, quantity)")
+      .select("id, status, subtotal_cents, shipping_cents, total_cents, created_at, order_items(title_snapshot, quantity, unit_price_cents)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
   ]);
@@ -35,9 +35,14 @@ export default async function MonComptePage() {
   const myOrders = (orders ?? []).map((o) => ({
     id: o.id,
     status: o.status,
+    subtotalCents: o.subtotal_cents,
+    shippingCents: o.shipping_cents,
     totalCents: o.total_cents,
     createdAt: o.created_at,
-    items: (Array.isArray(o.order_items) ? o.order_items : []).map((i) => `${i.title_snapshot} ×${i.quantity}`),
+    items: (Array.isArray(o.order_items) ? o.order_items : []).map((i) => ({
+      label: `${i.title_snapshot} ×${i.quantity}`,
+      priceCents: i.unit_price_cents * i.quantity,
+    })),
   }));
 
   const myReviews = (reviews ?? []).map((r) => ({

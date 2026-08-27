@@ -19,7 +19,16 @@ const SECTIONS: { id: Section; label: string }[] = [
 
 type VsArticle = { slug: string; title: string };
 type MyReview = { id: string; rating: number | null; body: string | null; status: string; productTitle: string };
-type MyOrder = { id: string; status: string; totalCents: number; createdAt: string; items: string[] };
+type OrderItem = { label: string; priceCents: number };
+type MyOrder = {
+  id: string;
+  status: string;
+  subtotalCents: number;
+  shippingCents: number;
+  totalCents: number;
+  createdAt: string;
+  items: OrderItem[];
+};
 
 type Props = {
   userId: string;
@@ -97,7 +106,7 @@ export default function DashTabs({ userId, firstName, email, vsArticles, reviews
             ) : (
               <div className="order-row">
                 <div>
-                  <div className="num">{orders[0].items.join(", ")}</div>
+                  <div className="num">{orders[0].items.map((i) => i.label).join(", ")}</div>
                   <div className="date">{new Date(orders[0].createdAt).toLocaleDateString("fr-FR")}</div>
                 </div>
                 <span className="order-status">{ORDER_STATUS_LABEL[orders[0].status] ?? orders[0].status}</span>
@@ -116,14 +125,70 @@ export default function DashTabs({ userId, firstName, email, vsArticles, reviews
               </p>
             ) : (
               orders.map((o) => (
-                <div className="order-row" key={o.id}>
-                  <div>
-                    <div className="num">{o.items.join(", ")}</div>
-                    <div className="date">
-                      {new Date(o.createdAt).toLocaleDateString("fr-FR")} — {formatPrice(o.totalCents)}
-                    </div>
+                <div key={o.id} style={{ borderBottom: "1px solid var(--line)", padding: "16px 0" }}>
+                  <div className="order-row" style={{ borderBottom: 0, padding: 0 }}>
+                    <div className="date">{new Date(o.createdAt).toLocaleDateString("fr-FR")}</div>
+                    <span className="order-status">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
                   </div>
-                  <span className="order-status">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
+                  <div style={{ marginTop: 10 }}>
+                    {o.items.map((item, i) => (
+                      <div
+                        key={i}
+                        style={{ display: "flex", justifyContent: "space-between", fontSize: 14, marginBottom: 4 }}
+                      >
+                        <span>{item.label}</span>
+                        <span>{formatPrice(item.priceCents)}</span>
+                      </div>
+                    ))}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: 13,
+                        color: "var(--ink-soft)",
+                        marginTop: 6,
+                      }}
+                    >
+                      <span>Sous-total</span>
+                      <span>{formatPrice(o.subtotalCents)}</span>
+                    </div>
+                    {o.status === "paid" ? (
+                      <>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            fontSize: 13,
+                            color: "var(--ink-soft)",
+                            marginBottom: 6,
+                          }}
+                        >
+                          <span>Livraison</span>
+                          <span>{o.shippingCents === 0 ? "Offerte" : formatPrice(o.shippingCents)}</span>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            fontWeight: 700,
+                            fontSize: 14,
+                            paddingTop: 6,
+                            borderTop: "1px solid var(--line)",
+                          }}
+                        >
+                          <span>Total</span>
+                          <span>{formatPrice(o.totalCents)}</span>
+                        </div>
+                      </>
+                    ) : (
+                      // Livraison encore inconnue tant que le paiement Stripe n'a pas abouti
+                      // (l'option de livraison est choisie côté Stripe) — pas de total honnête
+                      // à afficher avant "paid".
+                      <p style={{ fontSize: 12, color: "var(--ink-soft)", fontStyle: "italic", marginTop: 4 }}>
+                        Frais de livraison non définitifs tant que le paiement n&apos;est pas confirmé.
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))
             )}
