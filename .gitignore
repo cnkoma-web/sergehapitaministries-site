@@ -3,3 +3,5 @@ site/node_modules/
 site/.next/
 site/next-env.d.ts
 .claude/
+fichiers-a-ajouter/
+fichiers-a-ajouter.zip
