@@ -1,17 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleByIdAdmin, getArticleOptionsForLinking, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
+import { getCategories, getCategoryIdsForArticle } from "@/lib/content/categories";
 import { updateArticle, publishArticle, deleteArticle } from "../actions";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import RelatedArticlesPicker from "@/components/admin/RelatedArticlesPicker";
+import CategoryPicker from "@/components/admin/CategoryPicker";
 
 export default async function AdminArticleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const article = await getArticleByIdAdmin(id);
   if (!article) notFound();
 
-  const linkOptions = await getArticleOptionsForLinking(article.id);
+  const [linkOptions, allCategories, selectedCategoryIds] = await Promise.all([
+    getArticleOptionsForLinking(article.id),
+    getCategories(),
+    getCategoryIdsForArticle(article.id),
+  ]);
 
   return (
     <>
@@ -115,6 +121,11 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
               <textarea name="verse_text" defaultValue={article.verse_text ?? ""} rows={2} />
             </div>
           )}
+
+          <div className="editor-field">
+            <label>Thèmes</label>
+            <CategoryPicker allCategories={allCategories} initialSelectedIds={selectedCategoryIds} />
+          </div>
 
           <div className="editor-field">
             <label>Articles similaires</label>

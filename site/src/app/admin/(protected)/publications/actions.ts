@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { computeReadingTime } from "@/lib/readingTime";
 import { paragraphsToHtml } from "@/lib/richtext";
+import { setArticleCategories } from "@/lib/content/categories";
 
 function slugify(text: string): string {
   return text
@@ -94,6 +95,7 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   if (status) update.status = status;
 
   await supabase.from("articles").update(update).eq("id", id);
+  await setArticleCategories(id, formData.getAll("category_ids").map(String).filter(Boolean));
 
   revalidatePath(`/admin/publications/${id}`);
   revalidatePath("/admin/publications");

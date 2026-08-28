@@ -8,6 +8,7 @@ import {
   incrementViewCount,
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
+import { getCategoriesForArticle } from "@/lib/content/categories";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import ArticleMeta from "@/components/articles/ArticleMeta";
@@ -48,6 +49,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     data: { user },
   } = await supabase.auth.getUser();
 
+  const categories = await getCategoriesForArticle(article.id);
   const manuallyRelated = article.related_article_ids.length > 0 ? await getArticlesByIds(article.related_article_ids) : [];
   const related = manuallyRelated.length > 0 ? manuallyRelated : await getRelatedArticles(article.type, article.id);
   const pageUrl = `${SITE_URL}/publications/${slug}`;
@@ -72,6 +74,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               La Vie Supérieure — enseignement approfondi{article.author_name ? ` · ${article.author_name}` : ""}
             </div>
             <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
+            {categories.length > 0 && (
+              <div className="chip-row" style={{ marginTop: 10 }}>
+                {categories.map((c) => (
+                  <span key={c.id} className="chip">
+                    {c.name}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
@@ -150,6 +161,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {article.author_name ? ` · ${article.author_name}` : ""}
           </div>
           <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
+          {categories.length > 0 && (
+            <div className="chip-row" style={{ marginTop: 10 }}>
+              {categories.map((c) => (
+                <span key={c.id} className="chip">
+                  {c.name}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

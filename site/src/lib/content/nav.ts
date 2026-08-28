@@ -1,67 +1,29 @@
+import { createClient } from "@/lib/supabase/server";
 import { getInterfaceTexts } from "./interfaceTexts";
 import type { NavLink, NavItem } from "./navTypes";
-
-// La STRUCTURE du menu (quelles pages, quelle hiérarchie de sous-menus, quelles
-// routes) reste ici, dans le code — c'est une décision d'architecture du site,
-// pas du contenu éditorial au sens du cahier des charges. Seuls les LIBELLÉS
-// affichés sont pilotables depuis l'admin (table `interface_texts`, via la clé
-// indiquée sur chaque entrée), avec cette valeur de repli comme libellé par défaut.
-//
-// Les types (NavLink/NavItem/isDropdown) vivent dans navTypes.ts : ce fichier-ci
-// importe le client Supabase serveur et ne doit jamais être importé depuis un
-// Client Component (voir MobileNav.tsx, qui importe navTypes.ts directement).
 
 export type { NavLink, NavDropdown, NavItem } from "./navTypes";
 export { isDropdown } from "./navTypes";
 
-type NavLinkDef = { key: string; label: string; href: string };
-type NavDropdownDef = { key: string; label: string; links: NavLinkDef[] };
-type NavItemDef = NavLinkDef | NavDropdownDef;
-
-function isDropdownDef(item: NavItemDef): item is NavDropdownDef {
-  return "links" in item;
-}
-
-const NAV_DEF: NavItemDef[] = [
-  { key: "nav.accueil", label: "Accueil", href: "/" },
-  {
-    key: "nav.a_propos",
-    label: "À propos",
-    links: [
-      { key: "nav.a_propos.de_serge", label: "De Serge", href: "/de-serge" },
-      { key: "nav.a_propos.livres", label: "Livres", href: "/livres" },
-      { key: "nav.a_propos.videos", label: "Vidéos", href: "/videos" },
-      { key: "nav.a_propos.invitation", label: "Invitation", href: "/invitation" },
-      { key: "nav.a_propos.partenariat", label: "Partenariat", href: "/partenariat" },
-    ],
-  },
-  { key: "nav.connaitre_jesus", label: "Connaître Jésus", href: "/connaitre-jesus" },
-  {
-    key: "nav.publications",
-    label: "Publications",
-    links: [
-      { key: "nav.publications.qdlb", label: "Que Dit la Bible ?", href: "/publications#que-dit-la-bible" },
-      { key: "nav.publications.vs", label: "La Vie Supérieure", href: "/publications#vie-superieure" },
-      { key: "nav.publications.rm", label: "Rosée Matinale", href: "/rosee-matinale" },
-    ],
-  },
-  { key: "nav.boutique", label: "Boutique", href: "/boutique" },
-  { key: "nav.soutenir", label: "Soutenir", href: "/partenariat" },
-  { key: "nav.contact", label: "Contact", href: "/contact" },
-];
-
+// Le menu de navigation est une vraie liste gérée par Serge depuis
+// /admin/navigation (cahier — exigence transversale), pas une structure figée
+// dans le code : ajout/suppression/renommage/réordonnancement de liens sans
+// toucher au code. Un item de premier niveau sans href est un menu déroulant,
+// ses enfants (parent_id) sont ses liens.
 export async function getMainNav(): Promise<NavItem[]> {
-  const texts = await getInterfaceTexts();
-  const label = (key: string, fallback: string) => texts[key] ?? fallback;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("nav_items")
+    .select("id, parent_id, label, href")
+    .order("position", { ascending: true });
+  if (error || !data) return [];
 
-  return NAV_DEF.map((item) =>
-    isDropdownDef(item)
-      ? {
-          label: label(item.key, item.label),
-          links: item.links.map((l) => ({ label: label(l.key, l.label), href: l.href })),
-        }
-      : { label: label(item.key, item.label), href: item.href }
-  );
+  const topLevel = data.filter((item) => !item.parent_id);
+  return topLevel.map((item) => {
+    const children = data.filter((c) => c.parent_id === item.id);
+    if (item.href) return { label: item.label, href: item.href };
+    return { label: item.label, links: children.map((c) => ({ label: c.label, href: c.href ?? "#" })) };
+  });
 }
 
 export async function getBrandSplitLinks(): Promise<{ left: NavLink; right: NavLink }> {
