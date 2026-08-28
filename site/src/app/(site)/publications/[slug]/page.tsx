@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import {
   getArticleBySlugAnyType,
   getRelatedArticles,
+  getArticlesByIds,
   incrementViewCount,
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
@@ -22,12 +23,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!article) return {};
   const title = `${article.title} | ${ARTICLE_TYPE_LABEL[article.type]}`;
   const description = article.excerpt || article.verse_text || article.title;
+  const images = article.cover_url ? [article.cover_url] : undefined;
   return {
     title,
     description,
+    keywords: article.seo_keywords.length > 0 ? article.seo_keywords : undefined,
     alternates: { canonical: `/publications/${slug}` },
-    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR", images },
+    twitter: { card: "summary_large_image", title, description, images },
   };
 }
 
@@ -45,9 +48,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     data: { user },
   } = await supabase.auth.getUser();
 
-  const related = await getRelatedArticles(article.type, article.id);
+  const manuallyRelated = article.related_article_ids.length > 0 ? await getArticlesByIds(article.related_article_ids) : [];
+  const related = manuallyRelated.length > 0 ? manuallyRelated : await getRelatedArticles(article.type, article.id);
   const pageUrl = `${SITE_URL}/publications/${slug}`;
-  const paragraphs = (article.body || "").split("\n\n").filter(Boolean);
+  // Le corps est du HTML (RichTextEditor) — on découpe par bloc <p> pour pouvoir
+  // n'en révéler qu'une partie côté gating (La Vie Supérieure), sans jamais
+  // couper au milieu d'une balise.
+  const rawBody = article.body || "";
+  const paragraphs = rawBody.match(/<[a-z][^>]*>[\s\S]*?<\/[a-z]+>/gi) ?? (rawBody ? [rawBody] : []);
 
   if (article.type === "vs") {
     // Gating (cahier §3.5) : le corps complet n'est renvoyé au client que si
@@ -60,16 +68,18 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="wrap" style={{ maxWidth: 680, margin: "0 auto" }}>
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
             <h1 className="article-title">{article.title}</h1>
-            <div className="article-date">La Vie Supérieure — enseignement approfondi</div>
+            <div className="article-date">
+              La Vie Supérieure — enseignement approfondi{article.author_name ? ` · ${article.author_name}` : ""}
+            </div>
             <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
           </div>
         </section>
 
         <section className="article-body">
           <div className="wrap">
-            {unlocked
-              ? paragraphs.map((p, i) => <p key={i}>{p}</p>)
-              : paragraphs.slice(0, 4).map((p, i) => <p key={i}>{p}</p>)}
+            {(unlocked ? paragraphs : paragraphs.slice(0, 4)).map((html, i) => (
+              <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
+            ))}
           </div>
         </section>
 
@@ -137,6 +147,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <h1 className="article-title">{article.title}</h1>
           <div className="article-date">
             {new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            {article.author_name ? ` · ${article.author_name}` : ""}
           </div>
           <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
         </div>
@@ -152,8 +163,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           )}
 
           {paragraphs.length > 0 && <h2>Parlons-en</h2>}
-          {paragraphs.map((p, i) => (
-            <p key={i}>{p}</p>
+          {paragraphs.map((html, i) => (
+            <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
           ))}
 
           {article.further_verses.length > 0 && (

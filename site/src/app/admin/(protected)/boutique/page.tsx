@@ -1,54 +1,69 @@
-import { createClient } from "@/lib/supabase/server";
-import GoodieRow from "@/components/admin/GoodieRow";
-import { addGoodie, updateGoodie, deleteGoodie } from "./actions";
+import Link from "next/link";
+import { getGoodiesAdmin } from "@/lib/content/goodies";
+import { formatPrice } from "@/lib/format";
+import Pagination from "@/components/admin/Pagination";
 
-export default async function AdminBoutiquePage() {
-  const supabase = await createClient();
-  const { data: goodies, error } = await supabase
-    .from("goodies")
-    .select("id, title, price_cents, image_url, sizes, colors, material, cut, care, fabrication, shipping_delay, status, position, active")
-    .order("position", { ascending: true });
+const STATUS_LABEL: Record<string, string> = { available: "Disponible", coming_soon: "Bientôt disponible" };
+const STATUS_CLASS: Record<string, string> = { available: "actif", coming_soon: "precommande" };
+
+export default async function AdminBoutiquePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; perPage?: string }>;
+}) {
+  const { page: pageParam, perPage: perPageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const perPage = Number(perPageParam) || 20;
+
+  const { goodies, total } = await getGoodiesAdmin(page, perPage);
 
   return (
     <>
-      <h1>Boutique</h1>
-      <p className="admin-lede">
-        Les goodies affichés sur /boutique. Photo au ratio 1:1 recommandé.
-      </p>
+      <div className="admin-header">
+        <div>
+          <h2>Boutique</h2>
+        </div>
+        <Link href="/admin/boutique/nouveau" className="btn-add">
+          + Ajouter un goodie
+        </Link>
+      </div>
+      <p className="admin-lede">Les goodies affichés sur /boutique. Cliquez sur un goodie pour l&apos;éditer en détail.</p>
 
-      {error && <div className="admin-error">Impossible de charger la boutique : {error.message}</div>}
+      <div className="items-table">
+        <div className="item-row head" style={{ gridTemplateColumns: "56px 1fr 90px 130px 90px 90px" }}>
+          <div></div>
+          <div>Titre</div>
+          <div>Prix</div>
+          <div>Statut</div>
+          <div>Position</div>
+          <div>Actions</div>
+        </div>
 
-      {goodies?.map((g) => (
-        <GoodieRow key={g.id} goodie={g} updateAction={updateGoodie} deleteAction={deleteGoodie} />
-      ))}
+        {goodies.length === 0 && (
+          <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+            <div className="admin-row-empty">Aucun goodie pour le moment.</div>
+          </div>
+        )}
 
-      <div className="admin-card">
-        <h3 style={{ marginBottom: 14, fontSize: 16 }}>Ajouter un goodie</h3>
-        <form action={addGoodie}>
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ flex: 2 }}>
-              <label htmlFor="new-title">Titre</label>
-              <input id="new-title" name="title" required />
+        {goodies.map((g) => (
+          <div className="item-row" key={g.id} style={{ gridTemplateColumns: "56px 1fr 90px 130px 90px 90px" }}>
+            <div className="item-thumb" style={g.image_url ? { backgroundImage: `url('${g.image_url}')` } : undefined} />
+            <div className="item-title">
+              <Link href={`/admin/boutique/${g.id}`}>{g.title}</Link>
             </div>
-            <div className="admin-field" style={{ maxWidth: 100 }}>
-              <label htmlFor="new-price">Prix (€)</label>
-              <input id="new-price" name="price" placeholder="—" />
+            <div className="item-price">{g.price_cents != null ? formatPrice(g.price_cents) : "—"}</div>
+            <div>
+              <span className={`status-badge ${STATUS_CLASS[g.status]}`}>{STATUS_LABEL[g.status]}</span>
             </div>
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label htmlFor="new-status">Statut</label>
-              <select id="new-status" name="status" defaultValue="coming_soon">
-                <option value="coming_soon">Bientôt disponible</option>
-                <option value="available">Disponible</option>
-              </select>
-            </div>
-            <div className="admin-field" style={{ maxWidth: 70 }}>
-              <label htmlFor="new-position">Pos.</label>
-              <input id="new-position" name="position" type="number" defaultValue={goodies?.length ?? 0} />
+            <div>{g.position}</div>
+            <div className="item-actions">
+              <Link href={`/admin/boutique/${g.id}`}>Éditer</Link>
             </div>
           </div>
-          <button type="submit" className="admin-btn-primary">Ajouter</button>
-        </form>
+        ))}
       </div>
+
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/boutique" />}
     </>
   );
 }

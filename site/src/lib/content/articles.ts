@@ -17,6 +17,11 @@ export type Article = {
   access: "free" | "paid";
   view_count: number;
   reading_time_minutes: number | null;
+  cover_url: string | null;
+  cover_alt: string | null;
+  author_name: string | null;
+  related_article_ids: string[];
+  seo_keywords: string[];
 };
 
 // Libellés/initiales dérivés du type plutôt que stockés en base (une seule
@@ -29,7 +34,9 @@ export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
 export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", vs: "VS", rm: "RM" };
 
 const COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords";
+const ADMIN_COLUMNS =
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status";
 
 export async function getPublishedArticles(type: ArticleType): Promise<Article[]> {
   const supabase = await createClient();
@@ -64,6 +71,17 @@ export async function getRelatedArticles(type: ArticleType, excludeId: string, l
   return all.filter((a) => a.id !== excludeId).slice(0, limit);
 }
 
+/** Articles similaires liés manuellement par Serge (cahier §6.2) — si aucun
+ * lien manuel n'a été fait, on retombe sur les plus récents du même type. */
+export async function getArticlesByIds(ids: string[]): Promise<Article[]> {
+  if (ids.length === 0) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("articles").select(COLUMNS).in("id", ids).eq("status", "published");
+  if (error || !data) return [];
+  // Conserve l'ordre choisi par Serge, pas l'ordre renvoyé par la base.
+  return ids.map((id) => data.find((a) => a.id === id)).filter((a): a is Article => Boolean(a));
+}
+
 /** L'entrée du jour = la plus récente entrée Rosée Matinale publiée. Pas de champ
  * "is_current" séparé à synchroniser : la bascule en archive est automatique dès
  * qu'une entrée plus récente est publiée (cahier §3.2). */
@@ -86,4 +104,43 @@ export async function countPublishedArticles(): Promise<number> {
 export async function incrementViewCount(id: string) {
   const supabase = await createClient();
   await supabase.rpc("increment_article_views", { article_id: id });
+}
+
+// ===== Admin (voit aussi les brouillons) =====
+
+export type AdminArticle = Article & { status: "draft" | "published" };
+
+export async function getArticlesAdmin(
+  types: ArticleType[],
+  page: number,
+  perPage: number
+): Promise<{ articles: AdminArticle[]; total: number }> {
+  const supabase = await createClient();
+  const from = (page - 1) * perPage;
+  const { data, error, count } = await supabase
+    .from("articles")
+    .select(ADMIN_COLUMNS, { count: "exact" })
+    .in("type", types)
+    .order("article_date", { ascending: false })
+    .range(from, from + perPage - 1);
+  if (error || !data) return { articles: [], total: 0 };
+  return { articles: data, total: count ?? 0 };
+}
+
+export async function getArticleByIdAdmin(id: string): Promise<AdminArticle | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("articles").select(ADMIN_COLUMNS).eq("id", id).single();
+  if (error || !data) return null;
+  return data;
+}
+
+/** Pour le sélecteur "Articles similaires" — tous les articles publiés sauf
+ * celui en cours d'édition, tous types confondus. */
+export async function getArticleOptionsForLinking(excludeId?: string): Promise<{ id: string; title: string }[]> {
+  const supabase = await createClient();
+  let query = supabase.from("articles").select("id, title").eq("status", "published").order("article_date", { ascending: false });
+  if (excludeId) query = query.neq("id", excludeId);
+  const { data, error } = await query;
+  if (error || !data) return [];
+  return data;
 }

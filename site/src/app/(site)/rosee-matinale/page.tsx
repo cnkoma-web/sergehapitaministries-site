@@ -51,7 +51,7 @@ export default async function RoseeMatinalePage() {
 
   incrementViewCount(today.id).catch(() => {});
   const pageUrl = `${SITE_URL}/rosee-matinale`;
-  const paragraphs = (today.body || "").split("\n\n").filter(Boolean);
+  const paragraphs = (today.body || "").match(/<[a-z][^>]*>[\s\S]*?<\/[a-z]+>/gi) ?? (today.body ? [today.body] : []);
 
   return (
     <>
@@ -81,10 +81,8 @@ export default async function RoseeMatinalePage() {
 
       <section className="section">
         <div className="wrap" style={{ maxWidth: 640 }}>
-          {paragraphs.map((p, i) => (
-            <p key={i} style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }}>
-              {p}
-            </p>
+          {paragraphs.map((html, i) => (
+            <div key={i} style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: html }} />
           ))}
 
           <div className="rm-nav-days">

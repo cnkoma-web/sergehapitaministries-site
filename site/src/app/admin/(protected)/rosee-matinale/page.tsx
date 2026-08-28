@@ -1,81 +1,84 @@
-import { createClient } from "@/lib/supabase/server";
-import { publishRosee, updateRosee, deleteRosee } from "./actions";
+import Link from "next/link";
+import { getArticlesAdmin } from "@/lib/content/articles";
+import { publishRosee } from "../publications/actions";
+import Pagination from "@/components/admin/Pagination";
 
-export default async function AdminRoseePage() {
-  const supabase = await createClient();
-  const { data: entries, error } = await supabase
-    .from("articles")
-    .select("id, article_date, verse_text, body, status, reading_time_minutes")
-    .eq("type", "rm")
-    .order("article_date", { ascending: false });
+const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
+const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "actif" };
 
+export default async function AdminRoseePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; perPage?: string }>;
+}) {
+  const { page: pageParam, perPage: perPageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const perPage = Number(perPageParam) || 20;
+
+  const { articles: entries, total } = await getArticlesAdmin(["rm"], page, perPage);
   const today = new Date().toISOString().slice(0, 10);
-  const alreadyPublishedToday = entries?.some((e) => e.article_date === today);
+  const alreadyPublishedToday = entries.some((e) => e.article_date === today);
 
   return (
     <>
       <h1>Rosée Matinale</h1>
       <p className="admin-lede">
         Publier une nouvelle entrée bascule automatiquement l&apos;ancienne en archive — pas de
-        bouton séparé, c&apos;est juste la plus récente entrée par date (cahier §3.2).
+        bouton séparé, c&apos;est juste la plus récente entrée par date (cahier §3.2). L&apos;archive
+        complète se modifie comme un article classique (éditeur détaillé).
       </p>
 
-      {error && <div className="admin-error">Impossible de charger les entrées : {error.message}</div>}
-
-      <div className="admin-card">
-        <h3 style={{ marginBottom: 14, fontSize: 16 }}>
-          {alreadyPublishedToday ? "Une entrée existe déjà pour aujourd'hui" : "Publier l'entrée du jour"}
-        </h3>
+      <div className="editor-card">
+        <h3>{alreadyPublishedToday ? "Une entrée existe déjà pour aujourd'hui" : "Publier l'entrée du jour"}</h3>
         <form action={publishRosee}>
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ maxWidth: 180 }}>
-              <label>Date</label>
-              <input name="article_date" type="date" defaultValue={today} required />
-            </div>
+          <div className="editor-field" style={{ maxWidth: 220 }}>
+            <label>Date</label>
+            <input name="article_date" type="date" defaultValue={today} required />
           </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
+          <div className="editor-field">
             <label>Citation / pensée du jour</label>
             <textarea name="verse_text" rows={3} required />
           </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
+          <div className="editor-field">
             <label>Corps (développement, séparé en paragraphes par une ligne vide)</label>
             <textarea name="body" rows={6} />
           </div>
-          <button type="submit" className="admin-btn-primary">Publier</button>
+          <button type="submit" className="btn-primary">
+            Publier
+          </button>
         </form>
       </div>
 
       <h3 style={{ margin: "28px 0 12px" }}>Entrées existantes</h3>
-      {entries?.map((e) => (
-        <form action={updateRosee} className="admin-card" style={{ marginBottom: 16 }} key={e.id}>
-          <input type="hidden" name="id" value={e.id} />
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ maxWidth: 160 }}>
-              <label>Date</label>
-              <input value={e.article_date} disabled />
+      <div className="items-table">
+        <div className="item-row head" style={{ gridTemplateColumns: "1fr 130px 110px 90px" }}>
+          <div>Date</div>
+          <div>Aperçu</div>
+          <div>Statut</div>
+          <div>Actions</div>
+        </div>
+        {entries.length === 0 && (
+          <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+            <div className="admin-row-empty">Aucune entrée pour le moment.</div>
+          </div>
+        )}
+        {entries.map((e) => (
+          <div className="item-row" key={e.id} style={{ gridTemplateColumns: "1fr 130px 110px 90px" }}>
+            <div className="item-title">
+              <Link href={`/admin/publications/${e.id}`}>{new Date(e.article_date).toLocaleDateString("fr-FR")}</Link>
+              <span>{e.reading_time_minutes ? `≈ ${e.reading_time_minutes} min de lecture` : ""}</span>
             </div>
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label>Statut</label>
-              <select name="status" defaultValue={e.status}>
-                <option value="published">Publié</option>
-                <option value="draft">Brouillon</option>
-              </select>
+            <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{(e.verse_text ?? "").slice(0, 60)}</div>
+            <div>
+              <span className={`status-badge ${STATUS_CLASS[e.status]}`}>{STATUS_LABEL[e.status]}</span>
+            </div>
+            <div className="item-actions">
+              <Link href={`/admin/publications/${e.id}`}>Éditer</Link>
             </div>
           </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label>Citation / pensée</label>
-            <textarea name="verse_text" defaultValue={e.verse_text ?? ""} rows={2} />
-          </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label>Corps {e.reading_time_minutes ? `(≈ ${e.reading_time_minutes} min de lecture)` : ""}</label>
-            <textarea name="body" defaultValue={e.body ?? ""} rows={5} />
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <button type="submit" className="admin-btn-sm">Enregistrer</button>
-            <button type="submit" formAction={deleteRosee} className="admin-btn-sm danger">Supprimer</button>
-          </div>
-        </form>
-      ))}
+        ))}
+      </div>
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/rosee-matinale" />}
     </>
   );
 }

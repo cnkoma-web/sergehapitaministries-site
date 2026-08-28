@@ -88,6 +88,16 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
         </div>
       </section>
 
+      {goodie.description && (
+        <section className="section product-desc">
+          <div className="wrap">
+            <h2>À propos de ce produit</h2>
+            {/* Seul un admin (is_admin() en base) peut écrire ce HTML — voir RichTextEditor. */}
+            <div dangerouslySetInnerHTML={{ __html: goodie.description }} />
+          </div>
+        </section>
+      )}
+
       <ReviewSection goodieId={goodie.id} />
       <Newsletter />
       <Footer variant="light" />

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 function slugify(text: string): string {
@@ -19,23 +20,28 @@ function parseList(value: FormDataEntryValue | null): string[] {
     .filter(Boolean);
 }
 
-export async function addGoodie(formData: FormData) {
+export async function createGoodie(formData: FormData) {
   const supabase = await createClient();
   const title = String(formData.get("title") ?? "").trim();
   if (!title) return;
 
-  const priceRaw = String(formData.get("price") ?? "").replace(",", ".").trim();
+  const { count } = await supabase.from("goodies").select("id", { count: "exact", head: true });
 
-  await supabase.from("goodies").insert({
-    title,
-    slug: slugify(title),
-    price_cents: priceRaw ? Math.round(parseFloat(priceRaw) * 100) : null,
-    status: String(formData.get("status") ?? "coming_soon"),
-    position: Number(formData.get("position") ?? 0),
-  });
+  const { data, error } = await supabase
+    .from("goodies")
+    .insert({
+      title,
+      slug: slugify(title) || crypto.randomUUID(),
+      status: "coming_soon",
+      active: true,
+      position: count ?? 0,
+    })
+    .select("id")
+    .single();
 
+  if (error || !data) return;
   revalidatePath("/admin/boutique");
-  revalidatePath("/boutique");
+  redirect(`/admin/boutique/${data.id}`);
 }
 
 export async function updateGoodie(formData: FormData) {
@@ -59,14 +65,17 @@ export async function updateGoodie(formData: FormData) {
       care: String(formData.get("care") ?? "").trim() || null,
       fabrication: String(formData.get("fabrication") ?? "").trim() || null,
       shipping_delay: String(formData.get("shipping_delay") ?? "").trim() || null,
+      description: String(formData.get("description") ?? "").trim() || null,
       status: String(formData.get("status") ?? "coming_soon"),
       position: Number(formData.get("position") ?? 0),
       active: formData.get("active") === "on",
     })
     .eq("id", id);
 
+  revalidatePath(`/admin/boutique/${id}`);
   revalidatePath("/admin/boutique");
   revalidatePath("/boutique");
+  redirect("/admin/boutique");
 }
 
 export async function deleteGoodie(formData: FormData) {
@@ -76,4 +85,5 @@ export async function deleteGoodie(formData: FormData) {
   await supabase.from("goodies").delete().eq("id", id);
   revalidatePath("/admin/boutique");
   revalidatePath("/boutique");
+  redirect("/admin/boutique");
 }

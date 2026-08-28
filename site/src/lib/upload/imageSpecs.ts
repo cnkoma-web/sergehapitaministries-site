@@ -2,7 +2,7 @@
 // Résolutions minimales proposées par Claude Code — présentées à Serge, pas
 // arbitrairement définitives : à ajuster si besoin, un seul endroit à changer.
 
-export type ImageBucket = "book-covers" | "product-photos";
+export type ImageBucket = "book-covers" | "product-photos" | "article-covers";
 
 export type ImageSpec = {
   bucket: ImageBucket;
@@ -31,6 +31,15 @@ export const IMAGE_SPECS: Record<ImageBucket, ImageSpec> = {
     ratioLabel: "1:1 (carré)",
     minWidth: 1000,
     minHeight: 1000,
+    maxFileSizeMb: 5,
+  },
+  "article-covers": {
+    bucket: "article-covers",
+    label: "Couverture d'article",
+    ratio: 16 / 9,
+    ratioLabel: "16:9 (paysage)",
+    minWidth: 1200,
+    minHeight: 675,
     maxFileSizeMb: 5,
   },
 };

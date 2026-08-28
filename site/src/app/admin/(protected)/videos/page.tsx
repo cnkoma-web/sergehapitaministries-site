@@ -1,102 +1,63 @@
-import { createClient } from "@/lib/supabase/server";
-import { addVideo, updateVideo, deleteVideo } from "./actions";
+import Link from "next/link";
+import { getVideosAdmin, VIDEO_CATEGORY_LABEL } from "@/lib/content/videos";
+import Pagination from "@/components/admin/Pagination";
 
-const CATEGORY_LABEL: Record<string, string> = {
-  predications: "Prédications",
-  enseignements: "Enseignements",
-  temoignages: "Témoignages",
-};
+export default async function AdminVideosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; perPage?: string }>;
+}) {
+  const { page: pageParam, perPage: perPageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const perPage = Number(perPageParam) || 20;
 
-export default async function AdminVideosPage() {
-  const supabase = await createClient();
-  const { data: videos, error } = await supabase
-    .from("videos")
-    .select("id, title, description, category, youtube_url, position, active")
-    .order("position", { ascending: true });
+  const { videos, total } = await getVideosAdmin(page, perPage);
 
   return (
     <>
-      <h1>Vidéos</h1>
+      <div className="admin-header">
+        <div>
+          <h2>Vidéos</h2>
+        </div>
+        <Link href="/admin/videos/nouveau" className="btn-add">
+          + Ajouter une vidéo
+        </Link>
+      </div>
       <p className="admin-lede">
         Chaque catégorie affiche au moins 2 emplacements sur /videos — les vidéos manquantes
         restent honnêtement marquées « à venir » tant qu&apos;elles ne sont pas ajoutées ici.
       </p>
 
-      {error && <div className="admin-error">Impossible de charger les vidéos : {error.message}</div>}
-
-      {videos?.map((v) => (
-        <form action={updateVideo} className="admin-card" style={{ marginBottom: 16 }} key={v.id}>
-          <input type="hidden" name="id" value={v.id} />
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ flex: 2 }}>
-              <label>Titre</label>
-              <input name="title" defaultValue={v.title} required />
-            </div>
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label>Catégorie</label>
-              <select name="category" defaultValue={v.category}>
-                {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="admin-field" style={{ maxWidth: 70 }}>
-              <label>Pos.</label>
-              <input name="position" type="number" defaultValue={v.position} />
-            </div>
+      <div className="items-table">
+        <div className="item-row head" style={{ gridTemplateColumns: "1fr 150px 110px 90px" }}>
+          <div>Titre</div>
+          <div>Catégorie</div>
+          <div>Statut</div>
+          <div>Actions</div>
+        </div>
+        {videos.length === 0 && (
+          <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+            <div className="admin-row-empty">Aucune vidéo pour le moment.</div>
           </div>
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label>Lien YouTube</label>
-              <input name="youtube_url" defaultValue={v.youtube_url ?? ""} placeholder="https://www.youtube.com/watch?v=..." />
+        )}
+        {videos.map((v) => (
+          <div className="item-row" key={v.id} style={{ gridTemplateColumns: "1fr 150px 110px 90px" }}>
+            <div className="item-title">
+              <Link href={`/admin/videos/${v.id}`}>{v.title}</Link>
+              <span>{v.youtube_url || "Lien YouTube à renseigner"}</span>
             </div>
-            <div className="admin-field" style={{ flex: "0 0 auto" }}>
-              <label>Statut</label>
-              <label className="admin-field-checkbox">
-                <input type="checkbox" name="active" defaultChecked={v.active} />
-                <span className={`admin-badge ${v.active ? "active" : "inactive"}`}>{v.active ? "Actif" : "Inactif"}</span>
-              </label>
+            <div style={{ fontSize: 13 }}>{VIDEO_CATEGORY_LABEL[v.category]}</div>
+            <div>
+              <span className={`status-badge ${v.active ? "actif" : "masque"}`}>{v.active ? "Actif" : "Masqué"}</span>
+            </div>
+            <div className="item-actions">
+              <Link href={`/admin/videos/${v.id}`}>Éditer</Link>
             </div>
           </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label>Description</label>
-            <input name="description" defaultValue={v.description ?? ""} />
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <button type="submit" className="admin-btn-sm">Enregistrer</button>
-            <button type="submit" formAction={deleteVideo} className="admin-btn-sm danger">Supprimer</button>
-          </div>
-        </form>
-      ))}
-
-      <div className="admin-card">
-        <h3 style={{ marginBottom: 14, fontSize: 16 }}>Ajouter une vidéo</h3>
-        <form action={addVideo}>
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ flex: 2 }}>
-              <label htmlFor="new-title">Titre</label>
-              <input id="new-title" name="title" required />
-            </div>
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label htmlFor="new-category">Catégorie</label>
-              <select id="new-category" name="category" defaultValue="predications">
-                {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label htmlFor="new-youtube">Lien YouTube</label>
-            <input id="new-youtube" name="youtube_url" placeholder="https://www.youtube.com/watch?v=..." />
-          </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label htmlFor="new-desc">Description</label>
-            <input id="new-desc" name="description" />
-          </div>
-          <button type="submit" className="admin-btn-primary">Ajouter</button>
-        </form>
+        ))}
       </div>
+
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/videos" />}
     </>
   );
 }

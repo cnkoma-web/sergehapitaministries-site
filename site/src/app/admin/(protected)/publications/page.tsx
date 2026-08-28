@@ -1,143 +1,113 @@
-import { createClient } from "@/lib/supabase/server";
-import { addArticle, updateArticle, deleteArticle } from "./actions";
+import Link from "next/link";
+import { getArticlesAdmin, ARTICLE_TYPE_LABEL, type ArticleType } from "@/lib/content/articles";
+import { createArticle } from "./actions";
+import Pagination from "@/components/admin/Pagination";
 
-type ArticleRow = {
-  id: string;
-  slug: string;
-  title: string;
-  article_date: string;
-  excerpt: string | null;
-  verse_reference: string | null;
-  verse_text: string | null;
-  body: string | null;
-  further_verses: { reference: string; text: string }[];
-  toc_keywords: string[];
-  access: string;
-  status: string;
-  reading_time_minutes: number | null;
-};
+const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
+const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "actif" };
+const FILTERS: { value: ArticleType | "all"; label: string }[] = [
+  { value: "all", label: "Toutes" },
+  { value: "qdlb", label: "Que Dit la Bible ?" },
+  { value: "vs", label: "La Vie Supérieure" },
+];
 
-function ArticleForm({ a, type }: { a?: ArticleRow; type: "qdlb" | "vs" }) {
-  const action = a ? updateArticle : addArticle;
-  return (
-    <form action={action} className="admin-card" style={{ marginBottom: 16 }}>
-      {a && <input type="hidden" name="id" value={a.id} />}
-      <input type="hidden" name="type" value={type} />
+export default async function AdminPublicationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; perPage?: string; type?: string }>;
+}) {
+  const { page: pageParam, perPage: perPageParam, type: typeParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const perPage = Number(perPageParam) || 20;
+  const types: ArticleType[] = typeParam === "qdlb" || typeParam === "vs" ? [typeParam] : ["qdlb", "vs"];
 
-      <div className="admin-form-row">
-        <div className="admin-field" style={{ flex: 2 }}>
-          <label>Titre</label>
-          <input name="title" defaultValue={a?.title} required />
-        </div>
-        <div className="admin-field" style={{ maxWidth: 160 }}>
-          <label>Date</label>
-          <input name="article_date" type="date" defaultValue={a?.article_date} />
-        </div>
-        <div className="admin-field" style={{ flex: 1 }}>
-          <label>Statut</label>
-          <select name="status" defaultValue={a?.status ?? "draft"}>
-            <option value="draft">Brouillon</option>
-            <option value="published">Publié</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="admin-field" style={{ marginBottom: 14 }}>
-        <label>Chapeau (résumé court, jamais le verset — cahier §3.4)</label>
-        <input name="excerpt" defaultValue={a?.excerpt ?? ""} />
-      </div>
-
-      {type === "qdlb" && (
-        <>
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label>Référence du verset</label>
-              <input name="verse_reference" defaultValue={a?.verse_reference ?? ""} placeholder="ex. 2 Corinthiens 4:18" />
-            </div>
-          </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label>Texte du verset</label>
-            <textarea name="verse_text" defaultValue={a?.verse_text ?? ""} rows={2} />
-          </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label>Versets complémentaires — un par ligne, format « Référence | Texte »</label>
-            <textarea
-              name="further_verses"
-              rows={3}
-              defaultValue={(a?.further_verses ?? []).map((v) => `${v.reference} | ${v.text}`).join("\n")}
-              placeholder="Éphésiens 1:18-19 | Je prie qu'il illumine..."
-            />
-          </div>
-        </>
-      )}
-
-      {type === "vs" && (
-        <>
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label>Accès</label>
-              <select name="access" defaultValue={a?.access ?? "free"}>
-                <option value="free">Gratuit (compte requis)</option>
-                <option value="paid">Payant (à activer plus tard)</option>
-              </select>
-            </div>
-          </div>
-          <div className="admin-field" style={{ marginBottom: 14 }}>
-            <label>Aperçu du sommaire verrouillé — un mot-clé/titre de section par ligne</label>
-            <textarea name="toc_keywords" rows={4} defaultValue={(a?.toc_keywords ?? []).join("\n")} />
-          </div>
-        </>
-      )}
-
-      <div className="admin-field" style={{ marginBottom: 14 }}>
-        <label>
-          Corps de l&apos;article — un paragraphe par ligne vide{" "}
-          {a?.reading_time_minutes ? `(≈ ${a.reading_time_minutes} min de lecture)` : ""}
-        </label>
-        <textarea name="body" defaultValue={a?.body ?? ""} rows={8} />
-      </div>
-
-      <div style={{ display: "flex", gap: 8 }}>
-        <button type="submit" className="admin-btn-sm">{a ? "Enregistrer" : "Créer"}</button>
-        {a && (
-          <button type="submit" formAction={deleteArticle} className="admin-btn-sm danger">
-            Supprimer
-          </button>
-        )}
-      </div>
-    </form>
-  );
-}
-
-export default async function AdminPublicationsPage() {
-  const supabase = await createClient();
-  const { data: articles, error } = await supabase
-    .from("articles")
-    .select("id, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, status, reading_time_minutes, type")
-    .in("type", ["qdlb", "vs"])
-    .order("article_date", { ascending: false });
-
-  const qdlb = articles?.filter((a) => a.type === "qdlb") ?? [];
-  const vs = articles?.filter((a) => a.type === "vs") ?? [];
+  const { articles, total } = await getArticlesAdmin(types, page, perPage);
 
   return (
     <>
-      <h1>Publications</h1>
-      <p className="admin-lede">Articles « Que Dit la Bible ? » et « La Vie Supérieure ».</p>
+      <div className="admin-header">
+        <div>
+          <h2>Publications</h2>
+        </div>
+        <form action={createArticle} style={{ display: "flex", gap: 8 }}>
+          <select name="type" defaultValue="qdlb" style={{ padding: "10px 12px", borderRadius: 8, border: "1.5px solid var(--line)" }}>
+            <option value="qdlb">Que Dit la Bible ?</option>
+            <option value="vs">La Vie Supérieure</option>
+          </select>
+          <button type="submit" className="btn-add">
+            + Ajouter un article
+          </button>
+        </form>
+      </div>
+      <p className="admin-lede">
+        Articles « Que Dit la Bible ? » et « La Vie Supérieure ». Rosée Matinale se gère depuis{" "}
+        <Link href="/admin/rosee-matinale">sa propre section</Link>.
+      </p>
 
-      {error && <div className="admin-error">Impossible de charger les articles : {error.message}</div>}
+      <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+        {FILTERS.map((f) => (
+          <Link
+            key={f.value}
+            href={`/admin/publications${f.value === "all" ? "" : `?type=${f.value}`}`}
+            className="admin-btn-sm"
+            style={
+              (f.value === "all" && !typeParam) || typeParam === f.value
+                ? { borderColor: "var(--purple)", color: "var(--purple)" }
+                : undefined
+            }
+          >
+            {f.label}
+          </Link>
+        ))}
+      </div>
 
-      <h3 style={{ marginBottom: 12 }}>Que Dit la Bible ?</h3>
-      {qdlb.map((a) => (
-        <ArticleForm key={a.id} a={a} type="qdlb" />
-      ))}
-      <ArticleForm type="qdlb" />
+      <div className="items-table">
+        <div className="item-row head" style={{ gridTemplateColumns: "56px 1fr 130px 110px 90px" }}>
+          <div></div>
+          <div>Titre</div>
+          <div>Catégorie</div>
+          <div>Statut</div>
+          <div>Actions</div>
+        </div>
 
-      <h3 style={{ margin: "32px 0 12px" }}>La Vie Supérieure</h3>
-      {vs.map((a) => (
-        <ArticleForm key={a.id} a={a} type="vs" />
-      ))}
-      <ArticleForm type="vs" />
+        {articles.length === 0 && (
+          <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+            <div className="admin-row-empty">Aucun article pour le moment.</div>
+          </div>
+        )}
+
+        {articles.map((a) => (
+          <div className="item-row" key={a.id} style={{ gridTemplateColumns: "56px 1fr 130px 110px 90px" }}>
+            <div className="item-thumb" style={a.cover_url ? { backgroundImage: `url('${a.cover_url}')` } : undefined} />
+            <div className="item-title">
+              <Link href={`/admin/publications/${a.id}`}>{a.title}</Link>
+              <span>{new Date(a.article_date).toLocaleDateString("fr-FR")}</span>
+            </div>
+            <div style={{ fontSize: 13 }}>{ARTICLE_TYPE_LABEL[a.type]}</div>
+            <div>
+              <span className={`status-badge ${STATUS_CLASS[a.status]}`}>{STATUS_LABEL[a.status]}</span>
+            </div>
+            <div className="item-actions">
+              <Link href={`/admin/publications/${a.id}`}>Éditer</Link>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {total > 0 && (
+        <Pagination
+          page={page}
+          perPage={perPage}
+          total={total}
+          basePath="/admin/publications"
+          extraParams={typeParam ? { type: typeParam } : undefined}
+        />
+      )}
+
+      <div className="admin-note">
+        Cliquer sur un article ouvre l&apos;éditeur complet (couverture, extrait, mots-clés,
+        articles similaires, texte enrichi).
+      </div>
     </>
   );
 }
