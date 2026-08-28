@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBookBySlug, getAdjacentBooks } from "@/lib/content/books";
+import { getBookBySlug, getAdjacentBooks, getBookImages } from "@/lib/content/books";
 import { getReviewSummary } from "@/lib/content/reviews";
 import { formatPrice } from "@/lib/format";
 import Stars from "@/components/reviews/Stars";
@@ -31,10 +31,12 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
   const book = await getBookBySlug(slug);
   if (!book) notFound();
 
-  const [{ prev, next }, summary] = await Promise.all([
+  const [{ prev, next }, summary, images] = await Promise.all([
     getAdjacentBooks(book.position),
     getReviewSummary({ bookId: book.id }),
+    getBookImages(book.id),
   ]);
+  const galleryImages = images.length > 0 ? images : book.cover_url ? [{ id: "cover", url: book.cover_url, position: 0 }] : [];
 
   return (
     <>
@@ -55,18 +57,34 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
           </div>
 
           <div className="product-grid">
-            <div className={book.cover_url ? "product-cover" : "product-cover placeholder"}>
-              {book.cover_url ? (
-                <Image src={book.cover_url} alt={book.title} width={340} height={510} priority />
-              ) : (
-                <div>
-                  <div className="ph-collection">{book.publisher}</div>
-                  <div className="ph-title">{book.title}</div>
+            <div>
+              <div className={galleryImages.length > 0 ? "product-cover" : "product-cover placeholder"}>
+                {galleryImages.length > 0 ? (
+                  <Image src={galleryImages[0].url} alt={book.title} width={340} height={510} priority />
+                ) : (
+                  <div>
+                    <div className="ph-collection">{book.publisher}</div>
+                    <div className="ph-title">{book.title}</div>
+                  </div>
+                )}
+              </div>
+              {galleryImages.length > 1 && (
+                <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                  {galleryImages.map((img, i) => (
+                    <div key={img.id} style={{ width: 56, aspectRatio: "2/3", borderRadius: 6, overflow: "hidden", border: "1px solid var(--line)" }}>
+                      <Image src={img.url} alt={`${book.title} — vue ${i + 1}`} width={56} height={84} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
 
             <div>
+              {book.status === "precommande" && (
+                <div className="status-badge precommande" style={{ marginBottom: 8 }}>
+                  Précommande
+                </div>
+              )}
               {book.badge && <div className="product-badge">{book.badge}</div>}
               <h1 className="product-title">{book.title}</h1>
               <div className="product-author">{book.author} — {book.publisher}</div>
@@ -104,7 +122,13 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
       <section className="section product-desc">
         <div className="wrap">
           <h2>À propos de ce livre</h2>
-          <p>{book.description || "Description complète à venir."}</p>
+          {book.description ? (
+            // L'admin (seul auteur possible de ce HTML, is_admin() en base) est la
+            // seule source de ce contenu — voir RichTextEditor pour la frontière de confiance.
+            <div dangerouslySetInnerHTML={{ __html: book.description }} />
+          ) : (
+            <p>Description complète à venir.</p>
+          )}
         </div>
       </section>
 

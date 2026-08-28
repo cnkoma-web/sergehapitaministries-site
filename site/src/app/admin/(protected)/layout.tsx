@@ -1,8 +1,11 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getCurrentAdmin } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
+import AdminSidebarNav from "@/components/admin/AdminSidebarNav";
 
+// Sidebar verticale + zone de contenu (cahier Partie 5 §6.1) — remplace l'ancienne
+// barre horizontale. Toutes les sections de l'admin s'affichent dans .admin-main,
+// qu'elles aient déjà été reconstruites au nouveau modèle liste/détail ou non.
 export default async function AdminProtectedLayout({ children }: { children: React.ReactNode }) {
   const admin = await getCurrentAdmin();
   if (!admin) redirect("/admin/login");
@@ -16,24 +19,16 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
 
   return (
     <div className="admin-shell">
-      <div className="admin-topbar">
-        <Link href="/admin">Administration — Serge Hapita Ministries</Link>
-        <nav>
-          <Link href="/admin/livres">Livres</Link>
-          <Link href="/admin/boutique">Boutique</Link>
-          <Link href="/admin/publications">Publications</Link>
-          <Link href="/admin/rosee-matinale">Rosée Matinale</Link>
-          <Link href="/admin/videos">Vidéos</Link>
-          <Link href="/admin/avis">Avis</Link>
-          <Link href="/admin/ticker">Ticker</Link>
-          <Link href="/admin/stats">Statistiques</Link>
-          <Link href="/admin/textes">Textes</Link>
+      <div className="admin-layout">
+        <nav className="admin-sidebar">
+          <h1>Administration</h1>
+          <AdminSidebarNav />
           <form action={signOut}>
             <button type="submit">Se déconnecter ({admin.user.email})</button>
           </form>
         </nav>
+        <main className="admin-main">{children}</main>
       </div>
-      <main className="admin-main">{children}</main>
     </div>
   );
 }

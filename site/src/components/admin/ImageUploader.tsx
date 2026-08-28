@@ -2,7 +2,8 @@
 
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { IMAGE_SPECS, checkImageDimensions, readImageDimensions, type ImageBucket } from "@/lib/upload/imageSpecs";
+import { IMAGE_SPECS, readImageDimensions, type ImageBucket } from "@/lib/upload/imageSpecs";
+import { cropImageToRatio } from "@/lib/upload/cropImage";
 
 type Props = {
   bucket: ImageBucket;
@@ -13,9 +14,10 @@ type Props = {
 };
 
 // Composant d'upload réutilisable pour toute image devant respecter un ratio fixe
-// (couvertures de livres 2:3, photos produits 1:1 — cahier §1.4). Le ratio est
-// vérifié côté client avant l'envoi : une image non conforme est rejetée avec un
-// message clair, jamais déformée ni acceptée silencieusement.
+// (couvertures de livres 2:3, photos produits 1:1 — cahier §1.4). Recadrage
+// automatique et silencieux au centre si l'image envoyée n'est pas déjà au bon
+// ratio (cahier Partie 5 §6.4) — jamais de blocage ni d'avertissement de ratio :
+// Serge envoie l'image telle qu'il l'a, le système s'adapte.
 export default function ImageUploader({ bucket, currentUrl, onUploaded }: Props) {
   const spec = IMAGE_SPECS[bucket];
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,39 +38,29 @@ export default function ImageUploader({ bucket, currentUrl, onUploaded }: Props)
       return;
     }
 
-    let dimensions: { width: number; height: number };
-    try {
-      dimensions = await readImageDimensions(file);
-    } catch {
-      setError("Ce fichier n'est pas une image valide.");
-      e.target.value = "";
-      return;
-    }
-
-    const result = checkImageDimensions(spec, dimensions.width, dimensions.height);
-    if (!result.ok) {
-      setError(result.reason);
-      e.target.value = "";
-      return;
-    }
-    if (result.warning) setWarning(result.warning);
-
-    setPreview(URL.createObjectURL(file));
     setUploading(true);
-
     try {
+      const dimensions = await readImageDimensions(file);
+      if (dimensions.width < spec.minWidth || dimensions.height < spec.minHeight) {
+        setWarning(
+          `Cette image (${dimensions.width}×${dimensions.height}) est plus petite que la résolution recommandée (${spec.minWidth}×${spec.minHeight}) — elle sera acceptée, mais risque de paraître floue en grand écran.`
+        );
+      }
+
+      const cropped = await cropImageToRatio(file, spec.ratio);
+      setPreview(URL.createObjectURL(cropped));
+
       const supabase = createClient();
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = file.type === "image/png" ? "png" : "jpg";
       const path = `${crypto.randomUUID()}.${ext}`;
 
-      const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, {
+      const { error: uploadError } = await supabase.storage.from(bucket).upload(path, cropped, {
         cacheControl: "31536000",
         upsert: false,
       });
 
       if (uploadError) {
         setError(`Échec de l'envoi : ${uploadError.message}`);
-        setUploading(false);
         return;
       }
 
@@ -77,6 +69,9 @@ export default function ImageUploader({ bucket, currentUrl, onUploaded }: Props)
       } = supabase.storage.from(bucket).getPublicUrl(path);
 
       onUploaded(publicUrl, path);
+    } catch {
+      setError("Ce fichier n'est pas une image valide.");
+      e.target.value = "";
     } finally {
       setUploading(false);
     }
@@ -110,8 +105,7 @@ export default function ImageUploader({ bucket, currentUrl, onUploaded }: Props)
             disabled={uploading}
           />
           <div style={{ fontSize: 12, color: "var(--ink-soft)", marginTop: 6 }}>
-            Format attendu : {spec.ratioLabel}, {spec.minWidth}×{spec.minHeight}px minimum
-            conseillé, {spec.maxFileSizeMb} Mo max.
+            Recadrage automatique au format {spec.ratioLabel} · {spec.maxFileSizeMb} Mo max.
           </div>
           {uploading && <div style={{ fontSize: 13, color: "var(--ink-soft)", marginTop: 6 }}>Envoi en cours…</div>}
           {warning && <div className="admin-error" style={{ background: "#FFF6E0", color: "#8A6D1D", marginTop: 8 }}>{warning}</div>}

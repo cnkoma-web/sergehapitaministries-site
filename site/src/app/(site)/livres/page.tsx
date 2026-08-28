@@ -101,7 +101,11 @@ export default async function LivresPage() {
               {books.map((book) => (
                 <div className="catalogue-book" key={book.id}>
                   <div className="catalogue-thumb">
-                    {book.badge && <span className="catalogue-badge">{book.badge}</span>}
+                    {book.status === "precommande" ? (
+                      <span className="catalogue-badge">Précommande</span>
+                    ) : (
+                      book.badge && <span className="catalogue-badge">{book.badge}</span>
+                    )}
                     {book.cover_url ? (
                       <Image src={book.cover_url} alt={book.title} width={190} height={285} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     ) : (

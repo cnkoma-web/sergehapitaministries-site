@@ -334,6 +334,29 @@
   .qdlb-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column;height:100%;}
   .qdlb-card .verse{font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;}
   .qdlb-card .date{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
+
+  .pub-row{display:grid;grid-template-columns:100px 1fr auto;gap:20px;align-items:start;padding:24px 0;border-top:1px solid var(--line);}
+  .pub-row:first-child{padding-top:0;}
+  .pub-thumb{width:100px;aspect-ratio:1/1;border-radius:10px;flex-shrink:0;}
+  .pub-row h3{font-size:18px;margin-bottom:6px;}
+  .pub-row .card-date{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;}
+  .pub-row p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;max-width:560px;}
+  .pub-row a{font-size:13.5px;font-weight:700;color:var(--purple);white-space:nowrap;}
+
+  .cat-flag{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;border-radius:100px;margin-bottom:10px;width:fit-content;}
+  .cat-flag.qdlb{background:var(--lavender);color:var(--purple);}
+  .cat-flag.vs{background:var(--ink);color:#fff;}
+  .cat-flag.rm{background:#E0F2F1;color:var(--teal);}
+
+  .pubs-pagination{display:flex; justify-content:center; gap:8px; margin-top:40px;}
+  .pubs-pagination button{width:36px; height:36px; border:1px solid var(--line); background:#fff; border-radius:8px; cursor:pointer; font-size:14px; color:var(--ink-soft);}
+  .pubs-pagination button.active{background:var(--purple); color:#fff; border-color:var(--purple);}
+
+  @media (max-width:640px){
+    .pub-row{grid-template-columns:70px 1fr;}
+    .pub-row a{grid-column:1/-1;margin-top:6px;}
+    .pub-thumb{width:70px;}
+  }
   .qdlb-card h3{font-size:17px;line-height:1.35;margin-bottom:10px;}
   .qdlb-card p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;margin-bottom:18px;flex:1;}
   .qdlb-card a{font-size:13.5px;font-weight:700;color:var(--purple);}
@@ -432,71 +455,69 @@
   </div>
 </section>
 
-<nav class="pubs-jump">
-  <div class="wrap">
-    <a href="#que-dit-la-bible">Que Dit la Bible ?</a>
-    <a href="#vie-superieure">La Vie Supérieure</a>
-    <a href="rosee-matinale.html">Rosée Matinale</a>
-  </div>
-</nav>
+<section class="pub-category" id="toutes-publications">
+  <div class="wrap" style="max-width:760px;">
 
-<section class="pub-category" id="que-dit-la-bible">
-  <div class="wrap">
-    <div class="pub-cat-head">
+    <div class="pub-row">
+      <div class="pub-thumb" style="background:linear-gradient(135deg,#3D6E86,#2E2FE0);"></div>
       <div>
-        <h2><span class="cat-badge">QB</span> Que Dit la Bible ?</h2>
-        <p class="desc">Une exhortation structurée : verset clé, enseignement, confession et application concrète.</p>
+        <span class="cat-flag rm">Rosée Matinale</span>
+        <h3>Aujourd'hui</h3>
+        <div class="card-date">19/08/2026 · 06h00</div>
+        <p>Beaucoup de difficultés que les gens rencontrent sont liées à leur manière de penser, d'agir et de réagir face aux autres et aux situations.</p>
       </div>
+      <a href="rosee-matinale.html">Lire →</a>
     </div>
 
-    <div class="qdlb-grid">
-      <div class="qdlb-card">
-        <div class="date">24 juillet</div>
+    <div class="pub-row">
+      <div class="pub-thumb" style="background:linear-gradient(135deg,#7B3FE4,#2E2FE0);"></div>
+      <div>
+        <span class="cat-flag qdlb">Que Dit la Bible ?</span>
         <h3>Tout Commence Par Les Images De Votre Esprit</h3>
+        <div class="card-date">24/07/2026 · heure à préciser</div>
         <p>Tout ce que vous voulez accomplir, vous devez d'abord le voir et en prendre possession intérieurement, par la foi.</p>
-        <a href="que-dit-la-bible-images-esprit.html">Lire l'article →</a>
       </div>
-      <div class="qdlb-card">
-        <div class="date">18 juin</div>
-        <h3>Marcher Par L'Esprit Est La Réponse</h3>
-        <p>Il existe une vie supérieure en Christ. Marcher par l'Esprit n'est pas un combat ; c'est l'expression de votre véritable nature.</p>
-        <a href="contact.html">Lire l'article →</a>
-      </div>
-      <div class="qdlb-card">
-        <div class="date">8 octobre</div>
-        <h3>Que Faire Quand Mon Prochain Refuse La Paix ?</h3>
-        <p>Pourquoi suspendre une démarche spirituelle pour une affaire humaine ? La réconciliation face à l'impossible.</p>
-        <a href="contact.html">Lire l'article →</a>
-      </div>
+      <a href="que-dit-la-bible-images-esprit.html">Lire →</a>
     </div>
-  </div>
-</section>
 
-<section class="pub-category" id="vie-superieure">
-  <div class="wrap">
-    <div class="pub-cat-head">
+    <div class="pub-row">
+      <div class="pub-thumb" style="background:linear-gradient(135deg,#1B1730,#4A4560);"></div>
       <div>
-        <h2><span class="cat-badge">VS</span> La Vie Supérieure</h2>
-        <p class="desc">Un enseignement approfondi, réservé aux membres connectés.</p>
+        <span class="cat-flag vs">La Vie Supérieure</span>
+        <h3>Des Entrepreneurs Qui Sont Chrétiens, Ou Des Chrétiens Qui Entreprennent ?</h3>
+        <div class="card-date">JJ/MM/AAAA · heure à préciser</div>
+        <p>Extrait public, puis déverrouillage pour les membres connectés — approfondissement et application pratique.</p>
       </div>
+      <a href="vie-superieure-entrepreneurs-chretiens.html">Lire →</a>
     </div>
 
-    <div class="vs-grid">
-      <div class="vs-card">
-        <h3>Enseignement approfondi — extrait</h3>
-        <p>Un aperçu public s'affiche ici, puis le texte se déverrouille pour les membres connectés.</p>
-        <a href="contact.html">Se connecter →</a>
+    <div class="pub-row">
+      <div class="pub-thumb" style="background:linear-gradient(135deg,#7B3FE4,#2E2FE0);"></div>
+      <div>
+        <span class="cat-flag qdlb">Que Dit la Bible ?</span>
+        <h3>Marcher Par L'Esprit Est La Réponse</h3>
+        <div class="card-date">18/06/2026 · heure à préciser</div>
+        <p>Il existe une vie supérieure en Christ. Marcher par l'Esprit n'est pas un combat ; c'est l'expression de votre véritable nature.</p>
       </div>
-      <div class="vs-card">
-        <h3>Enseignement approfondi — extrait</h3>
-        <p>Un aperçu public s'affiche ici, puis le texte se déverrouille pour les membres connectés.</p>
-        <a href="contact.html">Se connecter →</a>
+      <a href="contact.html">Lire →</a>
+    </div>
+
+    <div class="pub-row">
+      <div class="pub-thumb" style="background:linear-gradient(135deg,#7B3FE4,#2E2FE0);"></div>
+      <div>
+        <span class="cat-flag qdlb">Que Dit la Bible ?</span>
+        <h3>Que Faire Quand Mon Prochain Refuse La Paix ?</h3>
+        <div class="card-date">08/10/2026 · heure à préciser</div>
+        <p>Pourquoi suspendre une démarche spirituelle pour une affaire humaine ? La réconciliation face à l'impossible.</p>
       </div>
-      <div class="vs-card">
-        <h3>Enseignement approfondi — extrait</h3>
-        <p>Un aperçu public s'affiche ici, puis le texte se déverrouille pour les membres connectés.</p>
-        <a href="contact.html">Se connecter →</a>
-      </div>
+      <a href="contact.html">Lire →</a>
+    </div>
+
+
+    <div class="pubs-pagination">
+      <button>‹</button>
+      <button class="active">1</button>
+      <button>›</button>
     </div>
   </div>
 </section>

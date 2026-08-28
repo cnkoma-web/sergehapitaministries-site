@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Modèle admin — Édition d'un article</title>
+<style>
+  :root{
+    --ink:#1B1730; --ink-soft:#4A4560; --purple:#7B3FE4; --line:#E2DCF3; --lavender:#F3F1FB; --paper:#FCFBFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Manrope',Arial,sans-serif; color:var(--ink); background:var(--paper);}
+
+  /* ===== BARRE DU HAUT ===== */
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-bottom:1px solid var(--line); background:#fff;}
+  .topbar .left{display:flex; align-items:center; gap:16px; font-size:14px; color:var(--ink-soft);}
+  .topbar .actions{display:flex; align-items:center; gap:10px;}
+  .btn-ghost{background:none; border:1px solid var(--line); padding:9px 16px; border-radius:8px; font-size:13.5px; cursor:pointer;}
+  .btn-primary{background:var(--purple); color:#fff; border:0; padding:9px 20px; border-radius:8px; font-size:13.5px; font-weight:700; cursor:pointer;}
+
+  /* ===== LAYOUT ÉDITEUR : panneau gauche + zone de texte ===== */
+  .editor-layout{display:grid; grid-template-columns:340px 1fr; min-height:calc(100vh - 60px);}
+
+  .params-panel{background:#fff; border-right:1px solid var(--line); padding:24px; overflow-y:auto;}
+  .params-panel h3{font-size:15px; margin-bottom:18px;}
+  .params-tabs{display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:20px;}
+  .params-tabs span{padding:8px 4px; font-size:13px; font-weight:700; color:var(--ink-soft); cursor:pointer;}
+  .params-tabs span.active{color:var(--purple); border-bottom:2px solid var(--purple);}
+
+  .field{margin-bottom:18px;}
+  .field label{display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:.03em;}
+  .field input, .field select, .field textarea{width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:6px; font-size:13.5px; font-family:inherit;}
+  .field textarea{resize:vertical; min-height:70px;}
+  .cover-upload{aspect-ratio:16/9; background:var(--lavender); border:1px dashed var(--line); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--ink-soft); margin-bottom:12px;}
+
+  .chip-row{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{background:var(--lavender); color:var(--purple); font-size:12px; padding:4px 10px; border-radius:100px; display:flex; align-items:center; gap:6px;}
+  .chip button{background:none; border:0; color:var(--purple); cursor:pointer; font-size:12px;}
+
+  /* ===== ZONE DE TEXTE ===== */
+  .content-area{background:var(--paper); padding:0;}
+  .rich-toolbar{display:flex; align-items:center; gap:4px; padding:10px 24px; border-bottom:1px solid var(--line); background:#fff; flex-wrap:wrap;}
+  .rich-toolbar button{width:32px; height:32px; border:0; background:none; border-radius:6px; cursor:pointer; font-size:14px; font-weight:700; color:var(--ink-soft);}
+  .rich-toolbar button:hover{background:var(--lavender); color:var(--purple);}
+  .rich-toolbar .sep{width:1px; height:20px; background:var(--line); margin:0 6px;}
+
+  .content-body{max-width:720px; margin:0 auto; padding:48px 24px;}
+  .content-body .title-input{width:100%; border:0; background:none; font-family:Georgia,serif; font-size:34px; margin-bottom:24px; outline:none;}
+  .content-body .body-input{width:100%; border:0; background:none; font-size:16px; line-height:1.8; outline:none; min-height:300px;}
+  .content-body .body-input:empty:before{content:"Écrivez votre article ici…"; color:var(--ink-soft);}
+
+  .note{background:var(--lavender); border-left:3px solid var(--purple); padding:14px 18px; border-radius:0 8px 8px 0; font-size:13px; color:var(--ink-soft); margin:24px; max-width:720px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="left">
+    <span>← Retour à la liste</span>
+    <strong style="color:var(--ink);">Que Dit la Bible ?</strong>
+  </div>
+  <div class="actions">
+    <button class="btn-ghost">Enregistrer</button>
+    <button class="btn-ghost">Aperçu</button>
+    <button class="btn-primary">Publier</button>
+  </div>
+</div>
+
+<div class="editor-layout">
+
+  <!-- ===== PANNEAU DE PARAMÈTRES (gauche) ===== -->
+  <aside class="params-panel">
+    <h3>Paramètres de l'article</h3>
+    <div class="params-tabs">
+      <span class="active">Général</span>
+      <span>Catégorie</span>
+      <span>Mots-clés</span>
+    </div>
+
+    <div class="field">
+      <label>Image de couverture</label>
+      <div class="cover-upload">Choisir un fichier</div>
+      <input type="text" placeholder="Texte alternatif (description de l'image)">
+    </div>
+
+    <div class="field">
+      <label>Date de publication</label>
+      <input type="date">
+    </div>
+
+    <div class="field">
+      <label>Catégorie</label>
+      <select>
+        <option>Que Dit la Bible ?</option>
+        <option>La Vie Supérieure</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Chapeau / Extrait</label>
+      <textarea placeholder="Résumé court affiché dans les listes d'articles…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Articles similaires</label>
+      <div class="chip-row">
+        <div class="chip">Marcher par l'Esprit <button>×</button></div>
+        <div class="chip">Le fondement du christianisme <button>×</button></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Mots-clés (SEO)</label>
+      <div class="chip-row">
+        <div class="chip">justice <button>×</button></div>
+        <div class="chip">nature de Dieu <button>×</button></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== ZONE DE TEXTE (droite) ===== -->
+  <div class="content-area">
+    <div class="rich-toolbar">
+      <button><b>B</b></button>
+      <button><i>I</i></button>
+      <button><u>U</u></button>
+      <div class="sep"></div>
+      <button>🔗</button>
+      <button>❝</button>
+      <button>{ }</button>
+      <div class="sep"></div>
+      <button>☰</button>
+      <button>≡</button>
+      <div class="sep"></div>
+      <button>⇤</button>
+      <button>⇥</button>
+    </div>
+
+    <div class="content-body">
+      <div class="title-input">Être juste n'est pas bien se conduire</div>
+      <div class="body-input" contenteditable="true">« Tu es juste, SEIGNEUR, et tes jugements sont droits… » (Psaume 119:137)
+
+Dieu est juste. La justice est Sa nature. Il n'essaie pas de faire ce qui est juste : Il est juste par essence, et ce qu'Il fait est droit.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  Ce modèle s'applique à tous les types d'articles (Que Dit la Bible, La Vie Supérieure, Rosée Matinale) : un panneau de paramètres à gauche (image, date, catégorie, extrait, articles liés, mots-clés) et une vraie zone de texte riche à droite, avec barre d'outils de mise en forme — pas des champs texte bruts empilés dans un formulaire.
+</div>
+
+</body>
+</html>

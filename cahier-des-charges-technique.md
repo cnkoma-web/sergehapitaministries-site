@@ -18,6 +18,13 @@
 
 Serge doit pouvoir modifier n'importe lequel de ces éléments depuis une interface d'administration, sans jamais toucher au code. **Le choix de l'outil/architecture pour y parvenir (panneau d'administration sur-mesure, CMS headless comme Strapi/Sanity, ou autre) revient à Claude Code**, qui est le mieux placé pour évaluer les compromis techniques (coût, complexité, hébergement, maintenance). En revanche, **toute option impliquant un coût récurrent (abonnement à un service tiers) doit être présentée à Serge avec son prix avant d'être mise en œuvre** — jamais choisie unilatéralement.
 
+**Distinction importante à ne jamais confondre : "texte éditable" vs "liste extensible".**
+Rendre un texte modifiable (le libellé d'un bouton, une phrase du footer) ne suffit pas partout. Certains éléments sont des **listes structurelles** que Serge doit pouvoir faire grandir ou rétrécir lui-même — ajouter un élément, en renommer un, en supprimer un, en changer l'ordre — sans que cette liste soit un menu déroulant à options fixées dans le code. Exemples concrets où cette distinction s'applique :
+- **Le menu de navigation principal du site** — Serge doit pouvoir ajouter un nouveau lien, en renommer un, en supprimer un, changer l'ordre, depuis l'admin. Ce n'est pas qu'un texte à traduire, c'est une **structure** à gérer (nombre d'éléments variable, pas fixe).
+- **Les catégories de Publications** (actuellement Que Dit la Bible / La Vie Supérieure) — Serge doit pouvoir en ajouter une troisième un jour, en renommer une existante, sans intervention sur le code. Le sélecteur de catégorie dans le formulaire d'un article doit piocher dans une **liste gérée par Serge** (écran d'administration dédié "Gestion des catégories"), pas dans des options codées en dur dans un `<select>`.
+- **Les catégories de Vidéos** (actuellement Prédications / Enseignements / Témoignages) — même logique : liste gérée par Serge, extensible.
+- Tout autre regroupement du même type découvert en cours de développement doit suivre ce principe par défaut, sans attendre une demande explicite.
+
 ---
 
 ## PARTIE 1 — Fondations globales (s'appliquent à toutes les pages sans exception)
@@ -266,7 +273,56 @@ Principe transversal appliqué sur tout le site : quand une information réelle 
 
 ---
 
-## PARTIE 5 — Prochaines étapes techniques (hors du présent document, à anticiper)
+## PARTIE 5 — Phase actuelle : ajustements et finitions de l'admin (mise à jour)
+
+Le développement (Phases 1 à 3+) a été livré et validé — authentification, contenu dynamique de base, admin fonctionnel. **On entre maintenant dans une phase d'ajustements et de finitions sur l'admin, sur le même principe itératif qui a servi à peaufiner le site public** (maquettes revues et corrigées au fur et à mesure des retours de Serge). Voici les points déjà identifiés lors d'un premier test réel avec du vrai contenu :
+
+**6.1 Modèle général de l'admin — deux fichiers de référence à consulter**
+Deux maquettes ont été déposées dans le dossier du projet, à reproduire fidèlement :
+- `admin-modele-livres.html` — modèle de l'écran "hub" (liste) : menu de navigation vertical sur le côté gauche, et à droite une **liste compacte** (type tableau) des éléments d'une section — vignette, titre, info clé, statut, position, actions — au lieu du formulaire complet de chaque élément déployé et empilé verticalement. Ce problème a été constaté sur les Livres ET sur Publications (Que Dit la Bible / La Vie Supérieure) : avec des dizaines d'éléments, la disposition actuelle devient une page interminable à faire défiler. **Cette liste doit être paginée** (nombre d'éléments par page réglable, navigation par numéro de page) — principe à appliquer par défaut sur toute liste du site, admin ET partie publique (catalogues, hubs), sans attendre que ça devienne un problème visible.
+- `admin-modele-editeur-article.html` — modèle de l'écran "détail" pour un article (Publications), ouvert en cliquant sur un élément de la liste (page dédiée, pas un formulaire empilé) : un panneau de paramètres à gauche (image de couverture + texte alternatif, date, catégorie, chapeau/extrait, articles similaires, mots-clés SEO) et une **vraie zone de texte riche** à droite avec barre d'outils de mise en forme (gras, italique, souligné, liens, citation, listes, alignement, retrait) — inspiré du fonctionnement du blog Wix que Serge utilise déjà pour actesdesfilsdedieu.fr.
+- `admin-modele-editeur-livre.html` — modèle de l'écran "détail" pour un livre, même logique à deux colonnes : galerie de 5 images maximum avec position et glisser-déposer, informations générales (titre, prix, badge, format, pages, ISBN, langue), description en texte enrichi, statut (Actif / Précommande / Masqué) et position d'affichage dans une colonne latérale dédiée.
+
+**Précision issue d'un second lot de captures d'écran (le vrai back-office Wix de Serge, pas seulement son blog)** : les catégories d'un produit sont **des cases à cocher multiples**, pas un choix unique — un article peut appartenir à plusieurs catégories à la fois (ex. Livres et une autre catégorie simultanément), avec un lien permanent "+ Créer une catégorie" pour en ajouter une nouvelle à la volée. Le sélecteur de catégorie dans les gabarits Livres/Boutique/Publications/Vidéos doit suivre ce même principe multi-sélection, pas un menu déroulant à choix unique.
+
+**Ce modèle à deux écrans (liste compacte → détail dédié) doit s'appliquer à toutes les sections de l'admin** — Livres, Boutique, Publications, Rosée Matinale, Vidéos, Avis, Ticker, Statistiques, Textes — pas seulement une section en particulier.
+
+**6.2 Champs enrichis pour les articles (Publications)**
+En comparant avec le blog Wix existant de Serge, des champs manquent dans le formulaire actuel d'un article (Que Dit la Bible / La Vie Supérieure) :
+- Image de couverture (avec texte alternatif)
+- Extrait / chapeau, distinct du corps de l'article
+- Auteur / rédacteur (si plusieurs personnes écrivent un jour)
+- Articles similaires (liés manuellement par Serge)
+- Mots-clés SEO
+Ces champs doivent être ajoutés au gabarit d'article, avec le même système de zone de texte riche que le reste (voir 6.1).
+
+**6.3 Catégories et menu de navigation — traiter comme des listes gérées, pas des options fixes**
+Voir la précision ajoutée dans l'exigence transversale en tête de document. Concrètement pour cette phase :
+- Le sélecteur de catégorie dans le formulaire d'un article (Publications) et dans celui d'une vidéo doit piocher dans une liste gérée par Serge depuis un écran d'administration dédié ("Gestion des catégories"), pas dans un `<select>` à options codées en dur.
+- Le menu de navigation principal du site doit devenir gérable depuis l'admin — ajout, suppression, renommage, réordonnancement des liens — pas seulement le texte de chaque lien existant.
+
+**6.4 Autres correctifs identifiés lors du même test**
+- **Images multiples pour les livres** : jusqu'à 5 images par livre (couverture avant, arrière, etc.), chacune avec un champ "position" déterminant son ordre d'affichage, présentées en galerie sur la fiche produit publique (vignettes cliquables/survolables) — pas une seule image fixe comme actuellement.
+- **Statut "précommande"** pour un livre : un simple statut/interrupteur (au même titre que "Actif" ou "Masqué"), pas une section séparée avec sa propre position d'affichage — cette précision corrige une proposition précédente de Claude Code qui compliquait inutilement la chose.
+- **Mise en page de la fiche produit publique** : le bloc "À propos de ce livre" doit occuper toute la largeur de la page (pas seulement la colonne de droite) une fois qu'on descend sous l'image et les caractéristiques du livre.
+- **Texte enrichi dans les descriptions** (livres, produits boutique) : gras et italique, pas seulement du texte brut.
+- **Ratio d'image des couvertures (2:3)** : c'était une proposition de départ de Claude Code, pas une règle imposée par Serge. Serge ne doit pas avoir à recadrer ses couvertures lui-même avant de les envoyer — le système doit ajuster/recadrer automatiquement l'image envoyée pour respecter le ratio d'affichage attendu, sans bloquer ni avertir l'utilisateur à l'envoi.
+
+**6.5 Hub Publications — flux unifié, pas des blocs séparés par catégorie**
+Le hub `publications.html` (et le teaser "Publications" de l'accueil) affichaient deux blocs empilés, un par catégorie (Que Dit la Bible puis La Vie Supérieure) — même défaut de structure que celui corrigé en 6.1 pour les listes admin, mais côté public cette fois. Correction actée :
+- **Un seul flux, trié du plus récent au plus ancien**, mélangeant toutes les catégories de publications — pas de blocs séparés par catégorie.
+- **Chaque publication affiche : une vignette image, un badge de couleur identifiant sa catégorie (Que Dit la Bible / La Vie Supérieure / Rosée Matinale), un titre, une date ET une heure de publication, et le chapeau (résumé court)** — ces éléments doivent tous être présents, systématiquement, sur chaque publication du site, sans exception.
+- **Format de date et heure imposé : `JJ/MM/AAAA · HHhMM`** (ex. `19/08/2026 · 06h00`), à respecter partout où une date de publication est affichée.
+- **Rosée Matinale fait partie de ce flux unifié** au même titre que les autres catégories — l'entrée du jour (ou la plus récente) y apparaît avec son propre badge de couleur, en plus de conserver sa page dédiée avec archive complète (voir §3.2). Il ne doit pas y avoir de simple bouton "Rosée Matinale" isolé qui ne mène nulle part de clair dans le contexte du hub.
+- **Pagination** sur ce hub, comme sur toute liste (voir 6.1).
+- Layout affiché dans les maquettes mises à jour : `publications.html` (vignette + contenu en ligne, empilé, bordure de séparation entre chaque publication) et le teaser de `accueil.html` (même logique, adaptée au fond sombre de la section).
+
+**6.6 Contenu fictif retiré de l'accueil — décision en attente**
+Une section "Agenda & rencontres" présente dans la maquette `accueil.html` contenait 3 événements entièrement fictifs (dates, noms, lieux inventés) et un lien vers une page `agenda.html` qui n'a jamais été fournie ni construite. Ce contenu violait le principe "ne rien inventer" (§3.9/3.10) et a été retiré des deux côtés (maquette statique et code déployé). **Serge doit décider s'il veut une vraie fonctionnalité d'agenda d'événements** (nouvelle table en base, écran d'administration dédié, page publique) — décision explicitement reportée à plus tard ("on va y revenir"), ne pas construire cette fonctionnalité tant que Serge n'a pas validé le besoin et les champs nécessaires (date, heure, lieu, présentiel/en ligne, lien d'inscription, image...).
+
+---
+
+## PARTIE 6 — Prochaines étapes techniques (hors du présent document, à anticiper)
 
 1. **Hébergement + nom de domaine** — sergehapitaministries.org. **Serge dispose déjà d'un compte Vercel Pro actif** (équipe "cnkoma-9364's projects", hébergeant déjà 3 autres sites : ActesDesFilsDeDieu, amDG Éditions, La Vie Supérieure d'un autre projet) — le nouveau site doit être ajouté comme projet supplémentaire sur ce même compte, sans souscrire un nouvel abonnement Vercel Pro. Un compte GitHub est également déjà disponible et réutilisable de la même façon.
 2. **Choix et mise en place de l'architecture CMS** — couvrant l'intégralité du site (voir exigence transversale en début de document), pas seulement le contenu éditorial. Options et coûts à présenter à Serge avant décision finale.

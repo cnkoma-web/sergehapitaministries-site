@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 
+export type BookStatus = "active" | "precommande" | "hidden";
+
 export type Book = {
   id: string;
   slug: string;
@@ -14,15 +16,23 @@ export type Book = {
   language: string | null;
   isbn: string | null;
   description: string | null;
+  status: BookStatus;
   position: number;
 };
+
+export type BookImage = { id: string; url: string; position: number };
+
+const COLUMNS =
+  "id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, status, position";
+const ADMIN_COLUMNS =
+  "id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, status, position, active";
 
 export async function getBooks(): Promise<Book[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("books")
-    .select("id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, position")
-    .eq("active", true)
+    .select(COLUMNS)
+    .neq("status", "hidden")
     .order("position", { ascending: true });
   if (error || !data) return [];
   return data;
@@ -32,11 +42,22 @@ export async function getBookBySlug(slug: string): Promise<Book | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("books")
-    .select("id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, position")
+    .select(COLUMNS)
     .eq("slug", slug)
-    .eq("active", true)
+    .neq("status", "hidden")
     .single();
   if (error || !data) return null;
+  return data;
+}
+
+export async function getBookImages(bookId: string): Promise<BookImage[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("book_images")
+    .select("id, url, position")
+    .eq("book_id", bookId)
+    .order("position", { ascending: true });
+  if (error || !data) return [];
   return data;
 }
 
@@ -48,7 +69,7 @@ export async function getAdjacentBooks(position: number): Promise<{ prev: Adjace
     supabase
       .from("books")
       .select("slug, title")
-      .eq("active", true)
+      .neq("status", "hidden")
       .lt("position", position)
       .order("position", { ascending: false })
       .limit(1)
@@ -56,7 +77,7 @@ export async function getAdjacentBooks(position: number): Promise<{ prev: Adjace
     supabase
       .from("books")
       .select("slug, title")
-      .eq("active", true)
+      .neq("status", "hidden")
       .gt("position", position)
       .order("position", { ascending: true })
       .limit(1)
@@ -65,8 +86,25 @@ export async function getAdjacentBooks(position: number): Promise<{ prev: Adjace
   return { prev: prevData, next: nextData };
 }
 
-export async function countActiveBooks(): Promise<number> {
+// ===== Admin (voit aussi les livres masqués) =====
+
+export type AdminBook = Book & { active: boolean };
+
+export async function getBooksAdmin(page: number, perPage: number): Promise<{ books: AdminBook[]; total: number }> {
   const supabase = await createClient();
-  const { count } = await supabase.from("books").select("id", { count: "exact", head: true }).eq("active", true);
-  return count ?? 0;
+  const from = (page - 1) * perPage;
+  const { data, error, count } = await supabase
+    .from("books")
+    .select(ADMIN_COLUMNS, { count: "exact" })
+    .order("position", { ascending: true })
+    .range(from, from + perPage - 1);
+  if (error || !data) return { books: [], total: 0 };
+  return { books: data, total: count ?? 0 };
+}
+
+export async function getBookByIdAdmin(id: string): Promise<AdminBook | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("books").select(ADMIN_COLUMNS).eq("id", id).single();
+  if (error || !data) return null;
+  return data;
 }

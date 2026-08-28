@@ -1,55 +1,79 @@
-import { createClient } from "@/lib/supabase/server";
-import BookRow from "@/components/admin/BookRow";
-import { addBook, updateBook, deleteBook } from "./actions";
+import Link from "next/link";
+import { getBooksAdmin } from "@/lib/content/books";
+import { formatPrice } from "@/lib/format";
+import Pagination from "@/components/admin/Pagination";
 
-export default async function AdminLivresPage() {
-  const supabase = await createClient();
-  const { data: books, error } = await supabase
-    .from("books")
-    .select("id, title, badge, price_cents, cover_url, format, pages, isbn, description, position, active")
-    .order("position", { ascending: true });
+const STATUS_LABEL: Record<string, string> = { active: "Actif", precommande: "Précommande", hidden: "Masqué" };
+const STATUS_CLASS: Record<string, string> = { active: "actif", precommande: "precommande", hidden: "masque" };
+
+export default async function AdminLivresPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; perPage?: string }>;
+}) {
+  const { page: pageParam, perPage: perPageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const perPage = Number(perPageParam) || 20;
+
+  const { books, total } = await getBooksAdmin(page, perPage);
 
   return (
     <>
-      <h1>Livres</h1>
-      <p className="admin-lede">
-        Le catalogue affiché sur /livres. La couverture doit respecter un ratio 2:3 — un
-        avertissement s&apos;affiche sinon.
-      </p>
+      <div className="admin-header">
+        <div>
+          <h2>Livres</h2>
+        </div>
+        <Link href="/admin/livres/nouveau" className="btn-add">
+          + Ajouter un livre
+        </Link>
+      </div>
+      <p className="admin-lede">Le catalogue affiché sur /livres. Cliquez sur un livre pour l&apos;éditer en détail.</p>
 
-      {error && <div className="admin-error">Impossible de charger les livres : {error.message}</div>}
+      <div className="items-table">
+        <div className="item-row head">
+          <div></div>
+          <div>Titre</div>
+          <div>Prix</div>
+          <div>Statut</div>
+          <div>Position</div>
+          <div>Actions</div>
+        </div>
 
-      {books?.map((book) => (
-        <BookRow key={book.id} book={book} updateAction={updateBook} deleteAction={deleteBook} />
-      ))}
-
-      <div className="admin-card">
-        <h3 style={{ marginBottom: 14, fontSize: 16 }}>Ajouter un livre</h3>
-        <form action={addBook}>
-          <div className="admin-form-row">
-            <div className="admin-field" style={{ flex: 2 }}>
-              <label htmlFor="new-title">Titre</label>
-              <input id="new-title" name="title" required />
-            </div>
-            <div className="admin-field" style={{ flex: 1 }}>
-              <label htmlFor="new-badge">Badge</label>
-              <input id="new-badge" name="badge" placeholder="ex. Nouveauté" />
-            </div>
-            <div className="admin-field" style={{ maxWidth: 100 }}>
-              <label htmlFor="new-price">Prix (€)</label>
-              <input id="new-price" name="price" placeholder="15.00" />
-            </div>
-            <div className="admin-field" style={{ maxWidth: 70 }}>
-              <label htmlFor="new-position">Pos.</label>
-              <input id="new-position" name="position" type="number" defaultValue={books?.length ?? 0} />
+        {books.length === 0 && (
+          <div className="item-row">
+            <div style={{ gridColumn: "1 / -1" }} className="admin-row-empty">
+              Aucun livre pour le moment.
             </div>
           </div>
-          <p style={{ fontSize: 12.5, color: "var(--ink-soft)", marginBottom: 14 }}>
-            La couverture, le format, les pages, l&apos;ISBN et la description se complètent
-            ensuite en modifiant la fiche ci-dessus.
-          </p>
-          <button type="submit" className="admin-btn-primary">Ajouter</button>
-        </form>
+        )}
+
+        {books.map((book) => (
+          <div className="item-row" key={book.id}>
+            <div className="item-thumb" style={book.cover_url ? { backgroundImage: `url('${book.cover_url}')` } : undefined} />
+            <div className="item-title">
+              <Link href={`/admin/livres/${book.id}`}>{book.title}</Link>
+              <span>
+                {book.isbn || "ISBN à renseigner"} {book.pages ? `· ${book.pages} p.` : ""}
+              </span>
+            </div>
+            <div className="item-price">{book.price_cents != null ? formatPrice(book.price_cents) : "—"}</div>
+            <div>
+              <span className={`status-badge ${STATUS_CLASS[book.status]}`}>{STATUS_LABEL[book.status]}</span>
+            </div>
+            <div>{book.position}</div>
+            <div className="item-actions">
+              <Link href={`/admin/livres/${book.id}`}>Éditer</Link>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/livres" />}
+
+      <div className="admin-note">
+        Cliquer sur un livre ouvre sa fiche complète (galerie d&apos;images, prix, description,
+        ISBN...) sur une page dédiée. La pagination s&apos;applique automatiquement dès qu&apos;il y
+        a plus d&apos;éléments qu&apos;une page n&apos;en affiche.
       </div>
     </>
   );
