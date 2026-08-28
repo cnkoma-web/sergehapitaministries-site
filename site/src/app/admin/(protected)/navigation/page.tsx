@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { addNavItem, updateNavItem, deleteNavItem } from "./actions";
+import { getLinkableResources } from "@/lib/content/linkableResources";
+import LinkPicker from "@/components/admin/LinkPicker";
 
 type NavRow = { id: string; parent_id: string | null; label: string; href: string | null; position: number };
 
@@ -7,10 +9,10 @@ const ROW_COLS = "1fr 1fr 60px 150px";
 
 export default async function AdminNavigationPage() {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("nav_items")
-    .select("id, parent_id, label, href, position")
-    .order("position", { ascending: true });
+  const [{ data, error }, linkGroups] = await Promise.all([
+    supabase.from("nav_items").select("id, parent_id, label, href, position").order("position", { ascending: true }),
+    getLinkableResources(),
+  ]);
 
   const items = (data ?? []) as NavRow[];
   const topLevel = items.filter((i) => !i.parent_id);
@@ -54,7 +56,7 @@ export default async function AdminNavigationPage() {
                 <form action={updateNavItem} className="item-row" style={{ gridTemplateColumns: ROW_COLS, background: isDropdown ? "var(--lavender)" : undefined }}>
                   <input type="hidden" name="id" value={item.id} />
                   <input name="label" defaultValue={item.label} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5, fontWeight: 600 }} />
-                  <input name="href" defaultValue={item.href ?? ""} placeholder="(menu déroulant)" style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
+                  <LinkPicker name="href" groups={linkGroups} currentValue={item.href} allowNone />
                   <input name="position" type="number" defaultValue={item.position} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
                   <div className="item-actions">
                     <button type="submit">Enregistrer</button>
@@ -69,7 +71,7 @@ export default async function AdminNavigationPage() {
                     <form action={updateNavItem} key={child.id} className="item-row" style={{ gridTemplateColumns: ROW_COLS, paddingLeft: 32 }}>
                       <input type="hidden" name="id" value={child.id} />
                       <input name="label" defaultValue={child.label} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
-                      <input name="href" defaultValue={child.href ?? ""} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
+                      <LinkPicker name="href" groups={linkGroups} currentValue={child.href} />
                       <input name="position" type="number" defaultValue={child.position} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
                       <div className="item-actions">
                         <button type="submit">Enregistrer</button>
@@ -84,7 +86,7 @@ export default async function AdminNavigationPage() {
                   <form action={addNavItem} className="item-row" style={{ gridTemplateColumns: ROW_COLS, paddingLeft: 32 }}>
                     <input type="hidden" name="parent_id" value={item.id} />
                     <input name="label" placeholder="+ Libellé du sous-lien" required style={{ padding: "7px 10px", border: "1px dashed var(--line)", borderRadius: 6, fontSize: 13 }} />
-                    <input name="href" placeholder="/adresse" required style={{ padding: "7px 10px", border: "1px dashed var(--line)", borderRadius: 6, fontSize: 13 }} />
+                    <LinkPicker name="href" groups={linkGroups} currentValue={null} />
                     <div />
                     <div className="item-actions">
                       <button type="submit">Ajouter</button>
@@ -107,7 +109,7 @@ export default async function AdminNavigationPage() {
             </div>
             <div className="editor-field">
               <label>Adresse (laisser vide pour un menu déroulant)</label>
-              <input name="href" placeholder="ex. /contact" />
+              <LinkPicker name="href" groups={linkGroups} currentValue={null} allowNone />
             </div>
             <button type="submit" className="btn-primary" style={{ gridColumn: "1 / -1", justifySelf: "start" }}>
               Ajouter

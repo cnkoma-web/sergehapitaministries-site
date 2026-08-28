@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { addTickerMessage, updateTickerMessage, deleteTickerMessage } from "./actions";
+import { getLinkableResources } from "@/lib/content/linkableResources";
+import LinkPicker from "@/components/admin/LinkPicker";
 
 export default async function AdminTickerPage() {
   const supabase = await createClient();
-  const { data: messages, error } = await supabase
-    .from("ticker_messages")
-    .select("id, text, href, position, active")
-    .order("position", { ascending: true });
+  const [{ data: messages, error }, linkGroups] = await Promise.all([
+    supabase.from("ticker_messages").select("id, text, href, position, active").order("position", { ascending: true }),
+    getLinkableResources(),
+  ]);
 
   return (
     <>
@@ -41,7 +43,7 @@ export default async function AdminTickerPage() {
             <form action={updateTickerMessage} key={msg.id} className="item-row" style={{ gridTemplateColumns: "1fr 180px 60px 90px 150px" }}>
               <input type="hidden" name="id" value={msg.id} />
               <input name="text" defaultValue={msg.text} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
-              <input name="href" defaultValue={msg.href ?? ""} placeholder="(aucun)" style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
+              <LinkPicker name="href" groups={linkGroups} currentValue={msg.href} allowNone />
               <input name="position" type="number" defaultValue={msg.position} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
               <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
                 <input type="checkbox" name="active" defaultChecked={msg.active} />
@@ -69,7 +71,7 @@ export default async function AdminTickerPage() {
               </div>
               <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-href">Lien (optionnel)</label>
-                <input id="new-href" name="href" placeholder="/livres" />
+                <LinkPicker name="href" groups={linkGroups} currentValue={null} allowNone />
               </div>
               <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-position">Position</label>
