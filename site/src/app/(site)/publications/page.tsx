@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublishedArticles } from "@/lib/content/articles";
+import { stripHtml } from "@/lib/richtext";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -71,7 +72,7 @@ export default async function PublicationsPage() {
               {vsArticles.map((a) => (
                 <div className="vs-card" key={a.id}>
                   <h3>{a.title}</h3>
-                  <p>{a.excerpt || (a.body ? a.body.slice(0, 130) + "…" : "")}</p>
+                  <p>{a.excerpt || (a.body ? stripHtml(a.body).slice(0, 130) + "…" : "")}</p>
                   <Link href={`/publications/${a.slug}`}>Découvrir →</Link>
                 </div>
               ))}

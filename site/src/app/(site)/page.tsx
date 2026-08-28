@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { getBooks } from "@/lib/content/books";
 import { getPublishedArticles, getRoseeDuJour, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import { getActiveStats } from "@/lib/content/stats";
+import { stripHtml } from "@/lib/richtext";
 import { getSocialLinks } from "@/lib/content/footer";
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
@@ -196,7 +197,7 @@ export default async function HomePage() {
                         <p style={{ color: "rgba(255,255,255,.5)", fontSize: 12, margin: 0 }}>
                           {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                         </p>
-                        <p className="excerpt">{a.excerpt || (a.body ? a.body.slice(0, 130) + "…" : "")}</p>
+                        <p className="excerpt">{a.excerpt || (a.body ? stripHtml(a.body).slice(0, 130) + "…" : "")}</p>
                       </div>
                       <Link href={`/publications/${a.slug}`}>Découvrir →</Link>
                     </div>
