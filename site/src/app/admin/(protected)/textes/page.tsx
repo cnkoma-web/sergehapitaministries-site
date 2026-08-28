@@ -24,25 +24,27 @@ export default async function AdminTextesPage() {
       )}
 
       {!error && (
-        <div className="admin-card">
+        <div className="items-table">
+          <div className="item-row head" style={{ gridTemplateColumns: "260px 1fr 150px" }}>
+            <div>Clé</div>
+            <div>Valeur</div>
+            <div>Actions</div>
+          </div>
+          {texts?.length === 0 && (
+            <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+              <div className="admin-row-empty">Aucun texte pour le moment.</div>
+            </div>
+          )}
           {texts?.map((t) => (
-            <form action={upsertText} key={t.id} className="admin-row">
+            <form action={upsertText} key={t.id} className="item-row" style={{ gridTemplateColumns: "260px 1fr 150px" }}>
               <input type="hidden" name="id" value={t.id} />
               <input type="hidden" name="key" value={t.key} />
-              <div className="admin-field" style={{ flex: "0 0 260px" }}>
-                <label>Clé</label>
-                <span style={{ fontFamily: "monospace", fontSize: 12.5 }}>{t.key}</span>
-              </div>
-              <div className="admin-field" style={{ flex: 1 }}>
-                <label>Valeur</label>
-                <input name="value" defaultValue={t.value} />
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button type="submit" className="admin-btn-sm">
-                  Enregistrer
-                </button>
-                <button type="submit" formAction={deleteText} className="admin-btn-sm danger">
-                  Supprimer
+              <div style={{ fontFamily: "monospace", fontSize: 12, color: "var(--ink-soft)", wordBreak: "break-all" }}>{t.key}</div>
+              <input name="value" defaultValue={t.value} style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+              <div className="item-actions">
+                <button type="submit">Enregistrer</button>
+                <button type="submit" formAction={deleteText} className="danger">
+                  Suppr.
                 </button>
               </div>
             </form>
@@ -51,20 +53,18 @@ export default async function AdminTextesPage() {
       )}
 
       {!error && (
-        <div className="admin-card">
-          <h3 style={{ marginBottom: 14, fontSize: 16 }}>Ajouter / mettre à jour une clé</h3>
-          <form action={upsertText}>
-            <div className="admin-form-row">
-              <div className="admin-field" style={{ flex: 1 }}>
-                <label htmlFor="new-key">Clé</label>
-                <input id="new-key" name="key" placeholder="ex. footer.description" required />
-              </div>
-              <div className="admin-field" style={{ flex: 2 }}>
-                <label htmlFor="new-value">Valeur</label>
-                <input id="new-value" name="value" required />
-              </div>
+        <div className="editor-card" style={{ maxWidth: 640, marginTop: 20 }}>
+          <h3>Ajouter / mettre à jour une clé</h3>
+          <form action={upsertText} className="editor-field-row">
+            <div className="editor-field">
+              <label htmlFor="new-key">Clé</label>
+              <input id="new-key" name="key" placeholder="ex. footer.description" required />
             </div>
-            <button type="submit" className="admin-btn-primary">
+            <div className="editor-field">
+              <label htmlFor="new-value">Valeur</label>
+              <input id="new-value" name="value" required />
+            </div>
+            <button type="submit" className="btn-primary" style={{ gridColumn: "1 / -1", justifySelf: "start" }}>
               Enregistrer
             </button>
           </form>

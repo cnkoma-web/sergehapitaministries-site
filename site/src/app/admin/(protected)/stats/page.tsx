@@ -31,48 +31,44 @@ export default async function AdminStatsPage() {
       )}
 
       {!error && (
-        <div className="admin-card">
+        <div className="items-table">
+          <div className="item-row head" style={{ gridTemplateColumns: "1fr 190px 100px 60px 90px 150px" }}>
+            <div>Libellé</div>
+            <div>Type</div>
+            <div>Val. manuelle</div>
+            <div>Pos.</div>
+            <div>Statut</div>
+            <div>Actions</div>
+          </div>
+          {stats?.length === 0 && (
+            <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+              <div className="admin-row-empty">Aucune statistique pour le moment.</div>
+            </div>
+          )}
           {stats?.map((stat) => (
-            <form action={updateStat} key={stat.id} className="admin-row">
+            <form action={updateStat} key={stat.id} className="item-row" style={{ gridTemplateColumns: "1fr 190px 100px 60px 90px 150px" }}>
               <input type="hidden" name="id" value={stat.id} />
-              <div className="admin-field" style={{ flex: 2 }}>
-                <label>Libellé</label>
-                <input name="label" defaultValue={stat.label} required />
-                <span style={{ fontSize: 11, color: "var(--ink-soft)" }}>{stat.key}</span>
+              <div>
+                <input name="label" defaultValue={stat.label} required style={{ width: "100%", padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5, marginBottom: 2 }} />
+                <span style={{ fontSize: 10.5, color: "var(--ink-soft)" }}>{stat.key}</span>
               </div>
-              <div className="admin-field" style={{ flex: 2 }}>
-                <label>Type</label>
-                <select name="calc_type" defaultValue={stat.calc_type}>
-                  {Object.entries(CALC_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="admin-field" style={{ maxWidth: 100 }}>
-                <label>Valeur manuelle</label>
-                <input name="manual_value" defaultValue={stat.manual_value ?? ""} placeholder="—" />
-              </div>
-              <div className="admin-field" style={{ maxWidth: 70 }}>
-                <label>Pos.</label>
-                <input name="position" type="number" defaultValue={stat.position} />
-              </div>
-              <div className="admin-field" style={{ flex: "0 0 auto" }}>
-                <label>Statut</label>
-                <label className="admin-field-checkbox">
-                  <input type="checkbox" name="active" defaultChecked={stat.active} />
-                  <span className={`admin-badge ${stat.active ? "active" : "inactive"}`}>
-                    {stat.active ? "Actif" : "Inactif"}
-                  </span>
-                </label>
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button type="submit" className="admin-btn-sm">
-                  Enregistrer
-                </button>
-                <button type="submit" formAction={deleteStat} className="admin-btn-sm danger">
-                  Supprimer
+              <select name="calc_type" defaultValue={stat.calc_type} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 12.5 }}>
+                {Object.entries(CALC_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+              <input name="manual_value" defaultValue={stat.manual_value ?? ""} placeholder="—" style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+              <input name="position" type="number" defaultValue={stat.position} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+              <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
+                <input type="checkbox" name="active" defaultChecked={stat.active} />
+                <span className={`status-badge ${stat.active ? "actif" : "masque"}`}>{stat.active ? "Actif" : "Inactif"}</span>
+              </label>
+              <div className="item-actions">
+                <button type="submit">Enregistrer</button>
+                <button type="submit" formAction={deleteStat} className="danger">
+                  Suppr.
                 </button>
               </div>
             </form>
@@ -81,19 +77,21 @@ export default async function AdminStatsPage() {
       )}
 
       {!error && (
-        <div className="admin-card">
-          <h3 style={{ marginBottom: 14, fontSize: 16 }}>Ajouter une statistique</h3>
+        <div className="editor-card" style={{ maxWidth: 720, marginTop: 20 }}>
+          <h3>Ajouter une statistique</h3>
           <form action={addStat}>
-            <div className="admin-form-row">
-              <div className="admin-field" style={{ flex: 2 }}>
+            <div className="editor-field-row" style={{ marginBottom: 18 }}>
+              <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-key">Clé (unique, sans espace)</label>
                 <input id="new-key" name="key" placeholder="ex. villes_visitees" required />
               </div>
-              <div className="admin-field" style={{ flex: 2 }}>
+              <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-label">Libellé affiché</label>
                 <input id="new-label" name="label" required />
               </div>
-              <div className="admin-field" style={{ flex: 2 }}>
+            </div>
+            <div className="editor-field-row" style={{ marginBottom: 18 }}>
+              <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-calc">Type</label>
                 <select id="new-calc" name="calc_type" defaultValue="manual">
                   {Object.entries(CALC_LABELS).map(([value, label]) => (
@@ -103,12 +101,12 @@ export default async function AdminStatsPage() {
                   ))}
                 </select>
               </div>
-              <div className="admin-field" style={{ flex: 1 }}>
+              <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-value">Valeur manuelle</label>
                 <input id="new-value" name="manual_value" placeholder="—" />
               </div>
             </div>
-            <button type="submit" className="admin-btn-primary">
+            <button type="submit" className="btn-primary">
               Ajouter
             </button>
           </form>

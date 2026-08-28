@@ -13,22 +13,32 @@ export default async function AdminCategoriesPage() {
         met à jour tous les articles qui l&apos;utilisent.
       </p>
 
-      <div className="editor-card" style={{ maxWidth: 480 }}>
-        {categories.length === 0 && <div className="admin-row-empty">Aucune catégorie pour le moment.</div>}
+      <div className="items-table">
+        <div className="item-row head" style={{ gridTemplateColumns: "1fr 150px" }}>
+          <div>Nom</div>
+          <div>Actions</div>
+        </div>
+        {categories.length === 0 && (
+          <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+            <div className="admin-row-empty">Aucune catégorie pour le moment.</div>
+          </div>
+        )}
         {categories.map((c) => (
-          <form action={renameCategory} key={c.id} className="admin-row">
+          <form action={renameCategory} key={c.id} className="item-row" style={{ gridTemplateColumns: "1fr 150px" }}>
             <input type="hidden" name="id" value={c.id} />
-            <input name="name" defaultValue={c.name} style={{ flex: 1, padding: "8px 10px", border: "1.5px solid var(--line)", borderRadius: 8 }} />
-            <button type="submit" className="admin-btn-sm">
-              Renommer
-            </button>
-            <button type="submit" formAction={deleteCategory} className="admin-btn-sm danger">
-              Supprimer
-            </button>
+            <input name="name" defaultValue={c.name} style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+            <div className="item-actions">
+              <button type="submit">Renommer</button>
+              <button type="submit" formAction={deleteCategory} className="danger">
+                Suppr.
+              </button>
+            </div>
           </form>
         ))}
+      </div>
 
-        <h3 style={{ margin: "20px 0 12px", fontSize: 15 }}>Ajouter une catégorie</h3>
+      <div className="editor-card" style={{ maxWidth: 480, marginTop: 20 }}>
+        <h3>Ajouter une catégorie</h3>
         <form action={addCategory} style={{ display: "flex", gap: 8 }}>
           <input name="name" placeholder="ex. Identité de fils" required style={{ flex: 1, padding: "9px 11px", border: "1px solid var(--line)", borderRadius: 6 }} />
           <button type="submit" className="btn-primary">

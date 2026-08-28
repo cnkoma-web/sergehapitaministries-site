@@ -24,38 +24,33 @@ export default async function AdminTickerPage() {
       )}
 
       {!error && (
-        <div className="admin-card">
-          {messages?.length === 0 && <div className="admin-row-empty">Aucun message pour le moment.</div>}
+        <div className="items-table">
+          <div className="item-row head" style={{ gridTemplateColumns: "1fr 180px 60px 90px 150px" }}>
+            <div>Texte</div>
+            <div>Lien</div>
+            <div>Pos.</div>
+            <div>Statut</div>
+            <div>Actions</div>
+          </div>
+          {messages?.length === 0 && (
+            <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+              <div className="admin-row-empty">Aucun message pour le moment.</div>
+            </div>
+          )}
           {messages?.map((msg) => (
-            <form action={updateTickerMessage} key={msg.id} className="admin-row">
+            <form action={updateTickerMessage} key={msg.id} className="item-row" style={{ gridTemplateColumns: "1fr 180px 60px 90px 150px" }}>
               <input type="hidden" name="id" value={msg.id} />
-              <div className="admin-field" style={{ flex: 3 }}>
-                <label>Texte</label>
-                <input name="text" defaultValue={msg.text} required />
-              </div>
-              <div className="admin-field" style={{ flex: 2 }}>
-                <label>Lien</label>
-                <input name="href" defaultValue={msg.href ?? ""} placeholder="(aucun)" />
-              </div>
-              <div className="admin-field" style={{ maxWidth: 70 }}>
-                <label>Pos.</label>
-                <input name="position" type="number" defaultValue={msg.position} />
-              </div>
-              <div className="admin-field" style={{ flex: "0 0 auto" }}>
-                <label>Statut</label>
-                <label className="admin-field-checkbox">
-                  <input type="checkbox" name="active" defaultChecked={msg.active} />
-                  <span className={`admin-badge ${msg.active ? "active" : "inactive"}`}>
-                    {msg.active ? "Actif" : "Inactif"}
-                  </span>
-                </label>
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button type="submit" className="admin-btn-sm">
-                  Enregistrer
-                </button>
-                <button type="submit" formAction={deleteTickerMessage} className="admin-btn-sm danger">
-                  Supprimer
+              <input name="text" defaultValue={msg.text} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+              <input name="href" defaultValue={msg.href ?? ""} placeholder="(aucun)" style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
+              <input name="position" type="number" defaultValue={msg.position} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+              <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
+                <input type="checkbox" name="active" defaultChecked={msg.active} />
+                <span className={`status-badge ${msg.active ? "actif" : "masque"}`}>{msg.active ? "Actif" : "Inactif"}</span>
+              </label>
+              <div className="item-actions">
+                <button type="submit">Enregistrer</button>
+                <button type="submit" formAction={deleteTickerMessage} className="danger">
+                  Suppr.
                 </button>
               </div>
             </form>
@@ -64,24 +59,24 @@ export default async function AdminTickerPage() {
       )}
 
       {!error && (
-        <div className="admin-card">
-          <h3 style={{ marginBottom: 14, fontSize: 16 }}>Ajouter un message</h3>
+        <div className="editor-card" style={{ maxWidth: 640, marginTop: 20 }}>
+          <h3>Ajouter un message</h3>
           <form action={addTickerMessage}>
-            <div className="admin-form-row">
-              <div className="admin-field" style={{ flex: 3 }}>
+            <div className="editor-field-row" style={{ marginBottom: 18, gridTemplateColumns: "2fr 2fr 1fr" }}>
+              <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-text">Texte</label>
                 <input id="new-text" name="text" required />
               </div>
-              <div className="admin-field" style={{ flex: 2 }}>
+              <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-href">Lien (optionnel)</label>
                 <input id="new-href" name="href" placeholder="/livres" />
               </div>
-              <div className="admin-field" style={{ flex: 0, minWidth: 80 }}>
+              <div className="editor-field" style={{ marginBottom: 0 }}>
                 <label htmlFor="new-position">Position</label>
                 <input id="new-position" name="position" type="number" defaultValue={messages?.length ?? 0} />
               </div>
             </div>
-            <button type="submit" className="admin-btn-primary">
+            <button type="submit" className="btn-primary">
               Ajouter
             </button>
           </form>

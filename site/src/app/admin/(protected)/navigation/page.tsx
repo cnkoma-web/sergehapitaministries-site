@@ -3,6 +3,8 @@ import { addNavItem, updateNavItem, deleteNavItem } from "./actions";
 
 type NavRow = { id: string; parent_id: string | null; label: string; href: string | null; position: number };
 
+const ROW_COLS = "1fr 1fr 60px 150px";
+
 export default async function AdminNavigationPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -30,94 +32,88 @@ export default async function AdminNavigationPage() {
       )}
 
       {!error && (
-        <>
-          <div className="admin-card">
-            {topLevel.length === 0 && <div className="admin-row-empty">Aucun élément pour le moment.</div>}
-            {topLevel.map((item) => {
-              const children = childrenOf(item.id);
-              const isDropdown = !item.href;
-              return (
-                <div key={item.id} style={{ borderBottom: "1px solid var(--line)", padding: "14px 0" }}>
-                  <form action={updateNavItem} className="admin-row" style={{ borderBottom: 0, padding: 0 }}>
-                    <input type="hidden" name="id" value={item.id} />
-                    <div className="admin-field" style={{ flex: 2 }}>
-                      <label>Libellé</label>
-                      <input name="label" defaultValue={item.label} required />
-                    </div>
-                    <div className="admin-field" style={{ flex: 2 }}>
-                      <label>Adresse {isDropdown ? "(vide = menu déroulant)" : ""}</label>
-                      <input name="href" defaultValue={item.href ?? ""} placeholder="ex. /contact" />
-                    </div>
-                    <div className="admin-field" style={{ maxWidth: 70 }}>
-                      <label>Pos.</label>
-                      <input name="position" type="number" defaultValue={item.position} />
-                    </div>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button type="submit" className="admin-btn-sm">
-                        Enregistrer
-                      </button>
-                      <button type="submit" formAction={deleteNavItem} className="admin-btn-sm danger">
-                        Supprimer
-                      </button>
+        <div className="items-table">
+          <div className="item-row head" style={{ gridTemplateColumns: ROW_COLS }}>
+            <div>Libellé</div>
+            <div>Adresse</div>
+            <div>Pos.</div>
+            <div>Actions</div>
+          </div>
+
+          {topLevel.length === 0 && (
+            <div className="item-row" style={{ gridTemplateColumns: "1fr" }}>
+              <div className="admin-row-empty">Aucun élément pour le moment.</div>
+            </div>
+          )}
+
+          {topLevel.map((item) => {
+            const children = childrenOf(item.id);
+            const isDropdown = !item.href;
+            return (
+              <div key={item.id}>
+                <form action={updateNavItem} className="item-row" style={{ gridTemplateColumns: ROW_COLS, background: isDropdown ? "var(--lavender)" : undefined }}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <input name="label" defaultValue={item.label} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5, fontWeight: 600 }} />
+                  <input name="href" defaultValue={item.href ?? ""} placeholder="(menu déroulant)" style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
+                  <input name="position" type="number" defaultValue={item.position} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+                  <div className="item-actions">
+                    <button type="submit">Enregistrer</button>
+                    <button type="submit" formAction={deleteNavItem} className="danger">
+                      Suppr.
+                    </button>
+                  </div>
+                </form>
+
+                {isDropdown &&
+                  children.map((child) => (
+                    <form action={updateNavItem} key={child.id} className="item-row" style={{ gridTemplateColumns: ROW_COLS, paddingLeft: 32 }}>
+                      <input type="hidden" name="id" value={child.id} />
+                      <input name="label" defaultValue={child.label} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
+                      <input name="href" defaultValue={child.href ?? ""} required style={{ padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
+                      <input name="position" type="number" defaultValue={child.position} style={{ padding: "7px 8px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13.5 }} />
+                      <div className="item-actions">
+                        <button type="submit">Enregistrer</button>
+                        <button type="submit" formAction={deleteNavItem} className="danger">
+                          Suppr.
+                        </button>
+                      </div>
+                    </form>
+                  ))}
+
+                {isDropdown && (
+                  <form action={addNavItem} className="item-row" style={{ gridTemplateColumns: ROW_COLS, paddingLeft: 32 }}>
+                    <input type="hidden" name="parent_id" value={item.id} />
+                    <input name="label" placeholder="+ Libellé du sous-lien" required style={{ padding: "7px 10px", border: "1px dashed var(--line)", borderRadius: 6, fontSize: 13 }} />
+                    <input name="href" placeholder="/adresse" required style={{ padding: "7px 10px", border: "1px dashed var(--line)", borderRadius: 6, fontSize: 13 }} />
+                    <div />
+                    <div className="item-actions">
+                      <button type="submit">Ajouter</button>
                     </div>
                   </form>
-
-                  {isDropdown && (
-                    <div style={{ marginLeft: 28, marginTop: 10 }}>
-                      {children.map((child) => (
-                        <form action={updateNavItem} key={child.id} className="admin-row" style={{ padding: "8px 0" }}>
-                          <input type="hidden" name="id" value={child.id} />
-                          <div className="admin-field" style={{ flex: 2 }}>
-                            <input name="label" defaultValue={child.label} required placeholder="Libellé" />
-                          </div>
-                          <div className="admin-field" style={{ flex: 2 }}>
-                            <input name="href" defaultValue={child.href ?? ""} required placeholder="/adresse" />
-                          </div>
-                          <div className="admin-field" style={{ maxWidth: 70 }}>
-                            <input name="position" type="number" defaultValue={child.position} />
-                          </div>
-                          <div style={{ display: "flex", gap: 8 }}>
-                            <button type="submit" className="admin-btn-sm">
-                              Enregistrer
-                            </button>
-                            <button type="submit" formAction={deleteNavItem} className="admin-btn-sm danger">
-                              Suppr.
-                            </button>
-                          </div>
-                        </form>
-                      ))}
-                      <form action={addNavItem} style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                        <input type="hidden" name="parent_id" value={item.id} />
-                        <input name="label" placeholder="Libellé du sous-lien" required style={{ flex: 1, padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
-                        <input name="href" placeholder="/adresse" required style={{ flex: 1, padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 13 }} />
-                        <button type="submit" className="admin-btn-sm">
-                          + Ajouter dans {item.label}
-                        </button>
-                      </form>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="editor-card" style={{ maxWidth: 640 }}>
-            <h3>Ajouter un élément au menu</h3>
-            <form action={addNavItem} className="admin-form-row">
-              <div className="admin-field" style={{ flex: 2 }}>
-                <label>Libellé</label>
-                <input name="label" required />
+                )}
               </div>
-              <div className="admin-field" style={{ flex: 2 }}>
-                <label>Adresse (laisser vide pour un menu déroulant)</label>
-                <input name="href" placeholder="ex. /contact" />
-              </div>
-              <button type="submit" className="admin-btn-primary">
-                Ajouter
-              </button>
-            </form>
-          </div>
-        </>
+            );
+          })}
+        </div>
+      )}
+
+      {!error && (
+        <div className="editor-card" style={{ maxWidth: 640, marginTop: 20 }}>
+          <h3>Ajouter un élément au menu</h3>
+          <form action={addNavItem} className="editor-field-row" style={{ gridTemplateColumns: "2fr 2fr" }}>
+            <div className="editor-field">
+              <label>Libellé</label>
+              <input name="label" required />
+            </div>
+            <div className="editor-field">
+              <label>Adresse (laisser vide pour un menu déroulant)</label>
+              <input name="href" placeholder="ex. /contact" />
+            </div>
+            <button type="submit" className="btn-primary" style={{ gridColumn: "1 / -1", justifySelf: "start" }}>
+              Ajouter
+            </button>
+          </form>
+        </div>
       )}
     </>
   );
