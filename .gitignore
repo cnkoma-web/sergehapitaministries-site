@@ -5,3 +5,11 @@ site/next-env.d.ts
 .claude/
 fichiers-a-ajouter/
 fichiers-a-ajouter.zip
+
+# Sécurité : jamais de clés/identifiants dans le dépôt (pas de *.json général,
+# trop de fichiers de config légitimes en JSON — on cible les motifs de clés)
+*serviceaccount*.json
+*service-account*.json
+*credentials*.json
+*.pem
+*.key
