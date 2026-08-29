@@ -51,12 +51,14 @@ export default function PolitiqueDeCookiesPage() {
             en vigueur, car ils sont indispensables à la fourniture du service que vous demandez.
           </p>
 
-          <h2>Cookies de mesure d&apos;audience et publicitaires</h2>
+          <h2>Cookies de mesure d&apos;audience</h2>
+          <p>
+            Ce site utilise Google Analytics pour mesurer sa fréquentation (nombre de visites, pages consultées).
+            Ces données sont anonymisées autant que possible et ne sont jamais utilisées à des fins publicitaires.
+          </p>
           <div className="todo">
-            À compléter : si un outil de mesure d&apos;audience (Google Analytics, Matomo...) ou des cookies
-            publicitaires/réseaux sociaux sont ajoutés au site, ils devront être listés ici avec leur finalité, leur
-            durée de conservation, et un bandeau de consentement (bannière cookies) devra être mis en place avant
-            leur dépôt.
+            À compléter avec Serge : un bandeau de consentement (bannière cookies) doit être mis en place avant le
+            dépôt de ces cookies de mesure d&apos;audience, conformément à la réglementation en vigueur (RGPD/CNIL).
           </div>
 
           <h2>Comment gérer les cookies ?</h2>
