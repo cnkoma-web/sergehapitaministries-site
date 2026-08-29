@@ -21,15 +21,17 @@ export async function generateMetadata({
     : "";
   const title = `Rosée Matinale${dateLabel ? ` — ${dateLabel}` : ""} | Serge Hapita Ministries`;
   const description = current?.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
+  const images = current?.cover_url ? [{ url: current.cover_url, alt: current.cover_alt ?? title }] : undefined;
   return {
     title,
     description,
+    keywords: current?.seo_keywords && current.seo_keywords.length > 0 ? current.seo_keywords : undefined,
     // Titre/description dynamiques (cahier §3.2) — générés depuis le contenu du
     // jour plutôt que codés en dur, mais l'URL de base reste fixe et permanente
     // (le paramètre ?date= navigue entre les jours sans créer de page séparée).
     alternates: { canonical: "/rosee-matinale" },
-    openGraph: { type: "website", title, description, url: "/rosee-matinale", siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { type: "website", title, description, url: "/rosee-matinale", siteName: "Serge Hapita Ministries", locale: "fr_FR", images },
+    twitter: { card: "summary_large_image", title, description, images: images?.map((i) => i.url) },
   };
 }
 
@@ -79,7 +81,9 @@ export default async function RoseeMatinalePage({
     <>
       <section
         className="rm-photo-hero"
-        style={{ backgroundImage: "url(/rosee-matinale-hero.jpg)" }}
+        style={{ backgroundImage: `url(${current.cover_url || "/rosee-matinale-hero.jpg"})` }}
+        role={current.cover_url ? "img" : undefined}
+        aria-label={current.cover_url ? current.cover_alt ?? undefined : undefined}
       >
         <div className="wrap">
           <div className="cat">Rosée Matinale</div>

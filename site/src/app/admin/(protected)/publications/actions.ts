@@ -161,6 +161,9 @@ export async function publishRosee(formData: FormData) {
     article_date,
     verse_text,
     body: body || null,
+    cover_url: String(formData.get("cover_url") ?? "").trim() || null,
+    cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,
+    seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
     access: "free",
     status: "published",
     reading_time_minutes: body ? computeReadingTime(body) : null,
@@ -173,9 +176,9 @@ export async function publishRosee(formData: FormData) {
 }
 
 /** Édition d'une entrée Rosée Matinale existante — écran dédié, séparé de
- * l'éditeur d'article générique (Que Dit la Bible / La Vie Supérieure) qui ne
- * s'applique pas à ce format (pas de couverture, thèmes, articles similaires...
- * cahier §3.2). */
+ * l'éditeur d'article générique (Que Dit la Bible / La Vie Supérieure) qui a
+ * des champs sans rapport pour ce format (thèmes, articles similaires...) —
+ * mais garde couverture + mots-clés SEO, utiles ici aussi (cahier §3.2 + §1.5). */
 export async function updateRoseeEntry(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
@@ -194,6 +197,9 @@ export async function updateRoseeEntry(formData: FormData) {
         : undefined,
       verse_text,
       body: body || null,
+      cover_url: String(formData.get("cover_url") ?? "").trim() || null,
+      cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,
+      seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
       status: String(formData.get("status") ?? "published"),
       reading_time_minutes: body ? computeReadingTime(body) : null,
     })

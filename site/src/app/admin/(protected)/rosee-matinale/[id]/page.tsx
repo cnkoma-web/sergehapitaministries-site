@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getArticleByIdAdmin } from "@/lib/content/articles";
 import { updateRoseeEntry, deleteArticle } from "../../publications/actions";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import ArticleCoverField from "@/components/admin/ArticleCoverField";
 
 export default async function AdminRoseeEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -52,9 +53,31 @@ export default async function AdminRoseeEntryPage({ params }: { params: Promise<
             <textarea name="verse_text" defaultValue={entry.verse_text ?? ""} rows={3} required />
           </div>
 
-          <div className="editor-field" style={{ marginBottom: 0 }}>
+          <div className="editor-field">
             <label>Corps (développement, facultatif)</label>
             <RichTextEditor name="body" defaultValue={entry.body} placeholder="Développement facultatif…" minHeight={160} compact />
+          </div>
+
+          <div className="editor-field">
+            <label>Image de couverture</label>
+            <ArticleCoverField currentUrl={entry.cover_url} />
+            <input
+              type="text"
+              name="cover_alt"
+              defaultValue={entry.cover_alt ?? ""}
+              placeholder="Texte alternatif (description de l'image)"
+              style={{ marginTop: 8 }}
+            />
+          </div>
+
+          <div className="editor-field" style={{ marginBottom: 0 }}>
+            <label>Mots-clés (SEO) — séparés par des virgules</label>
+            <input
+              type="text"
+              name="seo_keywords"
+              defaultValue={entry.seo_keywords.join(", ")}
+              placeholder="repos, identité, confiance en Dieu"
+            />
           </div>
         </div>
       </form>

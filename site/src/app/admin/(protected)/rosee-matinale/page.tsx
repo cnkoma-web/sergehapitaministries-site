@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getArticlesAdmin } from "@/lib/content/articles";
 import { publishRosee, deleteArticle } from "../publications/actions";
 import Pagination from "@/components/admin/Pagination";
+import ArticleCoverField from "@/components/admin/ArticleCoverField";
 
 const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
 const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "actif" };
@@ -42,6 +43,15 @@ export default async function AdminRoseePage({
           <div className="editor-field">
             <label>Corps (développement, séparé en paragraphes par une ligne vide)</label>
             <textarea name="body" rows={6} />
+          </div>
+          <div className="editor-field">
+            <label>Image de couverture</label>
+            <ArticleCoverField currentUrl={null} />
+            <input type="text" name="cover_alt" placeholder="Texte alternatif (description de l'image)" style={{ marginTop: 8 }} />
+          </div>
+          <div className="editor-field">
+            <label>Mots-clés (SEO) — séparés par des virgules</label>
+            <input type="text" name="seo_keywords" placeholder="repos, identité, confiance en Dieu" />
           </div>
           <button type="submit" className="admin-btn-primary">
             Publier

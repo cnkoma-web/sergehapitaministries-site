@@ -133,6 +133,12 @@ Aucune dimension précise n'a été fixée dans les maquettes actuelles (les vis
 
 Le ministère est basé à **Levallois-Perret, France** — jamais "Paris", sur aucune page ni contenu futur.
 
+### 1.7 Une seule largeur de colonne de contenu — bug confirmé, à corriger
+
+Les maquettes statiques initiales utilisaient des largeurs différentes selon les pages pour le bloc de texte principal, sans qu'aucune ne soit une valeur de référence volontaire — un oubli de cohérence, pas un choix : `livre_detail.html` (description) à 760px, `de-serge.html` (biographie) à 720px, `que-dit-la-bible-images-esprit.html` (corps d'article) à 680px, et d'autres variations probables ailleurs. Constaté également en production par Serge : sur la fiche livre, le bloc "À propos de ce livre" et la galerie de vignettes ne sont pas alignés avec la grande image de couverture au-dessus, parce que ces blocs sont recentrés indépendamment plutôt que calés sur le même axe gauche.
+
+**Correction attendue** : définir **une seule largeur de colonne de contenu**, utilisée par toutes les pages qui affichent du texte de lecture (articles, biographie, description produit, etc.) — Serge préfère la largeur la plus généreuse déjà observée (celle qui s'étend du bord gauche de l'image de couverture jusqu'au bord droit des informations de prix sur la fiche livre), pas la plus resserrée. Sur les pages avec image + texte côte à côte (fiche livre, fiche produit), tous les blocs qui suivent (description, avis, etc.) doivent démarrer et se terminer sur le même axe gauche/droite que la zone image+informations au-dessus, pas être recentrés indépendamment dans une colonne plus étroite.
+
 ---
 
 ## PARTIE 2 — Inventaire des pages livrées (23 fichiers HTML)
@@ -303,7 +309,7 @@ Voir la précision ajoutée dans l'exigence transversale en tête de document. C
 - Le menu de navigation principal du site doit devenir gérable depuis l'admin — ajout, suppression, renommage, réordonnancement des liens — pas seulement le texte de chaque lien existant.
 
 **6.4 Autres correctifs identifiés lors du même test**
-- **Images multiples pour les livres** : jusqu'à 5 images par livre (couverture avant, arrière, etc.), chacune avec un champ "position" déterminant son ordre d'affichage, présentées en galerie sur la fiche produit publique (vignettes cliquables/survolables) — pas une seule image fixe comme actuellement.
+- **Images multiples pour les livres** : jusqu'à 5 images par livre (couverture avant, arrière, etc.), chacune avec un champ "position" déterminant son ordre d'affichage, présentées en galerie sur la fiche produit publique — pas une seule image fixe comme actuellement. **Précision manquée jusqu'ici, à corriger** : sur la fiche produit, survoler la couverture avant (position 1) avec la souris doit faire apparaître/transitionner vers la quatrième de couverture (position 2) — effet de type "rollover", comme sur le site de référence rochedy.com déjà cité comme modèle visuel du site (voir tableau Partie 2). Ce n'est pas qu'une galerie de vignettes cliquables : c'est un effet de survol direct sur l'image principale elle-même.
 - **Statut "précommande"** pour un livre : un simple statut/interrupteur (au même titre que "Actif" ou "Masqué"), pas une section séparée avec sa propre position d'affichage — cette précision corrige une proposition précédente de Claude Code qui compliquait inutilement la chose.
 - **Mise en page de la fiche produit publique** : le bloc "À propos de ce livre" doit occuper toute la largeur de la page (pas seulement la colonne de droite) une fois qu'on descend sous l'image et les caractéristiques du livre.
 - **Texte enrichi dans les descriptions** (livres, produits boutique) : gras et italique, pas seulement du texte brut.
