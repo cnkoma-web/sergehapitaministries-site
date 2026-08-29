@@ -16,13 +16,11 @@ export const metadata: Metadata = {
     url: "/mentions-legales",
     siteName: "Serge Hapita Ministries",
     locale: "fr_FR",
-    images: ["/assets/og/mentions-legales.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/assets/og/mentions-legales.jpg"],
   },
 };
 

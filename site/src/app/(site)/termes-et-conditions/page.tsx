@@ -16,9 +16,8 @@ export const metadata: Metadata = {
     url: "/termes-et-conditions",
     siteName: "Serge Hapita Ministries",
     locale: "fr_FR",
-    images: ["/assets/og/termes-et-conditions.jpg"],
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/assets/og/termes-et-conditions.jpg"] },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default function TermesEtConditionsPage() {

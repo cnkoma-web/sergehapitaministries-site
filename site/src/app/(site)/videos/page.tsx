@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/videos" },
-  openGraph: { type: "website", title, description, url: "/videos", siteName: "Serge Hapita Ministries", locale: "fr_FR", images: ["/assets/og/videos.jpg"] },
-  twitter: { card: "summary_large_image", title, description, images: ["/assets/og/videos.jpg"] },
+  openGraph: { type: "website", title, description, url: "/videos", siteName: "Serge Hapita Ministries", locale: "fr_FR" },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default async function VideosPage() {

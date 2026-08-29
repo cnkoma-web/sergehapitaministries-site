@@ -282,6 +282,7 @@ Deux maquettes ont été déposées dans le dossier du projet, à reproduire fid
 - `admin-modele-livres.html` — modèle de l'écran "hub" (liste) : menu de navigation vertical sur le côté gauche, et à droite une **liste compacte** (type tableau) des éléments d'une section — vignette, titre, info clé, statut, position, actions — au lieu du formulaire complet de chaque élément déployé et empilé verticalement. Ce problème a été constaté sur les Livres ET sur Publications (Que Dit la Bible / La Vie Supérieure) : avec des dizaines d'éléments, la disposition actuelle devient une page interminable à faire défiler. **Cette liste doit être paginée** (nombre d'éléments par page réglable, navigation par numéro de page) — principe à appliquer par défaut sur toute liste du site, admin ET partie publique (catalogues, hubs), sans attendre que ça devienne un problème visible.
 - `admin-modele-editeur-article.html` — modèle de l'écran "détail" pour un article (Publications), ouvert en cliquant sur un élément de la liste (page dédiée, pas un formulaire empilé) : un panneau de paramètres à gauche (image de couverture + texte alternatif, date, catégorie, chapeau/extrait, articles similaires, mots-clés SEO) et une **vraie zone de texte riche** à droite avec barre d'outils de mise en forme (gras, italique, souligné, liens, citation, listes, alignement, retrait) — inspiré du fonctionnement du blog Wix que Serge utilise déjà pour actesdesfilsdedieu.fr.
 - `admin-modele-editeur-livre.html` — modèle de l'écran "détail" pour un livre, même logique à deux colonnes : galerie de 5 images maximum avec position et glisser-déposer, informations générales (titre, prix, badge, format, pages, ISBN, langue), description en texte enrichi, statut (Actif / Précommande / Masqué) et position d'affichage dans une colonne latérale dédiée.
+- `admin-modele-tableau-de-bord.html` — modèle de l'écran d'accueil de l'admin (page centrale affichée avant de cliquer sur une rubrique) : chiffres clés (visites via Google Analytics, ventes et dons via Stripe, nouveaux abonnés newsletter via MailerLite, comptes créés, article le plus lu), deux graphiques (évolution des visites, répartition des ventes), et un bloc "À traiter" (avis en attente de modération, commandes à expédier, demandes d'invitation, messages de contact non lus, paiements échoués à relancer). **Ce n'était pas prévu avant que Serge le demande explicitement** — la première version de l'écran d'accueil de l'admin n'était qu'un menu de liens vers les sections, sans aucune utilité immédiate ; ça a été corrigé.
 
 **Précision issue d'un second lot de captures d'écran (le vrai back-office Wix de Serge, pas seulement son blog)** : les catégories d'un produit sont **des cases à cocher multiples**, pas un choix unique — un article peut appartenir à plusieurs catégories à la fois (ex. Livres et une autre catégorie simultanément), avec un lien permanent "+ Créer une catégorie" pour en ajouter une nouvelle à la volée. Le sélecteur de catégorie dans les gabarits Livres/Boutique/Publications/Vidéos doit suivre ce même principe multi-sélection, pas un menu déroulant à choix unique.
 
@@ -319,6 +320,26 @@ Le hub `publications.html` (et le teaser "Publications" de l'accueil) affichaien
 
 **6.6 Contenu fictif retiré de l'accueil — décision en attente**
 Une section "Agenda & rencontres" présente dans la maquette `accueil.html` contenait 3 événements entièrement fictifs (dates, noms, lieux inventés) et un lien vers une page `agenda.html` qui n'a jamais été fournie ni construite. Ce contenu violait le principe "ne rien inventer" (§3.9/3.10) et a été retiré des deux côtés (maquette statique et code déployé). **Serge doit décider s'il veut une vraie fonctionnalité d'agenda d'événements** (nouvelle table en base, écran d'administration dédié, page publique) — décision explicitement reportée à plus tard ("on va y revenir"), ne pas construire cette fonctionnalité tant que Serge n'a pas validé le besoin et les champs nécessaires (date, heure, lieu, présentiel/en ligne, lien d'inscription, image...).
+
+**6.7 Visuels de partage social (Open Graph) — génération dynamique requise**
+Les métadonnées Open Graph (`og:image`, `og:title`, `og:description`) sont déjà en place dans le HTML de chaque page (voir §1.5), mais **pointent vers des chemins d'image prévisionnels qui n'existent pas encore** (`/assets/og/nom-page.jpg`). Résultat concret observé par Serge : un lien du site partagé sur WhatsApp n'affiche que le titre, sans aucune image — l'aperçu n'est pas engageant.
+
+**Exigence précise, à partir de l'observation de Serge sur ses propres partages WhatsApp (chaîne "Que Dit la Bible ?")** : quand un lien du site est partagé (WhatsApp, Facebook, Twitter/X, ou toute autre plateforme), l'aperçu généré doit être **une image de partage unique et générée automatiquement pour chaque page/article**, affichant au minimum :
+- Le badge/nom de la catégorie de la publication (Rosée Matinale / Que Dit la Bible ? / La Vie Supérieure), dans le même esprit visuel que les badges de couleur déjà utilisés sur le site (§6.5).
+- Le titre de l'article.
+- L'identité visuelle du site (couleurs, police Fraunces/Manrope) — pas une image générique identique sur toutes les pages.
+
+**Solution technique attendue** : génération dynamique de l'image Open Graph par Claude Code (Next.js dispose d'un système intégré pour cela, généralement via une route d'image générée à la demande) — une vraie image doit être produite pour chaque page/article existant et pour chaque nouveau contenu publié depuis le CMS, sans intervention manuelle de Serge à chaque publication.
+
+**6.8 Tableau de bord admin — écran d'accueil avec statistiques réelles**
+Voir `admin-modele-tableau-de-bord.html`. L'écran affiché en arrivant sur `/admin` (avant de cliquer sur une rubrique) doit être un vrai tableau de bord, pas un simple menu de liens vers les sections. Il doit afficher, à partir de données réelles connectées (pas saisies à la main) :
+- Visites du site — **Google Analytics** (Serge a déjà un compte, à connecter).
+- Ventes (livres + boutique) et dons reçus — **Stripe**.
+- Nouveaux abonnés newsletter — **MailerLite**.
+- Comptes utilisateurs créés — base de données du site.
+- Article le plus lu — à partir du compteur de vues (§3.9 / §6.5).
+- Deux graphiques simples : évolution des visites sur la période, répartition des ventes par catégorie.
+- Un bloc "À traiter" avec compteurs et accès direct : avis en attente de modération, commandes à préparer/expédier, demandes d'invitation reçues, messages de contact non lus, paiements échoués à relancer (webhook Stripe `payment_intent.payment_failed`, déjà branché).
 
 ---
 

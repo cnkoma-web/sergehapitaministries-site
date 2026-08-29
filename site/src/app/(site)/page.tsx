@@ -23,13 +23,11 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "Serge Hapita Ministries",
     locale: "fr_FR",
-    images: ["/assets/og/accueil.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/assets/og/accueil.jpg"],
   },
 };
 

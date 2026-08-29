@@ -19,9 +19,8 @@ export const metadata: Metadata = {
     url: "/connaitre-jesus",
     siteName: "Serge Hapita Ministries",
     locale: "fr_FR",
-    images: ["/assets/og/connaitre-jesus.jpg"],
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/assets/og/connaitre-jesus.jpg"] },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 const FACTS = [

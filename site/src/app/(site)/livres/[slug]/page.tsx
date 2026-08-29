@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title,
     description,
     alternates: { canonical: `/livres/${slug}` },
-    openGraph: { type: "website", title, description, url: `/livres/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [book.cover_url || "/assets/og/livres.jpg"] },
-    twitter: { card: "summary_large_image", title, description, images: [book.cover_url || "/assets/og/livres.jpg"] },
+    openGraph: { type: "website", title, description, url: `/livres/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

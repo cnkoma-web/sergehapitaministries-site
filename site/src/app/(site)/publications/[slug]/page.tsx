@@ -24,14 +24,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!article) return {};
   const title = `${article.title} | ${ARTICLE_TYPE_LABEL[article.type]}`;
   const description = article.excerpt || article.verse_text || article.title;
-  const images = article.cover_url ? [article.cover_url] : undefined;
   return {
     title,
     description,
     keywords: article.seo_keywords.length > 0 ? article.seo_keywords : undefined,
     alternates: { canonical: `/publications/${slug}` },
-    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR", images },
-    twitter: { card: "summary_large_image", title, description, images },
+    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

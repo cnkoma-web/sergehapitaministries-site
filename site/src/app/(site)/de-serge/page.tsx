@@ -20,9 +20,8 @@ export const metadata: Metadata = {
     url: "/de-serge",
     siteName: "Serge Hapita Ministries",
     locale: "fr_FR",
-    images: ["/assets/og/de-serge.jpg"],
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/assets/og/de-serge.jpg"] },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default async function DeSergePage() {

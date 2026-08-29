@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/livres" },
-  openGraph: { type: "website", title, description, url: "/livres", siteName: "Serge Hapita Ministries", locale: "fr_FR", images: ["/assets/og/livres.jpg"] },
-  twitter: { card: "summary_large_image", title, description, images: ["/assets/og/livres.jpg"] },
+  openGraph: { type: "website", title, description, url: "/livres", siteName: "Serge Hapita Ministries", locale: "fr_FR" },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default async function LivresPage() {
