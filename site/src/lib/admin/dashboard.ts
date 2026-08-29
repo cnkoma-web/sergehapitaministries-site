@@ -56,7 +56,7 @@ export async function getNewNewsletterSubscribers(): Promise<number | null> {
 
   try {
     const res = await fetch(
-      `https://connect.mailerlite.com/api/subscribers?filter[group_id]=${groupId}&limit=100&sort=-created_at`,
+      `https://connect.mailerlite.com/api/subscribers?filter[group]=${groupId}&limit=100&sort=-created_at`,
       { headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" }, next: { revalidate: 300 } }
     );
     if (!res.ok) return null;
