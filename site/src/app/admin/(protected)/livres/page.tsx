@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getBooksAdmin } from "@/lib/content/books";
 import { formatPrice } from "@/lib/format";
 import Pagination from "@/components/admin/Pagination";
+import { deleteBook } from "./actions";
 
 const STATUS_LABEL: Record<string, string> = { active: "Actif", precommande: "Précommande", hidden: "Masqué" };
 const STATUS_CLASS: Record<string, string> = { active: "actif", precommande: "precommande", hidden: "masque" };
@@ -63,6 +64,12 @@ export default async function AdminLivresPage({
             <div>{book.position}</div>
             <div className="item-actions">
               <Link href={`/admin/livres/${book.id}`}>Éditer</Link>
+              <form action={deleteBook}>
+                <input type="hidden" name="id" value={book.id} />
+                <button type="submit" className="danger">
+                  Suppr.
+                </button>
+              </form>
             </div>
           </div>
         ))}

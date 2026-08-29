@@ -150,6 +150,7 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
 
       <form id="delete-article-form" action={deleteArticle}>
         <input type="hidden" name="id" value={article.id} />
+        <input type="hidden" name="redirectTo" value={article.type === "rm" ? "/admin/rosee-matinale" : "/admin/publications"} />
       </form>
     </>
   );

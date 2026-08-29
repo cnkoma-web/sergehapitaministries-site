@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getArticlesAdmin } from "@/lib/content/articles";
-import { publishRosee } from "../publications/actions";
+import { publishRosee, deleteArticle } from "../publications/actions";
 import Pagination from "@/components/admin/Pagination";
 
 const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
@@ -74,6 +74,13 @@ export default async function AdminRoseePage({
             </div>
             <div className="item-actions">
               <Link href={`/admin/publications/${e.id}`}>Éditer</Link>
+              <form action={deleteArticle}>
+                <input type="hidden" name="id" value={e.id} />
+                <input type="hidden" name="redirectTo" value="/admin/rosee-matinale" />
+                <button type="submit" className="danger">
+                  Suppr.
+                </button>
+              </form>
             </div>
           </div>
         ))}

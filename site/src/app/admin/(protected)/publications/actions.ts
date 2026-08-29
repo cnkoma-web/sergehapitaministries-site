@@ -136,7 +136,12 @@ export async function deleteArticle(formData: FormData) {
   revalidatePath("/admin/publications");
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/publications");
-  redirect("/admin/publications");
+  revalidatePath("/rosee-matinale");
+  revalidatePath("/");
+  // Reste sur la liste d'où l'appel vient (Publications ou Rosée Matinale) —
+  // évite d'être renvoyé ailleurs après une suppression depuis la liste.
+  const redirectTo = String(formData.get("redirectTo") ?? "/admin/publications");
+  redirect(redirectTo);
 }
 
 // ===== Rosée Matinale — publication rapide de l'entrée du jour =====

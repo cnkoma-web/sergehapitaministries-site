@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getArticlesAdmin, ARTICLE_TYPE_LABEL, type ArticleType } from "@/lib/content/articles";
-import { createArticle } from "./actions";
+import { createArticle, deleteArticle } from "./actions";
 import Pagination from "@/components/admin/Pagination";
 
 const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
@@ -89,6 +89,12 @@ export default async function AdminPublicationsPage({
             </div>
             <div className="item-actions">
               <Link href={`/admin/publications/${a.id}`}>Éditer</Link>
+              <form action={deleteArticle}>
+                <input type="hidden" name="id" value={a.id} />
+                <button type="submit" className="danger">
+                  Suppr.
+                </button>
+              </form>
             </div>
           </div>
         ))}

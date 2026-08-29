@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getVideosAdmin, VIDEO_CATEGORY_LABEL } from "@/lib/content/videos";
 import Pagination from "@/components/admin/Pagination";
+import { deleteVideo } from "./actions";
 
 export default async function AdminVideosPage({
   searchParams,
@@ -52,6 +53,12 @@ export default async function AdminVideosPage({
             </div>
             <div className="item-actions">
               <Link href={`/admin/videos/${v.id}`}>Éditer</Link>
+              <form action={deleteVideo}>
+                <input type="hidden" name="id" value={v.id} />
+                <button type="submit" className="danger">
+                  Suppr.
+                </button>
+              </form>
             </div>
           </div>
         ))}

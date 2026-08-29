@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getGoodiesAdmin } from "@/lib/content/goodies";
 import { formatPrice } from "@/lib/format";
 import Pagination from "@/components/admin/Pagination";
+import { deleteGoodie } from "./actions";
 
 const STATUS_LABEL: Record<string, string> = { available: "Disponible", coming_soon: "Bientôt disponible" };
 const STATUS_CLASS: Record<string, string> = { available: "actif", coming_soon: "precommande" };
@@ -58,6 +59,12 @@ export default async function AdminBoutiquePage({
             <div>{g.position}</div>
             <div className="item-actions">
               <Link href={`/admin/boutique/${g.id}`}>Éditer</Link>
+              <form action={deleteGoodie}>
+                <input type="hidden" name="id" value={g.id} />
+                <button type="submit" className="danger">
+                  Suppr.
+                </button>
+              </form>
             </div>
           </div>
         ))}
