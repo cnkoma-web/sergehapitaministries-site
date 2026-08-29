@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getArticleByIdAdmin, getArticleOptionsForLinking, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import { getCategories, getCategoryIdsForArticle } from "@/lib/content/categories";
 import { updateArticle, publishArticle, deleteArticle } from "../actions";
@@ -8,10 +8,14 @@ import RichTextEditor from "@/components/admin/RichTextEditor";
 import RelatedArticlesPicker from "@/components/admin/RelatedArticlesPicker";
 import CategoryPicker from "@/components/admin/CategoryPicker";
 
+// Rosée Matinale a son propre écran d'édition, plus simple (pas de couverture,
+// thèmes, articles similaires... cahier §3.2) — on y renvoie si quelqu'un
+// arrive ici directement sur une entrée RM.
 export default async function AdminArticleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const article = await getArticleByIdAdmin(id);
   if (!article) notFound();
+  if (article.type === "rm") redirect(`/admin/rosee-matinale/${id}`);
 
   const [linkOptions, allCategories, selectedCategoryIds] = await Promise.all([
     getArticleOptionsForLinking(article.id),
@@ -34,7 +38,7 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
             <button type="submit" form="delete-article-form" className="btn-danger">
               Supprimer
             </button>
-            {article.status === "published" && article.type !== "rm" && (
+            {article.status === "published" && (
               <Link href={`/publications/${article.slug}`} className="admin-btn-ghost" target="_blank">
                 Aperçu
               </Link>
@@ -115,13 +119,6 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
             </div>
           )}
 
-          {article.type === "rm" && (
-            <div className="editor-field">
-              <label>Citation / pensée du jour</label>
-              <textarea name="verse_text" defaultValue={article.verse_text ?? ""} rows={2} />
-            </div>
-          )}
-
           <div className="editor-field">
             <label>Thèmes</label>
             <CategoryPicker allCategories={allCategories} initialSelectedIds={selectedCategoryIds} />
@@ -150,7 +147,6 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
 
       <form id="delete-article-form" action={deleteArticle}>
         <input type="hidden" name="id" value={article.id} />
-        <input type="hidden" name="redirectTo" value={article.type === "rm" ? "/admin/rosee-matinale" : "/admin/publications"} />
       </form>
     </>
   );

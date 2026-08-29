@@ -344,7 +344,8 @@ header{
 .rm-archive h2{font-size:22px;margin-bottom:8px;text-align:center;}
 .rm-archive .sub{text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
 .rm-list{max-width:640px;margin:0 auto;}
-.rm-item{display:flex;gap:20px;align-items:baseline;padding:18px 0;border-top:1px solid var(--line);}
+.rm-item{display:flex;gap:20px;align-items:baseline;padding:18px 0;border-top:1px solid var(--line);text-decoration:none;color:inherit;}
+.rm-item:hover .excerpt{color:var(--ink);}
 .rm-item:first-child{border-top:0;}
 .rm-item .date{font-size:13px;font-weight:700;color:var(--teal);width:90px;flex-shrink:0;}
 .rm-item .excerpt{font-size:14.5px;color:var(--ink-soft);flex:1;}

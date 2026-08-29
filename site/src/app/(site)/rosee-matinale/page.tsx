@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getRoseeDuJour, getRoseeArchive, incrementViewCount } from "@/lib/content/articles";
+import { getPublishedArticles, incrementViewCount } from "@/lib/content/articles";
 import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import Newsletter from "@/components/layout/Newsletter";
@@ -8,28 +8,40 @@ import Footer from "@/components/layout/Footer";
 
 const SITE_URL = "https://sergehapitaministries.org";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const today = await getRoseeDuJour();
-  const dateLabel = today
-    ? new Date(today.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}): Promise<Metadata> {
+  const { date } = await searchParams;
+  const entries = await getPublishedArticles("rm");
+  const current = (date ? entries.find((e) => e.article_date === date) : entries[0]) ?? entries[0];
+  const dateLabel = current
+    ? new Date(current.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
     : "";
   const title = `Rosée Matinale${dateLabel ? ` — ${dateLabel}` : ""} | Serge Hapita Ministries`;
-  const description = today?.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
+  const description = current?.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
   return {
     title,
     description,
     // Titre/description dynamiques (cahier §3.2) — générés depuis le contenu du
-    // jour plutôt que codés en dur, mais l'URL reste fixe et permanente.
+    // jour plutôt que codés en dur, mais l'URL de base reste fixe et permanente
+    // (le paramètre ?date= navigue entre les jours sans créer de page séparée).
     alternates: { canonical: "/rosee-matinale" },
     openGraph: { type: "website", title, description, url: "/rosee-matinale", siteName: "Serge Hapita Ministries", locale: "fr_FR" },
     twitter: { card: "summary_large_image", title, description },
   };
 }
 
-export default async function RoseeMatinalePage() {
-  const [today, archive] = await Promise.all([getRoseeDuJour(), getRoseeArchive()]);
+export default async function RoseeMatinalePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
+  const { date } = await searchParams;
+  const entries = await getPublishedArticles("rm"); // triées du plus récent au plus ancien
 
-  if (!today) {
+  if (entries.length === 0) {
     return (
       <>
         <section className="util-hero">
@@ -49,9 +61,19 @@ export default async function RoseeMatinalePage() {
     );
   }
 
-  incrementViewCount(today.id).catch(() => {});
-  const pageUrl = `${SITE_URL}/rosee-matinale`;
-  const paragraphs = (today.body || "").match(/<[a-z][^>]*>[\s\S]*?<\/[a-z]+>/gi) ?? (today.body ? [today.body] : []);
+  const requestedIndex = date ? entries.findIndex((e) => e.article_date === date) : 0;
+  const currentIndex = requestedIndex >= 0 ? requestedIndex : 0;
+  const current = entries[currentIndex];
+  const isToday = currentIndex === 0;
+  // Triées du plus récent au plus ancien : l'entrée "précédente" (plus ancienne)
+  // est à l'index+1, la "suivante" (plus récente) est à l'index-1.
+  const previous = entries[currentIndex + 1] ?? null;
+  const next = entries[currentIndex - 1] ?? null;
+  const archive = entries.filter((_, i) => i !== currentIndex);
+
+  incrementViewCount(current.id).catch(() => {});
+  const pageUrl = `${SITE_URL}/rosee-matinale${date ? `?date=${date}` : ""}`;
+  const paragraphs = (current.body || "").match(/<[a-z][^>]*>[\s\S]*?<\/[a-z]+>/gi) ?? (current.body ? [current.body] : []);
 
   return (
     <>
@@ -62,18 +84,23 @@ export default async function RoseeMatinalePage() {
         <div className="wrap">
           <div className="cat">Rosée Matinale</div>
           <div className="date">
-            {new Date(today.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            {new Date(current.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
-          <ArticleMeta viewCount={today.view_count} readingTimeMinutes={today.reading_time_minutes} />
+          <ArticleMeta viewCount={current.view_count} readingTimeMinutes={current.reading_time_minutes} />
+          {!isToday && (
+            <Link href="/rosee-matinale" style={{ color: "#fff", fontSize: 13, textDecoration: "underline" }}>
+              ← Retour à la pensée du jour
+            </Link>
+          )}
         </div>
       </section>
 
-      {today.verse_text && (
+      {current.verse_text && (
         <section className="rm-quote-zone">
           <div className="wrap">
             <div className="rm-quote-wrap">
               <div className="rm-quote-mark">&quot;</div>
-              <p className="rm-quote-text">{today.verse_text}</p>
+              <p className="rm-quote-text">{current.verse_text}</p>
             </div>
           </div>
         </section>
@@ -86,12 +113,20 @@ export default async function RoseeMatinalePage() {
           ))}
 
           <div className="rm-nav-days">
-            <span className="disabled">← Jour précédent</span>
+            {previous ? (
+              <Link href={`/rosee-matinale?date=${previous.article_date}`}>← Jour précédent</Link>
+            ) : (
+              <span className="disabled">← Jour précédent</span>
+            )}
             <a href="#archive" className="archive-link">Voir l&apos;archive ↓</a>
-            <span className="disabled">Jour suivant →</span>
+            {next ? (
+              <Link href={`/rosee-matinale?date=${next.article_date}`}>Jour suivant →</Link>
+            ) : (
+              <span className="disabled">Jour suivant →</span>
+            )}
           </div>
 
-          <ShareCartouche title={`Rosée Matinale — ${new Date(today.article_date).toLocaleDateString("fr-FR")}`} url={pageUrl} />
+          <ShareCartouche title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`} url={pageUrl} />
         </div>
       </section>
 
@@ -104,12 +139,12 @@ export default async function RoseeMatinalePage() {
           ) : (
             <div className="rm-list">
               {archive.map((entry) => (
-                <div className="rm-item" key={entry.id}>
+                <Link href={`/rosee-matinale?date=${entry.article_date}`} className="rm-item" key={entry.id}>
                   <div className="date">
                     {new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                   </div>
                   <div className="excerpt">{entry.verse_text}</div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

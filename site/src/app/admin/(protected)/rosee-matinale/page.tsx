@@ -65,7 +65,7 @@ export default async function AdminRoseePage({
         {entries.map((e) => (
           <div className="item-row" key={e.id} style={{ gridTemplateColumns: "1fr 130px 110px 90px" }}>
             <div className="item-title">
-              <Link href={`/admin/publications/${e.id}`}>{new Date(e.article_date).toLocaleDateString("fr-FR")}</Link>
+              <Link href={`/admin/rosee-matinale/${e.id}`}>{new Date(e.article_date).toLocaleDateString("fr-FR")}</Link>
               <span>{e.reading_time_minutes ? `≈ ${e.reading_time_minutes} min de lecture` : ""}</span>
             </div>
             <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{(e.verse_text ?? "").slice(0, 60)}</div>
@@ -73,7 +73,7 @@ export default async function AdminRoseePage({
               <span className={`status-badge ${STATUS_CLASS[e.status]}`}>{STATUS_LABEL[e.status]}</span>
             </div>
             <div className="item-actions">
-              <Link href={`/admin/publications/${e.id}`}>Éditer</Link>
+              <Link href={`/admin/rosee-matinale/${e.id}`}>Éditer</Link>
               <form action={deleteArticle}>
                 <input type="hidden" name="id" value={e.id} />
                 <input type="hidden" name="redirectTo" value="/admin/rosee-matinale" />
