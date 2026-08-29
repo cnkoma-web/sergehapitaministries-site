@@ -78,7 +78,7 @@ export default async function AdminTickerPage() {
                 <input id="new-position" name="position" type="number" defaultValue={messages?.length ?? 0} />
               </div>
             </div>
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="admin-btn-primary">
               Ajouter
             </button>
           </form>

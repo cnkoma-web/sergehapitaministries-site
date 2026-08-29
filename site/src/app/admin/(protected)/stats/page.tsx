@@ -106,7 +106,7 @@ export default async function AdminStatsPage() {
                 <input id="new-value" name="manual_value" placeholder="—" />
               </div>
             </div>
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="admin-btn-primary">
               Ajouter
             </button>
           </form>

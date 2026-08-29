@@ -41,7 +41,7 @@ export default async function AdminCategoriesPage() {
         <h3>Ajouter une catégorie</h3>
         <form action={addCategory} style={{ display: "flex", gap: 8 }}>
           <input name="name" placeholder="ex. Identité de fils" required style={{ flex: 1, padding: "9px 11px", border: "1px solid var(--line)", borderRadius: 6 }} />
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="admin-btn-primary">
             Ajouter
           </button>
         </form>

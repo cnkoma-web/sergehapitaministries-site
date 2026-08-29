@@ -111,7 +111,7 @@ export default async function AdminNavigationPage() {
               <label>Adresse (laisser vide pour un menu déroulant)</label>
               <LinkPicker name="href" groups={linkGroups} currentValue={null} allowNone />
             </div>
-            <button type="submit" className="btn-primary" style={{ gridColumn: "1 / -1", justifySelf: "start" }}>
+            <button type="submit" className="admin-btn-primary" style={{ gridColumn: "1 / -1", justifySelf: "start" }}>
               Ajouter
             </button>
           </form>

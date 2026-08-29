@@ -21,7 +21,7 @@ export default function NouvelleVideoPage() {
           <p style={{ fontSize: 12.5, color: "var(--ink-soft)", marginBottom: 16 }}>
             La catégorie, le lien YouTube et la description se complètent ensuite.
           </p>
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="admin-btn-primary">
             Créer et continuer →
           </button>
         </form>

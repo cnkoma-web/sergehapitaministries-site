@@ -35,14 +35,14 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
               Supprimer
             </button>
             {article.status === "published" && article.type !== "rm" && (
-              <Link href={`/publications/${article.slug}`} className="btn-ghost" target="_blank">
+              <Link href={`/publications/${article.slug}`} className="admin-btn-ghost" target="_blank">
                 Aperçu
               </Link>
             )}
-            <button type="submit" className="btn-ghost">
+            <button type="submit" className="admin-btn-ghost">
               Enregistrer
             </button>
-            <button type="submit" formAction={publishArticle} className="btn-primary">
+            <button type="submit" formAction={publishArticle} className="admin-btn-primary">
               {article.status === "published" ? "Mettre à jour" : "Publier"}
             </button>
           </div>

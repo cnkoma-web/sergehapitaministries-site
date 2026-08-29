@@ -64,7 +64,7 @@ export default async function AdminTextesPage() {
               <label htmlFor="new-value">Valeur</label>
               <input id="new-value" name="value" required />
             </div>
-            <button type="submit" className="btn-primary" style={{ gridColumn: "1 / -1", justifySelf: "start" }}>
+            <button type="submit" className="admin-btn-primary" style={{ gridColumn: "1 / -1", justifySelf: "start" }}>
               Enregistrer
             </button>
           </form>

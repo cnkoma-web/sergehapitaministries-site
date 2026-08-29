@@ -20,7 +20,7 @@ export default async function AdminVideoDetailPage({ params }: { params: Promise
             <button type="submit" form="delete-video-form" className="btn-danger">
               Supprimer
             </button>
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="admin-btn-primary">
               Enregistrer
             </button>
           </div>

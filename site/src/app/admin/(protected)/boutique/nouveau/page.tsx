@@ -22,7 +22,7 @@ export default function NouveauGoodiePage() {
             La photo, le prix, les tailles/couleurs et la description se complètent ensuite sur la
             fiche du goodie.
           </p>
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="admin-btn-primary">
             Créer et continuer →
           </button>
         </form>

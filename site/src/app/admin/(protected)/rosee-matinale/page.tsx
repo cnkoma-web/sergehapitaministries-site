@@ -43,7 +43,7 @@ export default async function AdminRoseePage({
             <label>Corps (développement, séparé en paragraphes par une ligne vide)</label>
             <textarea name="body" rows={6} />
           </div>
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="admin-btn-primary">
             Publier
           </button>
         </form>

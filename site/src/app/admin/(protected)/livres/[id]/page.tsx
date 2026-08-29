@@ -24,10 +24,10 @@ export default async function AdminLivreDetailPage({ params }: { params: Promise
               Supprimer
             </button>
           </form>
-          <Link href={`/livres/${book.slug}`} className="btn-ghost" target="_blank">
+          <Link href={`/livres/${book.slug}`} className="admin-btn-ghost" target="_blank">
             Aperçu
           </Link>
-          <button type="submit" form="book-form" className="btn-primary">
+          <button type="submit" form="book-form" className="admin-btn-primary">
             Enregistrer
           </button>
         </div>

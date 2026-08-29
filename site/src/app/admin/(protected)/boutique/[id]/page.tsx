@@ -22,10 +22,10 @@ export default async function AdminGoodieDetailPage({ params }: { params: Promis
             <button type="submit" form="delete-goodie-form" className="btn-danger">
               Supprimer
             </button>
-            <Link href={`/boutique/${goodie.slug}`} className="btn-ghost" target="_blank">
+            <Link href={`/boutique/${goodie.slug}`} className="admin-btn-ghost" target="_blank">
               Aperçu
             </Link>
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="admin-btn-primary">
               Enregistrer
             </button>
           </div>

@@ -22,7 +22,7 @@ export default function NouveauLivrePage() {
             Les images, le prix, la description et le reste se complètent ensuite sur la fiche du
             livre.
           </p>
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="admin-btn-primary">
             Créer et continuer →
           </button>
         </form>
