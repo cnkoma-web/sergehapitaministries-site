@@ -12,13 +12,34 @@ type Props = {
   compact?: boolean;
 };
 
-// Éditeur de texte enrichi maison (contentEditable + document.execCommand) —
-// inspiré du blog Wix que Serge utilise déjà (cahier Partie 5 §6.1/6.2).
-// Pas de dépendance externe (Tiptap/Quill...) pour un besoin aussi simple.
-// L'HTML produit n'est jamais soumis par un visiteur : seul un admin authentifié
-// (is_admin()) peut l'écrire, et il est réinjecté tel quel côté public
-// (dangerouslySetInnerHTML) — confiance justifiée par cette frontière d'accès,
-// à revoir si l'admin devient un jour multi-utilisateurs non tous approuvés.
+const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "LI", "BLOCKQUOTE", "A", "BR", "DIV"]);
+
+// Nettoie le HTML produit par contentEditable : retire les styles/polices
+// ramenés par un copier-coller depuis une autre source (Word, un site...) et
+// les balises vides laissées par le navigateur après une suppression/fusion de
+// paragraphes (cause des écarts de ligne inattendus signalés en test réel).
+function sanitize(root: HTMLElement) {
+  const walk = (node: Element) => {
+    Array.from(node.children).forEach(walk);
+    node.removeAttribute("style");
+    node.removeAttribute("class");
+    node.removeAttribute("face");
+    node.removeAttribute("color");
+    if (node.tagName === "SPAN" || node.tagName === "FONT" || !ALLOWED_TAGS.has(node.tagName)) {
+      // Déballe la balise (garde son contenu texte/enfants), au lieu de la
+      // supprimer entièrement — on ne veut perdre ni le gras ni le texte.
+      while (node.firstChild) node.parentNode?.insertBefore(node.firstChild, node);
+      node.parentNode?.removeChild(node);
+    }
+  };
+  Array.from(root.children).forEach(walk);
+
+  // Paragraphes vides (juste un <br> ou rien) laissés par le navigateur.
+  root.querySelectorAll("p, div").forEach((el) => {
+    if (!el.textContent?.trim() && !el.querySelector("img")) el.remove();
+  });
+}
+
 export default function RichTextEditor({ name, defaultValue, placeholder, minHeight = 160, compact = false }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
@@ -30,9 +51,19 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   }
 
   function sync() {
+    if (editorRef.current) sanitize(editorRef.current);
     if (hiddenInputRef.current && editorRef.current) {
       hiddenInputRef.current.value = editorRef.current.innerHTML;
     }
+  }
+
+  function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
+    // Colle en texte brut plutôt que le HTML de la source (Word, un site web…) :
+    // la police/couleur d'origine ne doit jamais s'importer dans l'article.
+    e.preventDefault();
+    const text = e.clipboardData.getData("text/plain");
+    document.execCommand("insertText", false, text);
+    sync();
   }
 
   return (
@@ -93,6 +124,8 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
         data-placeholder={placeholder}
         onInput={sync}
         onBlur={sync}
+        onPaste={handlePaste}
+        onFocus={() => document.execCommand("defaultParagraphSeparator", false, "p")}
         dangerouslySetInnerHTML={{ __html: defaultValue ?? "" }}
       />
     </div>

@@ -181,16 +181,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <section className="article-body">
         <div className="wrap">
-          {article.cover_url && (
-            <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
-            </div>
-          )}
           {article.verse_reference && article.verse_text && (
             <div className="verse-box">
               <div className="ref">{article.verse_reference}</div>
               <p>« {article.verse_text} »</p>
+            </div>
+          )}
+
+          {article.cover_url && (
+            <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
           )}
 
