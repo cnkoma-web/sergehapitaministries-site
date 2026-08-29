@@ -24,13 +24,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!article) return {};
   const title = `${article.title} | ${ARTICLE_TYPE_LABEL[article.type]}`;
   const description = article.excerpt || article.verse_text || article.title;
+  const images = article.cover_url ? [{ url: article.cover_url, alt: article.cover_alt ?? title }] : undefined;
   return {
     title,
     description,
     keywords: article.seo_keywords.length > 0 ? article.seo_keywords : undefined,
     alternates: { canonical: `/publications/${slug}` },
-    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR", images },
+    twitter: { card: "summary_large_image", title, description, images: images?.map((i) => i.url) },
   };
 }
 
@@ -87,6 +88,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         <section className="article-body">
           <div className="wrap">
+            {article.cover_url && (
+              <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
+              </div>
+            )}
             {(unlocked ? paragraphs : paragraphs.slice(0, 4)).map((html, i) => (
               <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
             ))}
@@ -174,6 +181,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <section className="article-body">
         <div className="wrap">
+          {article.cover_url && (
+            <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
+            </div>
+          )}
           {article.verse_reference && article.verse_text && (
             <div className="verse-box">
               <div className="ref">{article.verse_reference}</div>
