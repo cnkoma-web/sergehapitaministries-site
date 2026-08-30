@@ -44,17 +44,29 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   const editorRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
-  function exec(command: string, value?: string) {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
-    sync();
-  }
-
+  // Ne recopie QUE la valeur, sans toucher au DOM en cours d'édition — appelé à
+  // chaque frappe. Le nettoyage structurel (sanitize) est destructif pour un
+  // élément en train d'être édité (ex. le paragraphe vide qu'on vient de créer
+  // avec Entrée, pas encore rempli) : le lancer ici cassait le retour à la
+  // ligne, la ligne vide étant supprimée avant même qu'on ait pu y taper.
   function sync() {
-    if (editorRef.current) sanitize(editorRef.current);
     if (hiddenInputRef.current && editorRef.current) {
       hiddenInputRef.current.value = editorRef.current.innerHTML;
     }
+  }
+
+  // Nettoyage structurel complet — uniquement à des moments où l'utilisateur
+  // n'est plus en train de taper dans l'élément concerné (perte de focus,
+  // juste après un collage, après une action de la barre d'outils).
+  function sanitizeAndSync() {
+    if (editorRef.current) sanitize(editorRef.current);
+    sync();
+  }
+
+  function exec(command: string, value?: string) {
+    document.execCommand(command, false, value);
+    editorRef.current?.focus();
+    sanitizeAndSync();
   }
 
   function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
@@ -123,7 +135,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
         style={{ minHeight }}
         data-placeholder={placeholder}
         onInput={sync}
-        onBlur={sync}
+        onBlur={sanitizeAndSync}
         onPaste={handlePaste}
         onFocus={() => document.execCommand("defaultParagraphSeparator", false, "p")}
         dangerouslySetInnerHTML={{ __html: defaultValue ?? "" }}
