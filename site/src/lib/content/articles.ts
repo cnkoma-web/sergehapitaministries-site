@@ -131,38 +131,27 @@ export async function getArticlesAdmin(
   return { articles: data, total: count ?? 0 };
 }
 
-/** Flux unifié du hub Publications (cahier §6.5) : toutes catégories
- * mélangées (QDLB/VS/RM), triées de la plus récente à la plus ancienne,
- * paginées — plus de blocs séparés par catégorie. */
-export async function getPublicationsFeed(page: number, perPage: number): Promise<{ articles: Article[]; total: number }> {
+/** Flux paginé d'articles publiés, limité aux types donnés, du plus récent
+ * au plus ancien — sert les deux flux distincts du hub Publications (QDLB+VS
+ * d'un côté, Rosée Matinale de l'autre, cahier retour du 30/08) et les hubs
+ * spécialisés par catégorie (Que Dit la Bible, La Vie Supérieure). */
+export async function getArticlesFeed(
+  types: ArticleType[],
+  page: number,
+  perPage: number
+): Promise<{ articles: Article[]; total: number }> {
   const supabase = await createClient();
   const from = (page - 1) * perPage;
   const { data, error, count } = await supabase
     .from("articles")
     .select(COLUMNS, { count: "exact" })
-    .in("type", ["qdlb", "vs", "rm"])
+    .in("type", types)
     .eq("status", "published")
     .order("article_date", { ascending: false })
     .order("created_at", { ascending: false })
     .range(from, from + perPage - 1);
   if (error || !data) return { articles: [], total: 0 };
   return { articles: data, total: count ?? 0 };
-}
-
-/** Dernières entrées Rosée Matinale, pour le rappel affiché sous le flux
- * unifié (cahier v3 §6.10 point 2) — Rosée Matinale reste dans le flux
- * mélangé aussi, ceci est un rappel supplémentaire, pas un remplacement. */
-export async function getLatestRosee(limit: number): Promise<Article[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("articles")
-    .select(COLUMNS)
-    .eq("type", "rm")
-    .eq("status", "published")
-    .order("article_date", { ascending: false })
-    .limit(limit);
-  if (error || !data) return [];
-  return data;
 }
 
 export async function getArticleByIdAdmin(id: string): Promise<AdminArticle | null> {

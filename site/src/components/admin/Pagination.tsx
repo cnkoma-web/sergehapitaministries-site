@@ -10,20 +10,39 @@ type Props = {
   perPageOptions?: number[];
   /** Autres filtres actifs à conserver d'une page à l'autre (ex. { type: "vs" }). */
   extraParams?: Record<string, string>;
+  /** Noms des paramètres d'URL — par défaut "page"/"perPage". À personnaliser
+   * quand plusieurs listes paginées coexistent sur la même page (ex. le hub
+   * Publications : deux flux distincts, chacun sa propre pagination). */
+  pageParam?: string;
+  perPageParam?: string;
+  /** Masque le sélecteur "N par page" — utilisé là où le nombre par page est
+   * une règle fixe imposée par le cahier (ex. 7 publications/page sur les
+   * hubs), pas un réglage laissé au visiteur. */
+  showPerPageSelector?: boolean;
 };
 
 // Pagination réutilisable — admin ET partie publique (cahier Partie 5 §6.1 :
 // "principe à appliquer par défaut sur toute liste du site"). Purement des liens
 // (?page=N&perPage=M), aucun JS requis : fonctionne même sans hydratation.
-export default function Pagination({ page, perPage, total, basePath, perPageOptions = [20, 50, 100], extraParams }: Props) {
+export default function Pagination({
+  page,
+  perPage,
+  total,
+  basePath,
+  perPageOptions = [20, 50, 100],
+  extraParams,
+  pageParam = "page",
+  perPageParam = "perPage",
+  showPerPageSelector = true,
+}: Props) {
   const totalPages = Math.max(1, Math.ceil(total / perPage));
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
   const to = Math.min(page * perPage, total);
 
   function pageHref(p: number) {
     const params = new URLSearchParams();
-    params.set("page", String(p));
-    params.set("perPage", String(perPage));
+    params.set(pageParam, String(p));
+    params.set(perPageParam, String(perPage));
     for (const [k, v] of Object.entries(extraParams ?? {})) params.set(k, v);
     return `${basePath}?${params.toString()}`;
   }
@@ -37,24 +56,29 @@ export default function Pagination({ page, perPage, total, basePath, perPageOpti
   return (
     <div className="pagination">
       <div>
-        Affichage {from}–{to} sur {total}{" "}
-        <form method="get" style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
-          <input type="hidden" name="page" value="1" />
-          {Object.entries(extraParams ?? {}).map(([k, v]) => (
-            <input key={k} type="hidden" name={k} value={v} />
-          ))}
-          <select name="perPage" defaultValue={perPage}>
-            {perPageOptions.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-          <button type="submit" className="admin-btn-sm">
-            Appliquer
-          </button>
-        </form>{" "}
-        par page
+        Affichage {from}–{to} sur {total}
+        {showPerPageSelector && (
+          <>
+            {" "}
+            <form method="get" style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+              <input type="hidden" name={pageParam} value="1" />
+              {Object.entries(extraParams ?? {}).map(([k, v]) => (
+                <input key={k} type="hidden" name={k} value={v} />
+              ))}
+              <select name={perPageParam} defaultValue={perPage}>
+                {perPageOptions.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+              <button type="submit" className="admin-btn-sm">
+                Appliquer
+              </button>
+            </form>{" "}
+            par page
+          </>
+        )}
       </div>
       <div className="pages">
         <Link href={pageHref(Math.max(1, page - 1))} aria-disabled={page <= 1}>
