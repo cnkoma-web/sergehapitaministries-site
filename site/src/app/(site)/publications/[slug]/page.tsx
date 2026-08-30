@@ -67,7 +67,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     return (
       <>
         <section className="article-header">
-          <div className="wrap" style={{ maxWidth: 680, margin: "0 auto" }}>
+          <div className="wrap">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
             <h1 className="article-title">{article.title}</h1>
             <div className="article-date">
@@ -104,7 +104,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <>
             <div className="excerpt-fade" />
             <section className="section" style={{ paddingTop: 0 }}>
-              <div className="wrap" style={{ maxWidth: 680 }}>
+              <div className="wrap">
                 <div className="gate-box">
                   <div className="lock">🔒</div>
                   <h3>La suite est réservée aux membres</h3>
@@ -140,7 +140,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         {unlocked && (
           <section className="section" style={{ paddingTop: 0 }}>
-            <div className="wrap" style={{ maxWidth: 680 }}>
+            <div className="wrap">
               <ShareCartouche title={article.title} url={pageUrl} />
               <div className="back-cta">
                 <Link href="/publications#vie-superieure" className="btn btn-outline">← Toutes les publications</Link>
@@ -159,7 +159,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <section className="article-header">
-        <div className="wrap" style={{ maxWidth: 680, margin: "0 auto" }}>
+        <div className="wrap">
           <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
           <h1 className="article-title">{article.title}</h1>
           <div className="article-date">

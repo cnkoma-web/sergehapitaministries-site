@@ -111,7 +111,7 @@ export default async function RoseeMatinalePage({
       )}
 
       <section className="section">
-        <div className="wrap" style={{ maxWidth: 640 }}>
+        <div className="wrap">
           {paragraphs.map((html, i) => (
             <div key={i} style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: html }} />
           ))}

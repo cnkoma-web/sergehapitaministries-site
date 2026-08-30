@@ -7,6 +7,7 @@ import { getPublishedArticles, getRoseeDuJour, ARTICLE_TYPE_LABEL } from "@/lib/
 import { getActiveStats } from "@/lib/content/stats";
 import { stripHtml } from "@/lib/richtext";
 import { getSocialLinks } from "@/lib/content/footer";
+import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -42,16 +43,21 @@ const SOCIAL_HANDLE: Record<string, string> = {
 };
 
 export default async function HomePage() {
-  const [books, qdlbArticles, vsArticles, roseeDuJour, stats, socialLinks] = await Promise.all([
+  const [books, qdlbArticles, vsArticles, roseeDuJour, stats, socialLinks, texts] = await Promise.all([
     getBooks(),
     getPublishedArticles("qdlb"),
     getPublishedArticles("vs"),
     getRoseeDuJour(),
     getActiveStats(),
     getSocialLinks(),
+    getInterfaceTexts(),
   ]);
 
   const latestBooks = books.slice(0, 3);
+  // Cahier §6.9 point 4 : nombre d'articles par catégorie réglable par Serge
+  // (Admin > Textes globaux, clé home.publications_per_category) — plus une
+  // valeur figée en dur dans le composant.
+  const publicationsPerCategory = Number(texts["home.publications_per_category"]) || 3;
 
   return (
     <>
@@ -162,9 +168,13 @@ export default async function HomePage() {
                 <p style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>Les premiers articles arrivent bientôt.</p>
               ) : (
                 <div className="pub-grid">
-                  {qdlbArticles.slice(0, 3).map((a) => (
+                  {qdlbArticles.slice(0, publicationsPerCategory).map((a) => (
                     <div className="pub-card" key={a.id}>
-                      <div>
+                      {a.cover_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
+                      )}
+                      <div className="pub-card-body">
                         <h4>{a.title}</h4>
                         <p style={{ color: "rgba(255,255,255,.5)", fontSize: 12, margin: 0 }}>
                           {a.verse_reference ? `${a.verse_reference} · ` : ""}
@@ -188,9 +198,13 @@ export default async function HomePage() {
                 <p style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>Les premiers enseignements arrivent bientôt.</p>
               ) : (
                 <div className="pub-grid">
-                  {vsArticles.slice(0, 3).map((a) => (
+                  {vsArticles.slice(0, publicationsPerCategory).map((a) => (
                     <div className="pub-card" key={a.id}>
-                      <div>
+                      {a.cover_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
+                      )}
+                      <div className="pub-card-body">
                         <h4>{a.title}</h4>
                         <p style={{ color: "rgba(255,255,255,.5)", fontSize: 12, margin: 0 }}>
                           {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
