@@ -33,9 +33,19 @@ img{max-width:100%;display:block;}
 
 /* Effet de survol (rollover) sur les couvertures/visuels produit — cahier
    §6.4, référence rochedy.com. Voir components/shop/CoverRollover.tsx. */
-.cover-rollover{position:relative;width:100%;height:100%;overflow:hidden;}
+/* position:absolute (au lieu de width/height:100%) — retour du 30/08 :
+   dans un conteneur dimensionné par aspect-ratio à l'intérieur d'une carte
+   flex (.catalogue-book), un enfant en flux normal réclamant 100% de la
+   hauteur du parent crée une dépendance circulaire que certains navigateurs
+   résolvent à 0×0 (couvertures disparues sur la page Livres). Un enfant en
+   position absolue est sorti du flux et ne participe plus à ce calcul — le
+   conteneur (.catalogue-thumb / .book-thumb / .product-cover, qui doivent
+   tous être position:relative) retrouve sa taille réelle. object-fit:contain
+   (au lieu de cover) : on ne rogne plus jamais la couverture, elle s'affiche
+   en entier même si son ratio réel diffère du cadre 2:3. */
+.cover-rollover{position:absolute;inset:0;overflow:hidden;}
 .cover-rollover .cr-front,
-.cover-rollover .cr-back{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s ease;}
+.cover-rollover .cr-back{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .4s ease;}
 .cover-rollover .cr-back{opacity:0;}
 .cover-rollover:hover .cr-front{opacity:0;}
 .cover-rollover:hover .cr-back{opacity:1;}
@@ -103,8 +113,8 @@ header{
 .main-nav a{color:var(--ink-soft);}
 .main-nav a:hover{color:var(--ink);}
 .dropdown{position:relative;}
-.dropdown>span{cursor:pointer;display:flex;align-items:center;gap:4px;color:var(--ink-soft);}
-.dropdown:hover>span{color:var(--ink);}
+.dropdown>span,.dropdown>a{cursor:pointer;display:flex;align-items:center;gap:4px;color:var(--ink-soft);}
+.dropdown:hover>span,.dropdown:hover>a{color:var(--ink);}
 .dropdown-menu{
   position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);
   background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;min-width:190px;
@@ -150,8 +160,12 @@ header{
 .catalogue-book:nth-child(4n+3){border-top-color:var(--teal);}
 .catalogue-book:nth-child(4n+4){border-top-color:var(--magenta);}
 .catalogue-badge{position:absolute;top:-1px;right:16px;background:var(--purple);color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:0 0 6px 6px;z-index:2;text-transform:uppercase;letter-spacing:.03em;}
-.catalogue-thumb{aspect-ratio:2/3;border-radius:2px;overflow:hidden;background-size:cover;background-position:center;position:relative;box-shadow:0 18px 32px -18px rgba(27,23,48,.4);margin:0 auto 20px;max-width:190px;}
-.catalogue-thumb img{width:100%;height:100%;object-fit:cover;}
+/* width:100% explicite (retour du 30/08) — dans une carte flex-column
+   (.catalogue-book), un enfant sans largeur propre ne recevait pas de façon
+   fiable une largeur via le stretch flex par défaut avant que aspect-ratio
+   ne calcule sa hauteur, et s'effondrait à 0×0 (couvertures disparues). */
+.catalogue-thumb{width:100%;aspect-ratio:2/3;border-radius:2px;overflow:hidden;background:var(--lavender);background-size:cover;background-position:center;position:relative;box-shadow:0 18px 32px -18px rgba(27,23,48,.4);margin:0 auto 20px;max-width:190px;}
+.catalogue-thumb img{width:100%;height:100%;object-fit:contain;}
 .catalogue-thumb.placeholder{background:linear-gradient(135deg,var(--blue),var(--purple));width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;}
 .catalogue-thumb .ph-collection{text-transform:none;color:rgba(255,255,255,.75);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
 .catalogue-thumb .ph-title{font-family:'Fraunces',serif;color:#fff;font-size:19px;line-height:1.25;font-weight:600;}
@@ -205,8 +219,8 @@ header{
 /* Pas de margin:auto ici (cahier §1.7) : la couverture doit démarrer au même
    bord gauche que la galerie de vignettes juste en dessous, pas être centrée
    indépendamment dans sa colonne. */
-.product-cover{aspect-ratio:2/3;max-width:340px;border-radius:6px;box-shadow:0 30px 60px -24px rgba(27,23,48,.4);overflow:hidden;}
-.product-cover img{width:100%;height:100%;object-fit:cover;}
+.product-cover{position:relative;aspect-ratio:2/3;max-width:340px;border-radius:6px;box-shadow:0 30px 60px -24px rgba(27,23,48,.4);overflow:hidden;background:var(--lavender);}
+.product-cover img{width:100%;height:100%;object-fit:contain;}
 .product-cover.placeholder{display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;background:linear-gradient(135deg,var(--blue),var(--purple));}
 .product-cover .ph-collection{font-size:11px;text-transform:none;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-bottom:10px;}
 .product-cover .ph-title{font-family:'Fraunces',serif;font-weight:600;color:#fff;font-size:22px;line-height:1.3;}
@@ -267,7 +281,9 @@ header{
 /* ===== Flux unifié du hub Publications (cahier §6.5 / v3 §6.10.1) =====
    Un seul flux mélangeant QDLB/VS/RM, trié du plus récent au plus ancien —
    remplace les anciens blocs .qdlb-grid/.vs-grid séparés par catégorie. */
-.feed-section{padding-top:56px;padding-bottom:64px;}
+/* Bas resserré (retour du 30/08) : l'espace avec le flux Rosée Matinale
+   juste en dessous était trop marqué. */
+.feed-section{padding-top:56px;padding-bottom:32px;}
 /* Colonne du hub Publications — largeur réellement visible (retour du
    30/08) : .wrap porte déjà 28px de padding de chaque côté, qui, cumulés à
    *{box-sizing:border-box}, mangeaient une partie de --content-col au lieu
@@ -295,7 +311,8 @@ header{
 .feed-item .excerpt{font-size:14px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .feed-item:hover h3{color:var(--purple);}
 /* Rappel Rosée Matinale sous le flux — fond de couleur différent (v3 §6.10.2). */
-.rm-reminder{background:var(--lavender);padding-top:56px;padding-bottom:64px;}
+/* Haut resserré (retour du 30/08) : espace avec le flux du dessus trop marqué. */
+.rm-reminder{background:var(--lavender);padding-top:32px;padding-bottom:56px;}
 .rm-reminder .feed-thumb{background:#fff;}
 .rm-reminder .feed-item{border-top-color:var(--line);}
 @media (max-width:640px){
@@ -400,7 +417,10 @@ header{
 .rm-photo-hero .date{color:rgba(255,255,255,.8);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
 .rm-photo-hero .article-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:rgba(255,255,255,.65);margin-top:10px;text-transform:none;letter-spacing:normal;font-weight:400;}
 .rm-photo-hero .article-meta span{display:flex;align-items:center;gap:5px;}
-.rm-quote-zone{padding-top:64px;padding-bottom:64px;background:var(--lavender);}
+/* Bas resserré (retour du 30/08) : l'espace vide avec le bloc du message
+   juste en dessous était trop marqué (padding 64 + padding 88 du bloc
+   suivant). */
+.rm-quote-zone{padding-top:64px;padding-bottom:32px;background:var(--lavender);}
 .rm-quote-wrap{max-width:640px;margin:0 auto;text-align:center;position:relative;}
 .rm-quote-mark{font-family:'Fraunces',serif;font-size:90px;color:var(--teal);opacity:.25;line-height:1;margin-bottom:-30px;}
 .rm-quote-text{font-family:'Fraunces',serif;font-style:italic;font-size:23px;line-height:1.65;color:var(--ink);}
@@ -409,7 +429,9 @@ header{
 .rm-nav-days a:hover{color:var(--teal);}
 .rm-nav-days .disabled{color:var(--line);cursor:default;}
 .rm-nav-days .archive-link{color:var(--teal);}
-.rm-archive{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
+/* Haut resserré (retour du 30/08) : trop de blanc avant "Les jours
+   précédents" après la cartouche de partage. */
+.rm-archive{background:var(--lavender);padding-top:28px;padding-bottom:56px;}
 .rm-archive h2{font-size:22px;margin-bottom:8px;text-align:center;}
 .rm-archive .sub{text-align:center;color:var(--ink-soft);font-size:14px;margin-bottom:32px;}
 .rm-list{max-width:640px;margin:0 auto;}
@@ -932,7 +954,7 @@ footer.footer--dark{
 .pubs-inner-pad{padding-top:88px;padding-bottom:88px;}
 .books-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
 .book-thumb{aspect-ratio:2/3;position:relative;overflow:hidden;background:var(--gradient);}
-.book-thumb img{width:100%;height:100%;object-fit:cover;}
+.book-thumb img{width:100%;height:100%;object-fit:contain;}
 .book-thumb .badge{position:absolute;top:12px;left:12px;background:#fff;color:var(--ink);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:999px;z-index:1;}
 .book-thumb.placeholder{display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}
 .book-thumb.placeholder .ph-title{font-family:'Fraunces',serif;color:#fff;font-size:19px;line-height:1.25;font-weight:600;}

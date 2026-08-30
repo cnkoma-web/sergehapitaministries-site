@@ -66,7 +66,6 @@ export default async function RoseeMatinalePage({
   const requestedIndex = date ? entries.findIndex((e) => e.article_date === date) : 0;
   const currentIndex = requestedIndex >= 0 ? requestedIndex : 0;
   const current = entries[currentIndex];
-  const isToday = currentIndex === 0;
   // Triées du plus récent au plus ancien : l'entrée "précédente" (plus ancienne)
   // est à l'index+1, la "suivante" (plus récente) est à l'index-1.
   const previous = entries[currentIndex + 1] ?? null;
@@ -91,11 +90,6 @@ export default async function RoseeMatinalePage({
             {new Date(current.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
           <ArticleMeta viewCount={current.view_count} readingTimeMinutes={current.reading_time_minutes} />
-          {!isToday && (
-            <Link href="/rosee-matinale" style={{ color: "#fff", fontSize: 13, textDecoration: "underline" }}>
-              ← Retour à la pensée du jour
-            </Link>
-          )}
         </div>
       </section>
 
@@ -110,7 +104,10 @@ export default async function RoseeMatinalePage({
         </section>
       )}
 
-      <section className="section">
+      {/* Padding resserré (retour du 30/08) : le .section générique (88px)
+          créait un vide trop marqué avec le chapeau au-dessus et l'archive
+          en dessous. */}
+      <section className="section" style={{ paddingTop: 32, paddingBottom: 24 }}>
         <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
           {paragraphs.map((html, i) => (
             <div key={i} style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: html }} />

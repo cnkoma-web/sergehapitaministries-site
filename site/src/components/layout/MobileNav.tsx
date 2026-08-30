@@ -27,7 +27,13 @@ export default function MobileNav({ nav }: { nav: NavItem[] }) {
           {nav.map((item) =>
             isDropdown(item) ? (
               <div key={item.label} className="mobile-nav-group">
-                <span className="mobile-nav-group-label">{item.label}</span>
+                {item.href ? (
+                  <a className="mobile-nav-group-label" href={item.href} onClick={() => setOpen(false)}>
+                    {item.label}
+                  </a>
+                ) : (
+                  <span className="mobile-nav-group-label">{item.label}</span>
+                )}
                 {item.links.map((link) => (
                   <a key={link.href} href={link.href} onClick={() => setOpen(false)}>
                     {link.label}

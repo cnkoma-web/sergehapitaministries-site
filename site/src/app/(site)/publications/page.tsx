@@ -20,19 +20,21 @@ export const metadata: Metadata = {
 export default async function PublicationsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; rmPage?: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const { page: pageParam, rmPage: rmPageParam } = await searchParams;
+  const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const rmPage = Math.max(1, Number(rmPageParam) || 1);
 
   // Deux flux distincts, l'un après l'autre — pas un flux unique mélangeant
-  // les trois catégories (retour explicite du 30/08, corrige la v3) :
-  // Flux 1 = Que Dit la Bible + La Vie Supérieure ; Flux 2 = Rosée Matinale.
-  const [qbVs, rm] = await Promise.all([
+  // les trois catégories : Flux 1 = Que Dit la Bible + La Vie Supérieure.
+  // Flux 2 = Rosée Matinale du jour uniquement (retour du 30/08) — une autre
+  // porte d'entrée vers Rosée Matinale, comme sur l'accueil, pas une liste
+  // des jours précédents (l'archive complète reste sur /rosee-matinale).
+  const [qbVs, rmToday] = await Promise.all([
     getArticlesFeed(["qdlb", "vs"], page, PER_PAGE),
-    getArticlesFeed(["rm"], rmPage, PER_PAGE),
+    getArticlesFeed(["rm"], 1, 1),
   ]);
+  const todayRosee = rmToday.articles[0] ?? null;
 
   return (
     <>
@@ -44,12 +46,10 @@ export default async function PublicationsPage({
       </section>
 
       {/* Flux 1 — Que Dit la Bible + La Vie Supérieure, mélangées
-          chronologiquement, chacune sa pastille de catégorie. */}
+          chronologiquement, chacune sa pastille de catégorie. Pas de titre
+          de section (retour du 30/08) : les cartes portent déjà leur badge. */}
       <section className="feed-section">
         <div className="pubs-col">
-          <div className="section-head">
-            <h2>Que Dit la Bible ? &amp; La Vie Supérieure</h2>
-          </div>
           {qbVs.articles.length === 0 ? (
             <p className="empty-state">Les premières publications arrivent bientôt.</p>
           ) : (
@@ -60,42 +60,20 @@ export default async function PublicationsPage({
             </div>
           )}
           {qbVs.total > 0 && (
-            <Pagination
-              page={page}
-              perPage={PER_PAGE}
-              total={qbVs.total}
-              basePath="/publications"
-              pageParam="page"
-              showPerPageSelector={false}
-              extraParams={rmPage > 1 ? { rmPage: String(rmPage) } : undefined}
-            />
+            <Pagination page={page} perPage={PER_PAGE} total={qbVs.total} basePath="/publications" showPerPageSelector={false} />
           )}
         </div>
       </section>
 
-      {/* Flux 2 — Rosée Matinale exclusivement, fond distinct pour qu'on
-          comprenne immédiatement qu'il s'agit d'un ensemble différent. Rosée
-          Matinale n'apparaît plus dans le flux 1 (retour du 30/08). */}
-      {rm.total > 0 && (
+      {/* Flux 2 — Rosée Matinale du jour, fond distinct pour qu'on comprenne
+          immédiatement qu'il s'agit d'un ensemble différent. Pas de titre de
+          section, pas de liste des jours précédents ici (retour du 30/08). */}
+      {todayRosee && (
         <section className="rm-reminder">
           <div className="pubs-col">
-            <div className="section-head">
-              <h2>Rosée Matinale</h2>
-            </div>
             <div className="feed-list">
-              {rm.articles.map((a) => (
-                <PublicationFeedItem article={a} key={a.id} />
-              ))}
+              <PublicationFeedItem article={todayRosee} />
             </div>
-            <Pagination
-              page={rmPage}
-              perPage={PER_PAGE}
-              total={rm.total}
-              basePath="/publications"
-              pageParam="rmPage"
-              showPerPageSelector={false}
-              extraParams={page > 1 ? { page: String(page) } : undefined}
-            />
           </div>
         </section>
       )}

@@ -18,7 +18,7 @@ export default function CoverRollover({
 }) {
   if (!hoverSrc) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} className={className} style={{ width: "100%", height: "100%", objectFit: "cover" }} />;
+    return <img src={src} alt={alt} className={className} style={{ width: "100%", height: "100%", objectFit: "contain" }} />;
   }
   return (
     <div className={`cover-rollover ${className ?? ""}`}>

@@ -3,7 +3,10 @@
 // serveur dans le bundle navigateur.
 
 export type NavLink = { label: string; href: string };
-export type NavDropdown = { label: string; links: NavLink[] };
+// href optionnel : un menu déroulant peut aussi mener quelque part en
+// cliquant sur son propre libellé (ex. "Publications" → le hub), pas
+// seulement dérouler ses liens au survol (retour du 30/08).
+export type NavDropdown = { label: string; href?: string; links: NavLink[] };
 export type NavItem = NavLink | NavDropdown;
 
 export function isDropdown(item: NavItem): item is NavDropdown {

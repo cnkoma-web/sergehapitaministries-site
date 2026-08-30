@@ -56,7 +56,11 @@ export default async function Header() {
           {nav.map((item) =>
             isDropdown(item) ? (
               <div key={item.label} className="dropdown">
-                <span>{item.label} ▾</span>
+                {item.href ? (
+                  <Link href={item.href}>{item.label} ▾</Link>
+                ) : (
+                  <span>{item.label} ▾</span>
+                )}
                 <div className="dropdown-menu">
                   {item.links.map((link) => (
                     <Link key={link.href} href={link.href}>

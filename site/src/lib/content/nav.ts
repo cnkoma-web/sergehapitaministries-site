@@ -21,8 +21,14 @@ export async function getMainNav(): Promise<NavItem[]> {
   const topLevel = data.filter((item) => !item.parent_id);
   return topLevel.map((item) => {
     const children = data.filter((c) => c.parent_id === item.id);
-    if (item.href) return { label: item.label, href: item.href };
-    return { label: item.label, links: children.map((c) => ({ label: c.label, href: c.href ?? "#" })) };
+    // Déroulant si des enfants existent — indépendamment de son propre href
+    // (un déroulant peut aussi mener quelque part en cliquant sur son
+    // libellé, ex. "Publications" → le hub ; "À propos" n'a pas de page
+    // d'atterrissage propre et reste un simple déclencheur de survol).
+    if (children.length > 0) {
+      return { label: item.label, href: item.href ?? undefined, links: children.map((c) => ({ label: c.label, href: c.href ?? "#" })) };
+    }
+    return { label: item.label, href: item.href ?? "#" };
   });
 }
 
