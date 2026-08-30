@@ -111,7 +111,7 @@ export default async function RoseeMatinalePage({
       )}
 
       <section className="section">
-        <div className="wrap">
+        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
           {paragraphs.map((html, i) => (
             <div key={i} style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: html }} />
           ))}
@@ -163,13 +163,13 @@ export default async function RoseeMatinalePage({
               <div className="icon">QB</div>
               <h3>Que Dit la Bible ?</h3>
               <p>Un enseignement structuré, verset par verset.</p>
-              <Link href="/publications#que-dit-la-bible">Découvrir →</Link>
+              <Link href="/publications">Découvrir →</Link>
             </div>
             <div className="explore-card">
               <div className="icon">VS</div>
               <h3>La Vie Supérieure</h3>
               <p>Un enseignement approfondi, pour aller plus loin.</p>
-              <Link href="/publications#vie-superieure">Découvrir →</Link>
+              <Link href="/publications">Découvrir →</Link>
             </div>
             <div className="explore-card">
               <div className="icon">L</div>

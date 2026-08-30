@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { getBooks } from "@/lib/content/books";
 import { formatPrice } from "@/lib/format";
+import CoverRollover from "@/components/shop/CoverRollover";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -63,7 +63,7 @@ export default async function LivresPage() {
               </div>
               <div className="catalogue-thumb" style={{ margin: "0 auto 18px", maxWidth: 220 }}>
                 {featured.cover_url ? (
-                  <Image src={featured.cover_url} alt={featured.title} width={220} height={330} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <CoverRollover src={featured.cover_url} hoverSrc={featured.hover_cover_url} alt={featured.title} />
                 ) : (
                   <div className="catalogue-thumb placeholder">
                     <div>
@@ -107,7 +107,7 @@ export default async function LivresPage() {
                       book.badge && <span className="catalogue-badge">{book.badge}</span>
                     )}
                     {book.cover_url ? (
-                      <Image src={book.cover_url} alt={book.title} width={190} height={285} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <CoverRollover src={book.cover_url} hoverSrc={book.hover_cover_url} alt={book.title} />
                     ) : (
                       <div className="catalogue-thumb placeholder" style={{ position: "absolute", inset: 0 }}>
                         <div>

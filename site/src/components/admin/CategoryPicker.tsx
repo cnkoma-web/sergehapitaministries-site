@@ -39,20 +39,39 @@ export default function CategoryPicker({
         <input key={id} type="hidden" name="category_ids" value={id} />
       ))}
       <div className="chip-row" style={{ marginBottom: 10 }}>
-        {categories.map((c) => (
-          <label
-            key={c.id}
-            className="chip"
-            style={{
-              cursor: "pointer",
-              background: selected.includes(c.id) ? "var(--purple)" : "var(--lavender)",
-              color: selected.includes(c.id) ? "#fff" : "var(--purple)",
-            }}
-          >
-            <input type="checkbox" checked={selected.includes(c.id)} onChange={() => toggle(c.id)} style={{ display: "none" }} />
-            {c.name}
-          </label>
-        ))}
+        {categories.map((c) =>
+          selected.includes(c.id) ? (
+            // Sélectionné : une croix explicite pour retirer, plutôt que de
+            // compter sur le seul rappel qu'un second clic sur la puce
+            // (comportement peu visible) fait la même chose.
+            <span
+              key={c.id}
+              className="chip"
+              style={{ background: "var(--purple)", color: "#fff", display: "inline-flex", alignItems: "center", gap: 6 }}
+            >
+              {c.name}
+              <button
+                type="button"
+                onClick={() => toggle(c.id)}
+                aria-label={`Retirer le thème ${c.name}`}
+                title="Retirer"
+                style={{ background: "none", border: 0, color: "#fff", cursor: "pointer", padding: 0, fontSize: 13, lineHeight: 1, fontFamily: "inherit" }}
+              >
+                ×
+              </button>
+            </span>
+          ) : (
+            <button
+              key={c.id}
+              type="button"
+              className="chip"
+              onClick={() => toggle(c.id)}
+              style={{ background: "var(--lavender)", color: "var(--purple)", cursor: "pointer", border: 0, fontFamily: "inherit" }}
+            >
+              {c.name}
+            </button>
+          )
+        )}
         {categories.length === 0 && <span style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>Aucune catégorie pour l&apos;instant.</span>}
       </div>
       <div style={{ display: "flex", gap: 6 }}>

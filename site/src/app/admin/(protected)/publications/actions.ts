@@ -16,16 +16,20 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-function parseFurtherVerses(raw: string): { reference: string; text: string }[] {
-  return raw
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [reference, ...rest] = line.split("|");
-      return { reference: reference.trim(), text: rest.join("|").trim() };
-    })
-    .filter((v) => v.reference && v.text);
+// Lit les paires de champs Référence/Texte répétables (FurtherVersesEditor),
+// envoyées comme deux listes parallèles further_verse_reference[] /
+// further_verse_text[] — remplace l'ancienne syntaxe "Référence | Texte" à
+// mémoriser dans une zone de texte, source d'oublis silencieux.
+function readFurtherVerses(formData: FormData): { reference: string; text: string }[] {
+  const refs = formData.getAll("further_verse_reference").map(String);
+  const texts = formData.getAll("further_verse_text").map(String);
+  const verses: { reference: string; text: string }[] = [];
+  for (let i = 0; i < Math.max(refs.length, texts.length); i++) {
+    const reference = (refs[i] ?? "").trim();
+    const text = (texts[i] ?? "").trim();
+    if (reference && text) verses.push({ reference, text });
+  }
+  return verses;
 }
 
 function parseTags(raw: string): string[] {
@@ -83,7 +87,7 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   if (type === "qdlb") {
     update.verse_reference = String(formData.get("verse_reference") ?? "").trim() || null;
     update.verse_text = String(formData.get("verse_text") ?? "").trim() || null;
-    update.further_verses = parseFurtherVerses(String(formData.get("further_verses") ?? ""));
+    update.further_verses = readFurtherVerses(formData);
   }
   if (type === "vs") {
     update.access = String(formData.get("access") ?? "free");

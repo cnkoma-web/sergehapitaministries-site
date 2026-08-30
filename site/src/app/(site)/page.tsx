@@ -8,6 +8,7 @@ import { getActiveStats } from "@/lib/content/stats";
 import { stripHtml } from "@/lib/richtext";
 import { getSocialLinks } from "@/lib/content/footer";
 import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
+import CoverRollover from "@/components/shop/CoverRollover";
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -254,8 +255,7 @@ export default async function HomePage() {
                     {book.cover_url ? (
                       <div className="book-thumb">
                         {book.badge && <span className="badge">{book.badge}</span>}
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={book.cover_url} alt={book.title} />
+                        <CoverRollover src={book.cover_url} hoverSrc={book.hover_cover_url} alt={book.title} />
                       </div>
                     ) : (
                       <div className="book-thumb placeholder">

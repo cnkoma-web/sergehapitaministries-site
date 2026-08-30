@@ -88,7 +88,7 @@ export default async function AdminGoodieDetailPage({ params }: { params: Promis
 
             <div className="editor-card">
               <h3>Description</h3>
-              <RichTextEditor name="description" defaultValue={goodie.description} placeholder="Description du produit…" compact minHeight={110} />
+              <RichTextEditor key={goodie.id} name="description" defaultValue={goodie.description} placeholder="Description du produit…" compact minHeight={110} />
             </div>
           </div>
 

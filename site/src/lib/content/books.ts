@@ -18,6 +18,11 @@ export type Book = {
   description: string | null;
   status: BookStatus;
   position: number;
+  // Deuxième image de la galerie (dos de couverture, position 2) — sert à
+  // l'effet de survol (rollover) sur les vignettes (cahier §6.4, référence
+  // rochedy.com) : null si le livre n'a qu'une seule image, on ne simule
+  // jamais un second visuel qui n'existe pas.
+  hover_cover_url: string | null;
 };
 
 export type BookImage = { id: string; url: string; position: number };
@@ -27,6 +32,15 @@ const COLUMNS =
 const ADMIN_COLUMNS =
   "id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, status, position, active";
 
+// Une seule requête groupée pour la 2e image (position 1 = dos de couverture)
+// de chaque livre donné, plutôt qu'une requête par livre.
+async function getHoverCovers(bookIds: string[]): Promise<Map<string, string>> {
+  if (bookIds.length === 0) return new Map();
+  const supabase = await createClient();
+  const { data } = await supabase.from("book_images").select("book_id, url").in("book_id", bookIds).eq("position", 1);
+  return new Map((data ?? []).map((row) => [row.book_id as string, row.url as string]));
+}
+
 export async function getBooks(): Promise<Book[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -35,7 +49,8 @@ export async function getBooks(): Promise<Book[]> {
     .neq("status", "hidden")
     .order("position", { ascending: true });
   if (error || !data) return [];
-  return data;
+  const hoverCovers = await getHoverCovers(data.map((b) => b.id));
+  return data.map((b) => ({ ...b, hover_cover_url: hoverCovers.get(b.id) ?? null }));
 }
 
 export async function getBookBySlug(slug: string): Promise<Book | null> {
@@ -47,7 +62,8 @@ export async function getBookBySlug(slug: string): Promise<Book | null> {
     .neq("status", "hidden")
     .single();
   if (error || !data) return null;
-  return data;
+  const hoverCovers = await getHoverCovers([data.id]);
+  return { ...data, hover_cover_url: hoverCovers.get(data.id) ?? null };
 }
 
 export async function getBookImages(bookId: string): Promise<BookImage[]> {
@@ -88,7 +104,8 @@ export async function getAdjacentBooks(position: number): Promise<{ prev: Adjace
 
 // ===== Admin (voit aussi les livres masqués) =====
 
-export type AdminBook = Book & { active: boolean };
+// L'admin n'a pas besoin de hover_cover_url (effet public uniquement).
+export type AdminBook = Omit<Book, "hover_cover_url"> & { active: boolean };
 
 export async function getBooksAdmin(page: number, perPage: number): Promise<{ books: AdminBook[]; total: number }> {
   const supabase = await createClient();

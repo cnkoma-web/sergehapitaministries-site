@@ -79,7 +79,7 @@ export default async function AdminLivreDetailPage({ params }: { params: Promise
 
           <div className="editor-card">
             <h3>Description</h3>
-            <RichTextEditor name="description" defaultValue={book.description} placeholder="Description du livre…" compact minHeight={110} />
+            <RichTextEditor key={book.id} name="description" defaultValue={book.description} placeholder="Description du livre…" compact minHeight={110} />
           </div>
         </div>
 

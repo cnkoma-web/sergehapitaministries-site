@@ -34,10 +34,13 @@ function sanitize(root: HTMLElement) {
   };
   Array.from(root.children).forEach(walk);
 
-  // Paragraphes vides (juste un <br> ou rien) laissés par le navigateur.
-  root.querySelectorAll("p, div").forEach((el) => {
-    if (!el.textContent?.trim() && !el.querySelector("img")) el.remove();
-  });
+  // On ne supprime plus les paragraphes "vides" ici : un <p><br></p> est
+  // indissociable, par sa forme dans le DOM, d'une ligne blanche volontaire
+  // (Entrée deux fois pour aérer le texte) — cette suppression automatique
+  // effaçait donc aussi les sauts de ligne voulus par Serge (signalé après
+  // enregistrement : le texte semblait perdre sa mise en forme). Un paragraphe
+  // réellement vide laissé par erreur n'est qu'un artefact visuel mineur,
+  // largement préférable à la perte silencieuse d'une mise en page voulue.
 }
 
 export default function RichTextEditor({ name, defaultValue, placeholder, minHeight = 160, compact = false }: Props) {

@@ -7,6 +7,7 @@ import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import RelatedArticlesPicker from "@/components/admin/RelatedArticlesPicker";
 import CategoryPicker from "@/components/admin/CategoryPicker";
+import FurtherVersesEditor from "@/components/admin/FurtherVersesEditor";
 
 // Rosée Matinale a son propre écran d'édition, plus simple (pas de couverture,
 // thèmes, articles similaires... cahier §3.2) — on y renvoie si quelqu'un
@@ -99,12 +100,8 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
                 <textarea name="verse_text" defaultValue={article.verse_text ?? ""} rows={2} />
               </div>
               <div className="editor-field">
-                <label>Versets complémentaires — un par ligne, « Référence | Texte »</label>
-                <textarea
-                  name="further_verses"
-                  rows={3}
-                  defaultValue={article.further_verses.map((v) => `${v.reference} | ${v.text}`).join("\n")}
-                />
+                <label>Versets complémentaires</label>
+                <FurtherVersesEditor initialVerses={article.further_verses} />
               </div>
             </>
           )}
@@ -139,7 +136,7 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
           <div className="content-area">
             <div className="content-body">
               <input type="text" name="title" defaultValue={article.title} required className="title-input" placeholder="Titre de l'article" />
-              <RichTextEditor name="body" defaultValue={article.body} placeholder="Écrivez votre article ici…" minHeight={300} />
+              <RichTextEditor key={article.id} name="body" defaultValue={article.body} placeholder="Écrivez votre article ici…" minHeight={300} />
             </div>
           </div>
         </div>

@@ -12,7 +12,7 @@ export default async function ReviewSection({ bookId, goodieId }: Props) {
 
   return (
     <section className="reviews-section" id="avis">
-      <div className="wrap">
+      <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
         <div className="reviews-head">
           <div className="reviews-summary">
             <div className="big-score">{summary.average ?? "—"}</div>

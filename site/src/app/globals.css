@@ -10,6 +10,12 @@
   --paper:#FCFBFF;
   --line:#E2DCF3;
   --gradient: linear-gradient(135deg, var(--blue), var(--purple));
+  /* Cahier §1.7 v3 : largeur de la colonne de contenu (texte, images,
+     informations) sur toutes les pages sauf l'accueil — calée sur la largeur
+     réelle du menu de navigation du header (bouton Accueil à gauche, bouton
+     Contact à droite), mesurée à 695px sur le site rendu. Remplace la règle
+     v2 (qui alignait sur .wrap, 1180px). */
+  --content-col: 696px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{overflow-x:hidden;}
@@ -24,6 +30,15 @@ h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-0.01em;
 a{color:inherit;text-decoration:none;}
 .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
 img{max-width:100%;display:block;}
+
+/* Effet de survol (rollover) sur les couvertures/visuels produit — cahier
+   §6.4, référence rochedy.com. Voir components/shop/CoverRollover.tsx. */
+.cover-rollover{position:relative;width:100%;height:100%;overflow:hidden;}
+.cover-rollover .cr-front,
+.cover-rollover .cr-back{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .4s ease;}
+.cover-rollover .cr-back{opacity:0;}
+.cover-rollover:hover .cr-front{opacity:0;}
+.cover-rollover:hover .cr-back{opacity:1;}
 .eyebrow{
   text-transform:uppercase;font-size:12.5px;letter-spacing:0.14em;font-weight:700;
   color:var(--purple);margin-bottom:14px;display:flex;align-items:center;gap:8px;
@@ -115,6 +130,10 @@ header{
 .util-hero{padding:48px 0 40px;background:linear-gradient(120deg,var(--blue),var(--purple));text-align:center;}
 .util-hero h1{color:#fff;font-size:34px;margin-bottom:10px;}
 .util-hero p{color:rgba(255,255,255,.85);font-size:15.5px;max-width:480px;margin:0 auto;}
+/* Cahier v3 §6.10 point 4 : le sous-titre du hero Publications cassait mal sa
+   dernière ligne dans les 480px génériques de .util-hero — élargi à la
+   largeur de colonne standard (§1.7) au lieu d'une largeur plus étroite. */
+.pubs-hero p{max-width:var(--content-col);}
 
 /* ===== FORMULAIRE générique (contact, invitation, etc.) ===== */
 .form-block input, .form-block textarea, .form-block select{
@@ -179,7 +198,10 @@ header{
 .book-nav-link{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
 .book-nav-link:hover{color:var(--purple);}
 .book-nav-catalogue{font-size:12.5px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
-.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start;}
+/* Écart resserré entre couverture et colonne d'informations (cahier v3
+   §1.7, note spécifique fiche livre) — 56px laissait trop de vide une fois
+   la colonne de contenu passée à ~696px. */
+.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;align-items:start;}
 /* Pas de margin:auto ici (cahier §1.7) : la couverture doit démarrer au même
    bord gauche que la galerie de vignettes juste en dessous, pas être centrée
    indépendamment dans sa colonne. */
@@ -202,9 +224,9 @@ header{
 .specs-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
 .specs-row span:first-child{color:var(--ink-soft);}
 .specs-row span:last-child{font-weight:600;color:var(--ink);text-align:right;}
-/* Largeur de colonne unifiée avec le reste du site (cahier §1.7) — plus de
-   760px propre à cette page : hérite de la largeur standard de .wrap. */
-.product-desc{padding-top:0;padding-bottom:56px;}
+/* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation
+   (remplace le passage à 100% de .wrap fait en v2). */
+.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-col);margin:0 auto;}
 .product-desc h2{font-size:20px;margin-bottom:16px;}
 .product-desc p{font-size:15.5px;line-height:1.8;color:var(--ink);margin-bottom:16px;white-space:pre-line;}
 .size-options{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
@@ -242,6 +264,33 @@ header{
 .review-form input[type="text"]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;margin-bottom:16px;}
 
 /* ===== PUBLICATIONS (hub) ===== */
+/* ===== Flux unifié du hub Publications (cahier §6.5 / v3 §6.10.1) =====
+   Un seul flux mélangeant QDLB/VS/RM, trié du plus récent au plus ancien —
+   remplace les anciens blocs .qdlb-grid/.vs-grid séparés par catégorie. */
+.feed-section{padding-top:56px;padding-bottom:64px;}
+.feed-list{display:flex;flex-direction:column;}
+.feed-item{display:flex;gap:20px;padding:24px 4px;border-top:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit;}
+.feed-list .feed-item:first-child{border-top:0;}
+.feed-thumb{width:96px;aspect-ratio:1/1;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--lavender);}
+.feed-body{flex:1;min-width:0;}
+.feed-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+.feed-badge{display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;letter-spacing:.04em;color:#fff;border-radius:100px;padding:3px 10px;}
+.feed-badge.qdlb{background:var(--purple);}
+.feed-badge.vs{background:var(--blue);}
+.feed-badge.rm{background:var(--teal);}
+.feed-date{font-size:12.5px;color:var(--ink-soft);}
+.feed-item h3{font-size:17px;line-height:1.35;margin-bottom:6px;}
+.feed-item .excerpt{font-size:14px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.feed-item:hover h3{color:var(--purple);}
+/* Rappel Rosée Matinale sous le flux — fond de couleur différent (v3 §6.10.2). */
+.rm-reminder{background:var(--lavender);padding-top:56px;padding-bottom:64px;}
+.rm-reminder .feed-thumb{background:#fff;}
+.rm-reminder .feed-item{border-top-color:var(--line);}
+@media (max-width:640px){
+  .feed-item{gap:14px;padding:18px 0;}
+  .feed-thumb{width:64px;}
+}
+
 .pub-category{padding-top:64px;padding-bottom:64px;}
 .pub-cat-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:36px;flex-wrap:wrap;}
 .pub-cat-head h2{display:flex;align-items:center;gap:12px;font-size:26px;}
@@ -272,13 +321,14 @@ header{
 /* ===== ARTICLE (Que Dit la Bible / La Vie Supérieure) ===== */
 .article-cat-badge{display:inline-flex;align-items:center;background:var(--ink);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:7px 16px;border-radius:100px;margin-bottom:20px;}
 .article-header{padding-top:52px;padding-bottom:8px;}
-.article-title{color:var(--ink);font-size:36px;line-height:1.22;max-width:720px;margin-bottom:14px;}
+/* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
+.article-header .wrap{max-width:var(--content-col);margin:0 auto;}
+.article-title{color:var(--ink);font-size:36px;line-height:1.22;margin-bottom:14px;}
 .article-date{font-size:13px;color:var(--ink-soft);}
 .article-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--ink-soft);margin-top:8px;}
 .article-meta span{display:flex;align-items:center;gap:5px;}
-/* Largeur de colonne unifiée avec le reste du site (cahier §1.7) — plus de
-   680px propre à cette page : hérite de la largeur standard de .wrap. */
-.article-body{padding-top:48px;padding-bottom:60px;}
+/* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
+.article-body{padding-top:48px;padding-bottom:60px;max-width:var(--content-col);margin:0 auto;}
 .verse-box{background:var(--lavender);border-left:4px solid var(--purple);border-radius:0 14px 14px 0;padding:30px 34px;margin:0 0 44px;}
 .verse-box .ref{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:12px;}
 .verse-box p{font-family:'Fraunces',serif;font-style:italic;font-size:20px;line-height:1.6;color:var(--ink);margin:0;}
@@ -623,9 +673,8 @@ header{
 .admin-error{background:#FDEDEC;color:#C0392B;padding:10px 14px;border-radius:8px;font-size:13.5px;margin-bottom:16px;}
 
 /* ===== PAGE LÉGALE ===== */
-/* Largeur de colonne unifiée avec le reste du site (cahier §1.7) — plus de
-   720px propre à cette page : hérite de la largeur standard de .wrap. */
-.legal-body{padding-top:44px;padding-bottom:64px;}
+/* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
+.legal-body{max-width:var(--content-col);margin:0 auto;padding-top:44px;padding-bottom:64px;}
 .legal-body h2{font-size:16px;margin:36px 0 12px;color:var(--purple);}
 .legal-body h2:first-child{margin-top:0;}
 .legal-body p{font-size:14.5px;line-height:1.75;color:var(--ink);margin-bottom:14px;}
@@ -718,8 +767,8 @@ footer.footer--dark{
 .page-hero .wrap{position:relative;z-index:1;padding:48px 38px;}
 .page-hero h1{font-size:36px;line-height:1.16;margin-bottom:22px;color:#fff;max-width:640px;}
 .page-hero p{font-size:17px;color:rgba(255,255,255,.82);line-height:1.65;max-width:520px;margin:0;}
-/* Largeur de colonne unifiée avec le reste du site (cahier §1.7) — plus de
-   720px propre à cette page : hérite de la largeur standard de .wrap. */
+/* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
+.bio-block{max-width:var(--content-col);margin:0 auto;}
 .bio-block p{color:var(--ink-soft);font-size:16px;line-height:1.75;margin-bottom:18px;}
 .pullquote{position:relative;min-height:280px;display:flex;align-items:center;background-size:cover;background-position:center 25%;}
 .pullquote::after{content:"";position:absolute;inset:0;background:rgba(27,23,48,.6);}
@@ -853,10 +902,15 @@ footer.footer--dark{
 .hero .btn-outline{border:1.5px solid #fff;color:#fff;}
 .hero .btn-outline:hover{background:#fff;color:var(--ink);}
 .book-feature{position:relative;}
-.book-card{position:relative;background:#fff;border-radius:22px;padding:26px;box-shadow:0 40px 70px -32px rgba(46,47,224,.35);border:1px solid var(--line);}
+/* Carte plus carrée que rectangulaire, avec de la respiration interne
+   (cahier v3 §6.10 point 3) : marge intérieure augmentée, largeur plafonnée
+   pour se rapprocher d'un carré au lieu d'étirer la carte sur toute la
+   colonne, et un espace clair sous le badge flottant (qui chevauchait le
+   texte juste en dessous, faute de marge). */
+.book-card{position:relative;background:#fff;border-radius:22px;padding:44px 34px 34px;max-width:400px;margin:0 auto;box-shadow:0 40px 70px -32px rgba(46,47,224,.35);border:1px solid var(--line);}
 .book-card .tag{position:absolute;top:-14px;left:26px;background:var(--teal);color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;padding:7px 16px;border-radius:999px;text-transform:uppercase;}
-.book-card .book-sub{font-size:14.5px;color:var(--ink-soft);margin-bottom:18px;line-height:1.55;}
-.book-card .book-actions{display:flex;gap:10px;}
+.book-card .book-sub{font-size:14.5px;color:var(--ink-soft);margin-bottom:26px;line-height:1.6;}
+.book-card .book-actions{display:flex;flex-direction:column;gap:10px;}
 .book-card .book-actions .btn{flex:1;justify-content:center;padding:12px 16px;font-size:13.5px;}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);}
 .stat{padding:38px 20px;text-align:center;border-right:1px solid var(--line);}

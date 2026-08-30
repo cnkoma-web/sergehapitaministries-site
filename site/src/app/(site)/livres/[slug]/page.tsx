@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBookBySlug, getAdjacentBooks, getBookImages } from "@/lib/content/books";
+import CoverRollover from "@/components/shop/CoverRollover";
 import { getReviewSummary } from "@/lib/content/reviews";
 import { formatPrice } from "@/lib/format";
 import Stars from "@/components/reviews/Stars";
@@ -41,7 +42,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
   return (
     <>
       <section className="product-section">
-        <div className="wrap">
+        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
           <div className="book-nav">
             {prev ? (
               <Link href={`/livres/${prev.slug}`} className="book-nav-link">← {prev.title}</Link>
@@ -60,7 +61,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
             <div>
               <div className={galleryImages.length > 0 ? "product-cover" : "product-cover placeholder"}>
                 {galleryImages.length > 0 ? (
-                  <Image src={galleryImages[0].url} alt={book.title} width={340} height={510} priority />
+                  <CoverRollover src={galleryImages[0].url} hoverSrc={galleryImages[1]?.url} alt={book.title} />
                 ) : (
                   <div>
                     <div className="ph-collection">{book.publisher}</div>

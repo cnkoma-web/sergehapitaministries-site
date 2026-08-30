@@ -55,7 +55,7 @@ export default async function AdminRoseeEntryPage({ params }: { params: Promise<
 
           <div className="editor-field">
             <label>Corps (développement, facultatif)</label>
-            <RichTextEditor name="body" defaultValue={entry.body} placeholder="Développement facultatif…" minHeight={160} compact />
+            <RichTextEditor key={entry.id} name="body" defaultValue={entry.body} placeholder="Développement facultatif…" minHeight={160} compact />
           </div>
 
           <div className="editor-field">

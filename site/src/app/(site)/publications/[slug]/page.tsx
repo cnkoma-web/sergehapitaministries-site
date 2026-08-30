@@ -104,7 +104,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <>
             <div className="excerpt-fade" />
             <section className="section" style={{ paddingTop: 0 }}>
-              <div className="wrap">
+              <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
                 <div className="gate-box">
                   <div className="lock">🔒</div>
                   <h3>La suite est réservée aux membres</h3>
@@ -131,7 +131,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
                 <ShareCartouche title={article.title} url={pageUrl} />
                 <div className="back-cta">
-                  <Link href="/publications#vie-superieure" className="btn btn-outline">← Toutes les publications</Link>
+                  <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
                 </div>
               </div>
             </section>
@@ -140,10 +140,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         {unlocked && (
           <section className="section" style={{ paddingTop: 0 }}>
-            <div className="wrap">
+            <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
               <ShareCartouche title={article.title} url={pageUrl} />
               <div className="back-cta">
-                <Link href="/publications#vie-superieure" className="btn btn-outline">← Toutes les publications</Link>
+                <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
               </div>
             </div>
           </section>
@@ -216,7 +216,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           <ShareCartouche title={article.title} url={pageUrl} />
           <div className="back-cta">
-            <Link href="/publications#que-dit-la-bible" className="btn btn-outline">← Toutes les publications</Link>
+            <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
           </div>
         </div>
       </section>

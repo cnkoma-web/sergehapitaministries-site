@@ -22,6 +22,10 @@ export type Article = {
   author_name: string | null;
   related_article_ids: string[];
   seo_keywords: string[];
+  // Horodatage réel de création — sert uniquement à afficher l'heure de
+  // publication (cahier §6.5 : "JJ/MM/AAAA · HHhMM") à côté de la date
+  // éditoriale (article_date), qui elle n'a pas de composante horaire.
+  created_at: string;
 };
 
 // Libellés/initiales dérivés du type plutôt que stockés en base (une seule
@@ -34,9 +38,9 @@ export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
 export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", vs: "VS", rm: "RM" };
 
 const COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at";
 const ADMIN_COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at";
 
 export async function getPublishedArticles(type: ArticleType): Promise<Article[]> {
   const supabase = await createClient();
@@ -125,6 +129,40 @@ export async function getArticlesAdmin(
     .range(from, from + perPage - 1);
   if (error || !data) return { articles: [], total: 0 };
   return { articles: data, total: count ?? 0 };
+}
+
+/** Flux unifié du hub Publications (cahier §6.5) : toutes catégories
+ * mélangées (QDLB/VS/RM), triées de la plus récente à la plus ancienne,
+ * paginées — plus de blocs séparés par catégorie. */
+export async function getPublicationsFeed(page: number, perPage: number): Promise<{ articles: Article[]; total: number }> {
+  const supabase = await createClient();
+  const from = (page - 1) * perPage;
+  const { data, error, count } = await supabase
+    .from("articles")
+    .select(COLUMNS, { count: "exact" })
+    .in("type", ["qdlb", "vs", "rm"])
+    .eq("status", "published")
+    .order("article_date", { ascending: false })
+    .order("created_at", { ascending: false })
+    .range(from, from + perPage - 1);
+  if (error || !data) return { articles: [], total: 0 };
+  return { articles: data, total: count ?? 0 };
+}
+
+/** Dernières entrées Rosée Matinale, pour le rappel affiché sous le flux
+ * unifié (cahier v3 §6.10 point 2) — Rosée Matinale reste dans le flux
+ * mélangé aussi, ceci est un rappel supplémentaire, pas un remplacement. */
+export async function getLatestRosee(limit: number): Promise<Article[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("articles")
+    .select(COLUMNS)
+    .eq("type", "rm")
+    .eq("status", "published")
+    .order("article_date", { ascending: false })
+    .limit(limit);
+  if (error || !data) return [];
+  return data;
 }
 
 export async function getArticleByIdAdmin(id: string): Promise<AdminArticle | null> {
