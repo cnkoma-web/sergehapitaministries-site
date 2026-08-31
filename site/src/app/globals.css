@@ -156,14 +156,11 @@ header{
 .form-block label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
 
 /* ===== CATALOGUE (livres / boutique) ===== */
-/* Écart resserré + carte réduite de 10% (retour du 01/09) : la carte passe
-   à une largeur fixe (262px, ~10% de moins que les ~291px précédents) au
-   lieu d'une fraction du conteneur, pour un contrôle précis ; le texte à
-   gauche absorbe l'espace restant. */
-/* Écart restauré à 48px, valeur d'origine de la maquette (retour du 02/09)
-   — 32px était trop resserré. La largeur de la carte (262px, -10%) reste
-   inchangée : seul l'écart était en cause. */
-.catalogue-intro-split{display:grid;grid-template-columns:1fr 262px;gap:48px;align-items:start;}
+/* Retour à la répartition proportionnelle d'origine de la maquette
+   (1.1fr .9fr, retour du 02/09) — la largeur fixe (262px) ne suivait plus
+   la logique originale. Sur la largeur de colonne standard actuelle
+   (~695px), ceci donne ~347px pour le texte et ~284px pour la carte. */
+.catalogue-intro-split{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start;}
 .catalogue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
 .catalogue-book{position:relative;background:#fff;border:1px solid var(--line);border-top:3px solid var(--purple);border-radius:6px;padding:24px 18px 20px;box-shadow:0 12px 28px -18px rgba(27,23,48,.18);display:flex;flex-direction:column;height:100%;}
 .catalogue-book:nth-child(4n+2){border-top-color:var(--blue);}
@@ -226,8 +223,13 @@ header{
    elles-mêmes ne sont pas touchées (toujours .9fr/1.1fr sur .wrap pleine
    largeur) : seul l'espace entre les deux se resserre. */
 /* 38px (retour du 02/09) : 31px était trop resserré ; 48px (maquette
-   d'origine) trop large — valeur intermédiaire précise. */
-.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:38px;align-items:start;}
+   d'origine) trop large — valeur intermédiaire précise.
+   Colonne de gauche en largeur fixe (340px, retour du 02/09) — .9fr,
+   proportion de la largeur totale, rendait cette colonne bien plus large
+   (~489px) que .product-cover (plafonné à 340px de toute façon) : ~150px
+   d'espace mort s'ajoutaient au gap, la distance visuelle réelle jusqu'à
+   la colonne d'infos dépassait largement les 38px annoncés. */
+.product-grid{display:grid;grid-template-columns:340px 1fr;gap:38px;align-items:start;}
 /* Pas de margin:auto ici (cahier §1.7) : la couverture doit démarrer au même
    bord gauche que la galerie de vignettes juste en dessous, pas être centrée
    indépendamment dans sa colonne. */
@@ -235,6 +237,14 @@ header{
    aux bords de son propre cadre — pas seulement un écart resserré entre
    les deux colonnes. */
 .product-cover{position:relative;aspect-ratio:2/3;max-width:340px;border-radius:6px;box-shadow:0 30px 60px -24px rgba(27,23,48,.4);overflow:hidden;background:var(--lavender);padding:12px;}
+/* Le padding d'un conteneur position:relative n'est pas pris en compte par
+   un enfant position:absolute + inset:0 (le "containing block" qu'il forme
+   correspond à la boîte de bordure, pas à la boîte de contenu) — le padding
+   ci-dessus n'avait donc aucun effet visuel pour un livre avec rollover
+   (constaté le 02/09). Corrigé en insétant .cover-rollover de la même
+   valeur explicitement, uniquement dans ce contexte précis (le rollover
+   du catalogue/de l'accueil n'a pas ce padding, inset:0 y reste correct). */
+.product-cover .cover-rollover{inset:12px;}
 .product-cover img{width:100%;height:100%;object-fit:contain;}
 .product-cover.placeholder{display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;background:linear-gradient(135deg,var(--blue),var(--purple));}
 .product-cover .ph-collection{font-size:11px;text-transform:none;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-bottom:10px;}
