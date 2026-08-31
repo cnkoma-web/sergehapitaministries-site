@@ -159,7 +159,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+          <div className="pub-teaser-grid">
             <div style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16, padding: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, paddingBottom: 14, borderBottom: "2px solid var(--purple)" }}>
                 <span style={{ fontSize: 20 }}>📖</span>

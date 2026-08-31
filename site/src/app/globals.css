@@ -160,7 +160,10 @@ header{
    à une largeur fixe (262px, ~10% de moins que les ~291px précédents) au
    lieu d'une fraction du conteneur, pour un contrôle précis ; le texte à
    gauche absorbe l'espace restant. */
-.catalogue-intro-split{display:grid;grid-template-columns:1fr 262px;gap:32px;align-items:start;}
+/* Écart restauré à 48px, valeur d'origine de la maquette (retour du 02/09)
+   — 32px était trop resserré. La largeur de la carte (262px, -10%) reste
+   inchangée : seul l'écart était en cause. */
+.catalogue-intro-split{display:grid;grid-template-columns:1fr 262px;gap:48px;align-items:start;}
 .catalogue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
 .catalogue-book{position:relative;background:#fff;border:1px solid var(--line);border-top:3px solid var(--purple);border-radius:6px;padding:24px 18px 20px;box-shadow:0 12px 28px -18px rgba(27,23,48,.18);display:flex;flex-direction:column;height:100%;}
 .catalogue-book:nth-child(4n+2){border-top-color:var(--blue);}
@@ -222,11 +225,16 @@ header{
 /* Écart réduit de 30% (retour du 01/09) : 44px -> 31px. Les colonnes
    elles-mêmes ne sont pas touchées (toujours .9fr/1.1fr sur .wrap pleine
    largeur) : seul l'espace entre les deux se resserre. */
-.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:31px;align-items:start;}
+/* 38px (retour du 02/09) : 31px était trop resserré ; 48px (maquette
+   d'origine) trop large — valeur intermédiaire précise. */
+.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:38px;align-items:start;}
 /* Pas de margin:auto ici (cahier §1.7) : la couverture doit démarrer au même
    bord gauche que la galerie de vignettes juste en dessous, pas être centrée
    indépendamment dans sa colonne. */
-.product-cover{position:relative;aspect-ratio:2/3;max-width:340px;border-radius:6px;box-shadow:0 30px 60px -24px rgba(27,23,48,.4);overflow:hidden;background:var(--lavender);}
+/* Respiration interne (retour du 02/09) : la couverture ne doit pas coller
+   aux bords de son propre cadre — pas seulement un écart resserré entre
+   les deux colonnes. */
+.product-cover{position:relative;aspect-ratio:2/3;max-width:340px;border-radius:6px;box-shadow:0 30px 60px -24px rgba(27,23,48,.4);overflow:hidden;background:var(--lavender);padding:12px;}
 .product-cover img{width:100%;height:100%;object-fit:contain;}
 .product-cover.placeholder{display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;background:linear-gradient(135deg,var(--blue),var(--purple));}
 .product-cover .ph-collection{font-size:11px;text-transform:none;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-bottom:10px;}
@@ -416,7 +424,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .article-body{padding-top:36px;padding-bottom:44px;}
   .verse-box{padding:22px 22px;margin-bottom:32px;}
   .verse-box p{font-size:18px;}
-  .article-body > .wrap > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
+  .article-body > .content-col > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
   .further-verse{padding-left:16px;}
   .related-grid{grid-template-columns:1fr;}
   .gate-box{padding:28px 22px;}
@@ -892,7 +900,7 @@ footer.footer--dark{
    directement (voir la page), comme pour la vidéo au-dessus — mêmes bords
    gauche/droite exactement, marges internes des encadrés comprises. */
 .cj-body{padding:56px 0;}
-.cj-body > .wrap > p{font-size:17px;line-height:1.9;color:var(--ink);margin-bottom:26px;}
+.cj-body > .content-col > p{font-size:17px;line-height:1.9;color:var(--ink);margin-bottom:26px;}
 .cj-verse{background:var(--lavender);border-left:4px solid var(--purple);border-radius:0 12px 12px 0;padding:24px 28px;margin:0 0 30px;}
 .cj-verse p{font-family:'Fraunces',serif;font-style:italic;font-size:16.5px;line-height:1.6;color:var(--ink);margin-bottom:10px !important;}
 .cj-verse p:last-child{margin-bottom:0 !important;}
@@ -935,7 +943,7 @@ footer.footer--dark{
   .amount-grid{grid-template-columns:repeat(2,1fr);}
   .cj-hero h1{font-size:27px;}
   .cj-hero p{font-size:15px;}
-  .cj-body > .wrap > p{font-size:16px;line-height:1.8;}
+  .cj-body > .content-col > p{font-size:16px;line-height:1.8;}
   .facts-grid{grid-template-columns:1fr;}
   .salvation-inner h2{font-size:22px;}
   .salvation-form{padding:24px;}
@@ -943,7 +951,13 @@ footer.footer--dark{
 }
 
 /* ===== Accueil (/) ===== */
-.hero{position:relative;min-height:600px;display:flex;align-items:center;overflow:hidden;}
+/* min-height ramené de 600 à 460 (retour du 02/09, référence : hauteur de
+   .page-hero sur De Serge, 420px) — 600 était un plancher artificiel plus
+   grand que le contenu réel (~530px avec tout le contenu), le fond
+   engloutissait le texte et la carte Rosée Matinale sous une bande d'image
+   vide. Le contenu reste libre de dépasser 460 si besoin (ce n'est qu'un
+   plancher, pas une limite). */
+.hero{position:relative;min-height:460px;display:flex;align-items:center;overflow:hidden;}
 .hero-slide{position:absolute;inset:0;background-size:cover;background-position:center 20%;opacity:0;transition:opacity .7s ease;}
 .hero-slide.active{opacity:1;}
 .hero::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(100deg, rgba(20,16,42,.82) 0%, rgba(20,16,42,.62) 45%, rgba(20,16,42,.42) 100%);}
@@ -984,6 +998,11 @@ footer.footer--dark{
 .book-body h4{font-size:15.5px;line-height:1.3;margin-bottom:4px;}
 .book-body .author{font-size:12.5px;color:var(--ink-soft);}
 .pubs{background:var(--ink);color:#fff;}
+/* Vraie classe (retour du 02/09) — remplace un style écrit en dur ciblé par
+   un sélecteur d'attribut ([style*="..."]) : un style inline a toujours
+   priorité sur une règle externe, la règle mobile ne s'appliquait donc
+   jamais réellement (le teaser ne s'empilait pas, texte coupé à droite). */
+.pub-teaser-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .pubs .section-head h2{color:#fff;}
 .pubs .section-head .see-all{color:rgba(255,255,255,.65);}
 .pub-grid{display:flex;flex-direction:column;gap:0;}
@@ -1002,7 +1021,7 @@ footer.footer--dark{
 
 @media (max-width:980px){
   .hero-inner{grid-template-columns:1fr;}
-  .pubs .wrap > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr;}
+  .pub-teaser-grid{grid-template-columns:1fr;}
 }
 @media (max-width:640px){
   .hero{padding:36px 0 40px;min-height:auto;align-items:flex-start;}
