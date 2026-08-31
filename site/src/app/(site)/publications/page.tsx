@@ -49,7 +49,7 @@ export default async function PublicationsPage({
           chronologiquement, chacune sa pastille de catégorie. Pas de titre
           de section (retour du 30/08) : les cartes portent déjà leur badge. */}
       <section className="feed-section">
-        <div className="pubs-col">
+        <div className="content-col">
           {qbVs.articles.length === 0 ? (
             <p className="empty-state">Les premières publications arrivent bientôt.</p>
           ) : (
@@ -70,7 +70,7 @@ export default async function PublicationsPage({
           section, pas de liste des jours précédents ici (retour du 30/08). */}
       {todayRosee && (
         <section className="rm-reminder">
-          <div className="pubs-col">
+          <div className="content-col">
             <div className="feed-list">
               <PublicationFeedItem article={todayRosee} />
             </div>

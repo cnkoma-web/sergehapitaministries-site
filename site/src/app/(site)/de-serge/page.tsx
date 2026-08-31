@@ -38,7 +38,7 @@ export default async function DeSergePage() {
       </section>
 
       <section className="section">
-        <div className="wrap bio-block">
+        <div className="content-col bio-block">
           <div className="eyebrow" style={{ justifyContent: "center" }}>
             Biographie
           </div>
@@ -98,7 +98,7 @@ export default async function DeSergePage() {
       </section>
 
       <section className="section">
-        <div className="wrap bio-block">
+        <div className="content-col bio-block">
           <p>
             Son parcours avec Dieu a commencé en 1992, lors d&apos;une croisade de l&apos;évangéliste Reinhard
             Bonnke dans un pays à majorité musulman. Ce jour-là, il a rencontré le Seigneur et s&apos;est accroché à

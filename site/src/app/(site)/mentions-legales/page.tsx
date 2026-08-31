@@ -35,7 +35,7 @@ export default function MentionsLegalesPage() {
       </section>
 
       <section className="section" style={{ paddingTop: 0 }}>
-        <div className="wrap legal-body">
+        <div className="content-col legal-body">
           <h2>Éditeur du site</h2>
           <p>
             Le site sergehapitaministries.org est édité par Serge Hapita, dans le cadre de son

@@ -67,7 +67,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     return (
       <>
         <section className="article-header">
-          <div className="wrap">
+          <div className="content-col">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
             <h1 className="article-title">{article.title}</h1>
             <div className="article-date">
@@ -87,7 +87,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </section>
 
         <section className="article-body">
-          <div className="wrap">
+          <div className="content-col">
             {article.cover_url && (
               <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -104,7 +104,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <>
             <div className="excerpt-fade" />
             <section className="section" style={{ paddingTop: 0 }}>
-              <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+              <div className="content-col">
                 <div className="gate-box">
                   <div className="lock">🔒</div>
                   <h3>La suite est réservée aux membres</h3>
@@ -140,7 +140,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         {unlocked && (
           <section className="section" style={{ paddingTop: 0 }}>
-            <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+            <div className="content-col">
               <ShareCartouche title={article.title} url={pageUrl} />
               <div className="back-cta">
                 <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
@@ -159,7 +159,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <section className="article-header">
-        <div className="wrap">
+        <div className="content-col">
           <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
           <h1 className="article-title">{article.title}</h1>
           <div className="article-date">
@@ -180,7 +180,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       </section>
 
       <section className="article-body">
-        <div className="wrap">
+        <div className="content-col">
           {article.verse_reference && article.verse_text && (
             <div className="verse-box">
               <div className="ref">{article.verse_reference}</div>

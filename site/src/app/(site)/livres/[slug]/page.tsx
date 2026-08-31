@@ -126,7 +126,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
       </section>
 
       <section className="section product-desc">
-        <div className="wrap">
+        <div className="content-col">
           <h2>À propos de ce livre</h2>
           {book.description ? (
             // L'admin (seul auteur possible de ce HTML, is_admin() en base) est la

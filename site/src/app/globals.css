@@ -156,7 +156,11 @@ header{
 .form-block label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
 
 /* ===== CATALOGUE (livres / boutique) ===== */
-.catalogue-intro-split{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start;}
+/* Écart resserré + carte réduite de 10% (retour du 01/09) : la carte passe
+   à une largeur fixe (262px, ~10% de moins que les ~291px précédents) au
+   lieu d'une fraction du conteneur, pour un contrôle précis ; le texte à
+   gauche absorbe l'espace restant. */
+.catalogue-intro-split{display:grid;grid-template-columns:1fr 262px;gap:32px;align-items:start;}
 .catalogue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
 .catalogue-book{position:relative;background:#fff;border:1px solid var(--line);border-top:3px solid var(--purple);border-radius:6px;padding:24px 18px 20px;box-shadow:0 12px 28px -18px rgba(27,23,48,.18);display:flex;flex-direction:column;height:100%;}
 .catalogue-book:nth-child(4n+2){border-top-color:var(--blue);}
@@ -215,14 +219,10 @@ header{
 .book-nav-link{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
 .book-nav-link:hover{color:var(--purple);}
 .book-nav-catalogue{font-size:12.5px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
-/* Écart resserré entre couverture et colonne d'informations (retour du
-   31/08) : 32px était sur-corrigé — combiné à la largeur du conteneur
-   réduite par erreur à --content-col (revenue à la largeur standard .wrap
-   ci-dessus), la colonne d'informations était devenue trop étroite pour son
-   propre contenu (le titre repassait à la ligne). 44px, conteneur pleine
-   largeur : l'écart reste resserré par rapport aux 56px d'origine sans
-   rétrécir la colonne elle-même. */
-.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:start;}
+/* Écart réduit de 30% (retour du 01/09) : 44px -> 31px. Les colonnes
+   elles-mêmes ne sont pas touchées (toujours .9fr/1.1fr sur .wrap pleine
+   largeur) : seul l'espace entre les deux se resserre. */
+.product-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:31px;align-items:start;}
 /* Pas de margin:auto ici (cahier §1.7) : la couverture doit démarrer au même
    bord gauche que la galerie de vignettes juste en dessous, pas être centrée
    indépendamment dans sa colonne. */
@@ -247,7 +247,12 @@ header{
 .specs-row span:last-child{font-weight:600;color:var(--ink);text-align:right;}
 /* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation
    (remplace le passage à 100% de .wrap fait en v2). */
-.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-col);margin:0 auto;}
+/* Sélecteur "section.product-desc" (et pas juste ".product-desc") : la règle
+   .section{padding-top:88px} plus loin dans ce fichier a la même
+   spécificité qu'une classe seule et gagnait dans l'ordre du fichier,
+   annulant silencieusement ce padding-top:0 — c'était la vraie cause du
+   grand vide constaté avant "À propos de ce livre" (retour du 01/09). */
+section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-col);margin:0 auto;}
 .product-desc h2{font-size:20px;margin-bottom:16px;}
 .product-desc p{font-size:15.5px;line-height:1.8;color:var(--ink);margin-bottom:16px;white-space:pre-line;}
 .size-options{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
@@ -291,16 +296,18 @@ header{
 /* Bas resserré (retour du 30/08) : l'espace avec le flux Rosée Matinale
    juste en dessous était trop marqué. */
 .feed-section{padding-top:56px;padding-bottom:32px;}
-/* Colonne du hub Publications — largeur réellement visible (retour du
-   30/08) : .wrap porte déjà 28px de padding de chaque côté, qui, cumulés à
-   *{box-sizing:border-box}, mangeaient une partie de --content-col au lieu
-   de s'y ajouter (696px de large affichaient en réalité 640px de contenu).
-   Cette classe dédiée n'a pas ce padding — la largeur déclarée est la
-   largeur réellement visible à l'écran. Un padding n'est réintroduit qu'en
-   dessous de 640px, pour ne pas coller le texte au bord de l'écran. */
-.pubs-col{max-width:var(--content-col);margin:0 auto;}
+/* Colonne de contenu générique (texte, vidéo, encadrés — cahier §1.7) :
+   .wrap porte déjà 28px de padding de chaque côté, qui, cumulés à
+   *{box-sizing:border-box}, mangent une partie de --content-col au lieu de
+   s'y ajouter au lieu de l'utiliser telle quelle (rencontré plusieurs fois :
+   hub Publications le 30/08, Connaître Jésus le 01/09). Cette classe dédiée
+   n'a pas ce padding — la largeur déclarée est la largeur réellement
+   visible à l'écran, identique à celle d'un élément voisin qui n'a que ce
+   maxWidth (ex. la vidéo). Un padding n'est réintroduit qu'en dessous de
+   640px, pour ne pas coller le texte au bord de l'écran. */
+.content-col{max-width:var(--content-col);margin:0 auto;}
 @media (max-width:640px){
-  .pubs-col{padding:0 20px;}
+  .content-col{padding:0 20px;}
 }
 .feed-list{display:flex;flex-direction:column;}
 .feed-item{display:flex;gap:20px;padding:24px 4px;border-top:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit;}
@@ -357,19 +364,19 @@ header{
 /* ===== ARTICLE (Que Dit la Bible / La Vie Supérieure) ===== */
 .article-cat-badge{display:inline-flex;align-items:center;background:var(--ink);color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:7px 16px;border-radius:100px;margin-bottom:20px;}
 .article-header{padding-top:52px;padding-bottom:8px;}
-/* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
-.article-header .wrap{max-width:var(--content-col);margin:0 auto;}
 .article-title{color:var(--ink);font-size:36px;line-height:1.22;margin-bottom:14px;}
 .article-date{font-size:13px;color:var(--ink-soft);}
 .article-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--ink-soft);margin-top:8px;}
 .article-meta span{display:flex;align-items:center;gap:5px;}
-/* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
-.article-body{padding-top:48px;padding-bottom:60px;max-width:var(--content-col);margin:0 auto;}
+/* Largeur portée par .content-col (retour du 01/09) — plus par .wrap +
+   max-width sur la section, qui laissait le padding de .wrap (28px de
+   chaque côté) rétrécir le texte réel sous la largeur affichée. */
+.article-body{padding-top:48px;padding-bottom:60px;}
 .verse-box{background:var(--lavender);border-left:4px solid var(--purple);border-radius:0 14px 14px 0;padding:30px 34px;margin:0 0 44px;}
 .verse-box .ref{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:12px;}
 .verse-box p{font-family:'Fraunces',serif;font-style:italic;font-size:20px;line-height:1.6;color:var(--ink);margin:0;}
 .article-body h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin:48px 0 22px;}
-.article-body > .wrap > p{font-size:17px;line-height:1.95;color:var(--ink);margin-bottom:30px;white-space:pre-line;}
+.article-body > .content-col > p{font-size:17px;line-height:1.95;color:var(--ink);margin-bottom:30px;white-space:pre-line;}
 .further-verse{margin-bottom:28px;padding-left:20px;border-left:2px solid var(--line);}
 .further-verse .ref{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
 .further-verse p{font-style:italic;font-size:15.5px;color:var(--ink-soft);line-height:1.65;margin:0;}
@@ -878,9 +885,13 @@ footer.footer--dark{
 .cj-hero .wrap{position:relative;z-index:1;text-align:center;}
 .cj-hero h1{color:#fff;font-size:34px;margin-bottom:10px;}
 .cj-hero p{color:rgba(255,255,255,.85);font-size:16px;font-style:italic;font-family:'Fraunces',serif;}
-/* Largeur unifiée avec la vidéo au-dessus (retour du 31/08) — 700px propre à
-   cette page remplacé par la référence unique du site. */
-.cj-body{padding:56px 0;max-width:var(--content-col);margin:0 auto;}
+/* Pas de max-width ici (retour du 01/09) : appliqué sur la section, la
+   contrainte se cumulait avec le padding de .wrap à l'intérieur (28px de
+   chaque côté) et rétrécissait le texte/les encadrés en dessous de la vraie
+   largeur de la vidéo. La largeur --content-col est portée par le .wrap
+   directement (voir la page), comme pour la vidéo au-dessus — mêmes bords
+   gauche/droite exactement, marges internes des encadrés comprises. */
+.cj-body{padding:56px 0;}
 .cj-body > .wrap > p{font-size:17px;line-height:1.9;color:var(--ink);margin-bottom:26px;}
 .cj-verse{background:var(--lavender);border-left:4px solid var(--purple);border-radius:0 12px 12px 0;padding:24px 28px;margin:0 0 30px;}
 .cj-verse p{font-family:'Fraunces',serif;font-style:italic;font-size:16.5px;line-height:1.6;color:var(--ink);margin-bottom:10px !important;}

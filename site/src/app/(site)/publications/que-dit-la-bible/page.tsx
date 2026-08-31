@@ -35,7 +35,7 @@ export default async function QueDitLaBiblePage({ searchParams }: { searchParams
       </section>
 
       <section className="feed-section">
-        <div className="pubs-col">
+        <div className="content-col">
           {articles.length === 0 ? (
             <p className="empty-state">Les premiers articles arrivent bientôt.</p>
           ) : (

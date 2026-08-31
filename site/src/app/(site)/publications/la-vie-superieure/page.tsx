@@ -35,7 +35,7 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
       </section>
 
       <section className="feed-section">
-        <div className="pubs-col">
+        <div className="content-col">
           {articles.length === 0 ? (
             <p className="empty-state">Les premiers enseignements arrivent bientôt.</p>
           ) : (

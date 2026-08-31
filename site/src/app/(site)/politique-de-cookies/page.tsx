@@ -31,7 +31,7 @@ export default function PolitiqueDeCookiesPage() {
       </section>
 
       <section className="section" style={{ paddingTop: 0 }}>
-        <div className="wrap legal-body">
+        <div className="content-col legal-body">
           <h2>Qu&apos;est-ce qu&apos;un cookie ?</h2>
           <p>
             Un cookie est un petit fichier texte déposé sur votre appareil (ordinateur, tablette, smartphone) lors

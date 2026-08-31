@@ -64,7 +64,7 @@ export default function ConnaitreJesusPage() {
       </section>
 
       <section className="cj-body">
-        <div className="wrap">
+        <div className="content-col">
           <p>
             Il y a presque deux mille ans, un homme du nom de Jésus est né d&apos;une vierge. Il a déclaré qu&apos;il
             avait été envoyé de Dieu pour donner sa vie en rançon des péchés de l&apos;humanité. Sa naissance
@@ -82,10 +82,10 @@ export default function ConnaitreJesusPage() {
 
           <div className="cj-verse">
             <p>
-              « Christ est mort pour nos péchés, selon les Écritures ; il a été enseveli, et il est ressuscité le
-              troisième jour, selon les Écritures. »
+              « Christ est mort pour nos péchés, selon les Écritures ; il a été enseveli, et il est ressuscité le
+              troisième jour, selon les Écritures. »
             </p>
-            <p>« Lui qui a été livré pour nos offenses et est ressuscité pour notre justification. »</p>
+            <p>« Lui qui a été livré pour nos offenses et est ressuscité pour notre justification. »</p>
             <div className="ref">1 Corinthiens 15:3-4 · Romains 4:25</div>
           </div>
 
@@ -112,8 +112,8 @@ export default function ConnaitreJesusPage() {
           </p>
 
           <div className="cj-verse">
-            <p>« Après avoir dit cela, il fut élevé pendant qu&apos;ils le regardaient, et une nuée le déroba à leurs yeux. »</p>
-            <p>« Déclaré Fils de Dieu avec puissance, selon l&apos;Esprit de sainteté, par sa résurrection d&apos;entre les morts. »</p>
+            <p>« Après avoir dit cela, il fut élevé pendant qu&apos;ils le regardaient, et une nuée le déroba à leurs yeux. »</p>
+            <p>« Déclaré Fils de Dieu avec puissance, selon l&apos;Esprit de sainteté, par sa résurrection d&apos;entre les morts. »</p>
             <div className="ref">Actes 1:9 · Romains 1:4</div>
           </div>
 
@@ -133,7 +133,7 @@ export default function ConnaitreJesusPage() {
       </section>
 
       <section className="cj-body">
-        <div className="wrap">
+        <div className="content-col">
           <p>
             Mais il y a plus encore : Dieu a investi de la puissance dans son nom et a élevé ce nom au-dessus de
             tout autre nom. Aujourd&apos;hui, presque deux mille ans après ces événements, le nom de Jésus agit
@@ -157,11 +157,11 @@ export default function ConnaitreJesusPage() {
 
           <div className="cj-verse">
             <p>
-              « Si tu confesses de ta bouche le Seigneur Jésus, et si tu crois dans ton cœur que Dieu l&apos;a
+              « Si tu confesses de ta bouche le Seigneur Jésus, et si tu crois dans ton cœur que Dieu l&apos;a
               ressuscité des morts, tu seras sauvé. Car c&apos;est en croyant du cœur qu&apos;on devient juste, et
-              c&apos;est en confessant de la bouche qu&apos;on parvient au salut. »
+              c&apos;est en confessant de la bouche qu&apos;on parvient au salut. »
             </p>
-            <p>« Car quiconque invoquera le nom du Seigneur sera sauvé. »</p>
+            <p>« Car quiconque invoquera le nom du Seigneur sera sauvé. »</p>
             <div className="ref">Romains 10:9-10, 13</div>
           </div>
 

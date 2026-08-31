@@ -31,7 +31,7 @@ export default function TermesEtConditionsPage() {
       </section>
 
       <section className="section" style={{ paddingTop: 0 }}>
-        <div className="wrap legal-body">
+        <div className="content-col legal-body">
           <h2>Objet</h2>
           <p>
             Les présentes conditions régissent l&apos;utilisation du site sergehapitaministries.org ainsi que

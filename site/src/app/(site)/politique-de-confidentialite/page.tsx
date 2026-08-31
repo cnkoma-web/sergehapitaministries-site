@@ -31,7 +31,7 @@ export default function PolitiqueDeConfidentialitePage() {
       </section>
 
       <section className="section" style={{ paddingTop: 0 }}>
-        <div className="wrap legal-body">
+        <div className="content-col legal-body">
           <h2>Quelles données collectons-nous ?</h2>
           <p>
             Selon les formulaires que vous utilisez sur ce site, nous pouvons collecter : votre nom, votre e-mail,
