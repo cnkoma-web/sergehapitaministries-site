@@ -49,7 +49,7 @@ export default function ConnaitreJesusPage() {
 
       <section className="section" style={{ padding: "44px 0" }}>
         <div className="wrap">
-          <div style={{ aspectRatio: "16/9", maxWidth: 760, margin: "0 auto", borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ aspectRatio: "16/9", maxWidth: "var(--content-col)", margin: "0 auto", borderRadius: 12, overflow: "hidden" }}>
             <iframe
               width="100%"
               height="100%"

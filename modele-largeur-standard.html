@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Modèle largeur standard — Connaître Jésus (référence)</title>
+<style>
+  :root{
+    --ink:#1B1730; --ink-soft:#4A4560; --purple:#7B3FE4; --blue:#2E2FE0; --line:#E2DCF3; --paper:#FCFBFF;
+
+    /* ===== LA SEULE VALEUR QUI COMPTE =====
+       Une unique variable de largeur de contenu, réutilisée PARTOUT sur le site
+       (texte, vidéo, images, catalogues, fiches produit) — jamais de valeur
+       différente codée en dur ailleurs. Mesurée sur la vidéo Connaître Jésus
+       en production (~675-680px), à vérifier et ajuster précisément par
+       Claude Code sur le vrai rendu du menu de navigation. */
+    --content-width: 680px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Manrope',Arial,sans-serif; color:var(--ink); background:var(--paper);}
+
+  .content-col{max-width:var(--content-width); margin:0 auto; padding:0 24px;}
+
+  header{padding:20px 0; border-bottom:1px solid var(--line);}
+  nav{display:flex; justify-content:center; gap:28px; font-size:14.5px; font-weight:600;}
+  nav a.active{color:var(--purple);}
+
+  .hero{padding:40px 0 32px; background:linear-gradient(120deg,var(--blue),var(--purple)); text-align:center;}
+  .hero h1{color:#fff; font-size:32px; margin-bottom:8px;}
+  .hero p{color:rgba(255,255,255,.85); font-style:italic; font-family:Georgia,serif;}
+
+  .video-frame{aspect-ratio:16/9; background:#16101f; border-radius:10px; margin:40px auto 0;}
+
+  .body-text{padding:32px 0 60px; font-size:16px; line-height:1.85;}
+  .body-text p{margin-bottom:20px;}
+
+  .marker{position:absolute; font-size:11px; color:var(--purple); font-weight:700; background:#fff; padding:2px 8px; border:1px dashed var(--purple); border-radius:100px;}
+  .marker-wrap{position:relative;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a>Accueil</a><a>À propos</a><a class="active">Connaître Jésus</a><a>Publications</a><a>Boutique</a><a>Soutenir</a><a>Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="content-col">
+    <h1>Connaître Jésus</h1>
+    <p>Une histoire incroyable. Et pourtant…</p>
+  </div>
+</section>
+
+<div class="marker-wrap content-col">
+  <span class="marker" style="top:-14px; left:24px;">← même largeur exacte que le texte en dessous →</span>
+  <div class="video-frame"></div>
+</div>
+
+<div class="content-col body-text">
+  <p>Il y a presque deux mille ans, un homme du nom de Jésus est né d'une vierge. Il a déclaré qu'il avait été envoyé de Dieu pour donner sa vie en rançon des péchés de l'humanité.</p>
+  <p>Sa naissance elle-même était un miracle, parce qu'il est venu au monde sans intervention d'un homme. Et tout au long de sa vie, il a montré, par plusieurs signes extraordinaires, qu'il venait réellement de Dieu et qu'il apportait un message venant de Dieu.</p>
+</div>
+
+<div style="background:var(--ink); color:#fff; padding:24px; text-align:center; font-size:13px;">
+  <strong>Principe à appliquer sur TOUTES les pages du site (une seule variable <code>--content-width</code>) :</strong><br>
+  vidéo, texte, images, catalogues (Livres, Boutique), fiches produit — tout utilise cette même largeur, sans exception et sans valeur différente codée ailleurs dans le CSS.
+</div>
+
+</body>
+</html>

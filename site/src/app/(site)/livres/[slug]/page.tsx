@@ -42,7 +42,12 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
   return (
     <>
       <section className="product-section">
-        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+        {/* Pas de --content-col ici (retour du 31/08) : la zone image+infos
+            est un affichage produit, pas du texte de lecture — elle garde la
+            largeur standard .wrap. Seul l'écart interne (gap) est resserré,
+            voir .product-grid. Le texte de lecture en dessous
+            (.product-desc) reste, lui, sur --content-col. */}
+        <div className="wrap">
           <div className="book-nav">
             {prev ? (
               <Link href={`/livres/${prev.slug}`} className="book-nav-link">← {prev.title}</Link>
