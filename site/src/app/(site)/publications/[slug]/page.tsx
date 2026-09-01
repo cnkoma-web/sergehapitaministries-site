@@ -12,7 +12,6 @@ import { getCategoriesForArticle } from "@/lib/content/categories";
 import { extractParagraphs } from "@/lib/richtext";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
-import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -71,10 +70,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="content-col">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
             <h1 className="article-title">{article.title}</h1>
-            <div className="article-date">
-              La Vie Supérieure — enseignement approfondi{article.author_name ? ` · ${article.author_name}` : ""}
+            {/* Une seule ligne, ordre exact : date, auteur, temps de
+                lecture, vues (retour du 04/09). */}
+            <div className="article-meta-line">
+              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+              {article.author_name && <span>{article.author_name}</span>}
+              {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
+              <span className="views">{article.view_count} vue{article.view_count > 1 ? "s" : ""}</span>
             </div>
-            <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
           </div>
         </section>
 
@@ -180,11 +183,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="content-col">
           <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
           <h1 className="article-title">{article.title}</h1>
-          <div className="article-date">
-            {new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-            {article.author_name ? ` · ${article.author_name}` : ""}
+          {/* Une seule ligne, ordre exact : date, auteur, temps de lecture,
+              vues (retour du 04/09). */}
+          <div className="article-meta-line">
+            <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+            {article.author_name && <span>{article.author_name}</span>}
+            {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
+            <span className="views">{article.view_count} vue{article.view_count > 1 ? "s" : ""}</span>
           </div>
-          <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
         </div>
       </section>
 
@@ -233,13 +239,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </>
           )}
 
-          <div className="blessing">Que Dieu te bénisse abondamment</div>
-
-          {/* Thématiques déplacées ici, juste avant le partage (retour du
-              03/09) — même apparence/comportement, seulement la position
-              change. */}
+          {/* Ordre corrigé (retour du 04/09) : thématiques avant la
+              bénédiction, avec un vrai espacement entre les deux (pas
+              seulement le trait de séparation de .blessing). */}
           {categories.length > 0 && (
-            <div className="chip-row" style={{ marginBottom: 20 }}>
+            <div className="chip-row" style={{ marginBottom: 40 }}>
               {categories.map((c) => (
                 <span key={c.id} className="chip">
                   {c.name}
@@ -247,6 +251,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               ))}
             </div>
           )}
+
+          <div className="blessing">Que Dieu te bénisse abondamment</div>
 
           <ShareCartouche title={article.title} url={pageUrl} />
           <div className="back-cta">

@@ -6,7 +6,6 @@ import { getBooks } from "@/lib/content/books";
 import { getPublishedArticles, getRoseeDuJour, ARTICLE_TYPE_LABEL, ARTICLE_TYPE_INITIALS } from "@/lib/content/articles";
 import { getActiveStats } from "@/lib/content/stats";
 import { stripHtml } from "@/lib/richtext";
-import { formatPublicationDateTime } from "@/lib/format";
 import { getSocialLinks } from "@/lib/content/footer";
 import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import CoverRollover from "@/components/shop/CoverRollover";
@@ -184,15 +183,16 @@ export default async function HomePage() {
                       )}
                       <div className="pub-card-body">
                         {/* Ordre imposé, sans exception (retour du 03/09) :
-                            1) catégorie seule, 2) date+heure+vues, 3) titre,
-                            4) extrait — même valeurs/format que la page
-                            article (formatPublicationDateTime). */}
+                            1) catégorie seule, 2) date+vues, 3) titre,
+                            4) extrait — date au format complet en toutes
+                            lettres, identique à la page article (retour du
+                            04/09). */}
                         <div className="pub-card-cat-row">
                           <span className={`feed-badge ${a.type}`}>{ARTICLE_TYPE_INITIALS[a.type]}</span>
                           <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
                         </div>
                         <div className="pub-card-info-row">
-                          <span>{formatPublicationDateTime(a.article_date, a.created_at)}</span>
+                          <span>{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
                           <span className="pub-card-views">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
@@ -241,7 +241,7 @@ export default async function HomePage() {
                           <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
                         </div>
                         <div className="pub-card-info-row">
-                          <span>{formatPublicationDateTime(a.article_date, a.created_at)}</span>
+                          <span>{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
                           <span className="pub-card-views">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
