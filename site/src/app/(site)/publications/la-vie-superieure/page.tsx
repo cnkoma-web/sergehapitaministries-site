@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getArticlesFeed } from "@/lib/content/articles";
+import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
@@ -23,7 +24,8 @@ export const metadata: Metadata = {
 export default async function LaVieSuperieurePage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { articles, total } = await getArticlesFeed(["vs"], page, PER_PAGE);
+  const [{ articles, total }, texts] = await Promise.all([getArticlesFeed(["vs"], page, PER_PAGE), getInterfaceTexts()]);
+  const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
 
   return (
     <>
@@ -41,7 +43,7 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
           ) : (
             <div className="feed-list">
               {articles.map((a) => (
-                <PublicationFeedItem article={a} key={a.id} />
+                <PublicationFeedItem article={a} excerptLines={excerptLines} key={a.id} />
               ))}
             </div>
           )}

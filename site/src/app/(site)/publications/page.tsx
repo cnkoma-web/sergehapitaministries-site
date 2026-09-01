@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getArticlesFeed } from "@/lib/content/articles";
+import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
@@ -30,11 +31,15 @@ export default async function PublicationsPage({
   // Flux 2 = Rosée Matinale du jour uniquement (retour du 30/08) — une autre
   // porte d'entrée vers Rosée Matinale, comme sur l'accueil, pas une liste
   // des jours précédents (l'archive complète reste sur /rosee-matinale).
-  const [qbVs, rmToday] = await Promise.all([
+  const [qbVs, rmToday, texts] = await Promise.all([
     getArticlesFeed(["qdlb", "vs"], page, PER_PAGE),
     getArticlesFeed(["rm"], 1, 1),
+    getInterfaceTexts(),
   ]);
   const todayRosee = rmToday.articles[0] ?? null;
+  // Réglage admin (retour du 03/09) — nombre de lignes d'extrait affichées
+  // sur les cartes, pas une valeur fixée dans le code.
+  const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
 
   return (
     <>
@@ -55,7 +60,7 @@ export default async function PublicationsPage({
           ) : (
             <div className="feed-list">
               {qbVs.articles.map((a) => (
-                <PublicationFeedItem article={a} key={a.id} />
+                <PublicationFeedItem article={a} excerptLines={excerptLines} key={a.id} />
               ))}
             </div>
           )}
@@ -72,7 +77,7 @@ export default async function PublicationsPage({
         <section className="rm-reminder">
           <div className="content-col">
             <div className="feed-list">
-              <PublicationFeedItem article={todayRosee} />
+              <PublicationFeedItem article={todayRosee} excerptLines={excerptLines} />
             </div>
           </div>
         </section>

@@ -366,17 +366,24 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .feed-thumb-link:hover .feed-thumb{opacity:.85;}
 .feed-thumb{width:96px;aspect-ratio:1/1;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--lavender);transition:opacity .2s ease;}
 .feed-body{flex:1;min-width:0;}
-.feed-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+/* Ordre imposé, sans exception (retour du 03/09) : ligne 1 catégorie seule,
+   ligne 2 date+heure+vues, puis titre, puis extrait — deux lignes de
+   métadonnées distinctes plutôt qu'une seule ligne combinée. */
+.feed-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .feed-badge{display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;letter-spacing:.04em;color:#fff;border-radius:100px;padding:3px 10px;}
 .feed-badge.qdlb{background:var(--purple);}
 .feed-badge.vs{background:var(--blue);}
 .feed-badge.rm{background:var(--teal);}
+.feed-cat-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+.feed-info-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
 .feed-date{font-size:12.5px;color:var(--ink-soft);}
 .feed-views{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--ink-soft);}
 .feed-item h3{font-size:17px;line-height:1.35;margin-bottom:6px;}
 .feed-item h3 a:hover{color:var(--purple);}
 .feed-item .excerpt{font-size:14px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .feed-item .excerpt a:hover{color:var(--ink);}
+.feed-cta{display:inline-flex;font-size:13px;font-weight:700;color:var(--purple);margin-top:8px;}
+.feed-cta:hover{text-decoration:underline;}
 /* Rappel Rosée Matinale sous le flux — fond de couleur différent (v3 §6.10.2). */
 /* Haut resserré (retour du 30/08) : espace avec le flux du dessus trop marqué. */
 .rm-reminder{background:var(--lavender);padding-top:32px;padding-bottom:56px;}
@@ -425,6 +432,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    max-width sur la section, qui laissait le padding de .wrap (28px de
    chaque côté) rétrécir le texte réel sous la largeur affichée. */
 .article-body{padding-top:48px;padding-bottom:60px;}
+/* Chapeau affiché dans le corps de l'article (retour du 03/09). */
+.article-lede{font-size:18px;line-height:1.6;color:var(--ink-soft);font-style:italic;margin-bottom:32px;}
 .verse-box{background:var(--lavender);border-left:4px solid var(--purple);border-radius:0 14px 14px 0;padding:30px 34px;margin:0 0 44px;}
 .verse-box .ref{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:12px;}
 .verse-box p{font-family:'Fraunces',serif;font-style:italic;font-size:20px;line-height:1.6;color:var(--ink);margin:0;}
@@ -723,11 +732,13 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .chip button{background:none;border:0;color:var(--purple);cursor:pointer;font-size:12px;font-family:inherit;}
 
 .content-area{background:var(--paper);padding:0;}
-.rich-toolbar{display:flex;align-items:center;gap:4px;padding:10px 24px;border-bottom:1px solid var(--line);background:#fff;flex-wrap:wrap;}
+/* Fixe à l'écran pendant le défilement (retour du 03/09). */
+.rich-toolbar{display:flex;align-items:center;gap:4px;padding:10px 24px;border-bottom:1px solid var(--line);background:#fff;flex-wrap:wrap;position:sticky;top:0;z-index:5;}
 .rich-toolbar button{width:32px;height:32px;border:0;background:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:700;color:var(--ink-soft);font-family:inherit;}
 .rich-toolbar button:hover{background:var(--lavender);color:var(--purple);}
 .rich-toolbar .sep{width:1px;height:20px;background:var(--line);margin:0 6px;}
-.rich-toolbar-mini{display:flex;gap:4px;padding:6px;border:1px solid var(--line);border-bottom:0;border-radius:6px 6px 0 0;background:var(--lavender);}
+/* Fixe à l'écran pendant le défilement (retour du 03/09). */
+.rich-toolbar-mini{display:flex;gap:4px;padding:6px;border:1px solid var(--line);border-bottom:0;border-radius:6px 6px 0 0;background:var(--lavender);position:sticky;top:0;z-index:5;}
 .rich-toolbar-mini button{width:26px;height:26px;border:0;background:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:700;color:var(--ink-soft);font-family:inherit;}
 .rich-toolbar-mini .sep{width:1px;height:16px;background:var(--line);margin:0 2px;}
 
@@ -736,8 +747,16 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .body-input{width:100%;border:0;background:none;font-size:16px;line-height:1.8;outline:none;min-height:300px;}
 .body-input:empty:before{content:attr(data-placeholder);color:var(--ink-soft);}
 .body-input blockquote{border-left:3px solid var(--purple);padding-left:16px;color:var(--ink-soft);font-style:italic;margin:16px 0;}
+/* Marge entre paragraphes pendant la saisie (retour du 03/09) — le reset
+   global (*{margin:0}) supprimait aussi la marge par défaut des <p>, donc
+   un seul retour à la ligne ne créait visuellement aucun écart pendant la
+   frappe (juste sur la page publique, où .article-body p a sa propre
+   marge) : ça poussait à appuyer deux fois sur Entrée pour voir une
+   séparation. Un seul retour à la ligne suffit maintenant à l'écran. */
+.body-input p{margin-bottom:20px;}
 .desc-editable{border:1px solid var(--line);border-radius:0 0 6px 6px;padding:11px;min-height:110px;font-size:13.5px;line-height:1.6;}
 .desc-editable:empty:before{content:attr(data-placeholder);color:var(--ink-soft);}
+.desc-editable p{margin-bottom:12px;}
 
 /* ===== Galerie d'images (livres, jusqu'à 5, position + glisser-déposer) ===== */
 .gallery-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
@@ -1070,6 +1089,12 @@ footer.footer--dark{
 .pub-card-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;transition:opacity .2s ease;}
 .pub-card-thumb-link:hover .pub-card-thumb{opacity:.85;}
 .pub-card-body{flex:1;min-width:0;}
+/* Ordre imposé, sans exception (retour du 03/09) : catégorie seule, puis
+   date+heure+vues, puis titre, puis extrait. */
+.pub-card-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.pub-card-cat-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.75);}
+.pub-card-info-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.5);}
+.pub-card-views{display:inline-flex;align-items:center;gap:4px;}
 .pub-card h4{color:#fff;font-size:15.5px;line-height:1.3;margin:0 0 4px;}
 .pub-card h4 a:hover{color:var(--lavender);}
 /* Toute la carte est un lien (retour du 03/09) — signal visuel au survol. */

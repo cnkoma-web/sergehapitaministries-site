@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublishedArticles, incrementViewCount } from "@/lib/content/articles";
+import { extractParagraphs } from "@/lib/richtext";
 import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import Newsletter from "@/components/layout/Newsletter";
@@ -74,7 +75,7 @@ export default async function RoseeMatinalePage({
 
   incrementViewCount(current.id).catch(() => {});
   const pageUrl = `${SITE_URL}/rosee-matinale${date ? `?date=${date}` : ""}`;
-  const paragraphs = (current.body || "").match(/<[a-z][^>]*>[\s\S]*?<\/[a-z]+>/gi) ?? (current.body ? [current.body] : []);
+  const paragraphs = extractParagraphs(current.body || "");
 
   return (
     <>

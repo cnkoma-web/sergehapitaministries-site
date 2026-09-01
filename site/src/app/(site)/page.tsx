@@ -3,9 +3,10 @@ import Link from "next/link";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import { getBooks } from "@/lib/content/books";
-import { getPublishedArticles, getRoseeDuJour, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
+import { getPublishedArticles, getRoseeDuJour, ARTICLE_TYPE_LABEL, ARTICLE_TYPE_INITIALS } from "@/lib/content/articles";
 import { getActiveStats } from "@/lib/content/stats";
 import { stripHtml } from "@/lib/richtext";
+import { formatPublicationDateTime } from "@/lib/format";
 import { getSocialLinks } from "@/lib/content/footer";
 import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import CoverRollover from "@/components/shop/CoverRollover";
@@ -60,6 +61,9 @@ export default async function HomePage() {
   // (Admin > Textes globaux, clé home.publications_per_category) — plus une
   // valeur figée en dur dans le composant.
   const publicationsPerCategory = Number(texts["home.publications_per_category"]) || 3;
+  // Réglage admin (retour du 03/09) — nombre de lignes d'extrait affichées
+  // sur les cartes, pas une valeur fixée dans le code.
+  const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
 
   return (
     <>
@@ -179,15 +183,29 @@ export default async function HomePage() {
                         </Link>
                       )}
                       <div className="pub-card-body">
+                        {/* Ordre imposé, sans exception (retour du 03/09) :
+                            1) catégorie seule, 2) date+heure+vues, 3) titre,
+                            4) extrait — même valeurs/format que la page
+                            article (formatPublicationDateTime). */}
+                        <div className="pub-card-cat-row">
+                          <span className={`feed-badge ${a.type}`}>{ARTICLE_TYPE_INITIALS[a.type]}</span>
+                          <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
+                        </div>
+                        <div className="pub-card-info-row">
+                          <span>{formatPublicationDateTime(a.article_date, a.created_at)}</span>
+                          <span className="pub-card-views">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            {a.view_count}
+                          </span>
+                        </div>
                         <h4>
                           <Link href={`/publications/${a.slug}`}>{a.title}</Link>
                         </h4>
-                        <p style={{ color: "rgba(255,255,255,.5)", fontSize: 12, margin: 0 }}>
-                          {a.verse_reference ? `${a.verse_reference} · ` : ""}
-                          {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                        </p>
                         {a.excerpt && (
-                          <p className="excerpt">
+                          <p className="excerpt" style={{ WebkitLineClamp: excerptLines }}>
                             <Link href={`/publications/${a.slug}`}>{a.excerpt}</Link>
                           </p>
                         )}
@@ -217,13 +235,25 @@ export default async function HomePage() {
                         </Link>
                       )}
                       <div className="pub-card-body">
+                        {/* Ordre imposé, sans exception (retour du 03/09). */}
+                        <div className="pub-card-cat-row">
+                          <span className={`feed-badge ${a.type}`}>{ARTICLE_TYPE_INITIALS[a.type]}</span>
+                          <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
+                        </div>
+                        <div className="pub-card-info-row">
+                          <span>{formatPublicationDateTime(a.article_date, a.created_at)}</span>
+                          <span className="pub-card-views">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            {a.view_count}
+                          </span>
+                        </div>
                         <h4>
                           <Link href={`/publications/${a.slug}`}>{a.title}</Link>
                         </h4>
-                        <p style={{ color: "rgba(255,255,255,.5)", fontSize: 12, margin: 0 }}>
-                          {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                        </p>
-                        <p className="excerpt">
+                        <p className="excerpt" style={{ WebkitLineClamp: excerptLines }}>
                           <Link href={`/publications/${a.slug}`}>{a.excerpt || (a.body ? stripHtml(a.body).slice(0, 130) + "…" : "")}</Link>
                         </p>
                       </div>

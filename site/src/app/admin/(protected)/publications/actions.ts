@@ -87,6 +87,7 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   if (type === "qdlb") {
     update.verse_reference = String(formData.get("verse_reference") ?? "").trim() || null;
     update.verse_text = String(formData.get("verse_text") ?? "").trim() || null;
+    update.prayer = String(formData.get("prayer") ?? "").trim() || null;
     update.further_verses = readFurtherVerses(formData);
   }
   if (type === "vs") {

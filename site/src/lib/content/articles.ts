@@ -13,6 +13,10 @@ export type Article = {
   verse_text: string | null;
   body: string | null;
   further_verses: { reference: string; text: string }[];
+  // Champ "Prière" optionnel (retour du 03/09) — texte unique, affiché en
+  // section conditionnelle avant "Aller plus loin" quand rempli, même
+  // logique d'affichage que further_verses mais pas une liste répétable.
+  prayer: string | null;
   toc_keywords: string[];
   access: "free" | "paid";
   view_count: number;
@@ -38,9 +42,9 @@ export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
 export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", vs: "VS", rm: "RM" };
 
 const COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at";
 const ADMIN_COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at";
 
 export async function getPublishedArticles(type: ArticleType): Promise<Article[]> {
   const supabase = await createClient();

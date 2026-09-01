@@ -9,6 +9,7 @@ import {
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
 import { getCategoriesForArticle } from "@/lib/content/categories";
+import { extractParagraphs } from "@/lib/richtext";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import ArticleMeta from "@/components/articles/ArticleMeta";
@@ -57,7 +58,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // n'en révéler qu'une partie côté gating (La Vie Supérieure), sans jamais
   // couper au milieu d'une balise.
   const rawBody = article.body || "";
-  const paragraphs = rawBody.match(/<[a-z][^>]*>[\s\S]*?<\/[a-z]+>/gi) ?? (rawBody ? [rawBody] : []);
+  const paragraphs = extractParagraphs(rawBody);
 
   if (article.type === "vs") {
     // Gating (cahier §3.5) : le corps complet n'est renvoyé au client que si
@@ -74,20 +75,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               La Vie Supérieure — enseignement approfondi{article.author_name ? ` · ${article.author_name}` : ""}
             </div>
             <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
-            {categories.length > 0 && (
-              <div className="chip-row" style={{ marginTop: 10 }}>
-                {categories.map((c) => (
-                  <span key={c.id} className="chip">
-                    {c.name}
-                  </span>
-                ))}
-              </div>
-            )}
           </div>
         </section>
 
         <section className="article-body">
           <div className="content-col">
+            {/* Chapeau dans le corps de l'article (retour du 03/09) — en
+                haut, avant le premier paragraphe (pas d'ordre imposé pour
+                La Vie Supérieure au-delà de ça). */}
+            {article.excerpt && <p className="article-lede">{article.excerpt}</p>}
             {article.cover_url && (
               <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -129,6 +125,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   </div>
                 )}
 
+                {/* Thématiques déplacées ici, juste avant le partage (retour
+                    du 03/09) — même apparence/comportement, seulement la
+                    position change. */}
+                {categories.length > 0 && (
+                  <div className="chip-row" style={{ marginBottom: 20 }}>
+                    {categories.map((c) => (
+                      <span key={c.id} className="chip">
+                        {c.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
                 <ShareCartouche title={article.title} url={pageUrl} />
                 <div className="back-cta">
                   <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
@@ -141,6 +150,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         {unlocked && (
           <section className="section" style={{ paddingTop: 0 }}>
             <div className="content-col">
+              {categories.length > 0 && (
+                <div className="chip-row" style={{ marginBottom: 20 }}>
+                  {categories.map((c) => (
+                    <span key={c.id} className="chip">
+                      {c.name}
+                    </span>
+                  ))}
+                </div>
+              )}
               <ShareCartouche title={article.title} url={pageUrl} />
               <div className="back-cta">
                 <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
@@ -167,20 +185,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {article.author_name ? ` · ${article.author_name}` : ""}
           </div>
           <ArticleMeta viewCount={article.view_count} readingTimeMinutes={article.reading_time_minutes} />
-          {categories.length > 0 && (
-            <div className="chip-row" style={{ marginTop: 10 }}>
-              {categories.map((c) => (
-                <span key={c.id} className="chip">
-                  {c.name}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 
       <section className="article-body">
         <div className="content-col">
+          {/* Chapeau avant le verset d'ouverture (retour du 03/09, ordre
+              exact demandé pour Que Dit la Bible). */}
+          {article.excerpt && <p className="article-lede">{article.excerpt}</p>}
+
           {article.verse_reference && article.verse_text && (
             <div className="verse-box">
               <div className="ref">{article.verse_reference}</div>
@@ -200,6 +213,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
           ))}
 
+          {/* Positionnée avant "Aller plus loin" (retour du 03/09). */}
+          {article.prayer && (
+            <>
+              <h2>Prière</h2>
+              <p>{article.prayer}</p>
+            </>
+          )}
+
           {article.further_verses.length > 0 && (
             <>
               <h2>Aller plus loin</h2>
@@ -213,6 +234,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           )}
 
           <div className="blessing">Que Dieu te bénisse abondamment</div>
+
+          {/* Thématiques déplacées ici, juste avant le partage (retour du
+              03/09) — même apparence/comportement, seulement la position
+              change. */}
+          {categories.length > 0 && (
+            <div className="chip-row" style={{ marginBottom: 20 }}>
+              {categories.map((c) => (
+                <span key={c.id} className="chip">
+                  {c.name}
+                </span>
+              ))}
+            </div>
+          )}
 
           <ShareCartouche title={article.title} url={pageUrl} />
           <div className="back-cta">
