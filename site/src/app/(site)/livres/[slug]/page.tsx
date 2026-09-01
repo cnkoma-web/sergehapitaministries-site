@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBookBySlug, getAdjacentBooks, getBookImages } from "@/lib/content/books";
 import CoverRollover from "@/components/shop/CoverRollover";
+import PublisherLink from "@/components/shop/PublisherLink";
 import { getReviewSummary } from "@/lib/content/reviews";
 import { formatPrice } from "@/lib/format";
 import Stars from "@/components/reviews/Stars";
@@ -98,7 +99,9 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
               )}
               {book.badge && <div className="product-badge">{book.badge}</div>}
               <h1 className="product-title">{book.title}</h1>
-              <div className="product-author">{book.author} — {book.publisher}</div>
+              <div className="product-author">
+                <Link href="/de-serge">{book.author}</Link> — <PublisherLink publisher={book.publisher} />
+              </div>
 
               <div className="rating-row">
                 <Stars rating={summary.average} />
@@ -112,7 +115,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
               </div>
 
               <div className="specs-table">
-                <div className="specs-row"><span>Éditeur</span><span>{book.publisher}</span></div>
+                <div className="specs-row"><span>Éditeur</span><span><PublisherLink publisher={book.publisher} /></span></div>
                 <div className="specs-row"><span>Auteur</span><span>{book.author}</span></div>
                 <div className="specs-row"><span>Format</span><span>{book.format || "À renseigner"}</span></div>
                 <div className="specs-row"><span>Pages</span><span>{book.pages ? `${book.pages} p.` : "À renseigner"}</span></div>

@@ -8,17 +8,26 @@ import { stripHtml } from "@/lib/richtext";
 // catégorie) — vignette, badge de catégorie, titre, date + heure, vues,
 // chapeau. Rosée Matinale pointe vers sa page dédiée avec le bon jour
 // (§3.2), les autres vers /publications/[slug].
+//
+// Trois liens distincts (vignette, titre, chapeau) plutôt qu'une seule
+// carte entièrement cliquable (retour du 03/09) : le survol ne doit
+// déclencher le lien que sur ces trois zones précises — pas sur les
+// métadonnées (badge, date, vues) ni sur les espaces vides de la carte.
 export default function PublicationFeedItem({ article }: { article: Article }) {
   const href = article.type === "rm" ? `/rosee-matinale?date=${article.article_date}` : `/publications/${article.slug}`;
   const excerpt = article.excerpt || (article.body ? stripHtml(article.body).slice(0, 140) + "…" : article.verse_text || "");
 
   return (
-    <Link href={href} className="feed-item">
+    <div className="feed-item">
       {article.cover_url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={article.cover_url} alt={article.cover_alt || article.title} className="feed-thumb" />
+        <Link href={href} className="feed-thumb-link" aria-label={article.title}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={article.cover_url} alt={article.cover_alt || article.title} className="feed-thumb" />
+        </Link>
       ) : (
-        <div className="feed-thumb" aria-hidden="true" />
+        <Link href={href} className="feed-thumb-link" aria-label={article.title}>
+          <div className="feed-thumb" aria-hidden="true" />
+        </Link>
       )}
       <div className="feed-body">
         <div className="feed-meta">
@@ -32,9 +41,15 @@ export default function PublicationFeedItem({ article }: { article: Article }) {
             {article.view_count}
           </span>
         </div>
-        <h3>{article.title}</h3>
-        {excerpt && <p className="excerpt">{excerpt}</p>}
+        <h3>
+          <Link href={href}>{article.title}</Link>
+        </h3>
+        {excerpt && (
+          <p className="excerpt">
+            <Link href={href}>{excerpt}</Link>
+          </p>
+        )}
       </div>
-    </Link>
+    </div>
   );
 }

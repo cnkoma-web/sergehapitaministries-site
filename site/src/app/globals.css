@@ -50,8 +50,15 @@ img{max-width:100%;display:block;}
 .cover-rollover .cr-front,
 .cover-rollover .cr-back{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .4s ease;}
 .cover-rollover .cr-back{opacity:0;}
-.cover-rollover:hover .cr-front{opacity:0;}
-.cover-rollover:hover .cr-back{opacity:1;}
+/* Limité aux appareils qui ont un vrai survol (souris/trackpad) — retour du
+   03/09 : sur tactile, :hover reste "collé" après avoir retiré le doigt
+   (pas de vrai événement pour le faire sortir de l'état survolé), l'image
+   restait bloquée sur la seconde couverture. Sur mobile/tablette, la
+   couverture reste simplement sur son état par défaut. */
+@media (hover: hover) and (pointer: fine) {
+  .cover-rollover:hover .cr-front{opacity:0;}
+  .cover-rollover:hover .cr-back{opacity:1;}
+}
 .eyebrow{
   text-transform:uppercase;font-size:12.5px;letter-spacing:0.14em;font-weight:700;
   color:var(--purple);margin-bottom:14px;display:flex;align-items:center;gap:8px;
@@ -258,6 +265,7 @@ header{
 .product-badge{display:inline-block;background:var(--lavender);color:var(--purple);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:5px 14px;border-radius:100px;margin-bottom:14px;}
 .product-title{font-size:30px;line-height:1.25;margin-bottom:6px;}
 .product-author{font-size:14px;color:var(--ink-soft);margin-bottom:16px;}
+.product-author a:hover{color:var(--purple);}
 .stars{display:flex;gap:2px;color:#F5B301;font-size:16px;}
 .stars .empty{color:var(--line);}
 .rating-row{display:flex;align-items:center;gap:10px;margin-bottom:22px;}
@@ -348,9 +356,15 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .content-col{padding:0 20px;}
 }
 .feed-list{display:flex;flex-direction:column;}
-.feed-item{display:flex;gap:20px;padding:24px 4px;border-top:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit;}
+/* Plus un lien géant (retour du 03/09) : .feed-item est un simple conteneur,
+   seuls la vignette, le titre et le chapeau sont individuellement
+   cliquables (voir .feed-thumb-link et les <a> dans h3/.excerpt) — les
+   métadonnées (badge, date, vues) et l'espace vide ne le sont plus. */
+.feed-item{display:flex;gap:20px;padding:24px 4px;border-top:1px solid var(--line);align-items:flex-start;}
 .feed-list .feed-item:first-child{border-top:0;}
-.feed-thumb{width:96px;aspect-ratio:1/1;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--lavender);}
+.feed-thumb-link{display:block;flex-shrink:0;}
+.feed-thumb-link:hover .feed-thumb{opacity:.85;}
+.feed-thumb{width:96px;aspect-ratio:1/1;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--lavender);transition:opacity .2s ease;}
 .feed-body{flex:1;min-width:0;}
 .feed-meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
 .feed-badge{display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;letter-spacing:.04em;color:#fff;border-radius:100px;padding:3px 10px;}
@@ -360,8 +374,9 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .feed-date{font-size:12.5px;color:var(--ink-soft);}
 .feed-views{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--ink-soft);}
 .feed-item h3{font-size:17px;line-height:1.35;margin-bottom:6px;}
+.feed-item h3 a:hover{color:var(--purple);}
 .feed-item .excerpt{font-size:14px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.feed-item:hover h3{color:var(--purple);}
+.feed-item .excerpt a:hover{color:var(--ink);}
 /* Rappel Rosée Matinale sous le flux — fond de couleur différent (v3 §6.10.2). */
 /* Haut resserré (retour du 30/08) : espace avec le flux du dessus trop marqué. */
 .rm-reminder{background:var(--lavender);padding-top:32px;padding-bottom:56px;}
@@ -1027,7 +1042,11 @@ footer.footer--dark{
 .book-thumb.placeholder .ph-title{font-family:'Fraunces',serif;color:#fff;font-size:19px;line-height:1.25;font-weight:600;}
 .book-thumb.placeholder .ph-collection{color:rgba(255,255,255,.75);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
 .book-body{padding:16px 16px 18px;}
-.book-body .publisher{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);font-weight:800;margin-bottom:6px;}
+/* text-transform:uppercase retiré (retour du 03/09) : "amDG Éditions" est
+   une casse volontaire de la marque (amDG en majuscules, le reste non) —
+   la mettre en majuscules ("AMDG ÉDITIONS") est une faute de casse. */
+.book-body .publisher{font-size:10.5px;letter-spacing:.07em;color:var(--purple);font-weight:800;margin-bottom:6px;}
+.book-body .publisher a:hover{text-decoration:underline;}
 .book-body h4{font-size:15.5px;line-height:1.3;margin-bottom:4px;}
 .book-body h4 a:hover{color:var(--purple);}
 /* Lien distinct vers la page De Serge (retour du 03/09) — display:block pour
@@ -1044,13 +1063,18 @@ footer.footer--dark{
 .pubs .section-head h2{color:#fff;}
 .pubs .section-head .see-all{color:rgba(255,255,255,.65);}
 .pub-grid{display:flex;flex-direction:column;gap:0;}
+/* Plus toute la carte en un seul lien (retour du 03/09) : seuls la
+   vignette, le titre et le chapeau sont individuellement cliquables. */
 .pub-card{background:transparent;border:0;border-top:1px solid rgba(255,255,255,.12);border-radius:0;padding:16px 4px;display:flex;align-items:flex-start;gap:16px;}
-.pub-card-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.pub-card-thumb-link{display:block;flex-shrink:0;}
+.pub-card-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;transition:opacity .2s ease;}
+.pub-card-thumb-link:hover .pub-card-thumb{opacity:.85;}
 .pub-card-body{flex:1;min-width:0;}
 .pub-card h4{color:#fff;font-size:15.5px;line-height:1.3;margin:0 0 4px;}
+.pub-card h4 a:hover{color:var(--lavender);}
 /* Toute la carte est un lien (retour du 03/09) — signal visuel au survol. */
-.pub-card:hover h4{color:var(--lavender);}
 .pub-card .excerpt{font-size:14.5px;color:rgba(255,255,255,.6);line-height:1.55;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.pub-card .excerpt a:hover{color:rgba(255,255,255,.85);}
 .pub-card:first-child{border-top:0;}
 /* .pub-card-cta (retour du 03/09) — plus .pub-card a : toute la carte est
    maintenant un seul lien (aperçu cliquable, même destination que le

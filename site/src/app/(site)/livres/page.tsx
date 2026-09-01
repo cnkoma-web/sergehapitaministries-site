@@ -59,7 +59,7 @@ export default async function LivresPage() {
           {featured && (
             <div style={{ background: "var(--lavender)", borderRadius: 12, padding: 20, borderTop: "3px solid var(--purple)" }}>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em", color: "var(--purple)", marginBottom: 14 }}>
-                ★ {featured.badge || "En avant"} · {featured.author}
+                ★ {featured.badge || "En avant"} · <Link href="/de-serge">{featured.author}</Link>
               </div>
               <Link href={`/livres/${featured.slug}`} className="catalogue-thumb" style={{ margin: "0 auto 18px", maxWidth: 220 }}>
                 {featured.cover_url ? (

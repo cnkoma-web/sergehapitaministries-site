@@ -9,6 +9,7 @@ import { stripHtml } from "@/lib/richtext";
 import { getSocialLinks } from "@/lib/content/footer";
 import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import CoverRollover from "@/components/shop/CoverRollover";
+import PublisherLink from "@/components/shop/PublisherLink";
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -170,21 +171,29 @@ export default async function HomePage() {
               ) : (
                 <div className="pub-grid">
                   {qdlbArticles.slice(0, publicationsPerCategory).map((a) => (
-                    <Link href={`/publications/${a.slug}`} className="pub-card" key={a.id}>
+                    <div className="pub-card" key={a.id}>
                       {a.cover_url && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
+                        <Link href={`/publications/${a.slug}`} className="pub-card-thumb-link" aria-label={a.title}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
+                        </Link>
                       )}
                       <div className="pub-card-body">
-                        <h4>{a.title}</h4>
+                        <h4>
+                          <Link href={`/publications/${a.slug}`}>{a.title}</Link>
+                        </h4>
                         <p style={{ color: "rgba(255,255,255,.5)", fontSize: 12, margin: 0 }}>
                           {a.verse_reference ? `${a.verse_reference} · ` : ""}
                           {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                         </p>
-                        {a.excerpt && <p className="excerpt">{a.excerpt}</p>}
+                        {a.excerpt && (
+                          <p className="excerpt">
+                            <Link href={`/publications/${a.slug}`}>{a.excerpt}</Link>
+                          </p>
+                        )}
                       </div>
-                      <span className="pub-card-cta">Lire →</span>
-                    </Link>
+                      <Link href={`/publications/${a.slug}`} className="pub-card-cta">Lire →</Link>
+                    </div>
                   ))}
                 </div>
               )}
@@ -200,20 +209,26 @@ export default async function HomePage() {
               ) : (
                 <div className="pub-grid">
                   {vsArticles.slice(0, publicationsPerCategory).map((a) => (
-                    <Link href={`/publications/${a.slug}`} className="pub-card" key={a.id}>
+                    <div className="pub-card" key={a.id}>
                       {a.cover_url && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
+                        <Link href={`/publications/${a.slug}`} className="pub-card-thumb-link" aria-label={a.title}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
+                        </Link>
                       )}
                       <div className="pub-card-body">
-                        <h4>{a.title}</h4>
+                        <h4>
+                          <Link href={`/publications/${a.slug}`}>{a.title}</Link>
+                        </h4>
                         <p style={{ color: "rgba(255,255,255,.5)", fontSize: 12, margin: 0 }}>
                           {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                         </p>
-                        <p className="excerpt">{a.excerpt || (a.body ? stripHtml(a.body).slice(0, 130) + "…" : "")}</p>
+                        <p className="excerpt">
+                          <Link href={`/publications/${a.slug}`}>{a.excerpt || (a.body ? stripHtml(a.body).slice(0, 130) + "…" : "")}</Link>
+                        </p>
                       </div>
-                      <span className="pub-card-cta">Découvrir →</span>
-                    </Link>
+                      <Link href={`/publications/${a.slug}`} className="pub-card-cta">Découvrir →</Link>
+                    </div>
                   ))}
                 </div>
               )}
@@ -267,7 +282,9 @@ export default async function HomePage() {
                       </Link>
                     )}
                     <div className="book-body">
-                      <div className="publisher">{book.publisher}</div>
+                      <div className="publisher">
+                        <PublisherLink publisher={book.publisher} />
+                      </div>
                       <h4>
                         <Link href={`/livres/${book.slug}`}>{book.title}</Link>
                       </h4>
