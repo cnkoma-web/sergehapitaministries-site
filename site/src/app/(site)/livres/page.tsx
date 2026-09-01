@@ -32,7 +32,7 @@ export default async function LivresPage() {
       </section>
 
       <section className="section" style={{ paddingTop: 56, paddingBottom: 56 }}>
-        <div className="content-col catalogue-intro-split">
+        <div className="wrap catalogue-intro-split">
           <div>
             <h2 style={{ fontFamily: "Fraunces, serif", fontSize: 28, fontStyle: "italic", lineHeight: 1.35, marginBottom: 28, maxWidth: 460 }}>
               Chaque livre est un compagnon de route, un outil de transformation intérieure, un
