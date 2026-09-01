@@ -170,7 +170,7 @@ export default async function HomePage() {
               ) : (
                 <div className="pub-grid">
                   {qdlbArticles.slice(0, publicationsPerCategory).map((a) => (
-                    <div className="pub-card" key={a.id}>
+                    <Link href={`/publications/${a.slug}`} className="pub-card" key={a.id}>
                       {a.cover_url && (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
@@ -183,8 +183,8 @@ export default async function HomePage() {
                         </p>
                         {a.excerpt && <p className="excerpt">{a.excerpt}</p>}
                       </div>
-                      <Link href={`/publications/${a.slug}`}>Lire →</Link>
-                    </div>
+                      <span className="pub-card-cta">Lire →</span>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -200,7 +200,7 @@ export default async function HomePage() {
               ) : (
                 <div className="pub-grid">
                   {vsArticles.slice(0, publicationsPerCategory).map((a) => (
-                    <div className="pub-card" key={a.id}>
+                    <Link href={`/publications/${a.slug}`} className="pub-card" key={a.id}>
                       {a.cover_url && (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
@@ -212,8 +212,8 @@ export default async function HomePage() {
                         </p>
                         <p className="excerpt">{a.excerpt || (a.body ? stripHtml(a.body).slice(0, 130) + "…" : "")}</p>
                       </div>
-                      <Link href={`/publications/${a.slug}`}>Découvrir →</Link>
-                    </div>
+                      <span className="pub-card-cta">Découvrir →</span>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -253,23 +253,25 @@ export default async function HomePage() {
                 {latestBooks.map((book) => (
                   <div className="book" key={book.id}>
                     {book.cover_url ? (
-                      <div className="book-thumb">
+                      <Link href={`/livres/${book.slug}`} className="book-thumb">
                         {book.badge && <span className="badge">{book.badge}</span>}
                         <CoverRollover src={book.cover_url} hoverSrc={book.hover_cover_url} alt={book.title} />
-                      </div>
+                      </Link>
                     ) : (
-                      <div className="book-thumb placeholder">
+                      <Link href={`/livres/${book.slug}`} className="book-thumb placeholder">
                         {book.badge && <span className="badge">{book.badge}</span>}
                         <div>
                           <div className="ph-collection">{book.publisher}</div>
                           <div className="ph-title">{book.title}</div>
                         </div>
-                      </div>
+                      </Link>
                     )}
                     <div className="book-body">
                       <div className="publisher">{book.publisher}</div>
-                      <h4>{book.title}</h4>
-                      <div className="author">{book.author}</div>
+                      <h4>
+                        <Link href={`/livres/${book.slug}`}>{book.title}</Link>
+                      </h4>
+                      <Link href="/de-serge" className="author">{book.author}</Link>
                     </div>
                   </div>
                 ))}

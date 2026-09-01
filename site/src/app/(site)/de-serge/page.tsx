@@ -212,7 +212,8 @@ export default async function DeSergePage() {
                 padding: 28,
               }}
             >
-              <div
+              <Link
+                href={`/livres/${latestBook.slug}`}
                 style={{
                   aspectRatio: "2/3",
                   borderRadius: 10,
@@ -238,10 +239,12 @@ export default async function DeSergePage() {
                     </div>
                   </div>
                 )}
-              </div>
+              </Link>
               <div>
                 <div className="eyebrow">Dernière parution</div>
-                <h3 style={{ fontSize: 20, margin: "8px 0 10px" }}>{latestBook.title}</h3>
+                <h3 style={{ fontSize: 20, margin: "8px 0 10px" }}>
+                  <Link href={`/livres/${latestBook.slug}`}>{latestBook.title}</Link>
+                </h3>
                 <p style={{ fontSize: 14, color: "var(--ink-soft)", marginBottom: 16 }}>
                   {latestBook.price_cents != null
                     ? `${formatPrice(latestBook.price_cents)} — publié sous ${latestBook.publisher}.`

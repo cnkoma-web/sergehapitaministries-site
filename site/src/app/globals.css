@@ -171,14 +171,20 @@ header{
    (.catalogue-book), un enfant sans largeur propre ne recevait pas de façon
    fiable une largeur via le stretch flex par défaut avant que aspect-ratio
    ne calcule sa hauteur, et s'effondrait à 0×0 (couvertures disparues). */
-.catalogue-thumb{width:100%;aspect-ratio:2/3;border-radius:2px;overflow:hidden;background:var(--lavender);background-size:cover;background-position:center;position:relative;box-shadow:0 18px 32px -18px rgba(27,23,48,.4);margin:0 auto 20px;max-width:190px;}
+/* display:block (retour du 03/09) — .catalogue-thumb est maintenant un vrai
+   lien vers la fiche du livre (couverture cliquable) ; un <a> est inline
+   par défaut, ce qui casserait width/aspect-ratio/position:relative. */
+.catalogue-thumb{display:block;width:100%;aspect-ratio:2/3;border-radius:2px;overflow:hidden;background:var(--lavender);background-size:cover;background-position:center;position:relative;box-shadow:0 18px 32px -18px rgba(27,23,48,.4);margin:0 auto 20px;max-width:190px;}
 .catalogue-thumb img{width:100%;height:100%;object-fit:contain;}
 .catalogue-thumb.placeholder{background:linear-gradient(135deg,var(--blue),var(--purple));width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;}
 .catalogue-thumb .ph-collection{text-transform:none;color:rgba(255,255,255,.75);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
 .catalogue-thumb .ph-title{font-family:'Fraunces',serif;color:#fff;font-size:19px;line-height:1.25;font-weight:600;}
 .catalogue-body{padding-top:0;text-align:center;display:flex;flex-direction:column;flex:1;}
 .catalogue-body h3{font-family:'Fraunces',serif;font-size:16px;line-height:1.3;margin-bottom:4px;min-height:42px;display:flex;align-items:center;justify-content:center;}
-.catalogue-body .author{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:10px;}
+/* Lien distinct vers la page De Serge (retour du 03/09). */
+.catalogue-body .author{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:10px;}
+.catalogue-body .author:hover{color:var(--purple);}
+.catalogue-body h3 a:hover{color:var(--purple);}
 .catalogue-body .price{font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:var(--purple);margin-bottom:16px;}
 .catalogue-actions{display:flex;gap:7px;margin-top:auto;}
 .catalogue-actions a, .catalogue-actions button{flex:1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:10px 7px;border-radius:4px;text-align:center;cursor:pointer;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-family:inherit;}
@@ -1011,7 +1017,10 @@ footer.footer--dark{
 .stat .label{font-size:13px;color:var(--ink-soft);font-weight:600;margin-top:4px;}
 .pubs-inner-pad{padding-top:88px;padding-bottom:88px;}
 .books-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
-.book-thumb{aspect-ratio:2/3;position:relative;overflow:hidden;background:var(--gradient);}
+/* display:block (retour du 03/09) — .book-thumb est maintenant un vrai lien
+   vers la fiche du livre (couverture cliquable) ; un <a> est inline par
+   défaut, ce qui casserait aspect-ratio/position:relative. */
+.book-thumb{display:block;aspect-ratio:2/3;position:relative;overflow:hidden;background:var(--gradient);}
 .book-thumb img{width:100%;height:100%;object-fit:contain;}
 .book-thumb .badge{position:absolute;top:12px;left:12px;background:#fff;color:var(--ink);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:999px;z-index:1;}
 .book-thumb.placeholder{display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}
@@ -1020,7 +1029,12 @@ footer.footer--dark{
 .book-body{padding:16px 16px 18px;}
 .book-body .publisher{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);font-weight:800;margin-bottom:6px;}
 .book-body h4{font-size:15.5px;line-height:1.3;margin-bottom:4px;}
-.book-body .author{font-size:12.5px;color:var(--ink-soft);}
+.book-body h4 a:hover{color:var(--purple);}
+/* Lien distinct vers la page De Serge (retour du 03/09) — display:block pour
+   se comporter comme avant (une ligne à part), et hover pour un signal
+   visuel discret. */
+.book-body .author{display:block;font-size:12.5px;color:var(--ink-soft);}
+.book-body .author:hover{color:var(--purple);}
 .pubs{background:var(--ink);color:#fff;}
 /* Vraie classe (retour du 02/09) — remplace un style écrit en dur ciblé par
    un sélecteur d'attribut ([style*="..."]) : un style inline a toujours
@@ -1034,9 +1048,14 @@ footer.footer--dark{
 .pub-card-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;}
 .pub-card-body{flex:1;min-width:0;}
 .pub-card h4{color:#fff;font-size:15.5px;line-height:1.3;margin:0 0 4px;}
+/* Toute la carte est un lien (retour du 03/09) — signal visuel au survol. */
+.pub-card:hover h4{color:var(--lavender);}
 .pub-card .excerpt{font-size:14.5px;color:rgba(255,255,255,.6);line-height:1.55;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .pub-card:first-child{border-top:0;}
-.pub-card a{font-size:13.5px;font-weight:700;color:#fff;display:inline-flex;gap:6px;align-items:center;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;white-space:nowrap;flex-shrink:0;}
+/* .pub-card-cta (retour du 03/09) — plus .pub-card a : toute la carte est
+   maintenant un seul lien (aperçu cliquable, même destination que le
+   titre), ce span est juste son style visuel "Lire →" / "Découvrir →". */
+.pub-card-cta{font-size:13.5px;font-weight:700;color:#fff;display:inline-flex;gap:6px;align-items:center;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;white-space:nowrap;flex-shrink:0;}
 .social-card{border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center;transition:all .2s ease;}
 .social-card:hover{border-color:var(--purple);transform:translateY(-3px);}
 .social-card .icon{width:46px;height:46px;border-radius:50%;background:var(--lavender);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 14px;}

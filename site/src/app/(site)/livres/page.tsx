@@ -61,7 +61,7 @@ export default async function LivresPage() {
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".05em", color: "var(--purple)", marginBottom: 14 }}>
                 ★ {featured.badge || "En avant"} · {featured.author}
               </div>
-              <div className="catalogue-thumb" style={{ margin: "0 auto 18px", maxWidth: 220 }}>
+              <Link href={`/livres/${featured.slug}`} className="catalogue-thumb" style={{ margin: "0 auto 18px", maxWidth: 220 }}>
                 {featured.cover_url ? (
                   <CoverRollover src={featured.cover_url} hoverSrc={featured.hover_cover_url} alt={featured.title} />
                 ) : (
@@ -72,9 +72,11 @@ export default async function LivresPage() {
                     </div>
                   </div>
                 )}
-              </div>
+              </Link>
               <div style={{ textAlign: "center" }}>
-                <h3 style={{ fontFamily: "Fraunces, serif", fontSize: 19, marginBottom: 6 }}>{featured.title}</h3>
+                <h3 style={{ fontFamily: "Fraunces, serif", fontSize: 19, marginBottom: 6 }}>
+                  <Link href={`/livres/${featured.slug}`}>{featured.title}</Link>
+                </h3>
                 <div style={{ fontFamily: "Fraunces, serif", fontWeight: 600, fontSize: 17, color: "var(--purple)", marginBottom: 16 }}>
                   {formatPrice(featured.price_cents)}
                 </div>
@@ -100,7 +102,7 @@ export default async function LivresPage() {
             <div className="catalogue-grid">
               {books.map((book) => (
                 <div className="catalogue-book" key={book.id}>
-                  <div className="catalogue-thumb">
+                  <Link href={`/livres/${book.slug}`} className="catalogue-thumb">
                     {book.status === "precommande" ? (
                       <span className="catalogue-badge">Précommande</span>
                     ) : (
@@ -116,10 +118,12 @@ export default async function LivresPage() {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </Link>
                   <div className="catalogue-body">
-                    <h3>{book.title}</h3>
-                    <div className="author">{book.author}</div>
+                    <h3>
+                      <Link href={`/livres/${book.slug}`}>{book.title}</Link>
+                    </h3>
+                    <Link href="/de-serge" className="author">{book.author}</Link>
                     <div className="price">{formatPrice(book.price_cents)}</div>
                     <div className="catalogue-actions">
                       <Link href={`/livres/${book.slug}`}>Voir</Link>
