@@ -215,7 +215,10 @@ header{
 
 /* ===== FICHE PRODUIT (livre / goodie) ===== */
 .product-section{padding-top:56px;padding-bottom:56px;}
-.book-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid var(--line);}
+/* Centré sur une largeur resserrée (retour du 03/09) — étiré sur toute la
+   largeur .wrap (~1124px), il plaquait "Précédent"/"Suivant" tout au bord
+   avec "Tout le catalogue" perdu au milieu. */
+.book-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid var(--line);max-width:var(--content-col);margin-left:auto;margin-right:auto;}
 .book-nav-link{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
 .book-nav-link:hover{color:var(--purple);}
 .book-nav-catalogue{font-size:12.5px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
@@ -232,6 +235,10 @@ header{
    d'une base fidèle à la maquette ; l'alignement galerie/couverture reste
    à retrancher séparément si besoin, une fois cette base validée. */
 .product-cover{position:relative;aspect-ratio:2/3;max-width:340px;margin:0 auto;border-radius:6px;box-shadow:0 30px 60px -24px rgba(27,23,48,.4);overflow:hidden;background:var(--lavender);}
+/* Même largeur que .product-cover, à chaque taille d'écran — garantit que
+   la galerie de vignettes (flush-left dans ce conteneur) partage l'axe
+   gauche de la couverture (retour du 03/09). */
+.product-cover-col{max-width:340px;margin:0 auto;}
 .product-cover img{width:100%;height:100%;object-fit:contain;}
 .product-cover.placeholder{display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;background:linear-gradient(135deg,var(--blue),var(--purple));}
 .product-cover .ph-collection{font-size:11px;text-transform:none;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-bottom:10px;}
@@ -247,9 +254,15 @@ header{
 .product-price{font-family:'Fraunces',serif;font-weight:600;font-size:28px;color:var(--purple);margin-bottom:0;}
 .product-actions{display:flex;align-items:center;gap:8px;}
 .specs-table{border-top:1px solid var(--line);padding-top:20px;}
-.specs-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
-.specs-row span:first-child{color:var(--ink-soft);}
-.specs-row span:last-child{font-weight:600;color:var(--ink);text-align:right;}
+/* Espacement fixe entre libellé et valeur (retour du 03/09) — space-between
+   étirait les deux aux deux bouts de toute la colonne d'infos (~587px),
+   d'où l'écart important entre "Éditeur" et "amDG Éditions" par exemple.
+   Un max-width ne suffisait pas : la valeur variant selon la ligne
+   (ex. l'ISBN, plus long), un écart fixe et resserré est plus fiable
+   qu'une largeur de ligne à deviner. */
+.specs-row{display:flex;justify-content:flex-start;gap:24px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.specs-row span:first-child{color:var(--ink-soft);flex-shrink:0;}
+.specs-row span:last-child{font-weight:600;color:var(--ink);}
 /* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation
    (remplace le passage à 100% de .wrap fait en v2). */
 /* Sélecteur "section.product-desc" (et pas juste ".product-desc") : la règle
@@ -270,6 +283,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 @media (max-width:980px){
   .product-grid{grid-template-columns:1fr;gap:36px;}
   .product-cover{max-width:260px;}
+  .product-cover-col{max-width:260px;}
 }
 @media (max-width:640px){
   .product-title{font-size:24px;}
@@ -293,6 +307,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .review-form .star-input span:hover, .review-form .star-input span.active{color:#F5B301;}
 .review-form textarea{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;min-height:100px;margin-bottom:16px;}
 .review-form input[type="text"]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;margin-bottom:16px;}
+/* Centré plutôt qu'aligné à gauche (retour du 03/09). */
+.review-form button[type="submit"]{display:flex;margin:0 auto;}
 
 /* ===== PUBLICATIONS (hub) ===== */
 /* ===== Flux unifié du hub Publications (cahier §6.5 / v3 §6.10.1) =====

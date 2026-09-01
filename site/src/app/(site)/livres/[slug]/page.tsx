@@ -50,20 +50,25 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
         <div className="wrap">
           <div className="book-nav">
             {prev ? (
-              <Link href={`/livres/${prev.slug}`} className="book-nav-link">← {prev.title}</Link>
+              <Link href={`/livres/${prev.slug}`} className="book-nav-link" title={prev.title}>← Précédent</Link>
             ) : (
               <span />
             )}
             <Link href="/livres" className="book-nav-catalogue">Tout le catalogue</Link>
             {next ? (
-              <Link href={`/livres/${next.slug}`} className="book-nav-link">{next.title} →</Link>
+              <Link href={`/livres/${next.slug}`} className="book-nav-link" title={next.title}>Suivant →</Link>
             ) : (
               <span />
             )}
           </div>
 
           <div className="product-grid">
-            <div>
+            {/* Regroupe couverture + galerie dans un même axe (retour du
+                03/09) : elles partagent maintenant le même centrage plutôt
+                que d'être centrées indépendamment l'une de l'autre — voir
+                .product-cover-col pour la largeur responsive (340px desktop,
+                260px sous 980px, alignée sur .product-cover). */}
+            <div className="product-cover-col">
               <div className={galleryImages.length > 0 ? "product-cover" : "product-cover placeholder"}>
                 {galleryImages.length > 0 ? (
                   <CoverRollover src={galleryImages[0].url} hoverSrc={galleryImages[1]?.url} alt={book.title} />
