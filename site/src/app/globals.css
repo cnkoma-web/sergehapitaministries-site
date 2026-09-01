@@ -258,7 +258,9 @@ header{
 .rating-row .count{font-size:13px;color:var(--ink-soft);}
 .price-actions-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
 .product-price{font-family:'Fraunces',serif;font-weight:600;font-size:28px;color:var(--purple);margin-bottom:0;}
-.product-actions{display:flex;align-items:center;gap:8px;}
+/* margin-top (retour du 03/09) : ce bloc est désormais sous .specs-table
+   (avant, il était accolé au prix, sans avoir besoin de cet espace). */
+.product-actions{display:flex;align-items:center;gap:8px;margin-top:22px;}
 .specs-table{border-top:1px solid var(--line);padding-top:20px;}
 /* Espacement fixe entre libellé et valeur (retour du 03/09) — space-between
    étirait les deux aux deux bouts de toute la colonne d'infos (~587px),
@@ -266,8 +268,11 @@ header{
    Un max-width ne suffisait pas : la valeur variant selon la ligne
    (ex. l'ISBN, plus long), un écart fixe et resserré est plus fiable
    qu'une largeur de ligne à deviner. */
-.specs-row{display:flex;justify-content:flex-start;gap:24px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
-.specs-row span:first-child{color:var(--ink-soft);flex-shrink:0;}
+/* Libellé à largeur fixe (retour du 03/09) — sans ça, la largeur du
+   libellé variait selon le mot ("ISBN" vs "Éditeur"), donc la valeur ne
+   démarrait pas à la même position d'une ligne à l'autre. */
+.specs-row{display:flex;justify-content:flex-start;gap:18px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.specs-row span:first-child{color:var(--ink-soft);flex-shrink:0;width:95px;}
 .specs-row span:last-child{font-weight:600;color:var(--ink);}
 /* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation
    (remplace le passage à 100% de .wrap fait en v2). */

@@ -109,12 +109,6 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
 
               <div className="price-actions-row">
                 <div className="product-price">{formatPrice(book.price_cents)}</div>
-                <div className="product-actions">
-                  <Link href="/livres" className="btn-compact btn-compact-outline" title="Retour au catalogue" aria-label="Retour au catalogue">
-                    ←
-                  </Link>
-                  <AddToCartButton bookId={book.id} className="btn-compact btn-compact-primary" label="Ajouter au panier" />
-                </div>
               </div>
 
               <div className="specs-table">
@@ -124,6 +118,16 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
                 <div className="specs-row"><span>Pages</span><span>{book.pages ? `${book.pages} p.` : "À renseigner"}</span></div>
                 <div className="specs-row"><span>Langue</span><span>{book.language || "Français"}</span></div>
                 <div className="specs-row"><span>ISBN</span><span>{book.isbn || "À renseigner"}</span></div>
+              </div>
+
+              {/* Déplacé sous la liste de caractéristiques, aligné à gauche
+                  comme la galerie de vignettes sous la couverture (retour du
+                  03/09) — n'était plus à côté du prix. */}
+              <div className="product-actions">
+                <Link href="/livres" className="btn-compact btn-compact-outline" title="Retour au catalogue" aria-label="Retour au catalogue">
+                  ←
+                </Link>
+                <AddToCartButton bookId={book.id} className="btn-compact btn-compact-primary" label="Ajouter au panier" />
               </div>
             </div>
           </div>
