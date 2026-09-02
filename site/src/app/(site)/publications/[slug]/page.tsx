@@ -239,11 +239,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <div key={i} className="body-html" dangerouslySetInnerHTML={{ __html: html }} />
           ))}
 
-          {/* Positionnée avant "Aller plus loin" (retour du 03/09). */}
+          {/* Positionnée avant "Aller plus loin" (retour du 03/09). Identité
+              visuelle distincte (retour du 05/09) : italique + fond gris
+              clair, même principe que le trait vertical déjà utilisé pour
+              "Aller plus loin" (.further-verse) — affichage public, pas
+              seulement le champ d'édition dans l'admin. */}
           {article.prayer && (
             <>
               <h2>Prière</h2>
-              <p>{article.prayer}</p>
+              <div className="prayer-box">
+                <p>{article.prayer}</p>
+              </div>
             </>
           )}
 

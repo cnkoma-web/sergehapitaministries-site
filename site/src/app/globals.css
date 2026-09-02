@@ -480,9 +480,16 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    Sélecteur corrigé (retour du 05/09) : chaque paragraphe réel du corps est
    encapsulé dans un <div class="body-html"> (dangerouslySetInnerHTML) —
    ".content-col > p" en enfant direct ne les atteignait donc jamais et ne
-   touchait que le chapeau et la Prière (eux, en enfants directs). */
+   touchait que le chapeau (en enfant direct). La Prière a depuis sa propre
+   règle (.prayer-box p ci-dessous). */
 .article-body > .content-col > p,
 .article-body > .content-col > .body-html > p{font-size:18px;line-height:1.6;color:var(--ink);margin-bottom:30px;white-space:pre-line;}
+/* Identité visuelle distincte (retour du 05/09) — italique + fond gris
+   clair, même principe que le trait vertical de "Aller plus loin"
+   (.further-verse) : affichage public de la Prière, pas seulement le champ
+   d'édition dans l'admin (voir aussi .prayer-field dans l'admin). */
+.prayer-box{background:#F2F2F4;border-radius:10px;padding:26px 30px;margin-bottom:30px;}
+.prayer-box p{font-style:italic;font-size:18px;line-height:1.6;color:var(--ink);margin:0;}
 .further-verse{margin-bottom:28px;padding-left:20px;border-left:2px solid var(--line);}
 .further-verse .ref{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
 /* Taille alignée sur le corps du texte (retour du 04/09). */
@@ -527,6 +534,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .verse-box p{font-size:18px;}
   .article-body > .content-col > p,
   .article-body > .content-col > .body-html > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
+  .prayer-box{padding:20px 20px;}
+  .prayer-box p{font-size:16px;line-height:1.85;}
   .further-verse{padding-left:16px;}
   .related-grid{grid-template-columns:1fr;}
   .gate-box{padding:28px 22px;}
