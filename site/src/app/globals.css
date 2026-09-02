@@ -400,14 +400,22 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .feed-item h3{font-size:17px;line-height:1.35;margin-bottom:6px;}
 .feed-item h3 a:hover{color:var(--purple);}
 /* Légèrement au-dessus du niveau précédent (retour du 05/09) — accueil
-   inchangé, seuls les hubs (.feed-item) sont concernés. */
-.feed-item .excerpt{font-size:15px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+   inchangé, seuls les hubs (.feed-item) sont concernés.
+   Plus de -webkit-line-clamp (retour du 05/09, point 6, 3e signalement) :
+   la longueur est désormais fixée en JS (voir CHARS_PER_LINE dans
+   PublicationFeedItem), un clamp par nombre de lignes en plus aurait pu
+   couper le lien "Lire la suite" qui fait maintenant partie du même
+   texte. */
+.feed-item .excerpt{font-size:15px;color:var(--ink-soft);line-height:1.6;}
 .feed-item .excerpt a:hover{color:var(--ink);}
-/* white-space:nowrap (retour du 04/09) — ne doit jamais retourner à la
-   ligne, même sur une carte étroite. flex-shrink:0 (retour du 05/09) : au
-   cas où un ancêtre flex tenterait de le compresser. */
-.feed-cta{display:inline-flex;flex-shrink:0;font-size:13px;font-weight:700;color:var(--purple);margin-top:8px;white-space:nowrap;}
-.feed-cta:hover{text-decoration:underline;}
+/* Lien "Lire la suite"/"Découvrir" dans le prolongement direct du chapeau
+   (retour du 05/09, point 6, 3e signalement) — plus un élément séparé
+   positionné en dessous (c'était ça, la vraie cause du "retour à la
+   ligne" signalé à répétition : un bloc qui commençait toujours sa propre
+   ligne). white-space:nowrap empêche seulement CE lien de se couper en
+   deux mots au milieu — le paragraphe entier, lui, peut continuer à la
+   ligne suivante normalement, comme n'importe quel texte qui déborde. */
+.feed-cta-inline{white-space:nowrap;color:var(--purple);font-weight:700;}
 /* Rappel Rosée Matinale sous le flux — fond de couleur différent (v3 §6.10.2). */
 /* Haut resserré (retour du 30/08) : espace avec le flux du dessus trop marqué. */
 .rm-reminder{background:var(--lavender);padding-top:32px;padding-bottom:56px;}

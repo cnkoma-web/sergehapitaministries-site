@@ -10,6 +10,25 @@ const CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire la suite", vs: 
 // structure de la liste, pas ce texte de bouton déjà tranché séparément.
 const HOME_CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire →", vs: "Découvrir →", rm: "Lire →" };
 
+// Nombre moyen de caractères par ligne d'extrait à ~15px sur la largeur
+// réelle de .feed-body (retour du 05/09, point 6) — sert à couper le
+// chapeau nous-mêmes, en code, à une longueur fixe, plutôt que de compter
+// sur -webkit-line-clamp : le lien "Lire la suite" doit être physiquement
+// à l'intérieur du même bloc de texte que le chapeau tronqué (jamais un
+// élément séparé positionné en dessous), donc c'est le code qui doit
+// garantir qu'il reste de la place, pas Serge en tapant son texte.
+const CHARS_PER_LINE = 62;
+
+// Coupe au dernier espace avant la limite (jamais au milieu d'un mot) et ne
+// touche pas au texte si il tient déjà dans la limite.
+function truncateExcerpt(text: string, maxChars: number): { text: string; truncated: boolean } {
+  if (text.length <= maxChars) return { text, truncated: false };
+  const cut = text.slice(0, maxChars);
+  const lastSpace = cut.lastIndexOf(" ");
+  const clean = lastSpace > maxChars * 0.6 ? cut.slice(0, lastSpace) : cut;
+  return { text: clean.trimEnd(), truncated: true };
+}
+
 // Une entrée d'un flux de publications (hub Publications, hubs par
 // catégorie, et depuis le 05/09 le flux unique de l'accueil) — vignette,
 // badge + catégorie + date + vues, titre, chapeau. Rosée Matinale pointe
@@ -23,13 +42,22 @@ const HOME_CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire →", vs: 
 //
 // Retour du 04/09 : catégorie et date reviennent sur la même ligne, vues en
 // violet, date au format complet en toutes lettres — identique à la page
-// article. Le lien "Lire la suite"/"Découvrir" ne doit jamais retourner à
-// la ligne.
-// Retour du 05/09 : badge + libellé de catégorie regroupés et agrandis (à
-// hauteur du chapeau, 18px) pour être nettement plus visibles que la date
-// et les vues (qui restent petites), avec un espacement net entre les deux
-// groupes — sur les hubs ET sur l'accueil.
-// excerptLines contrôle le nombre de lignes de l'extrait — réglage admin
+// article.
+// Retour du 05/09 (point 3) : badge + libellé de catégorie regroupés et
+// agrandis (à hauteur du chapeau, 18px), espacement net avec le groupe
+// date + vues.
+// Retour du 05/09 (point 6, 3e signalement de ce point) : le lien
+// "Lire la suite"/"Découvrir" n'est plus un élément séparé positionné sous
+// le chapeau (ce qui créait visuellement un "retour à la ligne" — un bloc
+// qui saute systématiquement à la ligne suivante). Le chapeau est
+// désormais tronqué par le code à une longueur fixe (CHARS_PER_LINE ×
+// excerptLines, jamais au milieu d'un mot), suivi de "…" seulement si
+// coupé, puis immédiatement du lien "Lire la suite"/"Découvrir" — à
+// l'intérieur du même <Link>, du même paragraphe, du même flux de texte.
+// Il peut désormais suivre le retour à la ligne naturel du texte comme
+// n'importe quel mot (jamais coupé en deux lui-même, via white-space:
+// nowrap sur .feed-cta-inline), mais n'est plus jamais un bloc à part.
+// excerptLines contrôle la longueur du chapeau — réglage admin
 // (interface_texts "publications.excerpt_lines"), pas une valeur fixée ici.
 // variant "home" utilise les libellés de bouton historiques de l'accueil
 // (flèche) plutôt que ceux des hubs, seule différence entre les deux usages.
@@ -43,9 +71,14 @@ export default function PublicationFeedItem({
   variant?: "hub" | "home";
 }) {
   const href = article.type === "rm" ? `/rosee-matinale?date=${article.article_date}` : `/publications/${article.slug}`;
-  const excerpt = article.excerpt || (article.body ? stripHtml(article.body).slice(0, 140) + "…" : article.verse_text || "");
+  const rawExcerpt = article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || "");
   const dateLabel = new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const ctaLabel = variant === "home" ? HOME_CTA_LABEL[article.type] : CTA_LABEL[article.type];
+  // Réserve la place du "… " + du lien sur la dernière ligne (retour du
+  // 05/09) — sans cette marge, le total (chapeau + lien) dépassait souvent
+  // d'une ligne complète la longueur voulue par excerptLines.
+  const reserved = ctaLabel.length + 3;
+  const { text: excerptText, truncated } = truncateExcerpt(rawExcerpt.trim(), CHARS_PER_LINE * excerptLines - reserved);
 
   return (
     <div className="feed-item">
@@ -79,12 +112,14 @@ export default function PublicationFeedItem({
         <h3>
           <Link href={href}>{article.title}</Link>
         </h3>
-        {excerpt && (
-          <p className="excerpt" style={{ WebkitLineClamp: excerptLines }}>
-            <Link href={href}>{excerpt}</Link>
-          </p>
-        )}
-        <Link href={href} className="feed-cta">{ctaLabel}</Link>
+        <p className="excerpt">
+          <Link href={href}>
+            {excerptText}
+            {truncated && "…"}
+            {" "}
+            <span className="feed-cta-inline">{ctaLabel}</span>
+          </Link>
+        </p>
       </div>
     </div>
   );
