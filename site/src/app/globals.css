@@ -365,7 +365,10 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    seuls la vignette, le titre et le chapeau sont individuellement
    cliquables (voir .feed-thumb-link et les <a> dans h3/.excerpt) — les
    métadonnées (badge, date, vues) et l'espace vide ne le sont plus. */
-.feed-item{display:flex;gap:20px;padding:24px 4px;border-top:1px solid var(--line);align-items:flex-start;}
+/* Gap resserré de quelques pixels (retour du 05/09) — cause reelle du point
+   5 identifiee par Serge : le bloc de texte etait trop etroit (pas un
+   probleme Safari), la vignette + l'ecart lui laissaient trop peu de place. */
+.feed-item{display:flex;gap:16px;padding:24px 4px;border-top:1px solid var(--line);align-items:flex-start;}
 .feed-list .feed-item:first-child{border-top:0;}
 .feed-thumb-link{display:block;flex-shrink:0;}
 .feed-thumb-link:hover .feed-thumb{opacity:.85;}
@@ -404,7 +407,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .rm-reminder .feed-thumb{background:#fff;}
 .rm-reminder .feed-item{border-top-color:var(--line);}
 @media (max-width:640px){
-  .feed-item{gap:14px;padding:18px 0;}
+  .feed-item{gap:10px;padding:18px 0;}
   .feed-thumb{width:64px;}
 }
 
@@ -1117,7 +1120,10 @@ footer.footer--dark{
 .pub-grid{display:flex;flex-direction:column;gap:0;}
 /* Plus toute la carte en un seul lien (retour du 03/09) : seuls la
    vignette, le titre et le chapeau sont individuellement cliquables. */
-.pub-card{background:transparent;border:0;border-top:1px solid rgba(255,255,255,.12);border-radius:0;padding:16px 4px;display:flex;align-items:flex-start;gap:16px;}
+/* Gap resserré de quelques pixels (retour du 05/09) — même cause et même
+   correctif que .feed-item sur les hubs : le bloc de texte était trop
+   étroit. */
+.pub-card{background:transparent;border:0;border-top:1px solid rgba(255,255,255,.12);border-radius:0;padding:16px 4px;display:flex;align-items:flex-start;gap:12px;}
 .pub-card-thumb-link{display:block;flex-shrink:0;}
 .pub-card-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;transition:opacity .2s ease;}
 .pub-card-thumb-link:hover .pub-card-thumb{opacity:.85;}
@@ -1167,7 +1173,7 @@ footer.footer--dark{
   .pubs-inner-pad{padding-top:56px;padding-bottom:56px;}
   .books-grid{grid-template-columns:repeat(2,1fr) !important;gap:14px;}
   .pubs .wrap{padding-left:20px;padding-right:20px;}
-  .pub-card{padding:16px 0;gap:12px;}
+  .pub-card{padding:16px 0;gap:8px;}
   .pub-card-thumb{width:48px;height:48px;}
   .livres-split{grid-template-columns:1fr !important;}
   .video-feature-grid{grid-template-columns:1fr !important;}
