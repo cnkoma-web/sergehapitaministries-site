@@ -70,19 +70,23 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="content-col">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
             <h1 className="article-title">{article.title}</h1>
-            {/* Une seule ligne, ordre exact : date, auteur, temps de
-                lecture, vues (retour du 04/09). */}
+            {/* 2 lignes en italique (retour du 05/09) : date | auteur, puis
+                temps de lecture | vues — même taille sur les deux lignes. */}
             <div className="article-meta-line">
-              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
-              {article.author_name && <span>{article.author_name}</span>}
-              {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
-              <span className="views">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-                {article.view_count} vue{article.view_count > 1 ? "s" : ""}
-              </span>
+              <div className="meta-line">
+                <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+                {article.author_name && <span>{article.author_name}</span>}
+              </div>
+              <div className="meta-line">
+                {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
+                <span className="views">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  {article.view_count} vue{article.view_count > 1 ? "s" : ""}
+                </span>
+              </div>
             </div>
           </div>
         </section>
@@ -189,19 +193,23 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="content-col">
           <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
           <h1 className="article-title">{article.title}</h1>
-          {/* Une seule ligne, ordre exact : date, auteur, temps de lecture,
-              vues (retour du 04/09). */}
+          {/* 2 lignes en italique (retour du 05/09) : date | auteur, puis
+              temps de lecture | vues — même taille sur les deux lignes. */}
           <div className="article-meta-line">
-            <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
-            {article.author_name && <span>{article.author_name}</span>}
-            {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
-            <span className="views">
+            <div className="meta-line">
+              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+              {article.author_name && <span>{article.author_name}</span>}
+            </div>
+            <div className="meta-line">
+              {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
+              <span className="views">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
                   <circle cx="12" cy="12" r="3" />
                 </svg>
                 {article.view_count} vue{article.view_count > 1 ? "s" : ""}
               </span>
+            </div>
           </div>
         </div>
       </section>
@@ -276,14 +284,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       {related.length > 0 && (
         <section className="related-articles">
           <div className="wrap">
-            <h2>Autres articles « Que Dit la Bible ? »</h2>
+            {/* Intitulé neutre, sans nom de catégorie entre guillemets
+                (retour du 05/09). */}
+            <h2>Autres articles similaires</h2>
             <div className="related-grid">
               {related.map((a) => (
                 <div className="related-card" key={a.id}>
                   <div className="verse">
-                    {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+                    {/* Format complet en toutes lettres, identique au reste
+                        des articles (retour du 05/09) — plus le format
+                        abrégé "19 août". */}
+                    {new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                   </div>
                   <h3>{a.title}</h3>
+                  {/* Chapeau ajouté sous le titre (retour du 05/09). */}
+                  {a.excerpt && <p className="related-card-excerpt">{a.excerpt}</p>}
                   <Link href={`/publications/${a.slug}`}>Lire l&apos;article →</Link>
                 </div>
               ))}

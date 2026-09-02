@@ -378,13 +378,20 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    ligne 2 date+heure+vues, puis titre, puis extrait — deux lignes de
    métadonnées distinctes plutôt qu'une seule ligne combinée. */
 /* Catégorie + date + vues sur une même ligne, espacement net entre chaque
-   (retour du 04/09) — pas collées. Vues en violet. */
-.feed-meta{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
-.feed-badge{display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;letter-spacing:.04em;color:#fff;border-radius:100px;padding:3px 10px;}
+   (retour du 04/09) — pas collées. Vues en violet.
+   Retour du 05/09 : badge + libellé regroupés (.feed-cat-group) et
+   nettement agrandis (à hauteur du chapeau, 18px) pour se distinguer du
+   groupe date + vues (.feed-info-group), qui reste petit — avec un
+   espacement net entre les deux groupes (gap 22px sur .feed-meta, contre
+   6/10px à l'intérieur de chaque groupe). */
+.feed-meta{display:flex;align-items:center;gap:22px;margin-bottom:10px;flex-wrap:wrap;}
+.feed-cat-group{display:flex;align-items:center;gap:8px;}
+.feed-info-group{display:flex;align-items:center;gap:10px;}
+.feed-badge{display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;letter-spacing:.04em;color:#fff;border-radius:100px;padding:4px 12px;}
 .feed-badge.qdlb{background:var(--purple);}
 .feed-badge.vs{background:var(--blue);}
 .feed-badge.rm{background:var(--teal);}
-.feed-cat-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+.feed-cat-label{font-size:18px;font-weight:700;color:var(--ink);}
 .feed-date{font-size:12.5px;color:var(--ink-soft);}
 /* Icône (pas du texte) + nombre, comme avant (retour du 05/09) — le
    remplacement de l'icône par le mot "vue" au round précédent n'avait pas
@@ -445,12 +452,15 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .article-date{font-size:13px;color:var(--ink-soft);}
 .article-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--ink-soft);margin-top:8px;}
 .article-meta span{display:flex;align-items:center;gap:5px;}
-/* Ligne de métadonnées unique (retour du 04/09) — date, auteur, temps de
-   lecture, vues, dans cet ordre exact, sur une seule ligne ; les vues en
-   violet. Remplace .article-date + <ArticleMeta> sur la page article
-   uniquement (ArticleMeta reste inchangé ailleurs, ex. Rosée Matinale). */
-.article-meta-line{font-size:13px;color:var(--ink-soft);flex-wrap:wrap;}
-.article-meta-line > span:not(:last-child)::after{content:" · ";}
+/* 2 lignes en italique (retour du 05/09) — ligne 1 : date | auteur, ligne 2 :
+   temps de lecture | vues, même taille sur les deux lignes. Remplace
+   .article-date + <ArticleMeta> sur la page article uniquement (ArticleMeta
+   reste inchangé ailleurs, ex. Rosée Matinale ; hubs et accueil gardent
+   leur format actuel, non concernés par ce point). */
+.article-meta-line{font-size:13px;color:var(--ink-soft);font-style:italic;}
+.article-meta-line .meta-line{margin-top:4px;}
+.article-meta-line .meta-line:first-child{margin-top:0;}
+.article-meta-line .meta-line > span:not(:last-child)::after{content:" · ";}
 /* Icône (pas du texte) + nombre, comme avant (retour du 05/09). */
 .article-meta-line .views{display:inline-flex;align-items:center;gap:4px;color:var(--purple);font-weight:700;}
 /* Largeur portée par .content-col (retour du 01/09) — plus par .wrap +
@@ -490,6 +500,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .related-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;}
 .related-card .verse{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
 .related-card h3{font-size:15px;line-height:1.35;margin-bottom:10px;}
+/* Chapeau ajouté sous le titre (retour du 05/09). */
+.related-card-excerpt{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .related-card a{font-size:12.5px;font-weight:700;color:var(--purple);}
 
 /* Gating La Vie Supérieure */
@@ -759,6 +771,11 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .editor-field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.03em;}
 .editor-field input, .editor-field select, .editor-field textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;font-size:13.5px;font-family:inherit;}
 .editor-field textarea{resize:vertical;min-height:80px;}
+/* Identité visuelle distincte (retour du 05/09) — même principe que les
+   badges verticaux violets déjà utilisés pour "Aller plus loin"
+   (.further-verse) : italique + fond gris clair (pas teinté violet comme
+   .lavender, un gris neutre comme demandé). */
+.editor-field textarea.prayer-field{font-style:italic;background:#F2F2F4;border-color:#DEDEE2;}
 .editor-field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0;}
 .cover-upload{aspect-ratio:16/9;background:var(--lavender);border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink-soft);margin-bottom:12px;overflow:hidden;position:relative;}
 .cover-upload img{width:100%;height:100%;object-fit:cover;}
@@ -933,10 +950,15 @@ footer.footer--dark{
 .editions-block p{color:var(--ink-soft);font-size:15.5px;margin-bottom:22px;}
 .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--lavender);}
 .give{background:linear-gradient(135deg, var(--blue), var(--purple));color:#fff;padding-top:88px;padding-bottom:88px;}
+/* Grille 2 colonnes (retour du 05/09) — absente jusqu'ici : le texte et le
+   CTA restaient collés (marges à 0 par le reset global) et les 3 capsules
+   s'étiraient sur toute la largeur de la section au lieu d'une colonne
+   proportionnée. */
+.give .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
 .give .eyebrow{color:#fff;opacity:.85;}
 .give .eyebrow::before{background:#fff;}
-.give h2{color:#fff;}
-.give p{color:rgba(255,255,255,.85);}
+.give h2{color:#fff;margin-bottom:16px;}
+.give p{color:rgba(255,255,255,.85);margin-bottom:28px;}
 .give-points{display:flex;flex-direction:column;gap:18px;}
 .give-point{display:flex;gap:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:18px 20px;}
 .give-point .num{font-family:'Fraunces',serif;font-size:20px;font-weight:600;}
@@ -1026,6 +1048,7 @@ footer.footer--dark{
 
 @media (max-width:980px){
   .facts-grid{grid-template-columns:1fr 1fr;}
+  .give .wrap{grid-template-columns:1fr;gap:32px;}
 }
 @media (max-width:640px){
   .page-hero h1{font-size:26px;}
@@ -1110,46 +1133,24 @@ footer.footer--dark{
 .book-body .author{display:block;font-size:12.5px;color:var(--ink-soft);}
 .book-body .author:hover{color:var(--purple);}
 .pubs{background:var(--ink);color:#fff;}
-/* Vraie classe (retour du 02/09) — remplace un style écrit en dur ciblé par
-   un sélecteur d'attribut ([style*="..."]) : un style inline a toujours
-   priorité sur une règle externe, la règle mobile ne s'appliquait donc
-   jamais réellement (le teaser ne s'empilait pas, texte coupé à droite). */
-.pub-teaser-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .pubs .section-head h2{color:#fff;}
 .pubs .section-head .see-all{color:rgba(255,255,255,.65);}
-.pub-grid{display:flex;flex-direction:column;gap:0;}
-/* Plus toute la carte en un seul lien (retour du 03/09) : seuls la
-   vignette, le titre et le chapeau sont individuellement cliquables. */
-/* Gap resserré de quelques pixels (retour du 05/09) — même cause et même
-   correctif que .feed-item sur les hubs : le bloc de texte était trop
-   étroit. */
-.pub-card{background:transparent;border:0;border-top:1px solid rgba(255,255,255,.12);border-radius:0;padding:16px 4px;display:flex;align-items:flex-start;gap:12px;}
-.pub-card-thumb-link{display:block;flex-shrink:0;}
-.pub-card-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;transition:opacity .2s ease;}
-.pub-card-thumb-link:hover .pub-card-thumb{opacity:.85;}
-.pub-card-body{flex:1;min-width:0;}
-/* Ordre imposé, sans exception (retour du 03/09) : catégorie seule, puis
-   date+heure+vues, puis titre, puis extrait. */
-.pub-card-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.pub-card-cat-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.75);}
-/* flex-wrap:wrap + white-space:nowrap sur chacun des deux éléments (retour
-   du 05/09, même règle que .feed-meta sur les hubs) : la date (au format
-   complet en toutes lettres) ne se coupe plus jamais au milieu du texte —
-   au pire, les vues basculent en dessous en un seul bloc sur une carte très
-   étroite, jamais un mot coupé en deux lignes. */
-.pub-card-info-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.5);flex-wrap:wrap;}
-.pub-card-date{white-space:nowrap;}
-.pub-card-views{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
-.pub-card h4{color:#fff;font-size:15.5px;line-height:1.3;margin:0 0 4px;}
-.pub-card h4 a:hover{color:var(--lavender);}
-/* Toute la carte est un lien (retour du 03/09) — signal visuel au survol. */
-.pub-card .excerpt{font-size:14.5px;color:rgba(255,255,255,.6);line-height:1.55;margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-.pub-card .excerpt a:hover{color:rgba(255,255,255,.85);}
-.pub-card:first-child{border-top:0;}
-/* .pub-card-cta (retour du 03/09) — plus .pub-card a : toute la carte est
-   maintenant un seul lien (aperçu cliquable, même destination que le
-   titre), ce span est juste son style visuel "Lire →" / "Découvrir →". */
-.pub-card-cta{font-size:13.5px;font-weight:700;color:#fff;display:inline-flex;gap:6px;align-items:center;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;white-space:nowrap;flex-shrink:0;}
+/* Flux unique de l'accueil (retour du 05/09, point 5) — réutilise
+   .feed-item/.feed-list du hub Publications tel quel (même style, même
+   design demandés) ; les couleurs de .feed-item sont pensées pour un fond
+   clair, ces surcharges les adaptent au fond sombre de .pubs sans toucher
+   au composant lui-même (repris aussi sur les hubs, fond clair, inchangé
+   par ces règles scoped sous .pubs). Les anciennes règles .pub-teaser-grid/
+   .pub-grid/.pub-card* (deux blocs séparés par catégorie) sont supprimées :
+   plus aucun gabarit ne les utilise. */
+.pubs .feed-item{border-top-color:rgba(255,255,255,.12);}
+.pubs .feed-cat-label{color:#fff;}
+.pubs .feed-date{color:rgba(255,255,255,.55);}
+.pubs .feed-item h3{color:#fff;}
+.pubs .feed-item h3 a:hover{color:var(--lavender);}
+.pubs .feed-item .excerpt{color:rgba(255,255,255,.6);}
+.pubs .feed-item .excerpt a:hover{color:rgba(255,255,255,.85);}
+.pubs .feed-thumb{background:rgba(255,255,255,.08);}
 .social-card{border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center;transition:all .2s ease;}
 .social-card:hover{border-color:var(--purple);transform:translateY(-3px);}
 .social-card .icon{width:46px;height:46px;border-radius:50%;background:var(--lavender);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 14px;}
@@ -1158,7 +1159,6 @@ footer.footer--dark{
 
 @media (max-width:980px){
   .hero-inner{grid-template-columns:1fr;}
-  .pub-teaser-grid{grid-template-columns:1fr;}
 }
 @media (max-width:640px){
   .hero{padding:36px 0 40px;min-height:auto;align-items:flex-start;}
@@ -1173,8 +1173,6 @@ footer.footer--dark{
   .pubs-inner-pad{padding-top:56px;padding-bottom:56px;}
   .books-grid{grid-template-columns:repeat(2,1fr) !important;gap:14px;}
   .pubs .wrap{padding-left:20px;padding-right:20px;}
-  .pub-card{padding:16px 0;gap:8px;}
-  .pub-card-thumb{width:48px;height:48px;}
   .livres-split{grid-template-columns:1fr !important;}
   .video-feature-grid{grid-template-columns:1fr !important;}
   .stats .wrap{grid-template-columns:repeat(2,1fr);}

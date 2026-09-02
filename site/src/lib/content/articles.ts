@@ -158,6 +158,26 @@ export async function getArticlesFeed(
   return { articles: data, total: count ?? 0 };
 }
 
+/** Flux unique de l'accueil (retour du 05/09) — un seul pêle-mêle
+ * chronologique mélangeant toutes les catégories d'articles, comme sur le
+ * hub Publications, plus Rosée Matinale qui garde sa propre porte d'entrée
+ * dédiée ailleurs sur la page. Exclut par le type plutôt que d'énumérer
+ * "qdlb"/"vs" : une 3e catégorie d'articles ajoutée plus tard apparaît ici
+ * automatiquement, sans modifier cette fonction. */
+export async function getHomeFeed(limit: number): Promise<Article[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("articles")
+    .select(COLUMNS)
+    .neq("type", "rm")
+    .eq("status", "published")
+    .order("article_date", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error || !data) return [];
+  return data;
+}
+
 export async function getArticleByIdAdmin(id: string): Promise<AdminArticle | null> {
   const supabase = await createClient();
   const { data, error } = await supabase.from("articles").select(ADMIN_COLUMNS).eq("id", id).single();

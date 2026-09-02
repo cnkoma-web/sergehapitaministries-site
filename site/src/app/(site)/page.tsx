@@ -3,13 +3,13 @@ import Link from "next/link";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import { getBooks } from "@/lib/content/books";
-import { getPublishedArticles, getRoseeDuJour, ARTICLE_TYPE_LABEL, ARTICLE_TYPE_INITIALS } from "@/lib/content/articles";
+import { getHomeFeed, getRoseeDuJour } from "@/lib/content/articles";
 import { getActiveStats } from "@/lib/content/stats";
-import { stripHtml } from "@/lib/richtext";
 import { getSocialLinks } from "@/lib/content/footer";
 import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import CoverRollover from "@/components/shop/CoverRollover";
 import PublisherLink from "@/components/shop/PublisherLink";
+import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -45,10 +45,8 @@ const SOCIAL_HANDLE: Record<string, string> = {
 };
 
 export default async function HomePage() {
-  const [books, qdlbArticles, vsArticles, roseeDuJour, stats, socialLinks, texts] = await Promise.all([
+  const [books, roseeDuJour, stats, socialLinks, texts] = await Promise.all([
     getBooks(),
-    getPublishedArticles("qdlb"),
-    getPublishedArticles("vs"),
     getRoseeDuJour(),
     getActiveStats(),
     getSocialLinks(),
@@ -56,10 +54,18 @@ export default async function HomePage() {
   ]);
 
   const latestBooks = books.slice(0, 3);
-  // Cahier §6.9 point 4 : nombre d'articles par catégorie réglable par Serge
-  // (Admin > Textes globaux, clé home.publications_per_category) — plus une
-  // valeur figée en dur dans le composant.
-  const publicationsPerCategory = Number(texts["home.publications_per_category"]) || 3;
+  // Cahier §6.9 point 4 : nombre d'articles réglable par Serge (Admin >
+  // Textes globaux, clé home.publications_per_category) — plus une valeur
+  // figée en dur dans le composant. Multiplié par 2 (retour du 05/09) : la
+  // clé désignait un nombre par catégorie avant le passage à un flux unique
+  // mélangeant les catégories (point 5) — ce facteur conserve le nombre
+  // total de publications affichées sur l'accueil sans exiger un nouveau
+  // réglage admin ni changer la valeur déjà choisie par Serge.
+  const homeFeedLimit = (Number(texts["home.publications_per_category"]) || 3) * 2;
+  // Flux unique, toutes catégories mélangées, trié par date (point 5,
+  // retour du 05/09) — prêt à accueillir une 3e catégorie d'articles sans
+  // modification de code : voir le commentaire de getHomeFeed.
+  const homeFeed = await getHomeFeed(homeFeedLimit);
   // Réglage admin (retour du 03/09) — nombre de lignes d'extrait affichées
   // sur les cartes, pas une valeur fixée dans le code.
   const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
@@ -154,6 +160,13 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Flux unique, toutes catégories mélangées, trié par date (point 5,
+          retour du 05/09) — remplace les deux blocs séparés par catégorie
+          d'avant : sur mobile/tablette, l'utilisateur voyait tout le bloc
+          "Que Dit la Bible" avant "La Vie Supérieure" au lieu d'un vrai
+          mélange chronologique. Même composant que le hub Publications
+          (PublicationFeedItem), prêt à accueillir une 3e catégorie future
+          sans développement supplémentaire (voir getHomeFeed). */}
       <section className="pubs" id="publications">
         <div className="wrap pubs-inner-pad">
           <div className="section-head">
@@ -163,107 +176,15 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="pub-teaser-grid">
-            <div style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16, padding: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, paddingBottom: 14, borderBottom: "2px solid var(--purple)" }}>
-                <span style={{ fontSize: 20 }}>📖</span>
-                <h3 style={{ color: "#fff", fontSize: 17, margin: 0 }}>{ARTICLE_TYPE_LABEL.qdlb}</h3>
-              </div>
-              {qdlbArticles.length === 0 ? (
-                <p style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>Les premiers articles arrivent bientôt.</p>
-              ) : (
-                <div className="pub-grid">
-                  {qdlbArticles.slice(0, publicationsPerCategory).map((a) => (
-                    <div className="pub-card" key={a.id}>
-                      {a.cover_url && (
-                        <Link href={`/publications/${a.slug}`} className="pub-card-thumb-link" aria-label={a.title}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
-                        </Link>
-                      )}
-                      <div className="pub-card-body">
-                        {/* Ordre imposé, sans exception (retour du 03/09) :
-                            1) catégorie seule, 2) date+vues, 3) titre,
-                            4) extrait — date au format complet en toutes
-                            lettres, identique à la page article (retour du
-                            04/09). */}
-                        <div className="pub-card-cat-row">
-                          <span className={`feed-badge ${a.type}`}>{ARTICLE_TYPE_INITIALS[a.type]}</span>
-                          <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
-                        </div>
-                        <div className="pub-card-info-row">
-                          <span className="pub-card-date">{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
-                          <span className="pub-card-views">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
-                              <circle cx="12" cy="12" r="3" />
-                            </svg>
-                            {a.view_count}
-                          </span>
-                        </div>
-                        <h4>
-                          <Link href={`/publications/${a.slug}`}>{a.title}</Link>
-                        </h4>
-                        {a.excerpt && (
-                          <p className="excerpt" style={{ WebkitLineClamp: excerptLines }}>
-                            <Link href={`/publications/${a.slug}`}>{a.excerpt}</Link>
-                          </p>
-                        )}
-                      </div>
-                      <Link href={`/publications/${a.slug}`} className="pub-card-cta">Lire →</Link>
-                    </div>
-                  ))}
-                </div>
-              )}
+          {homeFeed.length === 0 ? (
+            <p style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>Les premières publications arrivent bientôt.</p>
+          ) : (
+            <div className="feed-list">
+              {homeFeed.map((a) => (
+                <PublicationFeedItem article={a} excerptLines={excerptLines} variant="home" key={a.id} />
+              ))}
             </div>
-
-            <div style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16, padding: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, paddingBottom: 14, borderBottom: "2px solid var(--blue)" }}>
-                <span style={{ fontSize: 20 }}>✦</span>
-                <h3 style={{ color: "#fff", fontSize: 17, margin: 0 }}>{ARTICLE_TYPE_LABEL.vs}</h3>
-              </div>
-              {vsArticles.length === 0 ? (
-                <p style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>Les premiers enseignements arrivent bientôt.</p>
-              ) : (
-                <div className="pub-grid">
-                  {vsArticles.slice(0, publicationsPerCategory).map((a) => (
-                    <div className="pub-card" key={a.id}>
-                      {a.cover_url && (
-                        <Link href={`/publications/${a.slug}`} className="pub-card-thumb-link" aria-label={a.title}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={a.cover_url} alt={a.cover_alt || a.title} className="pub-card-thumb" />
-                        </Link>
-                      )}
-                      <div className="pub-card-body">
-                        {/* Ordre imposé, sans exception (retour du 03/09). */}
-                        <div className="pub-card-cat-row">
-                          <span className={`feed-badge ${a.type}`}>{ARTICLE_TYPE_INITIALS[a.type]}</span>
-                          <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
-                        </div>
-                        <div className="pub-card-info-row">
-                          <span className="pub-card-date">{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
-                          <span className="pub-card-views">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
-                              <circle cx="12" cy="12" r="3" />
-                            </svg>
-                            {a.view_count}
-                          </span>
-                        </div>
-                        <h4>
-                          <Link href={`/publications/${a.slug}`}>{a.title}</Link>
-                        </h4>
-                        <p className="excerpt" style={{ WebkitLineClamp: excerptLines }}>
-                          <Link href={`/publications/${a.slug}`}>{a.excerpt || (a.body ? stripHtml(a.body).slice(0, 130) + "…" : "")}</Link>
-                        </p>
-                      </div>
-                      <Link href={`/publications/${a.slug}`} className="pub-card-cta">Découvrir →</Link>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
       </section>
 

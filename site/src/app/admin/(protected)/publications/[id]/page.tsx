@@ -101,7 +101,13 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
               </div>
               <div className="editor-field">
                 <label>Prière (optionnel)</label>
-                <textarea name="prayer" defaultValue={article.prayer ?? ""} rows={3} placeholder="Affichée dans l'article, avant « Aller plus loin », seulement si remplie." />
+                <textarea
+                  name="prayer"
+                  className="prayer-field"
+                  defaultValue={article.prayer ?? ""}
+                  rows={3}
+                  placeholder="Affichée dans l'article, avant « Aller plus loin », seulement si remplie."
+                />
               </div>
               <div className="editor-field">
                 <label>Versets complémentaires</label>
