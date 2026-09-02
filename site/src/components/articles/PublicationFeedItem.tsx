@@ -45,7 +45,13 @@ export default function PublicationFeedItem({ article, excerptLines }: { article
           <span className={`feed-badge ${article.type}`}>{ARTICLE_TYPE_INITIALS[article.type]}</span>
           <span className="feed-cat-label">{ARTICLE_TYPE_LABEL[article.type]}</span>
           <span className="feed-date">{dateLabel}</span>
-          <span className="feed-views">{article.view_count} vue{article.view_count > 1 ? "s" : ""}</span>
+          <span className="feed-views">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {article.view_count} vue{article.view_count > 1 ? "s" : ""}
+          </span>
         </div>
         <h3>
           <Link href={href}>{article.title}</Link>

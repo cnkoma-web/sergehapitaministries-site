@@ -23,6 +23,11 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{overflow-x:hidden;}
 html{scroll-behavior:smooth;}
+/* Empêche le gonflement automatique de la taille du texte de Safari iOS sur
+   certains petits blocs (retour du 05/09) — cause probable d'un retour à la
+   ligne des liens "Lire la suite"/"Découvrir" visible seulement sur
+   appareil réel, jamais reproductible en émulation desktop. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 body{
   font-family:'Manrope',sans-serif;
   color:var(--ink);
@@ -378,14 +383,20 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .feed-badge.rm{background:var(--teal);}
 .feed-cat-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
 .feed-date{font-size:12.5px;color:var(--ink-soft);}
-.feed-views{font-size:12.5px;color:var(--purple);font-weight:700;}
+/* Icône (pas du texte) + nombre, comme avant (retour du 05/09) — le
+   remplacement de l'icône par le mot "vue" au round précédent n'avait pas
+   été demandé. */
+.feed-views{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--purple);font-weight:700;}
 .feed-item h3{font-size:17px;line-height:1.35;margin-bottom:6px;}
 .feed-item h3 a:hover{color:var(--purple);}
-.feed-item .excerpt{font-size:14px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+/* Légèrement au-dessus du niveau précédent (retour du 05/09) — accueil
+   inchangé, seuls les hubs (.feed-item) sont concernés. */
+.feed-item .excerpt{font-size:15px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .feed-item .excerpt a:hover{color:var(--ink);}
 /* white-space:nowrap (retour du 04/09) — ne doit jamais retourner à la
-   ligne, même sur une carte étroite. */
-.feed-cta{display:inline-flex;font-size:13px;font-weight:700;color:var(--purple);margin-top:8px;white-space:nowrap;}
+   ligne, même sur une carte étroite. flex-shrink:0 (retour du 05/09) : au
+   cas où un ancêtre flex tenterait de le compresser. */
+.feed-cta{display:inline-flex;flex-shrink:0;font-size:13px;font-weight:700;color:var(--purple);margin-top:8px;white-space:nowrap;}
 .feed-cta:hover{text-decoration:underline;}
 /* Rappel Rosée Matinale sous le flux — fond de couleur différent (v3 §6.10.2). */
 /* Haut resserré (retour du 30/08) : espace avec le flux du dessus trop marqué. */
@@ -437,7 +448,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    uniquement (ArticleMeta reste inchangé ailleurs, ex. Rosée Matinale). */
 .article-meta-line{font-size:13px;color:var(--ink-soft);flex-wrap:wrap;}
 .article-meta-line > span:not(:last-child)::after{content:" · ";}
-.article-meta-line .views{color:var(--purple);font-weight:700;}
+/* Icône (pas du texte) + nombre, comme avant (retour du 05/09). */
+.article-meta-line .views{display:inline-flex;align-items:center;gap:4px;color:var(--purple);font-weight:700;}
 /* Largeur portée par .content-col (retour du 01/09) — plus par .wrap +
    max-width sur la section, qui laissait le padding de .wrap (28px de
    chaque côté) rétrécir le texte réel sous la largeur affichée. */
@@ -451,8 +463,13 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    petit pour un intitulé de section. */
 .article-body h2{font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin:48px 0 22px;}
 /* Même taille et même interligne que le chapeau (.article-lede), retour du
-   04/09 — le corps était plus petit et plus resserré que le chapeau. */
-.article-body > .content-col > p{font-size:18px;line-height:1.6;color:var(--ink);margin-bottom:30px;white-space:pre-line;}
+   04/09 — le corps était plus petit et plus resserré que le chapeau.
+   Sélecteur corrigé (retour du 05/09) : chaque paragraphe réel du corps est
+   encapsulé dans un <div class="body-html"> (dangerouslySetInnerHTML) —
+   ".content-col > p" en enfant direct ne les atteignait donc jamais et ne
+   touchait que le chapeau et la Prière (eux, en enfants directs). */
+.article-body > .content-col > p,
+.article-body > .content-col > .body-html > p{font-size:18px;line-height:1.6;color:var(--ink);margin-bottom:30px;white-space:pre-line;}
 .further-verse{margin-bottom:28px;padding-left:20px;border-left:2px solid var(--line);}
 .further-verse .ref{font-size:12px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
 /* Taille alignée sur le corps du texte (retour du 04/09). */
@@ -493,7 +510,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .article-body{padding-top:36px;padding-bottom:44px;}
   .verse-box{padding:22px 22px;margin-bottom:32px;}
   .verse-box p{font-size:18px;}
-  .article-body > .content-col > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
+  .article-body > .content-col > p,
+  .article-body > .content-col > .body-html > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
   .further-verse{padding-left:16px;}
   .related-grid{grid-template-columns:1fr;}
   .gate-box{padding:28px 22px;}
@@ -1108,8 +1126,14 @@ footer.footer--dark{
    date+heure+vues, puis titre, puis extrait. */
 .pub-card-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .pub-card-cat-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.75);}
-.pub-card-info-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.5);}
-.pub-card-views{display:inline-flex;align-items:center;gap:4px;}
+/* flex-wrap:wrap + white-space:nowrap sur chacun des deux éléments (retour
+   du 05/09, même règle que .feed-meta sur les hubs) : la date (au format
+   complet en toutes lettres) ne se coupe plus jamais au milieu du texte —
+   au pire, les vues basculent en dessous en un seul bloc sur une carte très
+   étroite, jamais un mot coupé en deux lignes. */
+.pub-card-info-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:12px;color:rgba(255,255,255,.5);flex-wrap:wrap;}
+.pub-card-date{white-space:nowrap;}
+.pub-card-views{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
 .pub-card h4{color:#fff;font-size:15.5px;line-height:1.3;margin:0 0 4px;}
 .pub-card h4 a:hover{color:var(--lavender);}
 /* Toute la carte est un lien (retour du 03/09) — signal visuel au survol. */

@@ -192,7 +192,7 @@ export default async function HomePage() {
                           <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
                         </div>
                         <div className="pub-card-info-row">
-                          <span>{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+                          <span className="pub-card-date">{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
                           <span className="pub-card-views">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
@@ -241,7 +241,7 @@ export default async function HomePage() {
                           <span className="pub-card-cat-label">{ARTICLE_TYPE_LABEL[a.type]}</span>
                         </div>
                         <div className="pub-card-info-row">
-                          <span>{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+                          <span className="pub-card-date">{new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
                           <span className="pub-card-views">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />

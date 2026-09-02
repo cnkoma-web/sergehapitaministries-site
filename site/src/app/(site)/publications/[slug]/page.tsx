@@ -76,7 +76,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
               {article.author_name && <span>{article.author_name}</span>}
               {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
-              <span className="views">{article.view_count} vue{article.view_count > 1 ? "s" : ""}</span>
+              <span className="views">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                {article.view_count} vue{article.view_count > 1 ? "s" : ""}
+              </span>
             </div>
           </div>
         </section>
@@ -94,7 +100,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
             )}
             {(unlocked ? paragraphs : paragraphs.slice(0, 4)).map((html, i) => (
-              <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
+              <div key={i} className="body-html" dangerouslySetInnerHTML={{ __html: html }} />
             ))}
           </div>
         </section>
@@ -189,7 +195,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
             {article.author_name && <span>{article.author_name}</span>}
             {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
-            <span className="views">{article.view_count} vue{article.view_count > 1 ? "s" : ""}</span>
+            <span className="views">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                {article.view_count} vue{article.view_count > 1 ? "s" : ""}
+              </span>
           </div>
         </div>
       </section>
@@ -216,7 +228,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {paragraphs.length > 0 && <h2>Parlons-en</h2>}
           {paragraphs.map((html, i) => (
-            <div key={i} dangerouslySetInnerHTML={{ __html: html }} />
+            <div key={i} className="body-html" dangerouslySetInnerHTML={{ __html: html }} />
           ))}
 
           {/* Positionnée avant "Aller plus loin" (retour du 03/09). */}
