@@ -63,11 +63,9 @@ export default function PolitiqueDeConfidentialitePage() {
           <ul>
             <li>Un prestataire de paiement (Stripe), pour le traitement des achats et des dons</li>
             <li>Un hébergeur, pour le fonctionnement du site</li>
+            <li>MailerLite, pour l&apos;envoi de la newsletter « ParoleDeViePourVous »</li>
+            <li>Resend, pour l&apos;envoi des emails transactionnels (confirmation de commande, réponse à un message, etc.), via le domaine amdgeditions.fr</li>
           </ul>
-          <div className="todo">
-            À compléter : nom de l&apos;outil d&apos;envoi de newsletter le cas échéant (Mailchimp, Brevo...), et
-            tout autre prestataire tiers ajouté ultérieurement.
-          </div>
 
           <h2>Durée de conservation</h2>
           <p>

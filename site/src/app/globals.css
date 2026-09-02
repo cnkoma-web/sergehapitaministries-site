@@ -160,6 +160,23 @@ header{
    largeur de colonne standard (§1.7) au lieu d'une largeur plus étroite. */
 .pubs-hero p{max-width:var(--content-col);}
 
+/* ===== Recherche (retour du 05/09) — icône loupe de l'en-tête ===== */
+.search-form{display:flex;gap:10px;max-width:480px;margin:26px auto 0;}
+.search-form input{flex:1;padding:12px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:14px;font-family:inherit;}
+.search-form input::placeholder{color:rgba(255,255,255,.65);}
+.search-form .btn{white-space:nowrap;}
+.search-count{font-size:13px;color:var(--ink-soft);margin:36px 0 8px;}
+.search-results{display:flex;flex-direction:column;}
+.search-result{display:block;padding:20px 4px;border-top:1px solid var(--line);}
+.search-results .search-result:first-child{border-top:0;}
+.search-result-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--purple);}
+.search-result h3{font-size:17px;line-height:1.35;margin:6px 0;color:var(--ink);}
+.search-result p{font-size:14px;color:var(--ink-soft);line-height:1.5;}
+@media (hover: hover) and (pointer: fine) {
+  .search-result:hover h3{color:var(--purple);}
+}
+.search-result:active h3{color:var(--purple);}
+
 /* ===== FORMULAIRE générique (contact, invitation, etc.) ===== */
 .form-block input, .form-block textarea, .form-block select{
   width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;margin-bottom:16px;
@@ -528,12 +545,34 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .related-articles{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
 .related-articles h2{font-size:22px;margin-bottom:28px;text-align:center;}
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.related-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;}
+/* position:relative (retour du 05/09) — ancre le lien étiré (voir
+   .related-card-link::after) qui rend toute la carte cliquable. */
+.related-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;}
 .related-card .verse{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
 .related-card h3{font-size:15px;line-height:1.35;margin-bottom:10px;}
 /* Chapeau ajouté sous le titre (retour du 05/09). */
 .related-card-excerpt{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.related-card a{font-size:12.5px;font-weight:700;color:var(--purple);}
+/* Pas de position ici (retour du 05/09, correction) — un lien positionné
+   deviendrait lui-même le conteneur du ::after ci-dessous (inset:0 ne
+   s'appliquerait plus qu'à sa propre petite taille), au lieu de laisser
+   l'ancêtre positionné .related-card faire office de conteneur. */
+.related-card-link{font-size:12.5px;font-weight:700;color:var(--purple);}
+/* Lien étiré (retour du 05/09) — position:absolute + inset:0 se positionne
+   par rapport à .related-card (position:relative, le plus proche ancêtre
+   positionné), pas par rapport au lien lui-même : toute la carte devient
+   cliquable avec un seul <a> réel, sans imbriquer de lien dans le titre. */
+.related-card-link::after{content:"";position:absolute;inset:0;}
+/* Même principe de survol que les hubs (retour du 05/09) — texte en violet,
+   souris uniquement (jamais "collé" sur tactile), :active pour le retour
+   visuel bref au toucher sur tablette/mobile. */
+@media (hover: hover) and (pointer: fine) {
+  .related-card:hover h3,
+  .related-card:hover .related-card-excerpt,
+  .related-card:hover .related-card-link{color:var(--purple);}
+}
+.related-card:active h3,
+.related-card:active .related-card-excerpt,
+.related-card:active .related-card-link{color:var(--purple);}
 
 /* Gating La Vie Supérieure */
 .excerpt-fade{position:relative;margin-top:-28px;padding-top:0;}
@@ -1144,12 +1183,12 @@ footer.footer--dark{
    court et sur une seule ligne : plus besoin d'un padding-top gonflé pour
    compenser un badge qui débordait en 2 lignes. */
 .book-card{position:relative;background:#fff;border-radius:22px;padding:34px;max-width:400px;margin:0 auto;box-shadow:0 40px 70px -32px rgba(46,47,224,.35);border:1px solid var(--line);}
-.book-card .tag{position:absolute;top:-14px;left:26px;background:var(--teal);color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;padding:7px 16px;border-radius:999px;text-transform:uppercase;}
+.book-card .tag{position:absolute;top:-14px;left:26px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;letter-spacing:.04em;padding:7px 16px;border-radius:999px;text-transform:uppercase;}
 /* Date séparée du badge, sur sa propre ligne (retour du 05/09). */
-.book-card .book-date{font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:12px;}
+.book-card .book-date{font-size:13.5px;font-weight:700;color:var(--ink-soft);margin-bottom:12px;}
 /* 4 lignes minimum, "…" automatique si le texte dépasse (retour du 05/09) —
    line-clamp plutôt qu'une coupure à un nombre de caractères fixe. */
-.book-card .book-sub{font-size:14.5px;color:var(--ink-soft);margin-bottom:26px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.book-card .book-sub{font-size:15.5px;color:var(--ink-soft);margin-bottom:26px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
 /* align-items:flex-start (retour du 05/09) — les boutons ne s'étirent plus
    sur toute la largeur de la carte (comportement par défaut d'un flex en
    colonne, align-items:stretch), ils prennent la largeur de leur texte. */
@@ -1219,9 +1258,9 @@ footer.footer--dark{
   .hero-cta{margin-bottom:20px;flex-wrap:nowrap;gap:8px;}
   .hero-cta .btn{flex:1;justify-content:center;padding:10px 4px;font-size:10.5px;text-align:center;white-space:nowrap;overflow:hidden;letter-spacing:-.01em;border-radius:8px;}
   .book-card{padding:16px;border-radius:16px;margin:0;}
-  .book-card .tag{top:-12px;left:18px;font-size:13px;padding:7px 16px;}
-  .book-card .book-date{font-size:12px;margin-bottom:10px;}
-  .book-card .book-sub{font-size:14.5px;margin-bottom:14px;line-height:1.55;}
+  .book-card .tag{top:-12px;left:18px;font-size:14px;padding:7px 16px;}
+  .book-card .book-date{font-size:13px;margin-bottom:10px;}
+  .book-card .book-sub{font-size:15.5px;margin-bottom:14px;line-height:1.55;}
   .book-card .book-actions .btn{padding:10px 10px;font-size:12px;}
   .pubs-inner-pad{padding-top:56px;padding-bottom:56px;}
   .books-grid{grid-template-columns:repeat(2,1fr) !important;gap:14px;}

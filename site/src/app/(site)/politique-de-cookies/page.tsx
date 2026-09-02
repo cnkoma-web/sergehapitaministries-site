@@ -56,10 +56,11 @@ export default function PolitiqueDeCookiesPage() {
             Ce site utilise Google Analytics pour mesurer sa fréquentation (nombre de visites, pages consultées).
             Ces données sont anonymisées autant que possible et ne sont jamais utilisées à des fins publicitaires.
           </p>
-          <div className="todo">
-            À compléter avec Serge : un bandeau de consentement (bannière cookies) doit être mis en place avant le
-            dépôt de ces cookies de mesure d&apos;audience, conformément à la réglementation en vigueur (RGPD/CNIL).
-          </div>
+          <p>
+            Un bandeau de consentement vous est présenté lors de votre première visite, avant tout dépôt de ces
+            cookies de mesure d&apos;audience : vous pouvez y accepter ou refuser leur utilisation, conformément à
+            la réglementation en vigueur (RGPD/CNIL). Ils ne sont déposés que si vous avez donné votre accord.
+          </p>
 
           <h2>Comment gérer les cookies ?</h2>
           <p>

@@ -15,7 +15,9 @@ export default async function Header() {
     <header>
       <div className="header-main">
         <div className="header-icon-zone">
-          <span title="Rechercher">🔍</span>
+          <Link href="/recherche" title="Rechercher" style={{ color: "inherit" }}>
+            🔍
+          </Link>
         </div>
         <Link href="/" className="logo-center">
           <Image src="/logo.png" alt="Serge Hapita Ministries" width={207} height={78} priority />

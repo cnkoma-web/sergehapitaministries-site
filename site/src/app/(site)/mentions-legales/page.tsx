@@ -44,7 +44,6 @@ export default function MentionsLegalesPage() {
           <p>
             <strong>SIRET :</strong> 935 354 522 00010
           </p>
-          <div className="todo">À compléter : adresse postale complète, adresse email de contact du directeur de publication.</div>
           <p>
             <strong>Directeur de la publication :</strong> Serge Hapita
           </p>

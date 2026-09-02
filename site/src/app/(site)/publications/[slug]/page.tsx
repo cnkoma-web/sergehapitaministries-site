@@ -297,6 +297,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <h2>Autres articles similaires</h2>
             <div className="related-grid">
               {related.map((a) => (
+                // Toute la carte est cliquable et réagit au survol (retour du
+                // 05/09) — un seul <Link> réel, étiré sur toute la carte via
+                // ::after (.related-card-link), pour éviter d'imbriquer des
+                // <a> (titre + lien ne peuvent pas être deux liens distincts
+                // dans le même bloc sans ça). Même principe de survol que les
+                // hubs : le texte passe en violet, souris uniquement.
                 <div className="related-card" key={a.id}>
                   <div className="verse">
                     {/* Format complet en toutes lettres, identique au reste
@@ -307,7 +313,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   <h3>{a.title}</h3>
                   {/* Chapeau ajouté sous le titre (retour du 05/09). */}
                   {a.excerpt && <p className="related-card-excerpt">{a.excerpt}</p>}
-                  <Link href={`/publications/${a.slug}`}>Lire l&apos;article →</Link>
+                  {/* Libellé aligné sur celui des hubs (retour du 05/09) —
+                      plus "Lire l'article →". */}
+                  <Link href={`/publications/${a.slug}`} className="related-card-link">
+                    Lire la suite →
+                  </Link>
                 </div>
               ))}
             </div>

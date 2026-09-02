@@ -57,10 +57,14 @@ export default function TermesEtConditionsPage() {
             Les délais de livraison indicatifs sont de 24 à 48h en France métropolitaine, et de quelques jours pour
             les envois internationaux (zone A).
           </p>
-          <div className="todo">
-            À compléter avec Claude Code : modalités précises de retour et de remboursement, une fois le circuit
-            logistique (livres) et Printful (goodies) mis en place.
-          </div>
+          <h2>Retours et remboursement</h2>
+          <p>
+            Conformément au Code de la consommation, vous disposez d&apos;un délai de 14 jours à compter de la
+            réception de votre commande pour exercer votre droit de rétractation, sans avoir à justifier de motifs.
+            Les frais de retour sont à votre charge, sauf en cas de produit défectueux ou non conforme. Le
+            remboursement est effectué dans un délai de 14 jours suivant la réception du produit retourné, par le
+            même moyen de paiement que celui utilisé pour l&apos;achat.
+          </p>
 
           <h2>Dons</h2>
           <p>
