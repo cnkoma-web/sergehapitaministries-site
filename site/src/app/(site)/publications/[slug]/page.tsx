@@ -70,14 +70,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="content-col">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
             <h1 className="article-title">{article.title}</h1>
-            {/* 2 lignes en italique (retour du 05/09) : date | auteur, puis
-                temps de lecture | vues — même taille sur les deux lignes. */}
+            {/* Nouvelle structure (retour du 05/09, remplace la précédente) :
+                ligne 1 auteur | temps de lecture | vues, ligne 2 date seule.
+                Italique, même taille sur les deux lignes. */}
             <div className="article-meta-line">
               <div className="meta-line">
-                <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
                 {article.author_name && <span>{article.author_name}</span>}
-              </div>
-              <div className="meta-line">
                 {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
                 <span className="views">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -86,6 +84,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   </svg>
                   {article.view_count} vue{article.view_count > 1 ? "s" : ""}
                 </span>
+              </div>
+              <div className="meta-line">
+                <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
               </div>
             </div>
           </div>
@@ -193,14 +194,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="content-col">
           <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
           <h1 className="article-title">{article.title}</h1>
-          {/* 2 lignes en italique (retour du 05/09) : date | auteur, puis
-              temps de lecture | vues — même taille sur les deux lignes. */}
+          {/* Nouvelle structure (retour du 05/09, remplace la précédente) :
+              ligne 1 auteur | temps de lecture | vues, ligne 2 date seule.
+              Italique, même taille sur les deux lignes. */}
           <div className="article-meta-line">
             <div className="meta-line">
-              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
               {article.author_name && <span>{article.author_name}</span>}
-            </div>
-            <div className="meta-line">
               {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
               <span className="views">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -209,6 +208,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 </svg>
                 {article.view_count} vue{article.view_count > 1 ? "s" : ""}
               </span>
+            </div>
+            <div className="meta-line">
+              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
             </div>
           </div>
         </div>

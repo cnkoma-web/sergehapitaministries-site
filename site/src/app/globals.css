@@ -379,19 +379,22 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    métadonnées distinctes plutôt qu'une seule ligne combinée. */
 /* Catégorie + date + vues sur une même ligne, espacement net entre chaque
    (retour du 04/09) — pas collées. Vues en violet.
-   Retour du 05/09 : badge + libellé regroupés (.feed-cat-group) et
-   nettement agrandis (à hauteur du chapeau, 18px) pour se distinguer du
-   groupe date + vues (.feed-info-group), qui reste petit — avec un
-   espacement net entre les deux groupes (gap 22px sur .feed-meta, contre
-   6/10px à l'intérieur de chaque groupe). */
-.feed-meta{display:flex;align-items:center;gap:22px;margin-bottom:10px;flex-wrap:wrap;}
+   Retour du 05/09 : badge + libellé regroupés (.feed-cat-group), nettement
+   plus visibles que le groupe date + vues (.feed-info-group), qui reste
+   petit — avec un espacement net entre les deux groupes (gap 22px sur
+   .feed-meta, contre 6/10px à l'intérieur de chaque groupe).
+   Réduit d'un cran (retour du 05/09, 2e passage) : 18px dépassait la
+   taille du titre (17px) — 15px reste nettement au-dessus des 12.5px de
+   la date/vues sans dépasser le titre. Espacement avec le titre en
+   dessous (margin-bottom) aussi augmenté d'environ 50% (10px -> 15px). */
+.feed-meta{display:flex;align-items:center;gap:22px;margin-bottom:15px;flex-wrap:wrap;}
 .feed-cat-group{display:flex;align-items:center;gap:8px;}
 .feed-info-group{display:flex;align-items:center;gap:10px;}
 .feed-badge{display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;letter-spacing:.04em;color:#fff;border-radius:100px;padding:4px 12px;}
 .feed-badge.qdlb{background:var(--purple);}
 .feed-badge.vs{background:var(--blue);}
 .feed-badge.rm{background:var(--teal);}
-.feed-cat-label{font-size:18px;font-weight:700;color:var(--ink);}
+.feed-cat-label{font-size:15px;font-weight:700;color:var(--ink);}
 .feed-date{font-size:12.5px;color:var(--ink-soft);}
 /* Icône (pas du texte) + nombre, comme avant (retour du 05/09) — le
    remplacement de l'icône par le mot "vue" au round précédent n'avait pas
@@ -460,15 +463,17 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .article-date{font-size:13px;color:var(--ink-soft);}
 .article-meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--ink-soft);margin-top:8px;}
 .article-meta span{display:flex;align-items:center;gap:5px;}
-/* 2 lignes en italique (retour du 05/09) — ligne 1 : date | auteur, ligne 2 :
-   temps de lecture | vues, même taille sur les deux lignes. Remplace
-   .article-date + <ArticleMeta> sur la page article uniquement (ArticleMeta
-   reste inchangé ailleurs, ex. Rosée Matinale ; hubs et accueil gardent
-   leur format actuel, non concernés par ce point). */
+/* 2 lignes en italique (retour du 05/09, nouvelle structure qui remplace la
+   précédente) — ligne 1 : auteur | temps de lecture | vues, ligne 2 : date
+   seule, même taille sur les deux lignes. Remplace .article-date +
+   <ArticleMeta> sur la page article uniquement (ArticleMeta reste inchangé
+   ailleurs, ex. Rosée Matinale ; hubs et accueil gardent leur format
+   actuel, non concernés par ce point). */
 .article-meta-line{font-size:13px;color:var(--ink-soft);font-style:italic;}
 .article-meta-line .meta-line{margin-top:4px;}
 .article-meta-line .meta-line:first-child{margin-top:0;}
-.article-meta-line .meta-line > span:not(:last-child)::after{content:" · ";}
+/* Barre verticale (retour du 05/09) — remplace le point médian. */
+.article-meta-line .meta-line > span:not(:last-child)::after{content:" | ";}
 /* Icône (pas du texte) + nombre, comme avant (retour du 05/09). */
 .article-meta-line .views{display:inline-flex;align-items:center;gap:4px;color:var(--purple);font-weight:700;}
 /* Largeur portée par .content-col (retour du 01/09) — plus par .wrap +
@@ -763,9 +768,17 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft);flex-wrap:wrap;gap:10px;}
 .pagination .pages{display:flex;gap:6px;}
-.pagination .pages a, .pagination .pages button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:inherit;font-family:inherit;}
+/* Couleur plus vive et contrastée (retour du 05/09) — l'ancien color:inherit
+   (gris sombre, --ink-soft) manquait de peps sur les numéros de page et
+   les flèches précédent/suivant. */
+.pagination .pages a, .pagination .pages button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--purple);font-family:inherit;}
 .pagination .pages a.active, .pagination .pages button.active{background:var(--purple);color:#fff;border-color:var(--purple);}
 .pagination select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:13px;font-family:inherit;}
+/* Pagination reprise sur l'accueil (retour du 05/09, point 6) — fond sombre
+   de .pubs : le texte "Affichage X–Y sur Z" (resté --ink-soft, sombre)
+   serait sinon illisible ; les puces de page gardent leur fond blanc
+   explicite donc restent lisibles telles quelles. */
+.pubs .pagination{color:rgba(255,255,255,.65);border-top-color:rgba(255,255,255,.12);}
 
 /* ===== Écran détail (éditeur) — topbar + panneau/colonne + zone riche ===== */
 .admin-editor-topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--line);background:#fff;}

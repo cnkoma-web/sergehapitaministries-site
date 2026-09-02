@@ -8,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 
 const title = "Publications | Serge Hapita Ministries";
 const description = "Rosée Matinale, Que Dit la Bible ? et La Vie Supérieure — trois formats, un seul message.";
-const PER_PAGE = 7; // Règle fixe imposée par le cahier (retour du 30/08) — pas un réglage.
+const PER_PAGE = 4; // Règle fixe (retour du 05/09) — 4 par page partout où ce flux apparaît, y compris l'accueil.
 
 export const metadata: Metadata = {
   title,

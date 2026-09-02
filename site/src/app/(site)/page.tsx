@@ -10,6 +10,11 @@ import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import CoverRollover from "@/components/shop/CoverRollover";
 import PublisherLink from "@/components/shop/PublisherLink";
 import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
+import Pagination from "@/components/admin/Pagination";
+
+// Règle fixe (retour du 05/09, point 6) — même règle que les hubs : 4
+// publications par page, partout où ce flux apparaît (accueil compris).
+const PUBS_PER_PAGE = 4;
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -44,7 +49,14 @@ const SOCIAL_HANDLE: Record<string, string> = {
   Facebook: "Serge Hapita Ministries",
 };
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+
   const [books, roseeDuJour, stats, socialLinks, texts] = await Promise.all([
     getBooks(),
     getRoseeDuJour(),
@@ -54,18 +66,13 @@ export default async function HomePage() {
   ]);
 
   const latestBooks = books.slice(0, 3);
-  // Cahier §6.9 point 4 : nombre d'articles réglable par Serge (Admin >
-  // Textes globaux, clé home.publications_per_category) — plus une valeur
-  // figée en dur dans le composant. Multiplié par 2 (retour du 05/09) : la
-  // clé désignait un nombre par catégorie avant le passage à un flux unique
-  // mélangeant les catégories (point 5) — ce facteur conserve le nombre
-  // total de publications affichées sur l'accueil sans exiger un nouveau
-  // réglage admin ni changer la valeur déjà choisie par Serge.
-  const homeFeedLimit = (Number(texts["home.publications_per_category"]) || 3) * 2;
   // Flux unique, toutes catégories mélangées, trié par date (point 5,
   // retour du 05/09) — prêt à accueillir une 3e catégorie d'articles sans
-  // modification de code : voir le commentaire de getHomeFeed.
-  const homeFeed = await getHomeFeed(homeFeedLimit);
+  // modification de code : voir le commentaire de getHomeFeed. Paginé
+  // (point 6, retour du 05/09) : 4 par page, comme les hubs — remplace le
+  // réglage admin "home.publications_per_category" (devenu sans effet,
+  // cette limite est désormais une règle fixe partagée avec les hubs).
+  const { articles: homeFeed, total: homeFeedTotal } = await getHomeFeed(page, PUBS_PER_PAGE);
   // Réglage admin (retour du 03/09) — nombre de lignes d'extrait affichées
   // sur les cartes, pas une valeur fixée dans le code.
   const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
@@ -184,6 +191,9 @@ export default async function HomePage() {
                 <PublicationFeedItem article={a} excerptLines={excerptLines} variant="home" key={a.id} />
               ))}
             </div>
+          )}
+          {homeFeedTotal > 0 && (
+            <Pagination page={page} perPage={PUBS_PER_PAGE} total={homeFeedTotal} basePath="/" showPerPageSelector={false} />
           )}
         </div>
       </section>

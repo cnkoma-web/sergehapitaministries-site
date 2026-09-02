@@ -8,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 
 const title = "La Vie Supérieure | Serge Hapita Ministries";
 const description = "Un enseignement approfondi, réservé aux membres connectés.";
-const PER_PAGE = 7;
+const PER_PAGE = 4; // Règle fixe (retour du 05/09) — 4 par page partout où ce flux apparaît.
 
 export const metadata: Metadata = {
   title,

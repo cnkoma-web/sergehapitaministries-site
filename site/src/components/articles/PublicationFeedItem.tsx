@@ -82,14 +82,14 @@ export default function PublicationFeedItem({
 
   return (
     <div className="feed-item">
-      {article.cover_url ? (
+      {/* Pas de vignette du tout si aucune image n'est renseignée (retour du
+          05/09) — plus d'espace réservé/placeholder vide : le texte prend
+          alors toute la largeur. Comportement inchangé quand une image
+          existe. */}
+      {article.cover_url && (
         <Link href={href} className="feed-thumb-link" aria-label={article.title}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={article.cover_url} alt={article.cover_alt || article.title} className="feed-thumb" />
-        </Link>
-      ) : (
-        <Link href={href} className="feed-thumb-link" aria-label={article.title}>
-          <div className="feed-thumb" aria-hidden="true" />
         </Link>
       )}
       <div className="feed-body">

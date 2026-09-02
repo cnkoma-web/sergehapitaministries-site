@@ -164,18 +164,21 @@ export async function getArticlesFeed(
  * dédiée ailleurs sur la page. Exclut par le type plutôt que d'énumérer
  * "qdlb"/"vs" : une 3e catégorie d'articles ajoutée plus tard apparaît ici
  * automatiquement, sans modifier cette fonction. */
-export async function getHomeFeed(limit: number): Promise<Article[]> {
+// Paginé (retour du 05/09, point 6) — même règle et même pagination que les
+// hubs (4 par page), plus une seule liste sans page pour l'accueil.
+export async function getHomeFeed(page: number, perPage: number): Promise<{ articles: Article[]; total: number }> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const from = (page - 1) * perPage;
+  const { data, error, count } = await supabase
     .from("articles")
-    .select(COLUMNS)
+    .select(COLUMNS, { count: "exact" })
     .neq("type", "rm")
     .eq("status", "published")
     .order("article_date", { ascending: false })
     .order("created_at", { ascending: false })
-    .limit(limit);
-  if (error || !data) return [];
-  return data;
+    .range(from, from + perPage - 1);
+  if (error || !data) return { articles: [], total: 0 };
+  return { articles: data, total: count ?? 0 };
 }
 
 export async function getArticleByIdAdmin(id: string): Promise<AdminArticle | null> {
