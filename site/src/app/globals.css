@@ -401,7 +401,6 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    été demandé. */
 .feed-views{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--purple);font-weight:700;}
 .feed-item h3{font-size:17px;line-height:1.35;margin-bottom:6px;}
-.feed-item h3 a:hover{color:var(--purple);}
 /* Légèrement au-dessus du niveau précédent (retour du 05/09) — accueil
    inchangé, seuls les hubs (.feed-item) sont concernés.
    Plus de -webkit-line-clamp (retour du 05/09, point 6, 3e signalement) :
@@ -410,7 +409,18 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    couper le lien "Lire la suite" qui fait maintenant partie du même
    texte. */
 .feed-item .excerpt{font-size:15px;color:var(--ink-soft);line-height:1.6;}
-.feed-item .excerpt a:hover{color:var(--ink);}
+/* Survol violet sur les chapeaux/cartes des hubs, desktop uniquement
+   (retour du 05/09) — souris seulement (hover:hover et pointer:fine),
+   jamais sur tactile où :hover peut rester "collé" après un tap. Sur
+   tablette/mobile, :active donne le même retour visuel bref et
+   conventionnel pendant l'appui, sans rester bloqué ensuite. Accueil non
+   concerné (.pubs .feed-item garde ses propres couleurs de survol). */
+@media (hover: hover) and (pointer: fine) {
+  .feed-item h3 a:hover,
+  .feed-item .excerpt a:hover{color:var(--purple);}
+}
+.feed-item h3 a:active,
+.feed-item .excerpt a:active{color:var(--purple);}
 /* Lien "Lire la suite"/"Découvrir" dans le prolongement direct du chapeau
    (retour du 05/09, point 6, 3e signalement) — plus un élément séparé
    positionné en dessous (c'était ça, la vraie cause du "retour à la
@@ -470,10 +480,11 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    ailleurs, ex. Rosée Matinale ; hubs et accueil gardent leur format
    actuel, non concernés par ce point). */
 .article-meta-line{font-size:13px;color:var(--ink-soft);font-style:italic;}
-.article-meta-line .meta-line{margin-top:4px;}
+/* Plus de caractère séparateur (retour du 05/09, remplace la barre
+   verticale) — un espacement large entre chaque élément suffit à les
+   distinguer, sans "|" ni point médian. */
+.article-meta-line .meta-line{margin-top:4px;display:flex;align-items:center;flex-wrap:wrap;gap:26px;}
 .article-meta-line .meta-line:first-child{margin-top:0;}
-/* Barre verticale (retour du 05/09) — remplace le point médian. */
-.article-meta-line .meta-line > span:not(:last-child)::after{content:" | ";}
 /* Icône (pas du texte) + nombre, comme avant (retour du 05/09). */
 .article-meta-line .views{display:inline-flex;align-items:center;gap:4px;color:var(--purple);font-weight:700;}
 /* Largeur portée par .content-col (retour du 01/09) — plus par .wrap +
@@ -1128,11 +1139,22 @@ footer.footer--dark{
    pour se rapprocher d'un carré au lieu d'étirer la carte sur toute la
    colonne, et un espace clair sous le badge flottant (qui chevauchait le
    texte juste en dessous, faute de marge). */
-.book-card{position:relative;background:#fff;border-radius:22px;padding:44px 34px 34px;max-width:400px;margin:0 auto;box-shadow:0 40px 70px -32px rgba(46,47,224,.35);border:1px solid var(--line);}
+/* Padding haut/bas remis à égalité avec le padding gauche/droite (retour du
+   05/09) — le badge ne combine plus la date (voir .book-date), donc reste
+   court et sur une seule ligne : plus besoin d'un padding-top gonflé pour
+   compenser un badge qui débordait en 2 lignes. */
+.book-card{position:relative;background:#fff;border-radius:22px;padding:34px;max-width:400px;margin:0 auto;box-shadow:0 40px 70px -32px rgba(46,47,224,.35);border:1px solid var(--line);}
 .book-card .tag{position:absolute;top:-14px;left:26px;background:var(--teal);color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;padding:7px 16px;border-radius:999px;text-transform:uppercase;}
-.book-card .book-sub{font-size:14.5px;color:var(--ink-soft);margin-bottom:26px;line-height:1.6;}
-.book-card .book-actions{display:flex;flex-direction:column;gap:10px;}
-.book-card .book-actions .btn{flex:1;justify-content:center;padding:12px 16px;font-size:13.5px;}
+/* Date séparée du badge, sur sa propre ligne (retour du 05/09). */
+.book-card .book-date{font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:12px;}
+/* 4 lignes minimum, "…" automatique si le texte dépasse (retour du 05/09) —
+   line-clamp plutôt qu'une coupure à un nombre de caractères fixe. */
+.book-card .book-sub{font-size:14.5px;color:var(--ink-soft);margin-bottom:26px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+/* align-items:flex-start (retour du 05/09) — les boutons ne s'étirent plus
+   sur toute la largeur de la carte (comportement par défaut d'un flex en
+   colonne, align-items:stretch), ils prennent la largeur de leur texte. */
+.book-card .book-actions{display:flex;flex-direction:column;align-items:flex-start;gap:10px;}
+.book-card .book-actions .btn{justify-content:center;padding:12px 16px;font-size:13.5px;}
 .stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);}
 .stat{padding:38px 20px;text-align:center;border-right:1px solid var(--line);}
 .stat:last-child{border-right:none;}
@@ -1196,8 +1218,9 @@ footer.footer--dark{
   .hero-lede{font-size:16px;margin-bottom:22px;}
   .hero-cta{margin-bottom:20px;flex-wrap:nowrap;gap:8px;}
   .hero-cta .btn{flex:1;justify-content:center;padding:10px 4px;font-size:10.5px;text-align:center;white-space:nowrap;overflow:hidden;letter-spacing:-.01em;border-radius:8px;}
-  .book-card{padding:24px 16px 18px;border-radius:16px;margin:0;}
+  .book-card{padding:16px;border-radius:16px;margin:0;}
   .book-card .tag{top:-12px;left:18px;font-size:13px;padding:7px 16px;}
+  .book-card .book-date{font-size:12px;margin-bottom:10px;}
   .book-card .book-sub{font-size:14.5px;margin-bottom:14px;line-height:1.55;}
   .book-card .book-actions .btn{padding:10px 10px;font-size:12px;}
   .pubs-inner-pad{padding-top:56px;padding-bottom:56px;}

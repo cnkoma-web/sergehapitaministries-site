@@ -105,14 +105,21 @@ export default async function HomePage({
             <div className="book-card">
               {roseeDuJour ? (
                 <>
-                  <span className="tag">
-                    Rosée Matinale ·{" "}
-                    {new Date(roseeDuJour.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
-                  </span>
-                  <p className="book-sub">
-                    {(roseeDuJour.verse_text || roseeDuJour.body || "").slice(0, 180)}
-                    {(roseeDuJour.verse_text || roseeDuJour.body || "").length > 180 ? "…" : ""}
-                  </p>
+                  {/* Badge seul, date séparée en dessous (retour du 05/09) —
+                      auparavant combinés dans le même badge ("ROSÉE MATINALE
+                      · 1er septembre"), ce qui l'allongeait au point de
+                      parfois passer sur 2 lignes et empiéter sur le texte en
+                      dessous. Date au format complet avec l'année, comme
+                      partout ailleurs sur le site. */}
+                  <span className="tag">Rosée Matinale</span>
+                  <div className="book-date">
+                    {new Date(roseeDuJour.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                  </div>
+                  {/* 4 lignes minimum, "…" automatique si le texte continue
+                      au-delà (retour du 05/09) — via line-clamp plutôt
+                      qu'une coupure à un nombre de caractères fixe, plus
+                      fiable d'une largeur de carte à l'autre. */}
+                  <p className="book-sub">{(roseeDuJour.verse_text || roseeDuJour.body || "").slice(0, 400)}</p>
                 </>
               ) : (
                 <p className="book-sub">La pensée du jour arrive bientôt.</p>
