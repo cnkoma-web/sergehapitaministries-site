@@ -83,12 +83,17 @@ export default function DonateWidget() {
 
       {amount === "custom" && (
         <div className="custom-amount show">
+          {/* type="text" + inputMode="numeric" (retour du 05/09) — plus de
+              champ type="number" avec ses flèches d'incrémentation.
+              inputMode garde le clavier numérique sur mobile ; le filtrage
+              au changement retire tout caractère non numérique. */}
           <input
-            type="number"
-            min={1}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             placeholder="Montant en €"
             value={customAmount}
-            onChange={(e) => setCustomAmount(e.target.value)}
+            onChange={(e) => setCustomAmount(e.target.value.replace(/[^0-9]/g, ""))}
           />
         </div>
       )}

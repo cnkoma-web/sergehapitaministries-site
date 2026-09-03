@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Article } from "@/lib/content/articles";
-import { ARTICLE_TYPE_INITIALS, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
+import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import { stripHtml } from "@/lib/richtext";
 
 // Libellé du bouton selon la catégorie, propre aux hubs (retour du 04/09).
@@ -94,9 +94,11 @@ export default function PublicationFeedItem({
       )}
       <div className="feed-body">
         <div className="feed-meta">
+          {/* Nom complet de la catégorie directement dans la capsule colorée
+              (retour du 05/09) — plus de sigle (QB/VS) devant/à la place :
+              même couleur, même forme de capsule, seul le texte change. */}
           <span className="feed-cat-group">
-            <span className={`feed-badge ${article.type}`}>{ARTICLE_TYPE_INITIALS[article.type]}</span>
-            <span className="feed-cat-label">{ARTICLE_TYPE_LABEL[article.type]}</span>
+            <span className={`feed-badge ${article.type}`}>{ARTICLE_TYPE_LABEL[article.type]}</span>
           </span>
           <span className="feed-info-group">
             <span className="feed-date">{dateLabel}</span>

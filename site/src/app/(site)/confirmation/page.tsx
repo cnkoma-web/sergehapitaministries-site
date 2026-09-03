@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 const MESSAGES: Record<string, [string, string]> = {
   contact: ["Votre message a bien été envoyé", "Merci de nous avoir contactés. Nous reviendrons vers vous dans les meilleurs délais."],
   invitation: ["Votre demande d'invitation a bien été envoyée", "Merci pour votre demande. Nous l'étudierons et reviendrons vers vous rapidement."],
-  don: ["Merci pour votre don", "Votre générosité soutient concrètement ce ministère. Un reçu vous sera envoyé par e-mail."],
+  don: [
+    "Merci pour votre don",
+    "Votre générosité est un immense soutien à la propagation de la Parole de Dieu et au salut des hommes. Le Seigneur multiplie l'œuvre de vos mains.",
+  ],
   avis: ["Merci pour votre avis", "Votre avis a bien été envoyé et sera visible après validation par l'équipe."],
   newsletter: ["Inscription confirmée", "Vous recevrez désormais « ParoleDeViePourVous » directement dans votre boîte mail."],
   paiement: ["Merci pour votre commande !", "Votre paiement a bien été reçu. Vous recevrez un e-mail de confirmation, et votre commande apparaît dans votre espace « Mon compte »."],

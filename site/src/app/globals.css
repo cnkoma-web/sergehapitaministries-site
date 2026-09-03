@@ -411,14 +411,12 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    métadonnées distinctes plutôt qu'une seule ligne combinée. */
 /* Catégorie + date + vues sur une même ligne, espacement net entre chaque
    (retour du 04/09) — pas collées. Vues en violet.
-   Retour du 05/09 : badge + libellé regroupés (.feed-cat-group), nettement
-   plus visibles que le groupe date + vues (.feed-info-group), qui reste
-   petit — avec un espacement net entre les deux groupes (gap 22px sur
-   .feed-meta, contre 6/10px à l'intérieur de chaque groupe).
-   Réduit d'un cran (retour du 05/09, 2e passage) : 18px dépassait la
-   taille du titre (17px) — 15px reste nettement au-dessus des 12.5px de
-   la date/vues sans dépasser le titre. Espacement avec le titre en
-   dessous (margin-bottom) aussi augmenté d'environ 50% (10px -> 15px). */
+   Espacement net entre le groupe catégorie et le groupe date + vues (gap
+   22px sur .feed-meta), et avec le titre en dessous (margin-bottom).
+   Retour du 05/09 (3e passage) : plus de sigle (QB/VS) à côté du nom de
+   catégorie — le nom complet ("Que Dit la Bible", "La Vie Supérieure") est
+   affiché directement dans la capsule colorée (.feed-badge), qui garde sa
+   couleur et sa forme, juste plus large pour son nouveau contenu. */
 .feed-meta{display:flex;align-items:center;gap:22px;margin-bottom:15px;flex-wrap:wrap;}
 .feed-cat-group{display:flex;align-items:center;gap:8px;}
 .feed-info-group{display:flex;align-items:center;gap:10px;}
@@ -426,7 +424,6 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .feed-badge.qdlb{background:var(--purple);}
 .feed-badge.vs{background:var(--blue);}
 .feed-badge.rm{background:var(--teal);}
-.feed-cat-label{font-size:15px;font-weight:700;color:var(--ink);}
 .feed-date{font-size:12.5px;color:var(--ink-soft);}
 /* Icône (pas du texte) + nombre, comme avant (retour du 05/09) — le
    remplacement de l'icône par le mot "vue" au round précédent n'avait pas
@@ -1102,6 +1099,10 @@ footer.footer--dark{
 .amount-opt{padding:14px 8px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;font-family:inherit;}
 .amount-opt.active{border-color:var(--purple);background:var(--purple);color:#fff;}
 .custom-amount{margin-bottom:20px;}
+/* type="text" (retour du 05/09) — plus de flèches d'incrémentation
+   (spinner) d'un champ type="number", mêmes finitions que .donate-card
+   textarea juste en dessous (bordure, padding, taille de police). */
+.custom-amount input{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;color:var(--ink);}
 .donate-card textarea{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;min-height:70px;margin-bottom:6px;}
 .char-count{font-size:11.5px;color:var(--ink-soft);text-align:right;margin-bottom:18px;}
 
@@ -1250,7 +1251,6 @@ footer.footer--dark{
    .pub-grid/.pub-card* (deux blocs séparés par catégorie) sont supprimées :
    plus aucun gabarit ne les utilise. */
 .pubs .feed-item{border-top-color:rgba(255,255,255,.12);}
-.pubs .feed-cat-label{color:#fff;}
 .pubs .feed-date{color:rgba(255,255,255,.55);}
 .pubs .feed-item h3{color:#fff;}
 .pubs .feed-item h3 a:hover{color:var(--lavender);}

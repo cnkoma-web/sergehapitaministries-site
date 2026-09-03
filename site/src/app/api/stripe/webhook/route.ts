@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { sendCustomerEmail } from "@/lib/email/resend";
+import { renderEmail, EMAIL_INK } from "@/lib/email/template";
 import { formatPrice } from "@/lib/format";
 
 // Webhook Stripe — seule source de vérité pour confirmer un paiement (jamais le
@@ -95,8 +96,10 @@ export async function POST(request: Request) {
       await sendCustomerEmail(
         donationEmail,
         "Merci pour votre don — Serge Hapita Ministries",
-        `<p>Merci pour votre don${isRecurring ? " récurrent" : ""} de ${formatPrice(session.amount_total ?? 0)}.</p>
-         <p>Votre générosité soutient concrètement ce ministère.</p>`
+        renderEmail(
+          `<h1 style="margin:0 0 18px;font-size:20px;color:${EMAIL_INK};">Merci pour votre don${isRecurring ? " récurrent" : ""} de ${formatPrice(session.amount_total ?? 0)}</h1>
+           <p style="margin:0 0 16px;">Votre générosité est un immense soutien à la propagation de la Parole de Dieu et au salut des hommes. Le Seigneur multiplie l'œuvre de vos mains.</p>`
+        )
       );
     }
   }
