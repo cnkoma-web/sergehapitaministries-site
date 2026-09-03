@@ -13,11 +13,17 @@ export default async function Header() {
 
   return (
     <header>
+      {/* Bascule de la zone de recherche en pur CSS (retour du 05/09) — pas
+          de JS nécessaire, sur le même principe que le reste du site
+          (Pagination en liens/formulaires purs). La case à cocher est
+          invisible ; l'icône loupe est son <label>, et .header-search-row
+          (plus bas, même parent <header>) réagit à :checked via ~. */}
+      <input type="checkbox" id="header-search-toggle" className="header-search-toggle" />
       <div className="header-main">
         <div className="header-icon-zone">
-          <Link href="/recherche" title="Rechercher" style={{ color: "inherit" }}>
+          <label htmlFor="header-search-toggle" className="header-search-icon" title="Rechercher" aria-label="Rechercher sur le site">
             🔍
-          </Link>
+          </label>
         </div>
         <Link href="/" className="logo-center">
           <Image src="/logo.png" alt="Serge Hapita Ministries" width={207} height={78} priority />
@@ -52,6 +58,16 @@ export default async function Header() {
           </Link>
           <MobileNav nav={nav} />
         </div>
+      </div>
+      {/* Entre le logo et la barre de navigation, pleine largeur (retour du
+          05/09, remplace le lien vers /recherche) — s'ouvre au clic sur la
+          loupe. La soumission mène toujours à /recherche, qui fait la
+          recherche réelle (publications, livres, goodies) : seul l'accès
+          depuis l'en-tête change, pas la recherche elle-même. */}
+      <div className="header-search-row">
+        <form method="get" action="/recherche" className="header-search-form">
+          <input type="search" name="q" placeholder="Rechercher un article, un livre…" aria-label="Rechercher sur le site" />
+        </form>
       </div>
       <div className="nav-row">
         <nav className="main-nav">

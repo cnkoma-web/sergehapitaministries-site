@@ -64,7 +64,7 @@ export default function PolitiqueDeConfidentialitePage() {
             <li>Un prestataire de paiement (Stripe), pour le traitement des achats et des dons</li>
             <li>Un hébergeur, pour le fonctionnement du site</li>
             <li>MailerLite, pour l&apos;envoi de la newsletter « ParoleDeViePourVous »</li>
-            <li>Resend, pour l&apos;envoi des emails transactionnels (confirmation de commande, réponse à un message, etc.), via le domaine amdgeditions.fr</li>
+            <li>Resend, pour l&apos;envoi des emails transactionnels (confirmation de commande, réponse à un message, etc.)</li>
           </ul>
 
           <h2>Durée de conservation</h2>

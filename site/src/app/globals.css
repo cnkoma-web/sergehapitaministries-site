@@ -121,6 +121,21 @@ header{
 .header-icon-zone.right{justify-content:flex-end;}
 .logo-center{display:flex;justify-content:center;}
 .logo-center img{height:auto;width:207px;max-width:60vw;display:block;}
+.header-icon-zone .header-search-icon{cursor:pointer;}
+
+/* Zone de recherche : entre le logo et la barre de navigation, pleine
+   largeur, ouverte au clic sur la loupe (retour du 05/09) — bascule en pur
+   CSS via la case à cocher invisible ci-dessus (aucun JS nécessaire, comme
+   pour le reste du site). */
+.header-search-toggle{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.header-search-row{max-height:0;overflow:hidden;border-top:0 solid var(--line);transition:max-height .2s ease;}
+.header-search-toggle:checked ~ .header-search-row{max-height:72px;border-top-width:1px;}
+.header-search-form{padding:14px 28px;}
+.header-search-form input{width:100%;padding:11px 18px;border:1px solid var(--line);border-radius:999px;background:var(--lavender);font-size:14px;font-family:inherit;color:var(--ink);}
+.header-search-form input::placeholder{color:var(--ink-soft);}
+@media (max-width:640px){
+  .header-search-form{padding:12px 20px;}
+}
 
 /* Ligne de nav séparée, centrée, sous le logo */
 .nav-row{border-top:1px solid var(--line);}
@@ -1252,12 +1267,21 @@ footer.footer--dark{
   .hero-inner{grid-template-columns:1fr;}
 }
 @media (max-width:640px){
-  .hero{padding:36px 0 40px;min-height:auto;align-items:flex-start;}
+  /* Espace au-dessus de "PROPHÈTE · ENSEIGNANT · AUTEUR" réduit d'environ
+     moitié (retour du 05/09) : 36px (.hero) + 64px (.hero-inner, jamais
+     réduit sur mobile jusqu'ici) = 100px de vide avant l'eyebrow ->
+     20px + 30px = 50px. */
+  .hero{padding:20px 0 40px;min-height:auto;align-items:flex-start;}
+  .hero-inner{padding-top:30px;}
   .hero h1{font-size:26px;}
   .hero-lede{font-size:16px;margin-bottom:22px;}
   .hero-cta{margin-bottom:20px;flex-wrap:nowrap;gap:8px;}
   .hero-cta .btn{flex:1;justify-content:center;padding:10px 4px;font-size:10.5px;text-align:center;white-space:nowrap;overflow:hidden;letter-spacing:-.01em;border-radius:8px;}
-  .book-card{padding:16px;border-radius:16px;margin:0;}
+  /* padding-top isolé du reste (retour du 05/09) — un padding uniforme de
+     16px ne laissait plus assez de place sous le badge flottant (tag,
+     position:absolute, top:-12px) : le texte de la date chevauchait le
+     badge. Les 3 autres côtés restent à 16px. */
+  .book-card{padding:34px 16px 16px;border-radius:16px;margin:0;}
   .book-card .tag{top:-12px;left:18px;font-size:14px;padding:7px 16px;}
   .book-card .book-date{font-size:13px;margin-bottom:10px;}
   .book-card .book-sub{font-size:15.5px;margin-bottom:14px;line-height:1.55;}

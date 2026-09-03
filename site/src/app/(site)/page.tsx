@@ -215,20 +215,13 @@ export default async function HomePage({
               Voir tout le catalogue →
             </Link>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: ".85fr 2fr", gap: 32, alignItems: "start" }} className="livres-split">
-            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "28px 24px" }}>
-              <div className="eyebrow" style={{ textTransform: "none" }}>
-                amDG Éditions
-              </div>
-              <h3 style={{ fontSize: 20, margin: "10px 0 12px", lineHeight: 1.3 }}>Une collection en pleine croissance</h3>
-              <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, marginBottom: 18 }}>
-                {books.length} ouvrage{books.length > 1 ? "s" : ""} publié{books.length > 1 ? "s" : ""} à ce jour, entre
-                enseignement, prophétie et vie chrétienne. Chaque livre prolonge le message porté sur ce site.
-              </p>
-              <Link href="/livres" className="btn btn-outline" style={{ width: "100%", justifyContent: "center" }}>
-                Voir le catalogue →
-              </Link>
-            </div>
+          {/* Livres en premier, capsule amDG en dernier (retour du 05/09) —
+              particulièrement sensible sur mobile où l'ordre du DOM devient
+              l'ordre d'empilement vertical : il fallait auparavant faire
+              défiler toute la capsule avant de voir un seul livre.
+              gridTemplateColumns inversé en même temps (2fr .85fr) pour
+              garder les livres dans la colonne large. */}
+          <div style={{ display: "grid", gridTemplateColumns: "2fr .85fr", gap: 32, alignItems: "start" }} className="livres-split">
             {latestBooks.length === 0 ? (
               <p className="empty-state">Le catalogue est en cours de préparation.</p>
             ) : (
@@ -262,6 +255,19 @@ export default async function HomePage({
                 ))}
               </div>
             )}
+            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "28px 24px" }}>
+              <div className="eyebrow" style={{ textTransform: "none" }}>
+                amDG Éditions
+              </div>
+              <h3 style={{ fontSize: 20, margin: "10px 0 12px", lineHeight: 1.3 }}>Une collection en pleine croissance</h3>
+              <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, marginBottom: 18 }}>
+                {books.length} ouvrage{books.length > 1 ? "s" : ""} publié{books.length > 1 ? "s" : ""} à ce jour, entre
+                enseignement, prophétie et vie chrétienne. Chaque livre prolonge le message porté sur ce site.
+              </p>
+              <Link href="/livres" className="btn btn-outline" style={{ width: "100%", justifyContent: "center" }}>
+                Voir le catalogue →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
