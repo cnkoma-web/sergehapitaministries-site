@@ -1,9 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { getGoodies } from "@/lib/content/goodies";
-import { formatPrice } from "@/lib/format";
-import { GoodieIcon } from "@/lib/content/goodieIcons";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -18,53 +13,24 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description },
 };
 
-export default async function BoutiquePage() {
-  const goodies = await getGoodies();
-
+// Page volontairement remplacée par un message temporaire (retour du 05/09)
+// — la boutique n'est pas encore construite ; mieux vaut l'annoncer
+// clairement que de laisser apparaître une grille de produits incomplète ou
+// non fonctionnelle. La logique réelle (getGoodies, goodie-card...) reste
+// dans le reste du code, prête à être rebranchée ici quand la boutique sera
+// prête.
+export default function BoutiquePage() {
   return (
     <>
       <section className="util-hero">
         <div className="wrap">
           <h1>Boutique</h1>
-          <p>T-shirts et accessoires du ministère.</p>
         </div>
       </section>
 
       <section className="section">
-        <div className="wrap">
-          {goodies.length === 0 ? (
-            <p className="empty-state" style={{ textAlign: "center" }}>La boutique est en cours de préparation.</p>
-          ) : (
-            <div className="goodies-grid">
-              {goodies.map((g) => (
-                <div className="goodie-card" key={g.id}>
-                  <div className="goodie-thumb">
-                    {g.image_url ? (
-                      <Image src={g.image_url} alt={g.title} width={140} height={140} />
-                    ) : (
-                      <GoodieIcon slug={g.slug} />
-                    )}
-                  </div>
-                  <h3>{g.title}</h3>
-                  {g.status === "coming_soon" ? (
-                    <>
-                      <div className="soon">Bientôt disponible</div>
-                      <button className="btn-compact btn-compact-outline" disabled style={{ opacity: 0.5, cursor: "not-allowed" }}>
-                        À venir
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="price">{formatPrice(g.price_cents)}</div>
-                      <Link href={`/boutique/${g.slug}`} className="btn-compact btn-compact-primary">
-                        Voir
-                      </Link>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+        <div className="wrap" style={{ textAlign: "center" }}>
+          <p className="empty-state">Cette page est en cours de réalisation. Revenez bientôt.</p>
         </div>
       </section>
 

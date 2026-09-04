@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { getVideos } from "@/lib/content/videos";
-import VideoGrid from "@/components/videos/VideoGrid";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -15,21 +13,23 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description },
 };
 
-export default async function VideosPage() {
-  const videos = await getVideos();
-
+// Page volontairement remplacée par un message temporaire (retour du 05/09)
+// — cette section n'est pas encore construite ; mieux vaut l'annoncer
+// clairement que de laisser apparaître une grille de vidéos incomplète ou
+// non fonctionnelle. La logique réelle (getVideos, VideoGrid...) reste dans
+// le reste du code, prête à être rebranchée ici quand la page sera prête.
+export default function VideosPage() {
   return (
     <>
       <section className="util-hero">
         <div className="wrap">
           <h1>Vidéos</h1>
-          <p>{description}</p>
         </div>
       </section>
 
-      <section className="section" style={{ paddingBottom: 0 }}>
-        <div className="wrap">
-          <VideoGrid videos={videos} />
+      <section className="section">
+        <div className="wrap" style={{ textAlign: "center" }}>
+          <p className="empty-state">Cette page est en cours de réalisation. Revenez bientôt.</p>
         </div>
       </section>
 

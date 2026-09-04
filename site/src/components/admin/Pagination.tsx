@@ -80,18 +80,23 @@ export default function Pagination({
           </>
         )}
       </div>
+      {/* scroll={false} sur les 3 liens (retour du 05/09) — changer de page
+          ne doit pas ramener la position de lecture en haut de la page
+          (comportement par défaut de next/link), constaté sur l'archive
+          Rosée Matinale mais structurel à ce composant partagé : la même
+          gêne existerait sur n'importe quelle autre liste paginée du site. */}
       <div className="pages">
-        <Link href={pageHref(Math.max(1, page - 1))} aria-disabled={page <= 1}>
+        <Link href={pageHref(Math.max(1, page - 1))} aria-disabled={page <= 1} scroll={false}>
           ‹
         </Link>
         {windowStart > 1 && <span style={{ padding: "0 4px" }}>…</span>}
         {pages.map((p) => (
-          <Link key={p} href={pageHref(p)} className={p === page ? "active" : undefined}>
+          <Link key={p} href={pageHref(p)} className={p === page ? "active" : undefined} scroll={false}>
             {p}
           </Link>
         ))}
         {windowEnd < totalPages && <span style={{ padding: "0 4px" }}>…</span>}
-        <Link href={pageHref(Math.min(totalPages, page + 1))} aria-disabled={page >= totalPages}>
+        <Link href={pageHref(Math.min(totalPages, page + 1))} aria-disabled={page >= totalPages} scroll={false}>
           ›
         </Link>
       </div>

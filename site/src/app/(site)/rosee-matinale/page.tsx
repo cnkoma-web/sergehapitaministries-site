@@ -194,13 +194,16 @@ export default async function RoseeMatinalePage({
               <div className="icon">QB</div>
               <h3>Que Dit la Bible ?</h3>
               <p>Un enseignement structuré, verset par verset.</p>
-              <Link href="/publications">Découvrir →</Link>
+              {/* Menait au hub Publications général pour les deux cartes
+                  (retour du 05/09) — chacune pointe désormais vers son
+                  propre hub dédié. */}
+              <Link href="/publications/que-dit-la-bible">Découvrir →</Link>
             </div>
             <div className="explore-card">
               <div className="icon">VS</div>
               <h3>La Vie Supérieure</h3>
               <p>Un enseignement approfondi, pour aller plus loin.</p>
-              <Link href="/publications">Découvrir →</Link>
+              <Link href="/publications/la-vie-superieure">Découvrir →</Link>
             </div>
             <div className="explore-card">
               <div className="icon">L</div>
