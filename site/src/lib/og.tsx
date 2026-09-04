@@ -27,7 +27,11 @@ const BLUE = "#2E2FE0";
 const PURPLE = "#7B3FE4";
 const TEAL = "#3D6E86";
 const LAVENDER_DEEP = "#EAE6F9";
-const LOGO_URL = "https://sergehapitaministries.org/logo.png";
+// Version blanche dédiée (retour du 05/09) — le logo violet habituel du site
+// (/logo.png) ne contraste pas assez sur les fonds colorés violet/bleu/
+// sarcelle de ces images ; cette version reste réservée aux images de
+// partage, le logo affiché ailleurs sur le site ne change pas.
+const LOGO_URL = "https://sergehapitaministries.org/logo-white.png";
 
 // Mêmes couleurs que .feed-badge.qdlb/.vs/.rm dans globals.css — la capsule
 // de catégorie sur le site et celle de l'image de partage doivent se

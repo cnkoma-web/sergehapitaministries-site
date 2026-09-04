@@ -135,7 +135,12 @@ export default async function RoseeMatinalePage({
             )}
           </div>
 
-          <ShareCartouche title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`} url={pageUrl} />
+          <ShareCartouche
+            title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`}
+            url={pageUrl}
+            category="rm"
+            excerpt={current.verse_text ?? undefined}
+          />
         </div>
       </section>
 

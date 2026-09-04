@@ -566,6 +566,12 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .share-icon{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;transition:transform .15s;}
 .share-icon:hover{transform:scale(1.08);}
 .share-icon svg{width:20px;height:20px;}
+/* SMS n'a de sens que sur un appareil qui peut effectivement en envoyer un
+   (retour du 05/09) — masqué sur souris/desktop plutôt qu'affiché partout
+   (même principe que les autres distinctions souris/tactile du site). */
+@media (hover: hover) and (pointer: fine) {
+  .share-icon-sms{display:none;}
+}
 .back-cta{text-align:center;margin-top:32px;padding-top:28px;border-top:1px solid var(--line);}
 .related-articles{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
 .related-articles h2{font-size:22px;margin-bottom:28px;text-align:center;}

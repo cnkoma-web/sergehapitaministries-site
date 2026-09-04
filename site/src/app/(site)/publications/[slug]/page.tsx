@@ -169,7 +169,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   </div>
                 )}
 
-                <ShareCartouche title={article.title} url={pageUrl} />
+                <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={article.excerpt ?? undefined} />
                 <div className="back-cta">
                   <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
                 </div>
@@ -190,7 +190,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   ))}
                 </div>
               )}
-              <ShareCartouche title={article.title} url={pageUrl} />
+              <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={article.excerpt ?? undefined} />
               <div className="back-cta">
                 <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
               </div>
@@ -301,7 +301,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           <div className="blessing">Que Dieu te bénisse abondamment</div>
 
-          <ShareCartouche title={article.title} url={pageUrl} />
+          <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={article.excerpt ?? undefined} />
           <div className="back-cta">
             <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
           </div>
