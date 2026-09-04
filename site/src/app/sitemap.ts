@@ -54,12 +54,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // "La Vie Supérieure" gardé public dans le plan de site malgré le mur de
   // connexion (contenu réel accessible gratuitement après création de compte,
   // pas payant — cahier §3.5), donc légitime à indexer comme les deux autres.
-  const articleEntries: MetadataRoute.Sitemap = [...qdlb, ...vs, ...rm].map((a) => ({
+  const articleEntries: MetadataRoute.Sitemap = [...qdlb, ...vs].map((a) => ({
     url: `${SITE_URL}/publications/${a.slug}`,
     lastModified: a.article_date,
     changeFrequency: "yearly",
     priority: 0.6,
   }));
 
-  return [...staticEntries, ...bookEntries, ...goodieEntries, ...articleEntries];
+  // Corrigé au passage (retour du 05/09, restructuration Rosée Matinale en
+  // URL par jour) — ces entrées pointaient jusqu'ici vers /publications/...,
+  // une URL qui n'a jamais existé pour cette catégorie (404 silencieux pour
+  // les moteurs de recherche) : Rosée Matinale a sa propre page dédiée
+  // (/rosee-matinale/[date]), jamais /publications/[slug].
+  const roseeEntries: MetadataRoute.Sitemap = rm.map((a) => ({
+    url: `${SITE_URL}/rosee-matinale/${a.article_date}`,
+    lastModified: a.article_date,
+    changeFrequency: "yearly",
+    priority: 0.6,
+  }));
+
+  return [...staticEntries, ...bookEntries, ...goodieEntries, ...articleEntries, ...roseeEntries];
 }

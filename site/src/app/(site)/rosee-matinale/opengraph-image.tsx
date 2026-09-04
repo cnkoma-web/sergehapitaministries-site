@@ -5,15 +5,11 @@ export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 export const alt = "Rosée Matinale";
 
-// Limite connue (retour du 05/09) — reflète toujours l'entrée du jour, jamais
-// un jour précis choisi via ?date= sur la page publique : le fichier spécial
-// opengraph-image de Next.js ne reçoit que les segments dynamiques de la
-// route (params), jamais sa query string (searchParams). /rosee-matinale
-// n'a qu'une seule route (le jour se choisit par ?date=, pas par un segment
-// d'URL) — il n'y a donc aucun moyen, avec ce mécanisme, de savoir quel jour
-// est partagé. Le résoudre proprement demanderait une route par jour
-// (/rosee-matinale/[date]), un changement d'URLs plus large qu'un correctif
-// de ce chantier.
+// Cette route (sans segment de date) ne représente qu'une seule chose :
+// l'entrée du jour courant — reflète donc toujours "aujourd'hui" par
+// conception, jamais un autre jour (voir /rosee-matinale/[date]/
+// opengraph-image.tsx pour l'archive, retour du 05/09, restructuration en
+// URL par jour qui a résolu la limitation qui existait ici auparavant).
 export default async function Image() {
   const entry = await getRoseeDuJour();
   return renderOgImage({

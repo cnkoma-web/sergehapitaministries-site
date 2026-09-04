@@ -80,7 +80,8 @@ export default function PublicationFeedItem({
   excerptLines: number;
   variant?: "hub" | "home";
 }) {
-  const href = article.type === "rm" ? `/rosee-matinale?date=${article.article_date}` : `/publications/${article.slug}`;
+  // Vraie URL par jour depuis le 05/09 (restructuration) — plus de "?date=".
+  const href = article.type === "rm" ? `/rosee-matinale/${article.article_date}` : `/publications/${article.slug}`;
   const rawExcerpt = article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || "");
   const dateLabel = new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const ctaLabel = variant === "home" ? HOME_CTA_LABEL[article.type] : CTA_LABEL[article.type];
