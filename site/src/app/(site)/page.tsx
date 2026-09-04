@@ -91,10 +91,10 @@ export default async function HomePage({
               manifeste le Royaume de Dieu.
             </h1>
             <p className="hero-lede">
-              Serge Hapita est un prophète de révélation et de la conscience filiale. Il porte une onction
-              d&apos;impartation qui repositionne dans la vérité de l&apos;Évangile. Quand il partage la Parole, son
-              propos agit dans l&apos;esprit de son auditoire, créant un réveil qui libère l&apos;âme et fait jaillir
-              la vie de Dieu. Son enseignement transforme, communique la foi, réveille la conscience et active…{" "}
+              Serge Hapita est un prophète de la révélation et de la conscience filiale. Son ministère porte une
+              onction d&apos;impartation qui restaure la communion avec le Père et réveille la conscience de
+              l&apos;identité de fils. Quand il partage la Parole, c&apos;est une rencontre avec l&apos;Esprit. La vie
+              de Dieu se manifeste, l&apos;esprit s&apos;éveille, la foi se met à l&apos;œuvre.{" "}
               <Link href="/de-serge" className="hero-lede-link">
                 Lire plus
               </Link>
