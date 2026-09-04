@@ -6,8 +6,8 @@ export const alt = "Serge Hapita Ministries";
 
 // Image par défaut pour toutes les pages du site public qui n'ont pas leur
 // propre opengraph-image.tsx plus spécifique (livres/boutique/articles).
-export default function Image() {
-  return renderOgImage({
+export default async function Image() {
+  return await renderOgImage({
     eyebrow: "Prophète · Enseignant · Auteur",
     title: "Un ministère qui révèle Christ au croyant et affermit le chrétien dans l'identité de fils.",
   });

@@ -8,7 +8,7 @@ export const alt = "Couverture du livre";
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const book = await getBookBySlug(slug);
-  return renderOgImage({
+  return await renderOgImage({
     eyebrow: "Livre — amDG Éditions",
     title: book?.title ?? "Livre",
     footer: book?.author,

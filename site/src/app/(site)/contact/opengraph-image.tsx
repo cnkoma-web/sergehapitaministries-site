@@ -4,6 +4,6 @@ export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 export const alt = "Contact";
 
-export default function Image() {
-  return renderOgImage({ eyebrow: "Serge Hapita Ministries", title: "Contact" });
+export default async function Image() {
+  return await renderOgImage({ eyebrow: "Serge Hapita Ministries", title: "Contact" });
 }

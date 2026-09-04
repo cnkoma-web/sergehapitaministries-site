@@ -22,7 +22,14 @@ export async function generateMetadata({
     : "";
   const title = `Rosée Matinale${dateLabel ? ` — ${dateLabel}` : ""} | Serge Hapita Ministries`;
   const description = current?.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
-  const images = current?.cover_url ? [{ url: current.cover_url, alt: current.cover_alt ?? title }] : undefined;
+  // Plus d'image de couverture en override ici (retour du 05/09, cahier
+  // §6.7) — voir le commentaire équivalent dans publications/[slug]/page.tsx :
+  // une photo uploadée peut peser plusieurs Mo, bien au-delà de ce que
+  // WhatsApp accepte pour un aperçu de lien. L'image générée par
+  // opengraph-image.tsx (toujours légère) devient la seule source — Next.js
+  // la prend automatiquement via la convention de fichier. Limite connue :
+  // cette image générée reflète toujours l'entrée du jour, pas le jour
+  // précis choisi via ?date= (voir le commentaire dans ce fichier-là).
   return {
     title,
     description,
@@ -31,8 +38,8 @@ export async function generateMetadata({
     // jour plutôt que codés en dur, mais l'URL de base reste fixe et permanente
     // (le paramètre ?date= navigue entre les jours sans créer de page séparée).
     alternates: { canonical: "/rosee-matinale" },
-    openGraph: { type: "website", title, description, url: "/rosee-matinale", siteName: "Serge Hapita Ministries", locale: "fr_FR", images },
-    twitter: { card: "summary_large_image", title, description, images: images?.map((i) => i.url) },
+    openGraph: { type: "website", title, description, url: "/rosee-matinale", siteName: "Serge Hapita Ministries", locale: "fr_FR" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

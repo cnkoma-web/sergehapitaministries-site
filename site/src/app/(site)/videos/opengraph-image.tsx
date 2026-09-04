@@ -4,6 +4,6 @@ export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 export const alt = "Vidéos";
 
-export default function Image() {
-  return renderOgImage({ eyebrow: "Prédications · Enseignements · Témoignages", title: "Vidéos" });
+export default async function Image() {
+  return await renderOgImage({ eyebrow: "Prédications · Enseignements · Témoignages", title: "Vidéos" });
 }

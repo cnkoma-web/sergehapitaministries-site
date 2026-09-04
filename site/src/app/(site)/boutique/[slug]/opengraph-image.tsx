@@ -8,7 +8,7 @@ export const alt = "Produit de la boutique";
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const goodie = await getGoodieBySlug(slug);
-  return renderOgImage({
+  return await renderOgImage({
     eyebrow: "Boutique",
     title: goodie?.title ?? "Boutique",
   });

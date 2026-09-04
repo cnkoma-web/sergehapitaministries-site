@@ -24,14 +24,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!article) return {};
   const title = `${article.title} | ${ARTICLE_TYPE_LABEL[article.type]}`;
   const description = article.excerpt || article.verse_text || article.title;
-  const images = article.cover_url ? [{ url: article.cover_url, alt: article.cover_alt ?? title }] : undefined;
+  // Plus d'image de couverture en override ici (retour du 05/09, cahier
+  // §6.7) — une photo uploadée par Serge peut peser plusieurs Mo (mesuré :
+  // jusqu'à 2,6 Mo sur un cas réel), largement au-dessus de ce que WhatsApp
+  // accepte pour un aperçu de lien, d'où l'absence totale d'image au
+  // partage. L'image générée par opengraph-image.tsx (toujours légère,
+  // toujours à la bonne taille, avec la capsule de catégorie) devient la
+  // seule source — Next.js la prend automatiquement via la convention de
+  // fichier, sans qu'on ait besoin de la référencer ici.
   return {
     title,
     description,
     keywords: article.seo_keywords.length > 0 ? article.seo_keywords : undefined,
     alternates: { canonical: `/publications/${slug}` },
-    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR", images },
-    twitter: { card: "summary_large_image", title, description, images: images?.map((i) => i.url) },
+    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
