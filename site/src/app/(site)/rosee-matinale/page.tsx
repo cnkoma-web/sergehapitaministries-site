@@ -6,8 +6,11 @@ import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
+import Pagination from "@/components/admin/Pagination";
 
 const SITE_URL = "https://sergehapitaministries.org";
+// Règle fixe (retour du 05/09) — 3 entrées d'archive par page.
+const ARCHIVE_PER_PAGE = 3;
 
 export async function generateMetadata({
   searchParams,
@@ -46,9 +49,9 @@ export async function generateMetadata({
 export default async function RoseeMatinalePage({
   searchParams,
 }: {
-  searchParams: Promise<{ date?: string }>;
+  searchParams: Promise<{ date?: string; archivePage?: string }>;
 }) {
-  const { date } = await searchParams;
+  const { date, archivePage } = await searchParams;
   const entries = await getPublishedArticles("rm"); // triées du plus récent au plus ancien
 
   if (entries.length === 0) {
@@ -79,6 +82,12 @@ export default async function RoseeMatinalePage({
   const previous = entries[currentIndex + 1] ?? null;
   const next = entries[currentIndex - 1] ?? null;
   const archive = entries.filter((_, i) => i !== currentIndex);
+  // Pagination de l'archive (retour du 05/09) — "archivePage" plutôt que
+  // "page" (le nom par défaut du composant Pagination) pour ne pas entrer
+  // en conflit avec ?date=, qui choisit lui l'entrée mise en avant en haut
+  // de page : les deux doivent pouvoir coexister dans l'URL.
+  const archivePageNum = Math.max(1, Number(archivePage) || 1);
+  const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
 
   incrementViewCount(current.id).catch(() => {});
   const pageUrl = `${SITE_URL}/rosee-matinale${date ? `?date=${date}` : ""}`;
@@ -151,16 +160,28 @@ export default async function RoseeMatinalePage({
           {archive.length === 0 ? (
             <p className="rm-empty">Ceci est la toute première pensée publiée — l&apos;archive se remplira à partir de demain.</p>
           ) : (
-            <div className="rm-list">
-              {archive.map((entry) => (
-                <Link href={`/rosee-matinale?date=${entry.article_date}`} className="rm-item" key={entry.id}>
-                  <div className="date">
-                    {new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                  </div>
-                  <div className="excerpt">{entry.verse_text}</div>
-                </Link>
-              ))}
-            </div>
+            <>
+              <div className="rm-list">
+                {archivePaged.map((entry) => (
+                  <Link href={`/rosee-matinale?date=${entry.article_date}`} className="rm-item" key={entry.id}>
+                    <div className="date">
+                      {new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                    </div>
+                    <div className="excerpt">{entry.verse_text}</div>
+                  </Link>
+                ))}
+              </div>
+              <Pagination
+                page={archivePageNum}
+                perPage={ARCHIVE_PER_PAGE}
+                total={archive.length}
+                basePath="/rosee-matinale"
+                pageParam="archivePage"
+                perPageParam="archivePerPage"
+                showPerPageSelector={false}
+                extraParams={date ? { date } : undefined}
+              />
+            </>
           )}
         </div>
       </section>

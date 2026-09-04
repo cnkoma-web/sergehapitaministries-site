@@ -394,17 +394,14 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 }
 .feed-list{display:flex;flex-direction:column;}
 /* Plus un lien géant (retour du 03/09) : .feed-item est un simple conteneur,
-   seuls la vignette, le titre et le chapeau sont individuellement
-   cliquables (voir .feed-thumb-link et les <a> dans h3/.excerpt) — les
-   métadonnées (badge, date, vues) et l'espace vide ne le sont plus. */
-/* Gap resserré de quelques pixels (retour du 05/09) — cause reelle du point
-   5 identifiee par Serge : le bloc de texte etait trop etroit (pas un
-   probleme Safari), la vignette + l'ecart lui laissaient trop peu de place. */
+   seuls le titre et le chapeau sont individuellement cliquables (voir les
+   <a> dans h3/.excerpt) — les métadonnées (badge, date, vues) et l'espace
+   vide ne le sont plus.
+   Plus de vignette du tout (retour du 05/09, remplace .feed-thumb-link/
+   .feed-thumb, supprimées) : l'image de Serge ne sert plus que sur la page
+   article et l'image de partage Open Graph, jamais sur les aperçus. */
 .feed-item{display:flex;gap:16px;padding:24px 4px;border-top:1px solid var(--line);align-items:flex-start;}
 .feed-list .feed-item:first-child{border-top:0;}
-.feed-thumb-link{display:block;flex-shrink:0;}
-.feed-thumb-link:hover .feed-thumb{opacity:.85;}
-.feed-thumb{width:96px;aspect-ratio:1/1;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--lavender);transition:opacity .2s ease;}
 .feed-body{flex:1;min-width:0;}
 /* Ordre imposé, sans exception (retour du 03/09) : ligne 1 catégorie seule,
    ligne 2 date+heure+vues, puis titre, puis extrait — deux lignes de
@@ -474,11 +471,9 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 /* Rappel Rosée Matinale sous le flux — fond de couleur différent (v3 §6.10.2). */
 /* Haut resserré (retour du 30/08) : espace avec le flux du dessus trop marqué. */
 .rm-reminder{background:var(--lavender);padding-top:32px;padding-bottom:56px;}
-.rm-reminder .feed-thumb{background:#fff;}
 .rm-reminder .feed-item{border-top-color:var(--line);}
 @media (max-width:640px){
   .feed-item{gap:10px;padding:18px 0;}
-  .feed-thumb{width:64px;}
 }
 
 .pub-category{padding-top:64px;padding-bottom:64px;}
@@ -1265,7 +1260,6 @@ footer.footer--dark{
 .pubs .feed-item h3 a:hover{color:var(--lavender);}
 .pubs .feed-item .excerpt{color:rgba(255,255,255,.6);}
 .pubs .feed-item .excerpt a:hover{color:rgba(255,255,255,.85);}
-.pubs .feed-thumb{background:rgba(255,255,255,.08);}
 .social-card{border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center;transition:all .2s ease;}
 .social-card:hover{border-color:var(--purple);transform:translateY(-3px);}
 .social-card .icon{width:46px;height:46px;border-radius:50%;background:var(--lavender);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 14px;}

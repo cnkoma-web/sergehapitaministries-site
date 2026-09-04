@@ -98,16 +98,12 @@ export default function PublicationFeedItem({
 
   return (
     <div className="feed-item">
-      {/* Pas de vignette du tout si aucune image n'est renseignée (retour du
-          05/09) — plus d'espace réservé/placeholder vide : le texte prend
-          alors toute la largeur. Comportement inchangé quand une image
-          existe. */}
-      {article.cover_url && (
-        <Link href={href} className="feed-thumb-link" aria-label={article.title}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={article.cover_url} alt={article.cover_alt || article.title} className="feed-thumb" />
-        </Link>
-      )}
+      {/* Plus de vignette du tout sur les aperçus, avec ou sans image
+          renseignée (retour du 05/09, remplace le point précédent qui ne
+          retirait l'espace que pour les publications sans image) — l'image
+          de Serge ne sert plus que sur la page article elle-même et sur
+          l'image de partage Open Graph. Le texte occupe toute la largeur
+          disponible. */}
       <div className="feed-body">
         <div className="feed-meta">
           {/* Nom complet de la catégorie directement dans la capsule colorée
