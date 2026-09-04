@@ -24,28 +24,26 @@ export default async function SearchPage({
 
   return (
     <>
+      {/* Titre de résultats, pas un nouveau formulaire de recherche (retour
+          du 05/09, 2e passage) — la zone de saisie vit désormais dans
+          l'en-tête (voir Header.tsx), présente sur cette page comme sur
+          toutes les autres ; pas besoin d'en dupliquer une ici. */}
       <section className="util-hero">
         <div className="wrap">
-          <h1>Recherche</h1>
-          <form method="get" className="search-form">
-            <input type="search" name="q" defaultValue={query} placeholder="Un article, un livre, un produit…" aria-label="Rechercher sur le site" />
-            <button type="submit" className="btn btn-primary">
-              Rechercher
-            </button>
-          </form>
+          <h1>{query ? <>Résultats pour : {query}</> : "Résultats de recherche"}</h1>
         </div>
       </section>
 
       <section className="section">
         <div className="content-col">
           {!query ? (
-            <p className="empty-state">Tapez un mot-clé ci-dessus pour chercher dans les publications, les livres et la boutique.</p>
+            <p className="empty-state">Tapez un mot-clé dans la recherche de l&apos;en-tête pour chercher dans les publications et les livres.</p>
           ) : results.length === 0 ? (
             <p className="empty-state">Aucun résultat pour « {query} ».</p>
           ) : (
             <>
               <p className="search-count">
-                {results.length} résultat{results.length > 1 ? "s" : ""} pour « {query} »
+                {results.length} résultat{results.length > 1 ? "s" : ""}
               </p>
               <div className="search-results">
                 {results.map((r) => (

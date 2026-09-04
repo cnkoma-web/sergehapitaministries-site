@@ -10,14 +10,24 @@ const CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire la suite", vs: 
 // structure de la liste, pas ce texte de bouton déjà tranché séparément.
 const HOME_CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire →", vs: "Découvrir →", rm: "Lire →" };
 
-// Nombre moyen de caractères par ligne d'extrait à ~15px sur la largeur
-// réelle de .feed-body (retour du 05/09, point 6) — sert à couper le
-// chapeau nous-mêmes, en code, à une longueur fixe, plutôt que de compter
-// sur -webkit-line-clamp : le lien "Lire la suite" doit être physiquement
-// à l'intérieur du même bloc de texte que le chapeau tronqué (jamais un
-// élément séparé positionné en dessous), donc c'est le code qui doit
-// garantir qu'il reste de la place, pas Serge en tapant son texte.
-const CHARS_PER_LINE = 62;
+// Nombre moyen de caractères par ligne d'extrait à ~15px (retour du 05/09,
+// point 6) — sert à couper le chapeau nous-mêmes, en code, à une longueur
+// fixe, plutôt que de compter sur -webkit-line-clamp : le lien
+// "Lire la suite" doit être physiquement à l'intérieur du même bloc de
+// texte que le chapeau tronqué (jamais un élément séparé positionné en
+// dessous), donc c'est le code qui doit garantir qu'il reste de la place,
+// pas Serge en tapant son texte.
+//
+// Deux valeurs, pas une (retour du 05/09, 2e passage) : .feed-body n'a pas
+// la même largeur réelle sur mobile (vignette 64px, ≤640px) que sur
+// tablette/desktop (vignette 96px, .content-col plafonné à 695px au-delà
+// de 640px — tablette et desktop partagent donc la même largeur de carte).
+// Une seule constante calibrée pour l'un donnait 3 lignes pile sur l'autre,
+// mais 5 à 8 lignes sur le premier (mesuré en direct) — le "minimum 3
+// lignes" doit être identique sur les 3 tailles d'écran, pas seulement sur
+// celle qui a servi à calibrer la constante.
+const CHARS_PER_LINE_DESKTOP = 145;
+const CHARS_PER_LINE_MOBILE = 42;
 
 // Coupe au dernier espace avant la limite (jamais au milieu d'un mot) et ne
 // touche pas au texte si il tient déjà dans la limite.
@@ -74,11 +84,17 @@ export default function PublicationFeedItem({
   const rawExcerpt = article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || "");
   const dateLabel = new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const ctaLabel = variant === "home" ? HOME_CTA_LABEL[article.type] : CTA_LABEL[article.type];
+  // 3 lignes minimum (retour du 05/09) — plancher appliqué ici, un seul
+  // endroit pour l'accueil ET les hubs, quelle que soit la valeur du
+  // réglage admin (qui reste libre d'aller au-delà de 3, jamais en deçà).
+  const effectiveLines = Math.max(3, excerptLines);
   // Réserve la place du "… " + du lien sur la dernière ligne (retour du
   // 05/09) — sans cette marge, le total (chapeau + lien) dépassait souvent
   // d'une ligne complète la longueur voulue par excerptLines.
   const reserved = ctaLabel.length + 3;
-  const { text: excerptText, truncated } = truncateExcerpt(rawExcerpt.trim(), CHARS_PER_LINE * excerptLines - reserved);
+  const trimmedExcerpt = rawExcerpt.trim();
+  const desktop = truncateExcerpt(trimmedExcerpt, CHARS_PER_LINE_DESKTOP * effectiveLines - reserved);
+  const mobile = truncateExcerpt(trimmedExcerpt, CHARS_PER_LINE_MOBILE * effectiveLines - reserved);
 
   return (
     <div className="feed-item">
@@ -116,10 +132,18 @@ export default function PublicationFeedItem({
         </h3>
         <p className="excerpt">
           <Link href={href}>
-            {excerptText}
-            {truncated && "…"}
-            {" "}
-            <span className="feed-cta-inline">{ctaLabel}</span>
+            {/* Deux variantes, une seule visible à la fois via CSS
+                (display:none exclut automatiquement l'autre de l'arbre
+                d'accessibilité, pas besoin d'aria-hidden) — voir
+                CHARS_PER_LINE_MOBILE ci-dessus. */}
+            <span className="excerpt-desktop">
+              {desktop.text}
+              {desktop.truncated && "…"} <span className="feed-cta-inline">{ctaLabel}</span>
+            </span>
+            <span className="excerpt-mobile">
+              {mobile.text}
+              {mobile.truncated && "…"} <span className="feed-cta-inline">{ctaLabel}</span>
+            </span>
           </Link>
         </p>
       </div>

@@ -98,8 +98,18 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 haut, avant le premier paragraphe (pas d'ordre imposé pour
                 La Vie Supérieure au-delà de ça). */}
             {article.excerpt && <p className="article-lede">{article.excerpt}</p>}
+            {/* overflowAnchor:"none" (retour du 05/09, point 5) — sans
+                largeur/hauteur connues à l'avance, l'image ne réserve pas sa
+                place : quand elle finit de charger après le premier rendu,
+                le "scroll anchoring" du navigateur (une fonctionnalité
+                normalement utile, qui compense les décalages de mise en
+                page pour garder le contenu déjà visible stable) pouvait
+                décaler la page vers le bas dès l'arrivée, cachant le titre —
+                exactement le symptôme rapporté. Ce div n'est plus utilisé
+                comme ancre de compensation, sans changer sa taille/son
+                apparence. */}
             {article.cover_url && (
-              <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
+              <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden", overflowAnchor: "none" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
               </div>
@@ -229,8 +239,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </div>
           )}
 
+          {/* overflowAnchor:"none" — voir le commentaire équivalent plus haut
+              (branche La Vie Supérieure). */}
           {article.cover_url && (
-            <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden" }}>
+            <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden", overflowAnchor: "none" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
@@ -297,12 +309,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <h2>Autres articles similaires</h2>
             <div className="related-grid">
               {related.map((a) => (
-                // Toute la carte est cliquable et réagit au survol (retour du
-                // 05/09) — un seul <Link> réel, étiré sur toute la carte via
-                // ::after (.related-card-link), pour éviter d'imbriquer des
-                // <a> (titre + lien ne peuvent pas être deux liens distincts
-                // dans le même bloc sans ça). Même principe de survol que les
-                // hubs : le texte passe en violet, souris uniquement.
+                // Corrigé (retour du 05/09, 2e signalement) : plus de lien
+                // unique étiré sur toute la carte (métadonnées et espace vide
+                // compris) — même défaut que celui déjà corrigé sur les
+                // cartes des hubs, réapparu ici. Revenu au même principe
+                // exact que .feed-item : seuls le titre et le chapeau sont
+                // cliquables, chacun avec son propre lien, survol violet
+                // souris uniquement (jamais "collé" sur tactile), :active
+                // pour le retour visuel bref au toucher.
                 <div className="related-card" key={a.id}>
                   <div className="verse">
                     {/* Format complet en toutes lettres, identique au reste
@@ -310,11 +324,18 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         abrégé "19 août". */}
                     {new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                   </div>
-                  <h3>{a.title}</h3>
+                  <h3>
+                    <Link href={`/publications/${a.slug}`}>{a.title}</Link>
+                  </h3>
                   {/* Chapeau ajouté sous le titre (retour du 05/09). */}
-                  {a.excerpt && <p className="related-card-excerpt">{a.excerpt}</p>}
+                  {a.excerpt && (
+                    <p className="related-card-excerpt">
+                      <Link href={`/publications/${a.slug}`}>{a.excerpt}</Link>
+                    </p>
+                  )}
                   {/* Libellé aligné sur celui des hubs (retour du 05/09) —
-                      plus "Lire l'article →". */}
+                      plus "Lire l'article →". Lien indépendant, ne recouvre
+                      que son propre texte. */}
                   <Link href={`/publications/${a.slug}`} className="related-card-link">
                     Lire la suite →
                   </Link>
