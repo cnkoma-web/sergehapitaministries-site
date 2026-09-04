@@ -38,6 +38,10 @@ h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-0.01em;
 a{color:inherit;text-decoration:none;}
 .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
 img{max-width:100%;display:block;}
+/* Réservé au H1 "Serge Hapita" du hero De Serge (retour du 05/09) — retiré
+   de l'affichage (redondant avec l'identité déjà établie par le hero) mais
+   gardé comme vrai H1 de page pour le SEO/l'accessibilité, jamais visible. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
 /* Effet de survol (rollover) sur les couvertures/visuels produit — cahier
    §6.4, référence rochedy.com. Voir components/shop/CoverRollover.tsx. */
@@ -1079,9 +1083,25 @@ footer.footer--dark{
 .page-hero .wrap{position:relative;z-index:1;padding:48px 38px;}
 .page-hero h1{font-size:36px;line-height:1.16;margin-bottom:22px;color:#fff;max-width:640px;}
 .page-hero p{font-size:17px;color:rgba(255,255,255,.82);line-height:1.65;max-width:520px;margin:0;}
-/* Citation personnelle de Serge (retour du 05/09) — italique en plus des
-   guillemets déjà dans le texte, distincte du reste du hero. */
-.page-hero-quote{font-style:italic;}
+/* Citation personnelle de Serge en deux temps (retour du 05/09, 2e passage)
+   — la conviction centrale (primary) domine visuellement : plus grande, plus
+   grasse. Son développement (secondary) vient en second niveau de lecture :
+   nettement plus petit, plus léger. Une lecture progressive plutôt qu'un
+   bloc de citation uniforme. Fraunces (la police des titres du site, voir la
+   règle h1-h4 en tête de fichier) pour rester dans le même registre que les
+   autres citations personnelles de cette page (voir le bloc "Portrait" plus
+   bas). */
+/* .page-hero p (2 sélecteurs) sinon plus spécifique qu'une seule classe et
+   écrase la taille — combiné avec .page-hero pour l'emporter sans dépendre
+   de l'ordre dans le fichier. */
+.page-hero .page-hero-quote-primary{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:600;
+  font-size:38px;line-height:1.25;color:#fff;max-width:600px;margin-bottom:16px;
+}
+.page-hero .page-hero-quote-secondary{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:400;
+  font-size:17px;line-height:1.6;color:rgba(255,255,255,.75);max-width:520px;
+}
 /* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
 .bio-block{max-width:var(--content-col);margin:0 auto;}
 .bio-block p{color:var(--ink-soft);font-size:16px;line-height:1.75;margin-bottom:18px;}
@@ -1199,6 +1219,8 @@ footer.footer--dark{
 @media (max-width:640px){
   .page-hero h1{font-size:26px;}
   .page-hero p{font-size:16px;}
+  .page-hero .page-hero-quote-primary{font-size:26px;margin-bottom:12px;}
+  .page-hero .page-hero-quote-secondary{font-size:15px;}
   /* Remonté un peu plus, vers le milieu de la photo sans y être tout à fait
      (retour du 05/09, 2e passage — le premier essai à 28px restait encore
      trop bas au goût de Serge). */

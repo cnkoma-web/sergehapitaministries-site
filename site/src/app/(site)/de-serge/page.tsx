@@ -32,14 +32,23 @@ export default async function DeSergePage() {
     <>
       <section className="page-hero" style={{ backgroundImage: "url('/de-serge-hero.jpg')" }}>
         <div className="wrap">
-          <h1>Serge Hapita</h1>
-          {/* Citation personnelle, à la première personne (retour du 05/09) —
-              italique + guillemets pour bien montrer que c'est Serge qui
-              parle, pas un texte de présentation neutre comme le reste du
-              hero. */}
-          <p className="page-hero-quote">
-            « C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie. Et Dieu a une
-            nouvelle vie prévue pour chaque être humain. L&apos;avez-vous trouvée ? »
+          {/* "Serge Hapita" retiré de l'affichage (retour du 05/09) —
+              redondant avec l'identité déjà établie par le hero ; gardé en
+              sr-only pour qu'il reste un vrai H1 de page (SEO/accessibilité),
+              sans réapparaître visuellement. */}
+          <h1 className="sr-only">Serge Hapita</h1>
+          {/* Citation personnelle en deux temps (retour du 05/09) — la
+              conviction centrale domine visuellement (grand, plus gras), son
+              développement vient en second niveau de lecture (plus petit,
+              plus léger). Une seule citation continue malgré la coupure
+              visuelle : guillemet ouvrant sur la 1re partie, fermant sur la
+              2e. */}
+          <p className="page-hero-quote-primary">
+            « C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie.
+          </p>
+          <p className="page-hero-quote-secondary">
+            Dieu a prévu pour chaque être humain une vie qui trouve sa plénitude en Christ. La véritable réussite,
+            c&apos;est de la découvrir et de la vivre. »
           </p>
         </div>
       </section>
