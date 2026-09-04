@@ -210,7 +210,10 @@ export default async function DeSergePage() {
             de la Bonne Nouvelle du salut et la guérison de l&apos;être tout entier : l&apos;esprit, l&apos;âme et
             le corps.
           </p>
-          <a href="http://www.actedesfilsdedieu.fr" className="btn btn-outline">
+          {/* URL corrigée (retour du 05/09) — "actedesfilsdedieu" (singulier)
+              était une faute de frappe, jamais le vrai domaine. Lien externe
+              : nouvel onglet + rel de sécurité. */}
+          <a href="https://www.actesdesfilsdedieu.fr/" target="_blank" rel="noopener noreferrer" className="btn btn-outline">
             Découvrir ActesDesFilsDeDieu →
           </a>
         </div>

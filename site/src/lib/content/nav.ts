@@ -37,7 +37,9 @@ export async function getBrandSplitLinks(): Promise<{ left: NavLink; right: NavL
   return {
     left: {
       label: texts["brand_split.left.label"] ?? "ActesDesFilsDeDieu",
-      href: texts["brand_split.left.href"] ?? "http://www.actedesfilsdedieu.fr",
+      // "actedesfilsdedieu" (singulier) était une faute de frappe (retour du
+      // 05/09) — n'a jamais été le vrai domaine.
+      href: texts["brand_split.left.href"] ?? "https://www.actesdesfilsdedieu.fr/",
     },
     right: {
       label: texts["brand_split.right.label"] ?? "amDG Éditions",

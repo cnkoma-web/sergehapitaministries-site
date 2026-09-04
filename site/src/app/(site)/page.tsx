@@ -90,18 +90,18 @@ export default async function HomePage({
               Un ministère qui révèle Christ au croyant, affermit le chrétien dans l&apos;identité de fils et
               manifeste le Royaume de Dieu.
             </h1>
+            {/* Retour du 05/09 (2e passage) — "Lire davantage" repasse dans la
+                continuité du paragraphe (plus sur sa propre ligne) : même
+                police/taille, seul le gras le distingue, aucun retour à la
+                ligne ni retrait particulier. */}
             <p className="hero-lede">
               Serge Hapita est un prophète de la révélation et de la conscience filiale. Son ministère porte une
               onction qui ravive la foi, restaure la communion avec Dieu le Père et la conscience de
               l&apos;identité de fils. Quand il partage la Parole, c&apos;est plus qu&apos;un discours, c&apos;est
               une rencontre avec l&apos;Esprit : la vie se manifeste, l&apos;esprit se réveille, la foi se met à
-              l&apos;œuvre.
-            </p>
-            {/* Sur sa propre ligne, en retrait à droite (retour du 05/09) —
-                plus intégré à la dernière ligne du paragraphe. */}
-            <p className="hero-lede-more">
+              l&apos;œuvre.{" "}
               <Link href="/de-serge" className="hero-lede-link">
-                Lire plus
+                Lire davantage
               </Link>
             </p>
             <div className="hero-cta">
