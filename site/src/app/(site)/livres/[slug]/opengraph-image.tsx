@@ -12,5 +12,9 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     eyebrow: "Livre — amDG Éditions",
     title: book?.title ?? "Livre",
     footer: book?.author,
+    // Couverture "bien visible" (retour du 05/09, demande explicite) — mise
+    // en page dédiée dans renderOgImage quand elle est fournie ; simple
+    // repli sur le gabarit texte si le livre n'a pas encore de couverture.
+    coverImageUrl: book?.cover_url ?? undefined,
   });
 }

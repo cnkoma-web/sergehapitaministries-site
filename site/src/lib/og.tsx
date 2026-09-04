@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import sharp from "sharp";
 
 // Visuels de partage social générés à la volée (cahier Partie 5 §6.7) — plus de
 // chemins statiques /assets/og/*.jpg qui n'existent pas (d'où l'absence
@@ -98,16 +99,47 @@ async function getManropeFont(): Promise<ArrayBuffer | null> {
   return manropeCache;
 }
 
+// Couverture de livre (retour du 05/09) — les couvertures uploadées via
+// l'admin peuvent peser plusieurs Mo (même défaut déjà rencontré et corrigé
+// pour les photos de couverture d'article, cahier §6.7 : une photo de 2,6 Mo
+// suffisait à faire disparaître l'aperçu WhatsApp). Transmise telle quelle à
+// Satori (le moteur derrière ImageResponse), une image de plusieurs Mo fait
+// carrément planter le rendu ("Buffer size limit exceeded", constaté en
+// conditions réelles avec une couverture de 9,3 Mo) — retaillée et
+// recompressée ici avant de lui être transmise, jamais le fichier brut.
+async function fetchResizedCover(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const resized = await sharp(buffer).resize(340, 510, { fit: "cover" }).jpeg({ quality: 82 }).toBuffer();
+    return `data:image/jpeg;base64,${resized.toString("base64")}`;
+  } catch {
+    // Une couverture illisible ou trop lourde ne doit jamais empêcher
+    // l'image de partage d'exister — repli sur le gabarit texte seul (voir
+    // renderOgImage), même philosophie que pour une police introuvable.
+    return null;
+  }
+}
+
 export async function renderOgImage({
   eyebrow,
   category,
   title,
   footer,
+  coverImageUrl,
 }: {
   eyebrow?: string;
   category?: OgCategory;
   title: string;
   footer?: string;
+  // Fiche livre (retour du 05/09) — quand une couverture existe, elle doit
+  // être "bien visible" (demande explicite), pas juste une vignette dans un
+  // coin : mise en page à deux colonnes dédiée (voir plus bas), plutôt que
+  // le gabarit texte seul utilisé pour les articles. Sans couverture (livre
+  // pas encore illustré), repli sur ce même gabarit texte — jamais d'image
+  // cassée à la place d'une couverture manquante.
+  coverImageUrl?: string;
 }) {
   const accent = category ? CATEGORY_COLOR[category] : PURPLE;
   const badgeLabel = category ? CATEGORY_LABEL[category] : eyebrow;
@@ -115,11 +147,95 @@ export async function renderOgImage({
     ? `linear-gradient(135deg, ${accent} 0%, ${INK} 100%)`
     : `linear-gradient(120deg, ${BLUE} 0%, ${PURPLE} 100%)`;
 
-  const [fraunces, manrope] = await Promise.all([getFrauncesFont(), getManropeFont()]);
+  const [fraunces, manrope, resizedCover] = await Promise.all([
+    getFrauncesFont(),
+    getManropeFont(),
+    coverImageUrl ? fetchResizedCover(coverImageUrl) : Promise.resolve(null),
+  ]);
   const fonts = [
     fraunces && { name: "Fraunces", data: fraunces, style: "normal" as const, weight: 600 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
   ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
+
+  if (resizedCover) {
+    return new ImageResponse(
+      (
+        <div style={{ width: "100%", height: "100%", display: "flex", fontFamily: manrope ? "Manrope" : "sans-serif" }}>
+          <div
+            style={{
+              width: 440,
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: LAVENDER_DEEP,
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={resizedCover}
+              width={300}
+              height={450}
+              alt=""
+              style={{ objectFit: "cover", borderRadius: 12, boxShadow: "0 30px 60px -20px rgba(27,23,48,.55)" }}
+            />
+          </div>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              padding: "60px 56px",
+              background: gradient,
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={LOGO_URL} width={170} height={64} alt="" style={{ marginBottom: 32, objectFit: "contain" }} />
+              {badgeLabel && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignSelf: "flex-start",
+                    background: "#fff",
+                    color: accent,
+                    fontSize: 20,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 2,
+                    padding: "9px 20px",
+                    borderRadius: 999,
+                    marginBottom: 28,
+                  }}
+                >
+                  {badgeLabel}
+                </div>
+              )}
+              <div
+                style={{
+                  display: "flex",
+                  color: "#fff",
+                  fontFamily: fraunces ? "Fraunces" : "sans-serif",
+                  fontWeight: 600,
+                  fontSize: title.length > 40 ? 44 : 54,
+                  lineHeight: 1.15,
+                  maxWidth: 560,
+                }}
+              >
+                {title}
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {footer && <div style={{ display: "flex", color: "rgba(255,255,255,.75)", fontSize: 22, marginBottom: 6 }}>{footer}</div>}
+              <div style={{ display: "flex", color: LAVENDER_DEEP, fontSize: 24, fontWeight: 700 }}>sergehapitaministries.org</div>
+            </div>
+          </div>
+        </div>
+      ),
+      { ...OG_SIZE, fonts: fonts.length > 0 ? fonts : undefined }
+    );
+  }
 
   return new ImageResponse(
     (

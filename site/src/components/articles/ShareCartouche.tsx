@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { buildShareMessage, type ShareCategory } from "@/lib/share";
+import { buildShareMessage, buildBookShareMessage, type ShareCategory } from "@/lib/share";
 
 // Icônes SVG réelles pour chaque plateforme (jamais d'emoji ni de lettre
 // bricolée en guise d'icône, cahier §1.1).
@@ -19,8 +19,10 @@ import { buildShareMessage, type ShareCategory } from "@/lib/share";
 // Deux groupes de boutons :
 // - Message personnalisé (WhatsApp, Telegram, X, SMS) : voir buildShareMessage
 //   dans src/lib/share.ts, uniquement quand category+excerpt sont fournis
-//   (les publications). Sans ça (ex. page "Connaître Jésus", qui n'a pas de
-//   catégorie), on retombe sur l'ancien comportement "titre - lien" simple.
+//   (les publications) — ou buildBookShareMessage quand bookDescription est
+//   fourni à la place (fiche livre, retour du 05/09). Sans aucun des deux
+//   (ex. page "Connaître Jésus", qui n'a ni catégorie ni livre), on retombe
+//   sur l'ancien comportement "titre - lien" simple.
 // - Lien seul (Facebook, LinkedIn) : limitation propre à ces plateformes,
 //   leurs boutons de partage ignorent tout texte personnalisé par
 //   conception, pas un choix technique de ce composant.
@@ -29,18 +31,26 @@ export default function ShareCartouche({
   url,
   category,
   excerpt,
+  bookDescription,
 }: {
   title: string;
   url: string;
   category?: ShareCategory;
   excerpt?: string;
+  // Description du livre, débarrassée de son HTML par l'appelant (voir
+  // livres/[slug]/page.tsx) — jamais utilisé en même temps que category.
+  bookDescription?: string;
 }) {
   const [copied, setCopied] = useState(false);
 
   const encodedTitle = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(url);
   const personalizedMessage =
-    category && excerpt ? buildShareMessage({ category, title, excerpt, url }) : `${title} - ${url}`;
+    category && excerpt
+      ? buildShareMessage({ category, title, excerpt, url })
+      : bookDescription
+        ? buildBookShareMessage({ title, description: bookDescription, url })
+        : `${title} - ${url}`;
   const encodedMessage = encodeURIComponent(personalizedMessage);
 
   return (

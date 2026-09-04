@@ -7,11 +7,15 @@ import CoverRollover from "@/components/shop/CoverRollover";
 import PublisherLink from "@/components/shop/PublisherLink";
 import { getReviewSummary } from "@/lib/content/reviews";
 import { formatPrice } from "@/lib/format";
+import { stripHtml } from "@/lib/richtext";
 import Stars from "@/components/reviews/Stars";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import ShareCartouche from "@/components/articles/ShareCartouche";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
+
+const SITE_URL = "https://sergehapitaministries.org";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -39,6 +43,11 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
     getBookImages(book.id),
   ]);
   const galleryImages = images.length > 0 ? images : book.cover_url ? [{ id: "cover", url: book.cover_url, position: 0 }] : [];
+  const pageUrl = `${SITE_URL}/livres/${slug}`;
+  // Fallback si la description n'est pas encore renseignée (retour du
+  // 05/09) — même principe que shareExcerpt sur les articles : à défaut de
+  // texte, le partage retombe sur "titre - lien" simple (voir ShareCartouche).
+  const shareDescription = book.description ? stripHtml(book.description) : undefined;
 
   return (
     <>
@@ -147,6 +156,11 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
           ) : (
             <p>Description complète à venir.</p>
           )}
+          {/* Partage (retour du 05/09) — même système que les articles :
+              image Open Graph dédiée (voir opengraph-image.tsx dans ce même
+              dossier), message personnalisé calqué sur celui des
+              publications (buildBookShareMessage), mêmes boutons/ordre/style. */}
+          <ShareCartouche title={book.title} url={pageUrl} bookDescription={shareDescription} />
         </div>
       </section>
 

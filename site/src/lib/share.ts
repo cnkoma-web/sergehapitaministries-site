@@ -45,3 +45,22 @@ export function buildShareMessage({
   const hook = buildHook(excerpt);
   return `Bonjour,\n\nSerge Hapita partage avec vous ${CATEGORY_PHRASE[category]} : « ${title} »\n\n${hook}\n\n👉 Découvrez la pensée complète ici :\n${url}`;
 }
+
+// Fiche livre (retour du 05/09) — même principe que buildShareMessage
+// ci-dessus (accroche = titre, extrait court, puis lien), avec l'invitation
+// adaptée au livre plutôt qu'à un article ; même règle de troncature
+// (buildHook) appliquée à la description du livre (le champ "À propos de ce
+// livre"), débarrassée de son HTML par l'appelant avant d'arriver ici (voir
+// livres/[slug]/page.tsx).
+export function buildBookShareMessage({
+  title,
+  description,
+  url,
+}: {
+  title: string;
+  description: string;
+  url: string;
+}): string {
+  const hook = buildHook(description);
+  return `Bonjour,\n\nSerge Hapita partage avec vous son livre : « ${title} »\n\n${hook}\n\n👉 Découvrez le livre ici :\n${url}`;
+}
