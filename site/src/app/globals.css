@@ -1079,6 +1079,9 @@ footer.footer--dark{
 .page-hero .wrap{position:relative;z-index:1;padding:48px 38px;}
 .page-hero h1{font-size:36px;line-height:1.16;margin-bottom:22px;color:#fff;max-width:640px;}
 .page-hero p{font-size:17px;color:rgba(255,255,255,.82);line-height:1.65;max-width:520px;margin:0;}
+/* Citation personnelle de Serge (retour du 05/09) — italique en plus des
+   guillemets déjà dans le texte, distincte du reste du hero. */
+.page-hero-quote{font-style:italic;}
 /* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
 .bio-block{max-width:var(--content-col);margin:0 auto;}
 .bio-block p{color:var(--ink-soft);font-size:16px;line-height:1.75;margin-bottom:18px;}
@@ -1196,7 +1199,10 @@ footer.footer--dark{
 @media (max-width:640px){
   .page-hero h1{font-size:26px;}
   .page-hero p{font-size:16px;}
-  .page-hero .wrap{padding-left:38px;padding-right:38px;padding-top:0;padding-bottom:0;}
+  /* Un peu d'air en bas (retour du 05/09) — le texte touchait presque le bord
+     inférieur de la photo (align-items:flex-end sur .page-hero), sans pour
+     autant remonter jusqu'au milieu. */
+  .page-hero .wrap{padding-left:38px;padding-right:38px;padding-top:0;padding-bottom:28px;}
   .social-grid{grid-template-columns:1fr 1fr;}
   .give-points{margin-top:10px;}
   .inv-hero h1{font-size:26px;}

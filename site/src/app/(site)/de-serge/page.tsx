@@ -33,19 +33,22 @@ export default async function DeSergePage() {
       <section className="page-hero" style={{ backgroundImage: "url('/de-serge-hero.jpg')" }}>
         <div className="wrap">
           <h1>Serge Hapita</h1>
-          <p>
-            C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie. Et Dieu a une
-            nouvelle vie prévue pour chaque être humain. L&apos;avez-vous trouvée ?
+          {/* Citation personnelle, à la première personne (retour du 05/09) —
+              italique + guillemets pour bien montrer que c'est Serge qui
+              parle, pas un texte de présentation neutre comme le reste du
+              hero. */}
+          <p className="page-hero-quote">
+            « C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie. Et Dieu a une
+            nouvelle vie prévue pour chaque être humain. L&apos;avez-vous trouvée ? »
           </p>
         </div>
       </section>
 
       <section className="section">
         <div className="content-col bio-block">
-          <div className="eyebrow" style={{ justifyContent: "center" }}>
-            Biographie
-          </div>
-          <h2 style={{ textAlign: "center", fontSize: 28, marginBottom: 28 }}>
+          {/* Libellé "Biographie" retiré (retour du 05/09) — le titre prend
+              directement sa place, avec la couleur violette qu'il portait. */}
+          <h2 style={{ textAlign: "center", fontSize: 28, marginBottom: 28, color: "var(--purple)" }}>
             Une vie façonnée par la Parole de Dieu
           </h2>
           <p>
