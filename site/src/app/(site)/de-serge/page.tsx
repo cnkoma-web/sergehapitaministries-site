@@ -129,8 +129,9 @@ export default async function DeSergePage() {
             encore mieux de réussir sa vie.
           </p>
           <p>
-            Ce fut une révélation profonde : marcher avec Dieu ne consiste pas à accomplir de grandes choses pour
-            Lui ou en son Nom, mais à réaliser les œuvres que Dieu a préparées pour chacun de nous.
+            Ce fut une révélation profonde : Dieu avait déjà préparé les œuvres attachées à sa vie. Il ne
+            s&apos;agissait plus de déterminer ce qu&apos;il pouvait accomplir pour Dieu, mais de se rendre
+            disponible afin de marcher dans ce que Dieu avait préparé d&apos;avance.
           </p>
           <blockquote
             style={{
@@ -150,10 +151,9 @@ export default async function DeSergePage() {
             <span style={{ fontStyle: "normal", fontSize: 13, color: "var(--ink-soft)" }}>— Éphésiens 2:10</span>
           </blockquote>
           <p>
-            Cette découverte a transformé sa vie spirituelle. Il a appris à écouter la voix de Dieu et à marcher
-            comme un fils, expérimentant la vie divine dans la confiance et la dépendance quotidienne. Là où il y
-            avait des murs d&apos;impossibilités, la provision de Dieu se manifesta — notamment par la naissance de
-            son second enfant, un miracle pour sa famille.
+            Cette révélation a profondément réorienté sa marche. Il est entré dans une compréhension nouvelle de la
+            vie de fils, apprenant à marcher dans ce que Dieu avait préparé pour lui, dans la confiance et la
+            dépendance quotidiennes.
           </p>
           <p style={{ color: "var(--ink)", fontWeight: 500, marginTop: 26 }}>
             Aujourd&apos;hui, son ministère est centré sur la révélation de Christ, l&apos;éveil de la conscience
@@ -171,7 +171,7 @@ export default async function DeSergePage() {
           <div>
             <div style={{ fontFamily: "'Fraunces',serif", fontSize: 30, fontWeight: 600, color: "var(--purple)" }}>1992</div>
             <div style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".05em", color: "var(--ink-soft)", marginTop: 4 }}>
-              Année de l&apos;appel
+              Rencontre avec Christ
             </div>
           </div>
           <div>
@@ -202,10 +202,12 @@ export default async function DeSergePage() {
           </div>
           <h2 style={{ fontSize: 26, marginBottom: 16 }}>L&apos;association qu&apos;il porte</h2>
           <p>
-            À travers ActesDesFilsDeDieu, Serge Hapita forme, exhorte et équipe les chrétiens pour manifester les
-            vertus du Royaume dans leur génération (1 Pierre 2:9-10). Par l&apos;enseignement de la Parole, la
-            prédication de l&apos;Évangile et la guérison des malades, il exerce son ministère dans la simplicité
-            et la puissance de l&apos;Esprit.
+            À travers ActesDesFilsDeDieu, Serge Hapita porte une vision qui rassemble des chrétiens de différentes
+            dénominations, églises locales et sensibilités spirituelles pour aller vers ceux que la vie a laissés
+            sans soutien et manifester la bonté de Dieu à travers des actes qui relèvent, restaurent et transforment
+            les vies. Cette mission s&apos;exprime à travers le partage de la connaissance de Dieu, l&apos;annonce
+            de la Bonne Nouvelle du salut et la guérison de l&apos;être tout entier : l&apos;esprit, l&apos;âme et
+            le corps.
           </p>
           <a href="http://www.actedesfilsdedieu.fr" className="btn btn-outline">
             Découvrir ActesDesFilsDeDieu →
