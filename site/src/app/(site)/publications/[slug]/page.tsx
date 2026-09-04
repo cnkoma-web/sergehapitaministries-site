@@ -9,7 +9,7 @@ import {
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
 import { getCategoriesForArticle } from "@/lib/content/categories";
-import { extractParagraphs } from "@/lib/richtext";
+import { extractParagraphs, stripHtml } from "@/lib/richtext";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import ShareCartouche from "@/components/articles/ShareCartouche";
@@ -60,6 +60,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const manuallyRelated = article.related_article_ids.length > 0 ? await getArticlesByIds(article.related_article_ids) : [];
   const related = manuallyRelated.length > 0 ? manuallyRelated : await getRelatedArticles(article.type, article.id);
   const pageUrl = `${SITE_URL}/publications/${slug}`;
+  // Bug trouvé en vérifiant avec un vrai article (retour du 05/09) : le seul
+  // article "La Vie Supérieure" publié n'a pas de chapeau renseigné
+  // (excerpt: null) — ShareCartouche retombait alors sur l'ancien message
+  // simple "titre - lien", sans jamais utiliser la formule de catégorie
+  // ("un enseignement"), puisque le message personnalisé n'était construit
+  // que si un chapeau existait. Même repli que partout ailleurs sur le site
+  // (PublicationFeedItem, etc.) : à défaut de chapeau, le début du corps de
+  // l'article sert d'accroche.
+  const shareExcerpt = article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || undefined);
   // Le corps est du HTML (RichTextEditor) — on découpe par bloc <p> pour pouvoir
   // n'en révéler qu'une partie côté gating (La Vie Supérieure), sans jamais
   // couper au milieu d'une balise.
@@ -169,7 +178,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   </div>
                 )}
 
-                <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={article.excerpt ?? undefined} />
+                <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
                 <div className="back-cta">
                   <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
                 </div>
@@ -190,7 +199,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   ))}
                 </div>
               )}
-              <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={article.excerpt ?? undefined} />
+              <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
               <div className="back-cta">
                 <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
               </div>
@@ -301,7 +310,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           <div className="blessing">Que Dieu te bénisse abondamment</div>
 
-          <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={article.excerpt ?? undefined} />
+          <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
           <div className="back-cta">
             <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
           </div>
