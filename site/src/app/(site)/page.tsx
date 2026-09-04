@@ -92,9 +92,14 @@ export default async function HomePage({
             </h1>
             <p className="hero-lede">
               Serge Hapita est un prophète de la révélation et de la conscience filiale. Son ministère porte une
-              onction d&apos;impartation qui restaure la communion avec le Père et réveille la conscience de
-              l&apos;identité de fils. Quand il partage la Parole, c&apos;est une rencontre avec l&apos;Esprit. La vie
-              de Dieu se manifeste, l&apos;esprit s&apos;éveille, la foi se met à l&apos;œuvre.{" "}
+              onction qui ravive la foi, restaure la communion avec Dieu le Père et la conscience de
+              l&apos;identité de fils. Quand il partage la Parole, c&apos;est plus qu&apos;un discours, c&apos;est
+              une rencontre avec l&apos;Esprit : la vie se manifeste, l&apos;esprit se réveille, la foi se met à
+              l&apos;œuvre.
+            </p>
+            {/* Sur sa propre ligne, en retrait à droite (retour du 05/09) —
+                plus intégré à la dernière ligne du paragraphe. */}
+            <p className="hero-lede-more">
               <Link href="/de-serge" className="hero-lede-link">
                 Lire plus
               </Link>

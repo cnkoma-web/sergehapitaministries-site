@@ -1271,11 +1271,13 @@ footer.footer--dark{
 .hero .eyebrow{color:var(--lavender-deep);}
 .hero .eyebrow::before{background:var(--lavender-deep);}
 .hero h1{font-size:var(--hero-heading-size);line-height:var(--hero-heading-line);margin-bottom:22px;color:#fff;}
-.hero-lede{font-size:var(--hero-subtext-size);color:rgba(255,255,255,.82);line-height:var(--hero-subtext-line);margin-bottom:32px;max-width:520px;}
-/* Lien "Lire plus" en fin de paragraphe (retour du 05/09) — le texte du
-   hero étant sur fond photo sombre, souligné plutôt qu'une simple
-   différence de couleur, pour rester lisible comme un lien même quand
-   l'image derrière varie. */
+.hero-lede{font-size:var(--hero-subtext-size);color:rgba(255,255,255,.82);line-height:var(--hero-subtext-line);margin-bottom:10px;max-width:520px;}
+/* "Lire plus" sur sa propre ligne, en retrait à droite du paragraphe
+   (retour du 05/09) — plus intégré à sa dernière ligne. */
+.hero-lede-more{display:flex;justify-content:flex-end;max-width:520px;margin-bottom:32px;}
+/* Le texte du hero étant sur fond photo sombre, souligné plutôt qu'une
+   simple différence de couleur, pour rester lisible comme un lien même
+   quand l'image derrière varie. */
 .hero-lede-link{color:var(--lavender-deep);font-weight:700;text-decoration:underline;}
 .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
 .hero .btn-outline{border:1.5px solid #fff;color:#fff;}

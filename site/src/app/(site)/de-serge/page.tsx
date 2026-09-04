@@ -97,9 +97,10 @@ export default async function DeSergePage() {
               </div>
               <p style={{ fontFamily: "'Fraunces',serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.55, color: "var(--ink)" }}>
                 Serge Hapita est un prophète de la révélation et de la conscience filiale. Son ministère porte une
-                onction qui réveille la foi, restaure la communion avec Dieu le Père. Quand il partage la Parole,
-                c&apos;est plus qu&apos;un simple discours, c&apos;est une rencontre avec l&apos;Esprit de Dieu : la
-                vie se manifeste, l&apos;esprit se réveille, et la foi se met en action.
+                onction qui ravive la foi, restaure la communion avec Dieu le Père et la conscience de
+                l&apos;identité de fils. Quand il partage la Parole, c&apos;est plus qu&apos;un discours, c&apos;est
+                une rencontre avec l&apos;Esprit : la vie se manifeste, l&apos;esprit se réveille, la foi se met à
+                l&apos;œuvre.
               </p>
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
