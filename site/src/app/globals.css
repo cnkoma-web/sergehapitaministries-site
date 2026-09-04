@@ -1199,10 +1199,10 @@ footer.footer--dark{
 @media (max-width:640px){
   .page-hero h1{font-size:26px;}
   .page-hero p{font-size:16px;}
-  /* Un peu d'air en bas (retour du 05/09) — le texte touchait presque le bord
-     inférieur de la photo (align-items:flex-end sur .page-hero), sans pour
-     autant remonter jusqu'au milieu. */
-  .page-hero .wrap{padding-left:38px;padding-right:38px;padding-top:0;padding-bottom:28px;}
+  /* Remonté un peu plus, vers le milieu de la photo sans y être tout à fait
+     (retour du 05/09, 2e passage — le premier essai à 28px restait encore
+     trop bas au goût de Serge). */
+  .page-hero .wrap{padding-left:38px;padding-right:38px;padding-top:0;padding-bottom:64px;}
   .social-grid{grid-template-columns:1fr 1fr;}
   .give-points{margin-top:10px;}
   .inv-hero h1{font-size:26px;}
