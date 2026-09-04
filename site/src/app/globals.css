@@ -1100,7 +1100,7 @@ footer.footer--dark{
 }
 .page-hero .page-hero-quote-secondary{
   font-family:'Fraunces',serif;font-style:italic;font-weight:400;
-  font-size:17px;line-height:1.6;color:rgba(255,255,255,.75);max-width:520px;
+  font-size:20px;line-height:1.6;color:rgba(255,255,255,.75);max-width:520px;
 }
 /* Cahier §1.7 v3 : largeur de colonne calée sur le menu de navigation. */
 .bio-block{max-width:var(--content-col);margin:0 auto;}
@@ -1220,7 +1220,7 @@ footer.footer--dark{
   .page-hero h1{font-size:26px;}
   .page-hero p{font-size:16px;}
   .page-hero .page-hero-quote-primary{font-size:26px;margin-bottom:12px;}
-  .page-hero .page-hero-quote-secondary{font-size:15px;}
+  .page-hero .page-hero-quote-secondary{font-size:17px;}
   /* Remonté un peu plus, vers le milieu de la photo sans y être tout à fait
      (retour du 05/09, 2e passage — le premier essai à 28px restait encore
      trop bas au goût de Serge). */

@@ -37,18 +37,18 @@ export default async function DeSergePage() {
               sr-only pour qu'il reste un vrai H1 de page (SEO/accessibilité),
               sans réapparaître visuellement. */}
           <h1 className="sr-only">Serge Hapita</h1>
-          {/* Citation personnelle en deux temps (retour du 05/09) — la
-              conviction centrale domine visuellement (grand, plus gras), son
-              développement vient en second niveau de lecture (plus petit,
-              plus léger). Une seule citation continue malgré la coupure
-              visuelle : guillemet ouvrant sur la 1re partie, fermant sur la
-              2e. */}
+          {/* Déclaration d'ouverture de page en deux temps (retour du 05/09,
+              4e passage) — plus une citation signée, donc plus de guillemets
+              ("Ne modifier ni la taille ni le poids de la phrase
+              principale" : seul le 2e niveau a été agrandi). La conviction
+              centrale domine visuellement, son développement vient en second
+              niveau de lecture, nettement plus petit et plus léger. */}
           <p className="page-hero-quote-primary">
-            « C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie.
+            C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie.
           </p>
           <p className="page-hero-quote-secondary">
             Dieu a prévu pour chaque être humain une vie qui trouve sa plénitude en Christ. La véritable réussite,
-            c&apos;est de la découvrir et de la vivre. »
+            c&apos;est de la découvrir et de la vivre.
           </p>
         </div>
       </section>
