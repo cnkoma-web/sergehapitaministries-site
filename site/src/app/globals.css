@@ -567,6 +567,17 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 @media (hover: hover) and (pointer: fine) {
   .share-icon-sms{display:none;}
 }
+/* Bouton "J'aime" (retour du 05/09) — juste après le corps de l'article,
+   avant "Aller plus loin"/Prière/thématiques. Action à sens unique : une
+   fois aimé, le bouton passe dans son état "liked" et se désactive, pas de
+   "désaimer" (décision prise avec Serge). */
+.like-block{margin:32px 0;padding-top:24px;border-top:1px solid var(--line);}
+.like-button{display:inline-flex;align-items:center;gap:9px;padding:11px 22px;border-radius:100px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:border-color .15s,color .15s;}
+.like-button:hover:not(:disabled){border-color:var(--purple);color:var(--purple);}
+.like-button svg{width:19px;height:19px;flex-shrink:0;}
+.like-button.liked{border-color:var(--purple);color:var(--purple);cursor:default;}
+.like-button:disabled{opacity:.85;}
+.like-error{margin-top:10px;font-size:13px;color:var(--ink-soft);}
 .back-cta{text-align:center;margin-top:32px;padding-top:28px;border-top:1px solid var(--line);}
 .related-articles{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
 .related-articles h2{font-size:22px;margin-bottom:28px;text-align:center;}

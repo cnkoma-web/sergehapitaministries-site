@@ -20,6 +20,9 @@ export type Article = {
   toc_keywords: string[];
   access: "free" | "paid";
   view_count: number;
+  // Bouton "J'aime" (retour du 05/09) — voir like_article_authenticated /
+  // increment_article_likes et le composant LikeButton.
+  like_count: number;
   reading_time_minutes: number | null;
   cover_url: string | null;
   cover_alt: string | null;
@@ -42,9 +45,9 @@ export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
 export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", vs: "VS", rm: "RM" };
 
 const COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at";
 const ADMIN_COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at";
 
 export async function getPublishedArticles(type: ArticleType): Promise<Article[]> {
   const supabase = await createClient();
@@ -112,6 +115,15 @@ export async function countPublishedArticles(): Promise<number> {
 export async function incrementViewCount(id: string) {
   const supabase = await createClient();
   await supabase.rpc("increment_article_views", { article_id: id });
+}
+
+// Bouton "J'aime", La Vie Supérieure uniquement (retour du 05/09) — lu au
+// chargement de la page pour afficher le bouton déjà "aimé" si ce compte a
+// déjà aimé cet article, sans attendre un clic pour le savoir.
+export async function hasUserLikedArticle(articleId: string, userId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("article_likes").select("id").eq("article_id", articleId).eq("user_id", userId).maybeSingle();
+  return Boolean(data);
 }
 
 // ===== Admin (voit aussi les brouillons) =====

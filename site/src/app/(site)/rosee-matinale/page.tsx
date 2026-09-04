@@ -4,6 +4,7 @@ import { getPublishedArticles, incrementViewCount } from "@/lib/content/articles
 import { extractParagraphs } from "@/lib/richtext";
 import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
+import LikeButton from "@/components/articles/LikeButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import Pagination from "@/components/admin/Pagination";
@@ -129,6 +130,11 @@ export default async function RoseeMatinalePage({
           {paragraphs.map((html, i) => (
             <div key={i} style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: html }} />
           ))}
+
+          {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du
+              texte. Accessible à tout le monde, sans compte (Rosée Matinale
+              reste public). */}
+          <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" />
 
           <div className="rm-nav-days">
             {previous ? (

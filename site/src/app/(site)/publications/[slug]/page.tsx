@@ -6,6 +6,7 @@ import {
   getRelatedArticles,
   getArticlesByIds,
   incrementViewCount,
+  hasUserLikedArticle,
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
 import { getCategoriesForArticle } from "@/lib/content/categories";
@@ -13,6 +14,7 @@ import { extractParagraphs, stripHtml } from "@/lib/richtext";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import ShareCartouche from "@/components/articles/ShareCartouche";
+import LikeButton from "@/components/articles/LikeButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -80,6 +82,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // l'utilisateur est connecté — c'est un mur d'accès éditorial, pas un
     // chiffrement (voir commentaire de la policy RLS `articles`).
     const unlocked = isRealUser(user);
+    // Bouton "J'aime" (retour du 05/09) — réservé aux comptes connectés ici,
+    // même barrière que la lecture elle-même. Lu au chargement pour savoir
+    // si CE compte a déjà aimé cet article, sans attendre un clic.
+    const alreadyLiked = unlocked && user ? await hasUserLikedArticle(article.id, user.id) : false;
     return (
       <>
         <section className="article-header">
@@ -133,6 +139,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {(unlocked ? paragraphs : paragraphs.slice(0, 4)).map((html, i) => (
               <div key={i} className="body-html" dangerouslySetInnerHTML={{ __html: html }} />
             ))}
+
+            {/* Réservé aux comptes connectés, comme la lecture complète de
+                l'article (retour du 05/09) — pas de bouton du tout tant que
+                le mur d'accès n'est pas franchi. */}
+            {unlocked && (
+              <LikeButton articleId={article.id} initialCount={article.like_count} mode="authenticated" initiallyLiked={alreadyLiked} />
+            )}
           </div>
         </section>
 
@@ -268,6 +281,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {paragraphs.map((html, i) => (
             <div key={i} className="body-html" dangerouslySetInnerHTML={{ __html: html }} />
           ))}
+
+          {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du
+              texte, avant "Aller plus loin"/Prière/thématiques. Accessible à
+              tout le monde, sans compte (Que Dit la Bible reste public). */}
+          <LikeButton articleId={article.id} initialCount={article.like_count} mode="public" />
 
           {/* Positionnée avant "Aller plus loin" (retour du 03/09). Identité
               visuelle distincte (retour du 05/09) : italique + fond gris
