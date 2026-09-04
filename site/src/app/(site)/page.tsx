@@ -85,12 +85,19 @@ export default async function HomePage({
         ))}
         <div className="wrap hero-inner">
           <div>
-            <div className="eyebrow">Prophète · Enseignant · Auteur</div>
-            <h1>Un ministère qui révèle Christ au croyant et affermit le chrétien dans l&apos;identité de fils.</h1>
+            <div className="eyebrow">Porter le salut de Christ jusqu&apos;aux extrémités de la terre</div>
+            <h1>
+              Un ministère qui révèle Christ au croyant, affermit le chrétien dans l&apos;identité de fils et
+              manifeste le Royaume de Dieu.
+            </h1>
             <p className="hero-lede">
-              Serge Hapita porte une onction d&apos;impartation qui repositionne dans la vérité de l&apos;Évangile.
-              Enseignement de la Parole, messages prophétiques et publications, pour que l&apos;Église marche dans
-              la vie divine.
+              Serge Hapita est un prophète de révélation et de la conscience filiale. Il porte une onction
+              d&apos;impartation qui repositionne dans la vérité de l&apos;Évangile. Quand il partage la Parole, son
+              propos agit dans l&apos;esprit de son auditoire, créant un réveil qui libère l&apos;âme et fait jaillir
+              la vie de Dieu. Son enseignement transforme, communique la foi, réveille la conscience et active…{" "}
+              <Link href="/de-serge" className="hero-lede-link">
+                Lire plus
+              </Link>
             </p>
             <div className="hero-cta">
               <Link href="/connaitre-jesus" className="btn btn-primary">

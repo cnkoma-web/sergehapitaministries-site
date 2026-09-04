@@ -32,8 +32,11 @@ export default async function DeSergePage() {
     <>
       <section className="page-hero" style={{ backgroundImage: "url('/de-serge-hero.jpg')" }}>
         <div className="wrap">
-          <h1>Prophète de la révélation de Christ et de la conscience filiale.</h1>
-          <p>Une onction d&apos;impartation qui repositionne dans la vérité de l&apos;Évangile.</p>
+          <h1>Serge Hapita</h1>
+          <p>
+            C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie. Et Dieu a une
+            nouvelle vie prévue pour chaque être humain. L&apos;avez-vous trouvée ?
+          </p>
         </div>
       </section>
 
@@ -47,14 +50,14 @@ export default async function DeSergePage() {
           </h2>
           <p>
             Dans un temps où beaucoup de justes ne marchent plus par la foi mais par le sensationnel, où la
-            conscience de l&apos;identité divine a été remplacée par l&apos;activisme réligieux — le prophète Serge
+            conscience de l&apos;identité divine a été remplacée par l&apos;activisme religieux — le prophète Serge
             Hapita ramène l&apos;Église à l&apos;essentiel : Christ en nous, l&apos;espérance de la gloire.
           </p>
           <p>
             Entrepreneur, écrivain-éditeur, orateur, il est avant tout ministre de la Parole, ambassadeur du
-            Royaume, animé d&apos;une passion brûlante : porter le Salut de Dieu au monde, révéler Christ aux
-            croyants et établir les chrétiens dans leur identité de fils, afin que tous manifestent la vie de Dieu,
-            le Père céleste dans leur monde.
+            Royaume, animé d&apos;une passion brûlante : porter le Salut de Dieu au monde, révéler Christ au croyant
+            et établir le chrétien dans son identité de fils, afin que tous manifestent la vie de Dieu, le Père
+            céleste dans leur monde.
           </p>
         </div>
       </section>
