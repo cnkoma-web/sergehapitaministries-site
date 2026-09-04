@@ -144,7 +144,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 l'article (retour du 05/09) — pas de bouton du tout tant que
                 le mur d'accès n'est pas franchi. */}
             {unlocked && (
-              <LikeButton articleId={article.id} initialCount={article.like_count} mode="authenticated" initiallyLiked={alreadyLiked} />
+              <LikeButton articleId={article.id} initialCount={article.like_count} mode="authenticated" category="vs" initiallyLiked={alreadyLiked} />
             )}
           </div>
         </section>
@@ -285,7 +285,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du
               texte, avant "Aller plus loin"/Prière/thématiques. Accessible à
               tout le monde, sans compte (Que Dit la Bible reste public). */}
-          <LikeButton articleId={article.id} initialCount={article.like_count} mode="public" />
+          <LikeButton articleId={article.id} initialCount={article.like_count} mode="public" category="qdlb" />
 
           {/* Positionnée avant "Aller plus loin" (retour du 03/09). Identité
               visuelle distincte (retour du 05/09) : italique + fond gris

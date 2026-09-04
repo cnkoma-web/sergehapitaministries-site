@@ -86,7 +86,7 @@ export default function RoseeMatinaleContent({
           {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du
               texte. Accessible à tout le monde, sans compte (Rosée Matinale
               reste public). */}
-          <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" />
+          <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" category="rm" />
 
           <div className="rm-nav-days">
             {previous ? (
