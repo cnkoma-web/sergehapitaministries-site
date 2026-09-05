@@ -575,14 +575,27 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 /* Taille alignée sur le corps du texte (retour du 04/09). */
 .further-verse p{font-style:italic;font-size:18px;color:var(--ink-soft);line-height:1.65;margin:0;}
 .blessing{text-align:center;font-weight:700;color:var(--purple);font-size:15px;letter-spacing:.04em;margin-top:52px;padding-top:36px;border-top:1px solid var(--line);}
-/* Rangée de partage (retour du 05/09, 2e passage) — plus de capsule ni
-   d'étiquette "Partager :" : les icônes, nues (sans cercle de fond), sont
-   encadrées par deux traits fins, un repère discret plutôt qu'un bloc
-   visuellement chargé. */
-.share-row{display:flex;align-items:center;justify-content:center;gap:24px;padding:22px 0;margin:28px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);flex-wrap:wrap;}
+/* Bloc de partage (retour du 05/09, 4e passage) — plus de capsule ni
+   d'étiquette "Partager :" : une phrase d'invitation (sur les publications
+   uniquement, jamais les livres) puis les icônes nues (sans cercle de
+   fond), le tout encadré par deux traits fins, un repère discret plutôt
+   qu'un bloc visuellement chargé. */
+.share-block{margin:28px 0;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+/* Rosée Matinale a déjà son propre trait juste au-dessus (fin de la
+   navigation Jour précédent/suivant) — sans ce modificateur, les deux
+   traits collés donnaient un effet de "trois traits" successifs. */
+.share-block.share-block-no-top{border-top:0;padding-top:0;}
+.share-invite{text-align:center;font-size:14px;color:var(--ink-soft);margin:0 0 18px;}
+.share-row{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;}
 .share-icon{display:flex;align-items:center;justify-content:center;width:21px;height:21px;transition:transform .15s;}
 .share-icon:hover{transform:scale(1.15);}
 .share-icon svg{width:100%;height:100%;}
+/* Feedback "Lien copié !" (retour du 05/09, 4e passage) — centré sous la
+   rangée plutôt qu'un simple changement d'opacité, facile à manquer.
+   D'abord tenté en bulle au-dessus de l'icône : invisible sur mobile,
+   rognée par le défilement horizontal de la rangée (overflow-x:auto force
+   aussi overflow-y à se comporter en clip) — constaté en vérifiant. */
+.copy-feedback{text-align:center;font-size:13px;font-weight:700;color:var(--purple);margin:14px 0 0;}
 /* Zone tactile minimale 44×44 sur mobile (retour du 05/09) — norme
    d'accessibilité tactile reconnue par Apple et Google, en dessous de
    laquelle une icône est trop petite pour un doigt. Sur mobile, SMS
@@ -912,6 +925,10 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .pubs .pagination{color:rgba(255,255,255,.65);border-top-color:rgba(255,255,255,.12);}
 
 /* ===== Écran détail (éditeur) — topbar + panneau/colonne + zone riche ===== */
+/* Confirmation "Enregistré" (retour du 05/09) — remplace la redirection
+   automatique vers la liste après "Enregistrer" : un bandeau bref sur
+   l'écran d'édition, pas un déplacement de page. Voir SavedToast.tsx. */
+.admin-saved-toast{position:fixed;top:20px;right:24px;z-index:50;background:#166534;color:#fff;font-size:13.5px;font-weight:700;padding:11px 18px;border-radius:8px;box-shadow:0 12px 24px -8px rgba(0,0,0,.25);}
 .admin-editor-topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--line);background:#fff;}
 .admin-editor-topbar .left{display:flex;align-items:center;gap:16px;font-size:14px;color:var(--ink-soft);}
 .admin-editor-topbar .left a{color:inherit;text-decoration:none;}

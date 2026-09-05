@@ -112,10 +112,14 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
 }
 
 /** "Enregistrer" — sauvegarde sans changer le statut (reste en brouillon si
- * c'en était un, reste publié si c'en était un). */
+ * c'en était un, reste publié si c'en était un). Retour du 05/09 : reste sur
+ * l'écran d'édition (avec confirmation, voir SavedToast) au lieu de
+ * renvoyer vers la liste — le retour à la liste redevient un choix manuel
+ * de Serge (lien "← Retour à la liste" déjà présent sur l'écran). */
 export async function updateArticle(formData: FormData) {
+  const id = String(formData.get("id"));
   await saveArticle(formData);
-  redirect("/admin/publications");
+  redirect(`/admin/publications/${id}?saved=1`);
 }
 
 /** "Publier" — sauvegarde et passe (ou repasse) l'article en publié. */
@@ -214,5 +218,7 @@ export async function updateRoseeEntry(formData: FormData) {
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
   revalidatePath("/publications");
-  redirect("/admin/rosee-matinale");
+  // Reste sur l'écran d'édition (retour du 05/09) — voir le commentaire
+  // équivalent sur updateArticle ci-dessus.
+  redirect(`/admin/rosee-matinale/${id}?saved=1`);
 }

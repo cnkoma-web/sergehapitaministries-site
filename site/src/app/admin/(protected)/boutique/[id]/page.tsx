@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getGoodieByIdAdmin } from "@/lib/content/goodies";
 import { updateGoodie, deleteGoodie } from "../actions";
 import GoodieImageField from "@/components/admin/GoodieImageField";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import SavedToast from "@/components/admin/SavedToast";
 
 export default async function AdminGoodieDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,6 +14,9 @@ export default async function AdminGoodieDetailPage({ params }: { params: Promis
 
   return (
     <>
+      <Suspense fallback={null}>
+        <SavedToast />
+      </Suspense>
       <form action={updateGoodie}>
         <div className="admin-editor-topbar" style={{ margin: "-32px -40px 32px" }}>
           <div className="left">

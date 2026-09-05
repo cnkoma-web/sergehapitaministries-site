@@ -44,7 +44,9 @@ export async function updateVideo(formData: FormData) {
   revalidatePath("/admin/videos");
   revalidatePath("/videos");
   revalidatePath("/");
-  redirect("/admin/videos");
+  // Reste sur l'écran d'édition (retour du 05/09) — voir le commentaire
+  // équivalent sur updateArticle dans admin/publications/actions.ts.
+  redirect(`/admin/videos/${id}?saved=1`);
 }
 
 export async function deleteVideo(formData: FormData) {

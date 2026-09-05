@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getVideoByIdAdmin, VIDEO_CATEGORY_LABEL } from "@/lib/content/videos";
 import { updateVideo, deleteVideo } from "../actions";
+import SavedToast from "@/components/admin/SavedToast";
 
 export default async function AdminVideoDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -10,6 +12,9 @@ export default async function AdminVideoDetailPage({ params }: { params: Promise
 
   return (
     <>
+      <Suspense fallback={null}>
+        <SavedToast />
+      </Suspense>
       <form action={updateVideo}>
         <div className="admin-editor-topbar" style={{ margin: "-32px -40px 32px" }}>
           <div className="left">

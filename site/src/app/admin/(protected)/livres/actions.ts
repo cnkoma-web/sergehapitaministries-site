@@ -84,7 +84,9 @@ export async function updateBook(formData: FormData) {
   revalidatePath("/admin/livres");
   revalidatePath("/livres");
   revalidatePath("/");
-  redirect("/admin/livres");
+  // Reste sur l'écran d'édition (retour du 05/09) — voir le commentaire
+  // équivalent sur updateArticle dans admin/publications/actions.ts.
+  redirect(`/admin/livres/${id}?saved=1`);
 }
 
 export async function addBookImage(formData: FormData): Promise<{ id: string; url: string; position: number } | null> {

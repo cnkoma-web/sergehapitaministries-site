@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getArticleByIdAdmin, getArticleOptionsForLinking, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
@@ -8,6 +9,7 @@ import RichTextEditor from "@/components/admin/RichTextEditor";
 import RelatedArticlesPicker from "@/components/admin/RelatedArticlesPicker";
 import CategoryPicker from "@/components/admin/CategoryPicker";
 import FurtherVersesEditor from "@/components/admin/FurtherVersesEditor";
+import SavedToast from "@/components/admin/SavedToast";
 
 // Rosée Matinale a son propre écran d'édition, plus simple (pas de couverture,
 // thèmes, articles similaires... cahier §3.2) — on y renvoie si quelqu'un
@@ -26,6 +28,9 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
 
   return (
     <>
+      <Suspense fallback={null}>
+        <SavedToast />
+      </Suspense>
       <form action={updateArticle}>
         <div className="admin-editor-topbar" style={{ margin: "-32px -40px 32px" }}>
           <div className="left">

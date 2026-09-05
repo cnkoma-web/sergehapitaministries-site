@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleByIdAdmin } from "@/lib/content/articles";
 import { updateRoseeEntry, deleteArticle } from "../../publications/actions";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
+import SavedToast from "@/components/admin/SavedToast";
 
 export default async function AdminRoseeEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,6 +14,9 @@ export default async function AdminRoseeEntryPage({ params }: { params: Promise<
 
   return (
     <>
+      <Suspense fallback={null}>
+        <SavedToast />
+      </Suspense>
       <form action={updateRoseeEntry}>
         <div className="admin-editor-topbar" style={{ margin: "-32px -40px 32px" }}>
           <div className="left">

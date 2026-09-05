@@ -102,10 +102,15 @@ export default function RoseeMatinaleContent({
             )}
           </div>
 
+          {/* hideTopRule (retour du 05/09, 4e passage) — .rm-nav-days a déjà
+              son propre trait juste au-dessus, l'effet "trois traits"
+              rapporté venait de ce doublon. */}
           <ShareCartouche
             title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`}
             url={pageUrl}
             category="rm"
+            excerpt={current.verse_text ?? undefined}
+            hideTopRule
           />
         </div>
       </section>

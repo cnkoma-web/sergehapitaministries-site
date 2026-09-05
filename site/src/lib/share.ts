@@ -1,12 +1,9 @@
-// Message de partage personnalisé (retour du 05/09, 3e passage) — tutoiement,
+// Message de partage personnalisé (retour du 05/09, 4e passage) — tutoiement,
 // "Serge" plutôt que "Serge Hapita". Deux variantes du même modèle :
 // - formatée (WhatsApp/Telegram) : *gras* et _italique_, ces deux
 //   plateformes interprètent cette mise en forme.
 // - brute (SMS/X) : mêmes mots, sans aucun symbole de mise en forme — ces
 //   plateformes ne les interprètent pas, elles les afficheraient tels quels.
-// Ne reprend plus la première phrase du chapeau (retiré à la demande de
-// Serge) — le chapeau reste visible via l'aperçu Open Graph uniquement,
-// pas la peine de le répéter dans le message.
 export type ShareCategory = "qdlb" | "vs" | "rm";
 
 const CATEGORY_PHRASE: Record<ShareCategory, string> = {
@@ -21,64 +18,120 @@ const CATEGORY_INVITE: Record<ShareCategory, string> = {
   vs: "Découvre l'enseignement complet ici",
 };
 
+// Phrase au-dessus des icônes de partage, sur la page elle-même (retour du
+// 05/09, 4e passage) — formulations fixées avec Serge, jamais sur les
+// fiches livres (voir ShareCartouche : rendue uniquement quand `category`
+// est fourni).
+export const SHARE_BLOCK_INVITE: Record<ShareCategory, string> = {
+  rm: "Bénis quelqu'un que tu connais en partageant ce message.",
+  qdlb: "Bénis quelqu'un que tu connais en partageant cette réflexion.",
+  vs: "Bénis quelqu'un que tu connais en partageant cet enseignement.",
+};
+
+// Tronque au dernier mot complet, jamais en plein milieu d'un mot — ne
+// décide pas elle-même d'ajouter "…", chaque appelant applique sa propre
+// règle (conditionnelle pour les articles, systématique pour les livres).
+function truncateAtWord(text: string, maxLength: number): { text: string; truncated: boolean } {
+  const trimmed = text.trim();
+  if (trimmed.length <= maxLength) return { text: trimmed, truncated: false };
+  const cut = trimmed.slice(0, maxLength);
+  const lastSpace = cut.lastIndexOf(" ");
+  return { text: (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trimEnd(), truncated: true };
+}
+
+// Équivalent de 2 lignes dans le message de partage (retour du 05/09, 4e
+// passage) — le chapeau déjà enregistré pour la publication, jamais un
+// nouveau champ. "…" ajouté seulement si effectivement tronqué.
+const ARTICLE_EXCERPT_MAX_LENGTH = 200;
+
 function buildMessage({
   category,
   title,
+  excerpt,
   url,
   formatted,
 }: {
   category: ShareCategory;
   title: string;
+  excerpt?: string;
   url: string;
   formatted: boolean;
 }): string {
   const titlePart = formatted ? `*« ${title} »*` : `« ${title} »`;
+  let excerptBlock = "";
+  if (excerpt) {
+    const { text, truncated } = truncateAtWord(excerpt, ARTICLE_EXCERPT_MAX_LENGTH);
+    const ellipsis = truncated ? "…" : "";
+    const excerptText = `${text}${ellipsis}`;
+    excerptBlock = `\n\n${formatted ? `_${excerptText}_` : excerptText}`;
+  }
   const blessing = formatted ? "_*demeure abondamment béni.*_" : "demeure abondamment béni.";
-  return `Bonjour,\n\nSerge partage avec toi ${CATEGORY_PHRASE[category]} : ${titlePart}\n\n👉 ${CATEGORY_INVITE[category]} :\n${url}\n\nBonne lecture et ${blessing}`;
+  return `Bonjour,\n\nSerge partage avec toi ${CATEGORY_PHRASE[category]} : ${titlePart}${excerptBlock}\n\n👉 ${CATEGORY_INVITE[category]} :\n${url}\n\nBonne lecture et ${blessing}`;
 }
 
 /** WhatsApp/Telegram — supportent le gras et l'italique façon markdown. */
-export function buildShareMessage({ category, title, url }: { category: ShareCategory; title: string; url: string }): string {
-  return buildMessage({ category, title, url, formatted: true });
+export function buildShareMessage({
+  category,
+  title,
+  excerpt,
+  url,
+}: {
+  category: ShareCategory;
+  title: string;
+  excerpt?: string;
+  url: string;
+}): string {
+  return buildMessage({ category, title, excerpt, url, formatted: true });
 }
 
 /** SMS/X — aucun symbole de mise en forme, ces plateformes ne les interprètent pas. */
-export function buildPlainShareMessage({ category, title, url }: { category: ShareCategory; title: string; url: string }): string {
-  return buildMessage({ category, title, url, formatted: false });
+export function buildPlainShareMessage({
+  category,
+  title,
+  excerpt,
+  url,
+}: {
+  category: ShareCategory;
+  title: string;
+  excerpt?: string;
+  url: string;
+}): string {
+  return buildMessage({ category, title, excerpt, url, formatted: false });
 }
 
-const MAX_HOOK_LENGTH = 120;
+// Fiche livre (retour du 05/09, 4e passage) — tutoiement comme les
+// articles, mais garde volontairement une accroche (le partage d'un livre a
+// une fonction de découverte/promotion, contrairement à un article). Se
+// termine toujours par "…", tronqué ou non (contrairement aux articles :
+// règle volontairement différente, une accroche promotionnelle plutôt
+// qu'un simple extrait).
+const BOOK_HOOK_MAX_LENGTH = 260;
 
-// Première phrase du chapeau (jusqu'au premier point inclus) — jamais le
-// chapeau entier. Tronque proprement au dernier mot complet si cette phrase
-// dépasse la limite, jamais en plein milieu d'un mot.
-// Utilisé uniquement par buildBookShareMessage ci-dessous (fiche livre, hors
-// périmètre du changement de règle du 05/09 sur les articles).
-function buildHook(excerpt: string): string {
-  const trimmed = excerpt.trim();
-  const dotIndex = trimmed.indexOf(".");
-  let sentence = dotIndex === -1 ? trimmed : trimmed.slice(0, dotIndex + 1);
-  if (sentence.length > MAX_HOOK_LENGTH) {
-    const cut = sentence.slice(0, MAX_HOOK_LENGTH);
-    const lastSpace = cut.lastIndexOf(" ");
-    sentence = `${(lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
-  }
-  return sentence;
-}
-
-// Fiche livre — même principe que l'ancien modèle des articles (accroche =
-// titre, extrait court, puis lien) ; pas concerné par le nouveau modèle
-// tutoiement/formatage du 05/09 (demande limitée aux 3 catégories
-// d'articles), laissé tel quel.
-export function buildBookShareMessage({
+function buildBookMessage({
   title,
   description,
   url,
+  formatted,
 }: {
   title: string;
   description: string;
   url: string;
+  formatted: boolean;
 }): string {
-  const hook = buildHook(description);
-  return `Bonjour,\n\nSerge Hapita partage avec vous son livre : « ${title} »\n\n${hook}\n\n👉 Découvrez le livre ici :\n${url}`;
+  const titlePart = formatted ? `*« ${title} »*` : `« ${title} »`;
+  const { text } = truncateAtWord(description, BOOK_HOOK_MAX_LENGTH);
+  const hookText = `${text}…`;
+  const hookBlock = formatted ? `*${hookText}*` : hookText;
+  const blessing = formatted ? "_*demeure abondamment béni.*_" : "demeure abondamment béni.";
+  return `Bonjour,\n\nSerge t'invite à découvrir son livre : ${titlePart}\n\n${hookBlock}\n\n👉 Découvre le livre ici :\n${url}\n\nBonne lecture et ${blessing}`;
+}
+
+/** WhatsApp/Telegram — supportent le gras et l'italique façon markdown. */
+export function buildBookShareMessage({ title, description, url }: { title: string; description: string; url: string }): string {
+  return buildBookMessage({ title, description, url, formatted: true });
+}
+
+/** SMS/X — aucun symbole de mise en forme, ces plateformes ne les interprètent pas. */
+export function buildPlainBookShareMessage({ title, description, url }: { title: string; description: string; url: string }): string {
+  return buildBookMessage({ title, description, url, formatted: false });
 }

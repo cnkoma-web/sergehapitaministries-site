@@ -75,7 +75,9 @@ export async function updateGoodie(formData: FormData) {
   revalidatePath(`/admin/boutique/${id}`);
   revalidatePath("/admin/boutique");
   revalidatePath("/boutique");
-  redirect("/admin/boutique");
+  // Reste sur l'écran d'édition (retour du 05/09) — voir le commentaire
+  // équivalent sur updateArticle dans admin/publications/actions.ts.
+  redirect(`/admin/boutique/${id}?saved=1`);
 }
 
 export async function deleteGoodie(formData: FormData) {

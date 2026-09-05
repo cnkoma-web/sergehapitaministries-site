@@ -191,8 +191,14 @@ export async function renderOgImage({
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={LOGO_URL} width={170} height={64} alt="" style={{ marginBottom: 32, objectFit: "contain" }} />
+              {/* Logo centré horizontalement, avec un trait fin en dessous en
+                  démarcation avec le badge/titre qui suit (retour du 05/09) —
+                  auparavant aligné à gauche comme le reste du bloc. */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 32 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={LOGO_URL} width={170} height={64} alt="" style={{ objectFit: "contain" }} />
+                <div style={{ display: "flex", width: 90, height: 1, background: "rgba(255,255,255,.35)", marginTop: 16 }} />
+              </div>
               {badgeLabel && (
                 <div
                   style={{
@@ -252,8 +258,14 @@ export async function renderOgImage({
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={LOGO_URL} width={200} height={75} alt="" style={{ marginBottom: 40, objectFit: "contain" }} />
+          {/* Logo centré horizontalement, avec un trait fin en dessous en
+              démarcation avec le badge/titre qui suit (retour du 05/09) —
+              auparavant aligné à gauche comme le reste du bloc. */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 40 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={LOGO_URL} width={200} height={75} alt="" style={{ objectFit: "contain" }} />
+            <div style={{ display: "flex", width: 100, height: 1, background: "rgba(255,255,255,.35)", marginTop: 18 }} />
+          </div>
           {badgeLabel && (
             <div
               style={{

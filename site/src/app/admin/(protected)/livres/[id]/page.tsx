@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBookByIdAdmin, getBookImages } from "@/lib/content/books";
 import { updateBook, deleteBook } from "../actions";
 import BookGallery from "@/components/admin/BookGallery";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import SavedToast from "@/components/admin/SavedToast";
 
 export default async function AdminLivreDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,6 +14,9 @@ export default async function AdminLivreDetailPage({ params }: { params: Promise
 
   return (
     <>
+      <Suspense fallback={null}>
+        <SavedToast />
+      </Suspense>
       <div className="admin-editor-topbar" style={{ margin: "-32px -40px 32px" }}>
         <div className="left">
           <Link href="/admin/livres">← Retour à la liste</Link>
