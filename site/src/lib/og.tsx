@@ -191,33 +191,36 @@ export async function renderOgImage({
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              {/* Logo centré horizontalement, avec un trait fin en dessous en
-                  démarcation avec le badge/titre qui suit (retour du 05/09) —
-                  auparavant aligné à gauche comme le reste du bloc. */}
+              {/* Logo + badge de rubrique centrés ensemble, comme un seul
+                  bloc (retour du 05/09, 2e passage) — le trait fin de
+                  démarcation vient juste après cet ensemble, pas sous le
+                  logo seul. Le badge n'a donc plus son propre alignement à
+                  gauche ni sa propre marge : c'est le groupe entier qui est
+                  centré, puis le titre qui suit reste, lui, aligné à
+                  gauche. */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 32 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={LOGO_URL} width={170} height={64} alt="" style={{ objectFit: "contain" }} />
+                {badgeLabel && (
+                  <div
+                    style={{
+                      display: "flex",
+                      background: "#fff",
+                      color: accent,
+                      fontSize: 20,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: 2,
+                      padding: "9px 20px",
+                      borderRadius: 999,
+                      marginTop: 16,
+                    }}
+                  >
+                    {badgeLabel}
+                  </div>
+                )}
                 <div style={{ display: "flex", width: 90, height: 1, background: "rgba(255,255,255,.35)", marginTop: 16 }} />
               </div>
-              {badgeLabel && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignSelf: "flex-start",
-                    background: "#fff",
-                    color: accent,
-                    fontSize: 20,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: 2,
-                    padding: "9px 20px",
-                    borderRadius: 999,
-                    marginBottom: 28,
-                  }}
-                >
-                  {badgeLabel}
-                </div>
-              )}
               <div
                 style={{
                   display: "flex",
@@ -258,33 +261,33 @@ export async function renderOgImage({
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          {/* Logo centré horizontalement, avec un trait fin en dessous en
-              démarcation avec le badge/titre qui suit (retour du 05/09) —
-              auparavant aligné à gauche comme le reste du bloc. */}
+          {/* Logo + badge de rubrique centrés ensemble, comme un seul bloc
+              (retour du 05/09, 2e passage) — le trait fin de démarcation
+              vient juste après cet ensemble, pas sous le logo seul. Le
+              titre qui suit reste, lui, aligné à gauche. */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 40 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={LOGO_URL} width={200} height={75} alt="" style={{ objectFit: "contain" }} />
+            {badgeLabel && (
+              <div
+                style={{
+                  display: "flex",
+                  background: "#fff",
+                  color: accent,
+                  fontSize: 22,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 2,
+                  padding: "10px 22px",
+                  borderRadius: 999,
+                  marginTop: 18,
+                }}
+              >
+                {badgeLabel}
+              </div>
+            )}
             <div style={{ display: "flex", width: 100, height: 1, background: "rgba(255,255,255,.35)", marginTop: 18 }} />
           </div>
-          {badgeLabel && (
-            <div
-              style={{
-                display: "flex",
-                alignSelf: "flex-start",
-                background: "#fff",
-                color: accent,
-                fontSize: 22,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: 2,
-                padding: "10px 22px",
-                borderRadius: 999,
-                marginBottom: 32,
-              }}
-            >
-              {badgeLabel}
-            </div>
-          )}
           <div
             style={{
               display: "flex",
