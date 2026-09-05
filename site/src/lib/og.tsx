@@ -197,7 +197,8 @@ export async function renderOgImage({
                   logo seul. Le badge n'a donc plus son propre alignement à
                   gauche ni sa propre marge : c'est le groupe entier qui est
                   centré, puis le titre qui suit reste, lui, aligné à
-                  gauche. */}
+                  gauche. Espacement logo→badge élargi (retour du 05/09, 3e
+                  passage) — les deux étaient trop collés l'un à l'autre. */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 32 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={LOGO_URL} width={170} height={64} alt="" style={{ objectFit: "contain" }} />
@@ -213,13 +214,13 @@ export async function renderOgImage({
                       letterSpacing: 2,
                       padding: "9px 20px",
                       borderRadius: 999,
-                      marginTop: 16,
+                      marginTop: 28,
                     }}
                   >
                     {badgeLabel}
                   </div>
                 )}
-                <div style={{ display: "flex", width: 90, height: 1, background: "rgba(255,255,255,.35)", marginTop: 16 }} />
+                <div style={{ display: "flex", width: 90, height: 1, background: "rgba(255,255,255,.35)", marginTop: 20 }} />
               </div>
               <div
                 style={{
@@ -264,7 +265,9 @@ export async function renderOgImage({
           {/* Logo + badge de rubrique centrés ensemble, comme un seul bloc
               (retour du 05/09, 2e passage) — le trait fin de démarcation
               vient juste après cet ensemble, pas sous le logo seul. Le
-              titre qui suit reste, lui, aligné à gauche. */}
+              titre qui suit reste, lui, aligné à gauche. Espacement
+              logo→badge élargi (retour du 05/09, 3e passage) — les deux
+              étaient trop collés l'un à l'autre. */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 40 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={LOGO_URL} width={200} height={75} alt="" style={{ objectFit: "contain" }} />
@@ -280,13 +283,13 @@ export async function renderOgImage({
                   letterSpacing: 2,
                   padding: "10px 22px",
                   borderRadius: 999,
-                  marginTop: 18,
+                  marginTop: 32,
                 }}
               >
                 {badgeLabel}
               </div>
             )}
-            <div style={{ display: "flex", width: 100, height: 1, background: "rgba(255,255,255,.35)", marginTop: 18 }} />
+            <div style={{ display: "flex", width: 100, height: 1, background: "rgba(255,255,255,.35)", marginTop: 22 }} />
           </div>
           <div
             style={{
