@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { buildShareMessage, buildBookShareMessage, type ShareCategory } from "@/lib/share";
+import { buildShareMessage, buildPlainShareMessage, buildBookShareMessage, type ShareCategory } from "@/lib/share";
 
 // Icônes SVG réelles pour chaque plateforme (jamais d'emoji ni de lettre
 // bricolée en guise d'icône, cahier §1.1).
@@ -17,12 +17,15 @@ import { buildShareMessage, buildBookShareMessage, type ShareCategory } from "@/
 // Copier le lien, SMS (SMS toujours en dernier — n'a de sens que sur mobile).
 //
 // Deux groupes de boutons :
-// - Message personnalisé (WhatsApp, Telegram, X, SMS) : voir buildShareMessage
-//   dans src/lib/share.ts, uniquement quand category+excerpt sont fournis
-//   (les publications) — ou buildBookShareMessage quand bookDescription est
-//   fourni à la place (fiche livre, retour du 05/09). Sans aucun des deux
-//   (ex. page "Connaître Jésus", qui n'a ni catégorie ni livre), on retombe
-//   sur l'ancien comportement "titre - lien" simple.
+// - Message personnalisé (WhatsApp, Telegram, X, SMS) : voir
+//   buildShareMessage/buildPlainShareMessage dans src/lib/share.ts, dès que
+//   category est fourni (les publications) — ou buildBookShareMessage quand
+//   bookDescription est fourni à la place (fiche livre, retour du 05/09).
+//   Sans aucun des deux (ex. page "Connaître Jésus", qui n'a ni catégorie ni
+//   livre), on retombe sur l'ancien comportement "titre - lien" simple.
+//   Retour du 05/09 (3e passage) : WhatsApp/Telegram acceptent la mise en
+//   forme *gras*/_italique_, X/SMS ne l'interprètent pas — deux messages
+//   distincts, mêmes mots.
 // - Lien seul (Facebook, LinkedIn) : limitation propre à ces plateformes,
 //   leurs boutons de partage ignorent tout texte personnalisé par
 //   conception, pas un choix technique de ce composant.
@@ -30,13 +33,11 @@ export default function ShareCartouche({
   title,
   url,
   category,
-  excerpt,
   bookDescription,
 }: {
   title: string;
   url: string;
   category?: ShareCategory;
-  excerpt?: string;
   // Description du livre, débarrassée de son HTML par l'appelant (voir
   // livres/[slug]/page.tsx) — jamais utilisé en même temps que category.
   bookDescription?: string;
@@ -45,19 +46,22 @@ export default function ShareCartouche({
 
   const encodedTitle = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(url);
-  const personalizedMessage =
-    category && excerpt
-      ? buildShareMessage({ category, title, excerpt, url })
-      : bookDescription
-        ? buildBookShareMessage({ title, description: bookDescription, url })
-        : `${title} - ${url}`;
-  const encodedMessage = encodeURIComponent(personalizedMessage);
+  const formattedMessage = category
+    ? buildShareMessage({ category, title, url })
+    : bookDescription
+      ? buildBookShareMessage({ title, description: bookDescription, url })
+      : `${title} - ${url}`;
+  // Pas de mise en forme à retirer pour le repli livre/simple — seule la
+  // variante "catégorie" en contient.
+  const plainMessage = category ? buildPlainShareMessage({ category, title, url }) : formattedMessage;
+  const encodedFormattedMessage = encodeURIComponent(formattedMessage);
+  const encodedPlainMessage = encodeURIComponent(plainMessage);
 
   return (
     <div className="share-row">
       <a
         className="share-icon"
-        href={`https://api.whatsapp.com/send?text=${encodedMessage}`}
+        href={`https://api.whatsapp.com/send?text=${encodedFormattedMessage}`}
         target="_blank"
         rel="noopener"
         title="Partager sur WhatsApp"
@@ -72,7 +76,7 @@ export default function ShareCartouche({
       </a>
       <a
         className="share-icon"
-        href={`https://twitter.com/intent/tweet?text=${encodedMessage}`}
+        href={`https://twitter.com/intent/tweet?text=${encodedPlainMessage}`}
         target="_blank"
         rel="noopener"
         title="Partager sur X"
@@ -96,7 +100,7 @@ export default function ShareCartouche({
       </a>
       <a
         className="share-icon"
-        href={`https://t.me/share/url?text=${encodedMessage}`}
+        href={`https://t.me/share/url?text=${encodedFormattedMessage}`}
         target="_blank"
         rel="noopener"
         title="Partager sur Telegram"
@@ -149,7 +153,7 @@ export default function ShareCartouche({
           en CSS (hover:hover et pointer:fine, même principe que le survol
           des cartes ailleurs sur le site) plutôt qu'en JS : pas de décalage
           d'hydratation entre le rendu serveur et le premier rendu client. */}
-      <a className="share-icon share-icon-sms" href={`sms:&body=${encodedMessage}`} title="Partager par SMS" aria-label="SMS">
+      <a className="share-icon share-icon-sms" href={`sms:&body=${encodedPlainMessage}`} title="Partager par SMS" aria-label="SMS">
         <svg viewBox="0 0 32 32">
           <path
             fill="var(--purple)"

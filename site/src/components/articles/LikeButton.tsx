@@ -3,19 +3,12 @@
 import { useState, useTransition } from "react";
 import { likeArticlePublic, likeArticleAuthenticated } from "@/lib/likes/actions";
 import { useIsLikedLocally, markLikedLocally } from "@/lib/likes/useLikedLocally";
-import type { ShareCategory } from "@/lib/share";
 
-// Bouton "J'aime" (retour du 05/09, 2e passage — Option 3 des propositions
-// soumises à Serge) — plus un bouton façon "réseau social" (icône dans un
-// contour), mais une phrase d'invitation éditoriale suivie du bouton
-// lui-même, sans fond ni bordure : dans le ton "phrase de contenu" du reste
-// du site plutôt qu'un élément d'interface étranger.
-const INVITE_PHRASE: Record<ShareCategory, string> = {
-  qdlb: "Cette parole vous a béni ?",
-  vs: "Cet enseignement vous a béni ?",
-  rm: "Cette pensée vous a béni ?",
-};
-
+// Bouton "J'aime" (retour du 05/09, 3e passage) — plus de phrase d'invitation
+// devant le bouton (retirée à la demande de Serge) : juste l'icône cœur et
+// "J'aime (n)", sans contour ni fond. Le cœur se remplit de violet (et le
+// texte passe en violet) une fois aimé.
+//
 // Deux modes, calqués sur l'accès déjà en place pour la lecture de
 // l'article :
 // - "public" (Que Dit la Bible, Rosée Matinale) : accessible à tout le
@@ -33,13 +26,11 @@ export default function LikeButton({
   articleId,
   initialCount,
   mode,
-  category,
   initiallyLiked = false,
 }: {
   articleId: string;
   initialCount: number;
   mode: "public" | "authenticated";
-  category: ShareCategory;
   initiallyLiked?: boolean;
 }) {
   const [count, setCount] = useState(initialCount);
@@ -81,7 +72,6 @@ export default function LikeButton({
 
   return (
     <div className="like-block">
-      <span className="like-invite">{INVITE_PHRASE[category]}</span>
       <button
         type="button"
         className={`like-button${liked ? " liked" : ""}`}

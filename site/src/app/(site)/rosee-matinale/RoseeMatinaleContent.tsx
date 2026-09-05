@@ -86,7 +86,7 @@ export default function RoseeMatinaleContent({
           {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du
               texte. Accessible à tout le monde, sans compte (Rosée Matinale
               reste public). */}
-          <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" category="rm" />
+          <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" />
 
           <div className="rm-nav-days">
             {previous ? (
@@ -106,7 +106,6 @@ export default function RoseeMatinaleContent({
             title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`}
             url={pageUrl}
             category="rm"
-            excerpt={current.verse_text ?? undefined}
           />
         </div>
       </section>
