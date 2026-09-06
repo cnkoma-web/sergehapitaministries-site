@@ -354,6 +354,9 @@ header{
 section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-col);margin:0 auto;}
 .product-desc h2{font-size:20px;margin-bottom:16px;}
 .product-desc p{font-size:15.5px;line-height:1.8;color:var(--ink);margin-bottom:16px;white-space:pre-line;}
+/* Listes publiées (retour du 06/09) — même raison que .article-body ci-dessus. */
+.product-desc ul, .product-desc ol{font-size:15.5px;line-height:1.8;color:var(--ink);margin:0 0 16px;padding-left:26px;}
+.product-desc li{margin-bottom:8px;}
 .size-options{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
 .size-opt{padding:8px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
 .size-opt.active{border-color:var(--purple);background:var(--purple);color:#fff;}
@@ -564,6 +567,13 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    règle (.prayer-box p ci-dessous). */
 .article-body > .content-col > p,
 .article-body > .content-col > .body-html > p{font-size:18px;line-height:1.6;color:var(--ink);margin-bottom:30px;white-space:pre-line;}
+/* Listes publiées (retour du 06/09) — même taille/interligne que les
+   paragraphes du corps, jusqu'ici sans aucune règle dédiée (repli sur le
+   style par défaut du navigateur, visuellement incohérent avec le reste de
+   l'article : plus petit, moins d'espacement). */
+.article-body > .content-col > .body-html ul,
+.article-body > .content-col > .body-html ol{font-size:18px;line-height:1.6;color:var(--ink);margin:0 0 30px;padding-left:30px;}
+.article-body > .content-col > .body-html li{margin-bottom:10px;}
 /* Identité visuelle distincte (retour du 05/09) — italique + fond gris
    clair, même principe que le trait vertical de "Aller plus loin"
    (.further-verse) : affichage public de la Prière, pas seulement le champ
@@ -691,6 +701,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .verse-box p{font-size:18px;}
   .article-body > .content-col > p,
   .article-body > .content-col > .body-html > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
+  .article-body > .content-col > .body-html ul,
+  .article-body > .content-col > .body-html ol{font-size:16px;line-height:1.85;margin-bottom:26px;}
   .prayer-box{padding:20px 20px;}
   .prayer-box p{font-size:16px;line-height:1.85;}
   .further-verse{padding-left:16px;}
@@ -933,14 +945,29 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .admin-editor-topbar .left{display:flex;align-items:center;gap:16px;font-size:14px;color:var(--ink-soft);}
 .admin-editor-topbar .left a{color:inherit;text-decoration:none;}
 .admin-editor-topbar .left a:hover{color:var(--purple);}
+/* Catégorie modifiable directement dans la barre du haut (retour du 06/09) —
+   remplace le texte figé qui s'y trouvait avant. */
+.admin-type-select{font-family:inherit;font-size:13.5px;font-weight:700;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 8px;background:#fff;cursor:pointer;}
 .admin-editor-topbar .actions{display:flex;align-items:center;gap:10px;}
 .admin-btn-ghost{background:none;border:1px solid var(--line);padding:9px 16px;border-radius:8px;font-size:13.5px;cursor:pointer;font-family:inherit;text-decoration:none;color:inherit;display:inline-block;}
 .btn-danger{background:#fff;color:#B91C1C;border:1px solid #FCA5A5;padding:9px 16px;border-radius:8px;font-size:13.5px;cursor:pointer;font-family:inherit;}
 
+/* min-width:0 sur les enfants de grille (retour du 06/09) — sans ça, une
+   colonne de grille ne rétrécit jamais sous la largeur "de contenu" de ce
+   qu'elle contient (min-width:auto par défaut sur un enfant de grid/flex,
+   piège CSS classique) : sur un écran plus étroit que prévu, la grille
+   entière dépasse la largeur disponible plutôt que de laisser son contenu
+   s'adapter — la colonne de droite (paramètres/statut) se retrouvait alors
+   poussée hors champ, perçue comme des champs "coupés". */
 .editor-layout{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 60px);}
-.editor-layout.livre-layout{grid-template-columns:1fr 380px;gap:32px;max-width:1200px;margin:0 auto;padding:32px 24px;min-height:0;}
+.editor-layout>*{min-width:0;}
+/* Colonne de droite resserrée (retour du 06/09, demande explicite : "Statut
+   de publication"/"Position d'affichage" n'ont jamais eu besoin d'autant de
+   place) — 380px → 320px, pour laisser plus de marge à l'ensemble sur un
+   écran de largeur moyenne. */
+.editor-layout.livre-layout{grid-template-columns:1fr 320px;gap:32px;max-width:1200px;margin:0 auto;padding:32px 24px;min-height:0;}
 
-.params-panel{background:#fff;border-right:1px solid var(--line);padding:24px;overflow-y:auto;}
+.params-panel{background:#fff;border-right:1px solid var(--line);padding:24px;overflow-y:auto;min-width:0;}
 .params-panel h3{font-size:15px;margin-bottom:18px;}
 
 .editor-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:20px;}
@@ -955,22 +982,45 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    .lavender, un gris neutre comme demandé). */
 .editor-field textarea.prayer-field{font-style:italic;background:#F2F2F4;border-color:#DEDEE2;}
 .editor-field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0;}
+.editor-field-row>*{min-width:0;}
 .cover-upload{aspect-ratio:16/9;background:var(--lavender);border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink-soft);margin-bottom:12px;overflow:hidden;position:relative;}
 .cover-upload img{width:100%;height:100%;object-fit:cover;}
 
 .chip-row{display:flex;flex-wrap:wrap;gap:6px;}
 .chip{background:var(--lavender);color:var(--purple);font-size:12px;padding:4px 10px;border-radius:100px;display:flex;align-items:center;gap:6px;}
 .chip button{background:none;border:0;color:var(--purple);cursor:pointer;font-size:12px;font-family:inherit;}
+/* Liste de suggestions du sélecteur de thèmes (retour du 06/09) — volontairement
+   PAS en position:absolute : le panneau qui la contient défile verticalement
+   (overflow-y:auto), et un tel panneau tronque tout ce qui serait positionné en
+   dehors de son propre flux (même leçon déjà tirée pour "Lien copié !" sur le
+   partage, voir ShareCartouche). */
+.category-suggestions{border:1px solid var(--line);border-radius:6px;margin-top:4px;overflow:hidden;background:#fff;}
+.category-suggestion{display:block;width:100%;text-align:left;padding:7px 10px;font-size:12.5px;border:0;background:none;cursor:pointer;font-family:inherit;}
+.category-suggestion:hover{background:var(--lavender);}
+.category-suggestion+.category-suggestion{border-top:1px solid var(--line);}
+.category-suggestion-create{color:var(--purple);font-weight:600;}
 
 .content-area{background:var(--paper);padding:0;}
-/* Fixe à l'écran pendant le défilement (retour du 03/09). */
-.rich-toolbar{display:flex;align-items:center;gap:4px;padding:10px 24px;border-bottom:1px solid var(--line);background:#fff;flex-wrap:wrap;position:sticky;top:0;z-index:5;}
-.rich-toolbar button{width:32px;height:32px;border:0;background:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:700;color:var(--ink-soft);font-family:inherit;}
-.rich-toolbar button:hover{background:var(--lavender);color:var(--purple);}
-.rich-toolbar .sep{width:1px;height:20px;background:var(--line);margin:0 6px;}
-/* Fixe à l'écran pendant le défilement (retour du 03/09). */
-.rich-toolbar-mini{display:flex;gap:4px;padding:6px;border:1px solid var(--line);border-bottom:0;border-radius:6px 6px 0 0;background:var(--lavender);position:sticky;top:0;z-index:5;}
-.rich-toolbar-mini button{width:26px;height:26px;border:0;background:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:700;color:var(--ink-soft);font-family:inherit;}
+/* Barre d'outils reprise (retour du 06/09) — boutons agrandis (28px→38px),
+   espacement généreux, icônes SVG au lieu de glyphes Unicode/emoji (🔗 ❝ ☰ ≡
+   ⇤ ⇥, rendu incohérent d'un OS à l'autre) — taille et confort comparables à
+   Google Docs/Notion, plutôt que la version précédente jugée trop petite et
+   peu soignée. Fixe à l'écran pendant le défilement (retour du 03/09). */
+.rich-toolbar{display:flex;align-items:center;gap:6px;padding:12px 24px;border-bottom:1px solid var(--line);background:#fff;flex-wrap:wrap;position:sticky;top:0;z-index:5;}
+.rich-btn{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:700;color:var(--ink-soft);font-family:inherit;}
+.rich-btn svg{width:18px;height:18px;}
+.rich-btn:hover{background:var(--lavender);color:var(--purple);}
+/* Surligné pendant l'édition quand la sélection courante est déjà dans cet
+   état (gras/italique/souligné/citation/liste) — même principe que Google
+   Docs/Notion, absent de la version précédente. */
+.rich-btn[data-active="true"]{background:var(--purple);color:#fff;}
+.rich-toolbar .sep{width:1px;height:22px;background:var(--line);margin:0 4px;}
+
+.rich-toolbar-mini{display:flex;gap:4px;padding:8px;border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;background:var(--lavender);position:sticky;top:0;z-index:5;}
+.rich-btn-mini{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-soft);font-family:inherit;}
+.rich-btn-mini svg{width:15px;height:15px;}
+.rich-btn-mini:hover{background:#fff;color:var(--purple);}
+.rich-btn-mini[data-active="true"]{background:var(--purple);color:#fff;}
 .rich-toolbar-mini .sep{width:1px;height:16px;background:var(--line);margin:0 2px;}
 
 .content-body{max-width:720px;margin:0 auto;padding:48px 24px;}
@@ -985,9 +1035,16 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    marge) : ça poussait à appuyer deux fois sur Entrée pour voir une
    séparation. Un seul retour à la ligne suffit maintenant à l'écran. */
 .body-input p{margin-bottom:20px;}
+/* Listes dans l'éditeur (retour du 06/09) — jusqu'ici sans aucune règle : un
+   <ul>/<ol> retombait sur le style par défaut du navigateur, visuellement
+   incohérent avec le reste du texte (taille/interligne différents). */
+.body-input ul, .body-input ol{margin:0 0 20px;padding-left:28px;}
+.body-input li{margin-bottom:8px;}
 .desc-editable{border:1px solid var(--line);border-radius:0 0 6px 6px;padding:11px;min-height:110px;font-size:13.5px;line-height:1.6;}
 .desc-editable:empty:before{content:attr(data-placeholder);color:var(--ink-soft);}
 .desc-editable p{margin-bottom:12px;}
+.desc-editable ul, .desc-editable ol{margin:0 0 12px;padding-left:22px;}
+.desc-editable li{margin-bottom:6px;}
 
 /* ===== Galerie d'images (livres, jusqu'à 5, position + glisser-déposer) ===== */
 .gallery-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}

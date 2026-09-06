@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { markContactRead } from "./actions";
 import Pagination from "@/components/admin/Pagination";
@@ -41,7 +42,13 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
               {m.nom}
               <span style={{ display: "block", fontSize: 11.5, color: "var(--ink-soft)" }}>{m.email}</span>
             </div>
-            <div style={{ fontSize: 12.5 }}>{m.sujet}</div>
+            {/* Ouvrir le message (retour du 06/09) le marque automatiquement
+                comme lu — voir messages/[id]/page.tsx. */}
+            <div style={{ fontSize: 12.5 }}>
+              <Link href={`/admin/messages/${m.id}`} style={{ color: "inherit", fontWeight: m.read ? 400 : 700 }}>
+                {m.sujet}
+              </Link>
+            </div>
             <div style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>{m.message}</div>
             <div>
               <span className={`status-badge ${m.read ? "masque" : "actif"}`}>{m.read ? "Lu" : "Nouveau"}</span>

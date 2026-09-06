@@ -3,8 +3,23 @@ import { formatPrice } from "@/lib/format";
 import { toggleShipped } from "./actions";
 import Pagination from "@/components/admin/Pagination";
 
-const STATUS_LABEL: Record<string, string> = { pending: "En attente", paid: "Payée", failed: "Échouée", refunded: "Remboursée" };
-const STATUS_CLASS: Record<string, string> = { pending: "masque", paid: "actif", failed: "masque", refunded: "masque" };
+// Libellés explicites plutôt que "En attente" seul (retour du 06/09) — Serge
+// ne savait pas si "en attente" voulait dire en attente de paiement, de
+// préparation ou d'expédition. Chaque statut correspond à une étape précise
+// du paiement Stripe (jamais de la préparation/expédition, qui est suivie à
+// part via la colonne "Expédition" ci-dessous) :
+// - pending : commande créée, paiement pas encore confirmé par Stripe.
+// - paid : paiement confirmé (webhook Stripe) — c'est là que la commande
+//   devient concrète pour Serge, à préparer et expédier.
+// - failed : le paiement a échoué (carte refusée, session Stripe abandonnée…).
+// - refunded : commande remboursée.
+const STATUS_LABEL: Record<string, string> = {
+  pending: "En attente de paiement",
+  paid: "Payée",
+  failed: "Paiement échoué",
+  refunded: "Remboursée",
+};
+const STATUS_CLASS: Record<string, string> = { pending: "precommande", paid: "actif", failed: "masque", refunded: "masque" };
 
 export default async function AdminCommandesPage({ searchParams }: { searchParams: Promise<{ page?: string; perPage?: string }> }) {
   const { page: pageParam, perPage: perPageParam } = await searchParams;
@@ -25,6 +40,17 @@ export default async function AdminCommandesPage({ searchParams }: { searchParam
         <h2>Commandes</h2>
       </div>
       <p className="admin-lede">Les commandes de livres et goodies passées sur le site.</p>
+
+      {/* Légende des statuts (retour du 06/09) — demandée explicitement par
+          Serge, qui ne savait pas ce que "En attente" signifiait concrètement. */}
+      <div className="admin-note" style={{ marginTop: 0, marginBottom: 24 }}>
+        <strong>Statut</strong> = étape du paiement Stripe, jamais de la préparation/expédition :
+        <br />« En attente de paiement » = commande créée, paiement pas encore confirmé — rien à faire.
+        <br />« Payée » = paiement confirmé, c&apos;est à partir de là qu&apos;une commande est à préparer.
+        <br />« Paiement échoué » / « Remboursée » = rien à expédier.
+        <br />
+        <strong>Expédition</strong> — bouton « Marquer expédiée » visible uniquement sur les commandes payées : à cliquer une fois le colis envoyé.
+      </div>
 
       <div className="items-table">
         <div className="item-row head" style={{ gridTemplateColumns: "1fr 1fr 100px 90px 110px 120px" }}>

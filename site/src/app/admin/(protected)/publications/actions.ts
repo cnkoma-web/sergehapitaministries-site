@@ -69,9 +69,16 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   if (!id || !title) return;
 
   const body = String(formData.get("body") ?? "").trim();
-  const type = String(formData.get("type") ?? "qdlb");
+  // Modifiable depuis l'éditeur (retour du 06/09) — avant, seule la création
+  // fixait la catégorie ; un article créé par erreur dans la mauvaise
+  // rubrique restait bloqué. "rm" n'est jamais une valeur possible ici : cet
+  // écran redirige déjà vers l'éditeur Rosée Matinale dédié pour ce type
+  // (voir publications/[id]/page.tsx), qui n'appelle jamais cette fonction.
+  const typeRaw = String(formData.get("type") ?? "qdlb");
+  const type = typeRaw === "vs" ? "vs" : "qdlb";
 
   const update: Record<string, unknown> = {
+    type,
     title,
     article_date: String(formData.get("article_date") ?? "") || undefined,
     excerpt: String(formData.get("excerpt") ?? "").trim() || null,
@@ -93,9 +100,6 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   if (type === "vs") {
     update.access = String(formData.get("access") ?? "free");
   }
-  if (type === "rm") {
-    update.verse_text = String(formData.get("verse_text") ?? "").trim() || null;
-  }
 
   if (status) update.status = status;
 
@@ -106,6 +110,11 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   revalidatePath("/admin/publications");
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/publications");
+  // Un changement de catégorie déplace l'article d'un hub à l'autre (retour
+  // du 06/09) — les deux doivent être rafraîchis, pas seulement celui de la
+  // catégorie actuelle.
+  revalidatePath("/publications/que-dit-la-bible");
+  revalidatePath("/publications/la-vie-superieure");
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
   revalidatePath(`/publications/${slugify(title)}`, "page");

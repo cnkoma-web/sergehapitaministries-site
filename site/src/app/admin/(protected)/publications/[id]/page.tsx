@@ -35,7 +35,13 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
         <div className="admin-editor-topbar" style={{ margin: "-32px -40px 32px" }}>
           <div className="left">
             <Link href="/admin/publications">← Retour à la liste</Link>
-            <strong style={{ color: "var(--ink)" }}>{ARTICLE_TYPE_LABEL[article.type]}</strong>
+            {/* Modifiable après création (retour du 06/09) — avant, la
+                catégorie choisie à la création restait figée pour toujours,
+                y compris en cas d'erreur de sélection. */}
+            <select name="type" defaultValue={article.type} className="admin-type-select" aria-label="Catégorie">
+              <option value="qdlb">{ARTICLE_TYPE_LABEL.qdlb}</option>
+              <option value="vs">{ARTICLE_TYPE_LABEL.vs}</option>
+            </select>
             <span className={`status-badge ${article.status === "published" ? "actif" : "masque"}`}>
               {article.status === "published" ? "Publié" : "Brouillon"}
             </span>
@@ -59,7 +65,6 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
         </div>
 
         <input type="hidden" name="id" value={article.id} />
-        <input type="hidden" name="type" value={article.type} />
 
         <div className="editor-layout">
 

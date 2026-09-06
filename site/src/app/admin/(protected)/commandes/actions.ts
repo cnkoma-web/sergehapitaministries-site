@@ -8,7 +8,11 @@ export async function toggleShipped(formData: FormData) {
   const id = String(formData.get("id"));
   const shipped = String(formData.get("shipped")) === "true";
   if (!id) return;
-  await supabase.from("orders").update({ shipped: !shipped }).eq("id", id);
+  // Corrigé en même temps que markContactRead (retour du 06/09, même bug :
+  // permission UPDATE manquante en base — voir migration
+  // 20260906010000_admin_todo_flags_update_grant.sql).
+  const { error } = await supabase.from("orders").update({ shipped: !shipped }).eq("id", id);
+  if (error) console.error("toggleShipped:", error);
   revalidatePath("/admin/commandes");
   revalidatePath("/admin");
 }

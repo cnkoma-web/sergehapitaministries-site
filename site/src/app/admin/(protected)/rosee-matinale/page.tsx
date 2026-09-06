@@ -14,7 +14,13 @@ export default async function AdminRoseePage({
 }) {
   const { page: pageParam, perPage: perPageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const perPage = Number(perPageParam) || 20;
+  // 5 par page maximum (retour du 06/09) — la liste montait jusqu'à 20
+  // entrées d'un coup, bien plus longue que nécessaire pour une liste
+  // consultée quotidiennement. Même principe de pagination que l'archive
+  // publique (voir ARCHIVE_PER_PAGE dans RoseeMatinaleContent.tsx), sans
+  // reprendre son nombre par page (3, pensé pour une grille de cartes plutôt
+  // que cette liste tabulaire).
+  const perPage = Number(perPageParam) || 5;
 
   const { articles: entries, total } = await getArticlesAdmin(["rm"], page, perPage);
   const today = new Date().toISOString().slice(0, 10);

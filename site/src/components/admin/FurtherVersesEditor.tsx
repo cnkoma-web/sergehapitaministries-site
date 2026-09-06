@@ -29,7 +29,12 @@ export default function FurtherVersesEditor({ initialVerses }: { initialVerses: 
     <div>
       {verses.map((v, i) => (
         <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6, alignItems: "start" }}>
-          <div style={{ flex: "0 0 120px" }}>
+          {/* flex-basis réduite + min-width:0 sur les deux champs (retour du
+              06/09) — dans un panneau étroit, "flex:1" seul ne suffit pas à
+              rétrécir sous la largeur intrinsèque d'un <input> (min-width:auto
+              par défaut sur un enfant flex) : le champ "Texte du verset" et
+              le bouton "×" pouvaient se retrouver poussés hors du panneau. */}
+          <div style={{ flex: "0 0 90px", minWidth: 0 }}>
             <input
               type="text"
               name="further_verse_reference"
@@ -39,7 +44,7 @@ export default function FurtherVersesEditor({ initialVerses }: { initialVerses: 
               style={{ width: "100%", padding: "7px 9px", border: "1px solid var(--line)", borderRadius: 6, fontSize: 12.5 }}
             />
           </div>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <input
               type="text"
               name="further_verse_text"
@@ -54,7 +59,7 @@ export default function FurtherVersesEditor({ initialVerses }: { initialVerses: 
             onClick={() => remove(i)}
             aria-label="Retirer ce verset"
             title="Retirer"
-            style={{ background: "none", border: "1px solid var(--line)", borderRadius: 6, width: 28, height: 32, cursor: "pointer", color: "var(--ink-soft)", fontFamily: "inherit" }}
+            style={{ background: "none", border: "1px solid var(--line)", borderRadius: 6, width: 28, height: 32, flexShrink: 0, cursor: "pointer", color: "var(--ink-soft)", fontFamily: "inherit" }}
           >
             ×
           </button>
