@@ -112,11 +112,6 @@ export async function countPublishedArticles(): Promise<number> {
   return count ?? 0;
 }
 
-export async function incrementViewCount(id: string) {
-  const supabase = await createClient();
-  await supabase.rpc("increment_article_views", { article_id: id });
-}
-
 // Bouton "J'aime", La Vie Supérieure uniquement (retour du 05/09) — lu au
 // chargement de la page pour afficher le bouton déjà "aimé" si ce compte a
 // déjà aimé cet article, sans attendre un clic pour le savoir.

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPublishedArticles, incrementViewCount } from "@/lib/content/articles";
+import { getPublishedArticles } from "@/lib/content/articles";
+import ViewTracker from "@/components/articles/ViewTracker";
 import RoseeMatinaleContent from "../RoseeMatinaleContent";
 
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }): Promise<Metadata> {
@@ -50,16 +51,21 @@ export default async function RoseeMatinaleDatePage({
   const archive = entries.filter((_, i) => i !== currentIndex);
   const archivePageNum = Math.max(1, Number(archivePage) || 1);
 
-  incrementViewCount(current.id).catch(() => {});
-
   return (
-    <RoseeMatinaleContent
-      current={current}
-      previous={previous}
-      next={next}
-      archive={archive}
-      archivePageNum={archivePageNum}
-      basePath={`/rosee-matinale/${date}`}
-    />
+    <>
+      {/* Vue comptabilisée côté client, une fois par visiteur/jour (retour
+          du 06/09) — voir ViewTracker. Remplace l'ancien incrementViewCount()
+          appelé pendant le rendu serveur, qui comptait aussi les
+          rechargements de vérification. */}
+      <ViewTracker articleId={current.id} />
+      <RoseeMatinaleContent
+        current={current}
+        previous={previous}
+        next={next}
+        archive={archive}
+        archivePageNum={archivePageNum}
+        basePath={`/rosee-matinale/${date}`}
+      />
+    </>
   );
 }

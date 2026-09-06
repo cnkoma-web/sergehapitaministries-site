@@ -1,0 +1,16 @@
+-- Réinitialisation des compteurs de vues (retour du 06/09) — les chiffres
+-- actuels ont été gonflés par les rechargements répétés de vérification
+-- pendant les rounds de correction (Serge et Claude Code), jamais par de
+-- vraies visites : l'ancienne logique incrémentait à chaque rendu de page,
+-- sans aucune distinction. Aucune trace individuelle (IP, session, date par
+-- vue) n'a jamais été conservée pour ces vues déjà comptées : impossible de
+-- distinguer rétroactivement les vraies visites des tests, remise à zéro
+-- complète, seule option réaliste.
+--
+-- La nouvelle logique (une vue par visiteur/jour, via un cookie posé par
+-- /api/track-view) prend le relais à partir de maintenant — voir
+-- src/app/api/track-view/route.ts et src/components/articles/ViewTracker.tsx.
+-- Le compte lui-même (colonne view_count, fonction increment_article_views)
+-- ne change pas de forme, seule la fréquence à laquelle elle est appelée
+-- change côté application.
+update public.articles set view_count = 0;

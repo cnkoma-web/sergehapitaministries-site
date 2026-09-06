@@ -5,7 +5,6 @@ import {
   getArticleBySlugAnyType,
   getRelatedArticles,
   getArticlesByIds,
-  incrementViewCount,
   hasUserLikedArticle,
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
@@ -15,6 +14,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import LikeButton from "@/components/articles/LikeButton";
+import ViewTracker from "@/components/articles/ViewTracker";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -49,10 +49,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const article = await getArticleBySlugAnyType(slug);
   if (!article) notFound();
 
-  // Incrémenté à chaque consultation réelle de la page (cahier §3.9). Ne bloque
-  // pas le rendu si ça échoue (compteur non critique).
-  incrementViewCount(article.id).catch(() => {});
-
+  // Vue comptabilisée côté client, une fois par visiteur/jour (retour du
+  // 06/09) — voir ViewTracker, rendu plus bas dans chaque gabarit. Plus
+  // d'incrément inconditionnel ici : un Server Component ne peut de toute
+  // façon pas écrire de cookie sortant pour retenir "déjà vu aujourd'hui".
   const supabase = await createClient();
   const {
     data: { user },
@@ -86,6 +86,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     const alreadyLiked = unlocked && user ? await hasUserLikedArticle(article.id, user.id) : false;
     return (
       <>
+        <ViewTracker articleId={article.id} />
         <section className="article-header">
           <div className="content-col">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
@@ -227,6 +228,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // Gabarit Que Dit la Bible — jamais verrouillé.
   return (
     <>
+      <ViewTracker articleId={article.id} />
       <section className="article-header">
         <div className="content-col">
           <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
