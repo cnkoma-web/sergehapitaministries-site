@@ -15,6 +15,14 @@ export default function ForgotPasswordForm() {
 
     const email = String(new FormData(e.currentTarget).get("email"));
     const supabase = createClient();
+    // La vraie destination est désormais écrite en dur dans le gabarit
+    // "Reset Password" du tableau de bord Supabase (voir
+    // src/app/auth/confirm/route.ts, retour du 06/09) — ce qui garantit
+    // qu'un lien déclenché manuellement depuis le tableau de bord atterrit
+    // aussi au bon endroit, pas seulement ceux envoyés depuis ce formulaire.
+    // `redirectTo` reste passé ici par sécurité (repli inoffensif si le
+    // gabarit n'a pas encore été mis à jour), mais n'est plus ce qui pilote
+    // le comportement réel.
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/compte/nouveau-mot-de-passe`,
     });

@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function ForgotPasswordPage() {
+export default async function ForgotPasswordPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error } = await searchParams;
   return (
     <>
       <section className="util-hero">
@@ -17,6 +18,14 @@ export default function ForgotPasswordPage() {
       </section>
       <section className="account-section">
         <div className="wrap">
+          {/* Retour depuis /auth/confirm quand le jeton du lien reçu est
+              invalide ou réellement expiré (retour du 06/09) — jamais
+              affiché en cas de succès, seulement sur un vrai échec. */}
+          {error === "expired" && (
+            <div className="admin-error" style={{ maxWidth: 420, margin: "0 auto 24px" }}>
+              Ce lien de réinitialisation est invalide ou a expiré. Demandez-en un nouveau ci-dessous.
+            </div>
+          )}
           <ForgotPasswordForm />
         </div>
       </section>

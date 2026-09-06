@@ -39,10 +39,17 @@ export default function LoginForm() {
         <label htmlFor="email">E-mail</label>
         <input id="email" name="email" type="email" required autoComplete="username" />
       </div>
-      <div className="admin-field" style={{ marginBottom: 20 }}>
+      <div className="admin-field" style={{ marginBottom: 8 }}>
         <label htmlFor="password">Mot de passe</label>
         <input id="password" name="password" type="password" required autoComplete="current-password" />
       </div>
+      {/* Même compte, même flux Supabase Auth que le site public (retour du
+          06/09) — pas de page "mot de passe oublié" distincte pour l'admin,
+          celle du site public suffit (voir /auth/confirm pour la correction
+          du lien de récupération lui-même). */}
+      <a href="/compte/mot-de-passe-oublie" className="admin-forgot">
+        Mot de passe oublié ?
+      </a>
       <button type="submit" className="admin-btn-primary" style={{ width: "100%" }} disabled={loading}>
         {loading ? "Connexion…" : "Se connecter"}
       </button>
