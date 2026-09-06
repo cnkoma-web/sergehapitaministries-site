@@ -357,6 +357,9 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 /* Listes publiées (retour du 06/09) — même raison que .article-body ci-dessus. */
 .product-desc ul, .product-desc ol{font-size:15.5px;line-height:1.8;color:var(--ink);margin:0 0 16px;padding-left:26px;}
 .product-desc li{margin-bottom:8px;}
+/* Citation ("retrait") publiée (retour du 06/09, 2e passage) — même raison
+   que .article-body ci-dessus. */
+.product-desc blockquote{border-left:3px solid var(--purple);padding-left:16px;color:var(--ink-soft);font-style:italic;margin:0 0 16px;font-size:15.5px;line-height:1.8;}
 .size-options{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
 .size-opt{padding:8px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
 .size-opt.active{border-color:var(--purple);background:var(--purple);color:#fff;}
@@ -574,6 +577,11 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .article-body > .content-col > .body-html ul,
 .article-body > .content-col > .body-html ol{font-size:18px;line-height:1.6;color:var(--ink);margin:0 0 30px;padding-left:30px;}
 .article-body > .content-col > .body-html li{margin-bottom:10px;}
+/* Citation ("retrait") publiée (retour du 06/09, 2e passage) — le trait
+   violet n'existait que dans l'éditeur (.body-input blockquote plus bas) :
+   un article publié perdait ce style, malgré un vrai <blockquote> bel et
+   bien enregistré. Repris à l'identique côté public. */
+.article-body > .content-col > .body-html blockquote{border-left:3px solid var(--purple);padding-left:16px;color:var(--ink-soft);font-style:italic;margin:0 0 30px;font-size:18px;line-height:1.6;}
 /* Identité visuelle distincte (retour du 05/09) — italique + fond gris
    clair, même principe que le trait vertical de "Aller plus loin"
    (.further-verse) : affichage public de la Prière, pas seulement le champ
@@ -703,6 +711,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .article-body > .content-col > .body-html > p{font-size:16px;line-height:1.85;margin-bottom:26px;}
   .article-body > .content-col > .body-html ul,
   .article-body > .content-col > .body-html ol{font-size:16px;line-height:1.85;margin-bottom:26px;}
+  .article-body > .content-col > .body-html blockquote{font-size:16px;line-height:1.85;margin-bottom:26px;}
   .prayer-box{padding:20px 20px;}
   .prayer-box p{font-size:16px;line-height:1.85;}
   .further-verse{padding-left:16px;}
@@ -904,7 +913,15 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 
 /* ===== Liste compacte paginée (Livres, Publications, ...) ===== */
 .items-table{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:20px;}
-.item-row{display:grid;grid-template-columns:56px 1fr 90px 110px 90px 90px;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid var(--line);}
+/* Dernière colonne (Actions) élargie 90px→150px (retour du 06/09, 2e
+   passage) — "Éditer" + "Suppr." côte à côte ont besoin d'environ 140px
+   (deux boutons bordés ~65px + l'écart entre eux) ; à 90px, le second
+   bouton dépassait la largeur de la table (overflow:hidden sur
+   .items-table) et se retrouvait à moitié invisible. Cette règle par
+   défaut s'applique telle quelle à /admin/livres (seule liste sans
+   gridTemplateColumns en ligne) ; les autres listes ont leur propre
+   override, corrigé au même endroit dans chaque page. */
+.item-row{display:grid;grid-template-columns:56px 1fr 90px 110px 90px 150px;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid var(--line);}
 .item-row:last-child{border-bottom:0;}
 .item-row.head{background:var(--lavender);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);padding:10px 16px;}
 .item-thumb{width:40px;height:56px;border-radius:4px;background:linear-gradient(135deg,#2E2FE0,#7B3FE4);background-size:cover;background-position:center;}

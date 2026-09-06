@@ -62,7 +62,10 @@ export default async function AdminPublicationsPage({
       </div>
 
       <div className="items-table">
-        <div className="item-row head" style={{ gridTemplateColumns: "56px 1fr 130px 110px 90px" }}>
+        {/* Colonne Actions élargie 90px→150px (retour du 06/09, 2e passage) —
+            "Suppr." dépassait la largeur de la table et se retrouvait à
+            moitié invisible (overflow:hidden sur .items-table). */}
+        <div className="item-row head" style={{ gridTemplateColumns: "56px 1fr 130px 110px 150px" }}>
           <div></div>
           <div>Titre</div>
           <div>Catégorie</div>
@@ -77,7 +80,7 @@ export default async function AdminPublicationsPage({
         )}
 
         {articles.map((a) => (
-          <div className="item-row" key={a.id} style={{ gridTemplateColumns: "56px 1fr 130px 110px 90px" }}>
+          <div className="item-row" key={a.id} style={{ gridTemplateColumns: "56px 1fr 130px 110px 150px" }}>
             <div className="item-thumb" style={a.cover_url ? { backgroundImage: `url('${a.cover_url}')` } : undefined} />
             <div className="item-title">
               <Link href={`/admin/publications/${a.id}`}>{a.title}</Link>

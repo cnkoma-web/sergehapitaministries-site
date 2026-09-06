@@ -131,9 +131,22 @@ export async function updateArticle(formData: FormData) {
   redirect(`/admin/publications/${id}?saved=1`);
 }
 
-/** "Publier" — sauvegarde et passe (ou repasse) l'article en publié. */
+/** "Publier" / "Mettre à jour" — sauvegarde et passe (ou repasse) l'article
+ * en publié. Retour du 06/09 (2e passage) : redirige vers la liste
+ * seulement pour un VRAI premier "Publier" (brouillon → publié, un
+ * événement qui mérite d'aller le voir apparaître dans la liste) — pas pour
+ * "Mettre à jour" un article déjà publié, qui n'a pas plus de raison de
+ * quitter l'écran que "Enregistrer". Avant ce correctif, les deux boutons
+ * ("Enregistrer" et "Mettre à jour", tous deux visibles côte à côte une
+ * fois l'article publié) redirigeaient différemment sans que leur libellé
+ * ne le laisse deviner — source probable de la confusion signalée sur les
+ * articles La Vie Supérieure ("Mettre à jour" pris pour le bouton de
+ * sauvegarde silencieuse). */
 export async function publishArticle(formData: FormData) {
+  const id = String(formData.get("id"));
+  const wasAlreadyPublished = String(formData.get("was_published")) === "1";
   await saveArticle(formData, "published");
+  if (wasAlreadyPublished) redirect(`/admin/publications/${id}?saved=1`);
   redirect("/admin/publications");
 }
 

@@ -31,7 +31,9 @@ export default async function AdminBoutiquePage({
       <p className="admin-lede">Les goodies affichés sur /boutique. Cliquez sur un goodie pour l&apos;éditer en détail.</p>
 
       <div className="items-table">
-        <div className="item-row head" style={{ gridTemplateColumns: "56px 1fr 90px 130px 90px 90px" }}>
+        {/* Actions élargie 90px→150px (retour du 06/09, 2e passage) — même
+            correctif que /admin/publications, "Suppr." était coupé. */}
+        <div className="item-row head" style={{ gridTemplateColumns: "56px 1fr 90px 130px 90px 150px" }}>
           <div></div>
           <div>Titre</div>
           <div>Prix</div>
@@ -47,7 +49,7 @@ export default async function AdminBoutiquePage({
         )}
 
         {goodies.map((g) => (
-          <div className="item-row" key={g.id} style={{ gridTemplateColumns: "56px 1fr 90px 130px 90px 90px" }}>
+          <div className="item-row" key={g.id} style={{ gridTemplateColumns: "56px 1fr 90px 130px 90px 150px" }}>
             <div className="item-thumb" style={g.image_url ? { backgroundImage: `url('${g.image_url}')` } : undefined} />
             <div className="item-title">
               <Link href={`/admin/boutique/${g.id}`}>{g.title}</Link>

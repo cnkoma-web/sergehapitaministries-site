@@ -30,7 +30,9 @@ export default async function AdminVideosPage({
       </p>
 
       <div className="items-table">
-        <div className="item-row head" style={{ gridTemplateColumns: "1fr 150px 110px 90px" }}>
+        {/* Actions élargie 90px→150px (retour du 06/09, 2e passage) — même
+            correctif que /admin/publications, "Suppr." était coupé. */}
+        <div className="item-row head" style={{ gridTemplateColumns: "1fr 150px 110px 150px" }}>
           <div>Titre</div>
           <div>Catégorie</div>
           <div>Statut</div>
@@ -42,7 +44,7 @@ export default async function AdminVideosPage({
           </div>
         )}
         {videos.map((v) => (
-          <div className="item-row" key={v.id} style={{ gridTemplateColumns: "1fr 150px 110px 90px" }}>
+          <div className="item-row" key={v.id} style={{ gridTemplateColumns: "1fr 150px 110px 150px" }}>
             <div className="item-title">
               <Link href={`/admin/videos/${v.id}`}>{v.title}</Link>
               <span>{v.youtube_url || "Lien YouTube à renseigner"}</span>

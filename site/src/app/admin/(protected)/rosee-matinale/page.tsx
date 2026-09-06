@@ -67,7 +67,11 @@ export default async function AdminRoseePage({
 
       <h3 style={{ margin: "28px 0 12px" }}>Entrées existantes</h3>
       <div className="items-table">
-        <div className="item-row head" style={{ gridTemplateColumns: "1fr 130px 110px 90px" }}>
+        {/* Aperçu élargi 130px→220px et Actions 90px→150px (retour du 06/09,
+            2e passage) — l'extrait de 60 caractères était compressé dans une
+            colonne bien trop étroite, et "Suppr." dépassait la largeur de la
+            table (overflow:hidden sur .items-table), à moitié invisible. */}
+        <div className="item-row head" style={{ gridTemplateColumns: "1fr 220px 110px 150px" }}>
           <div>Date</div>
           <div>Aperçu</div>
           <div>Statut</div>
@@ -79,7 +83,7 @@ export default async function AdminRoseePage({
           </div>
         )}
         {entries.map((e) => (
-          <div className="item-row" key={e.id} style={{ gridTemplateColumns: "1fr 130px 110px 90px" }}>
+          <div className="item-row" key={e.id} style={{ gridTemplateColumns: "1fr 220px 110px 150px" }}>
             <div className="item-title">
               <Link href={`/admin/rosee-matinale/${e.id}`}>{new Date(e.article_date).toLocaleDateString("fr-FR")}</Link>
               <span>{e.reading_time_minutes ? `≈ ${e.reading_time_minutes} min de lecture` : ""}</span>

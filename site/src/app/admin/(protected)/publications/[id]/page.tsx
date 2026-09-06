@@ -65,6 +65,7 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
         </div>
 
         <input type="hidden" name="id" value={article.id} />
+        <input type="hidden" name="was_published" value={article.status === "published" ? "1" : "0"} />
 
         <div className="editor-layout">
 
