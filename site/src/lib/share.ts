@@ -121,7 +121,9 @@ function buildBookMessage({
   const titlePart = formatted ? `*« ${title} »*` : `« ${title} »`;
   const { text } = truncateAtWord(description, BOOK_HOOK_MAX_LENGTH);
   const hookText = `${text}…`;
-  const hookBlock = formatted ? `*${hookText}*` : hookText;
+  // Italique, jamais gras (retour du 06/09) — `_..._` est l'italique en
+  // markdown WhatsApp/Telegram, `*...*` (utilisé par erreur ici) est le gras.
+  const hookBlock = formatted ? `_${hookText}_` : hookText;
   const blessing = formatted ? "_*demeure abondamment béni.*_" : "demeure abondamment béni.";
   return `Bonjour,\n\nSerge t'invite à découvrir son livre : ${titlePart}\n\n${hookBlock}\n\n👉 Découvre le livre ici :\n${url}\n\nBonne lecture et ${blessing}`;
 }

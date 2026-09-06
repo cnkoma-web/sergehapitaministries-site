@@ -143,6 +143,12 @@ export async function renderOgImage({
 }) {
   const accent = category ? CATEGORY_COLOR[category] : PURPLE;
   const badgeLabel = category ? CATEGORY_LABEL[category] : eyebrow;
+  // Le forçage en majuscules ne doit s'appliquer qu'aux libellés de
+  // catégorie (déjà écrits sans casse particulière) — jamais à un eyebrow
+  // libre comme "Livre — amDG Éditions" (retour du 06/09) : la casse
+  // volontaire "amDG" (déjà corrigée ailleurs sur le site) était détruite en
+  // majuscules ("AMDG") par ce même style appliqué sans distinction.
+  const badgeUppercase = Boolean(category);
   const gradient = category
     ? `linear-gradient(135deg, ${accent} 0%, ${INK} 100%)`
     : `linear-gradient(120deg, ${BLUE} 0%, ${PURPLE} 100%)`;
@@ -210,7 +216,7 @@ export async function renderOgImage({
                       color: accent,
                       fontSize: 20,
                       fontWeight: 700,
-                      textTransform: "uppercase",
+                      textTransform: badgeUppercase ? "uppercase" : "none",
                       letterSpacing: 2,
                       padding: "9px 20px",
                       borderRadius: 999,
@@ -279,7 +285,7 @@ export async function renderOgImage({
                   color: accent,
                   fontSize: 22,
                   fontWeight: 700,
-                  textTransform: "uppercase",
+                  textTransform: badgeUppercase ? "uppercase" : "none",
                   letterSpacing: 2,
                   padding: "10px 22px",
                   borderRadius: 999,
