@@ -582,6 +582,23 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    un article publié perdait ce style, malgré un vrai <blockquote> bel et
    bien enregistré. Repris à l'identique côté public. */
 .article-body > .content-col > .body-html blockquote{border-left:3px solid var(--purple);padding-left:16px;color:var(--ink-soft);font-style:italic;margin:0 0 30px;font-size:18px;line-height:1.6;}
+/* Citation mise en exergue ("pull quote", retour du 06/09) — DUPLIQUE une
+   phrase choisie dans un bloc à part (texte agrandi, centré, police
+   distincte), sans toucher au texte d'origine qui reste dans son
+   paragraphe — contrairement à la citation ci-dessus, qui transforme le
+   texte sur place. <figure> plutôt qu'une classe : sanitize() dans
+   RichTextEditor retire tout attribut class sans distinction, une classe
+   ne survivrait pas à l'édition. */
+.article-body > .content-col > .body-html figure,
+.product-desc figure,
+.body-input figure{margin:32px 0;text-align:center;font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:26px;line-height:1.4;color:var(--purple);}
+/* Bleu sur La Vie Supérieure, violet sur Que Dit la Bible (retour du
+   06/09) — même logique de couleur par rubrique que .feed-badge, appliquée
+   ici à la citation ET à la citation mise en exergue. */
+.article-body > .content-col > .body-html.vs blockquote,
+.body-input.vs blockquote{border-left-color:var(--blue);}
+.article-body > .content-col > .body-html.vs figure,
+.body-input.vs figure{color:var(--blue);}
 /* Identité visuelle distincte (retour du 05/09) — italique + fond gris
    clair, même principe que le trait vertical de "Aller plus loin"
    (.further-verse) : affichage public de la Prière, pas seulement le champ
@@ -712,6 +729,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .article-body > .content-col > .body-html ul,
   .article-body > .content-col > .body-html ol{font-size:16px;line-height:1.85;margin-bottom:26px;}
   .article-body > .content-col > .body-html blockquote{font-size:16px;line-height:1.85;margin-bottom:26px;}
+  .article-body > .content-col > .body-html figure{font-size:21px;margin:26px 0;}
   .prayer-box{padding:20px 20px;}
   .prayer-box p{font-size:16px;line-height:1.85;}
   .further-verse{padding-left:16px;}

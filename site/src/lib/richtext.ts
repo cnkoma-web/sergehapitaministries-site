@@ -51,3 +51,27 @@ export function paragraphsToHtml(raw: string): string {
     .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
     .join("");
 }
+
+// Règle typographique française : un espace insécable (pas un espace
+// normal) doit précéder un guillemet fermant, sinon le guillemet peut se
+// retrouver seul en début de ligne suivante lors d'un retour à la ligne.
+//
+// ATTENTION en relisant ce fichier : la chaîne de remplacement ci-dessous
+// contient un vrai caractère espace insécable (U+00A0) juste avant le
+// guillemet fermant, pas un espace normal — visuellement indiscernable d'un
+// espace ordinaire dans un éditeur de texte, donc facile à corrompre par
+// erreur en retapant cette ligne à la main plutôt qu'en la copiant.
+//
+// Retour du 06/09 : cette règle n'était en réalité appliquée nulle part
+// dans le contenu dynamique (articles) — seulement tapée à la main, une
+// fois, dans le texte statique de /connaitre-jesus. Ni Que Dit la Bible ni
+// La Vie Supérieure n'en bénéficiaient, malgré ce qui avait été annoncé —
+// appliquée ici aux deux, pas seulement à La Vie Supérieure, pour ne pas
+// réintroduire la même incohérence. Un espace normal est justement ce
+// qu'un clavier tape par défaut : rien dans le texte saisi par Serge
+// (chapeau, titre, corps) ne contient jamais spontanément d'espace
+// insécable, d'où l'utilité de ce filtre à l'affichage plutôt que de
+// compter sur la saisie.
+export function nbspBeforeClosingGuillemet(text: string): string {
+  return text.replace(/ »/g, " »");
+}

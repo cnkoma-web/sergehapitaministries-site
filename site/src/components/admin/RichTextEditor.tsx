@@ -10,9 +10,15 @@ type Props = {
   /** Barre d'outils réduite (gras/italique/citation/liste) pour les descriptions
    * courtes (livres, goodies) vs. barre complète pour les articles. */
   compact?: boolean;
+  /** Que Dit la Bible / La Vie Supérieure (retour du 06/09) — colore la
+   * citation et la citation mise en exergue (bleu sur VS, violet sur QDLB,
+   * voir globals.css). Sans catégorie (livres/goodies, pas de rubrique),
+   * reste violet par défaut. Jamais "rm" : cet éditeur ne gère pas Rosée
+   * Matinale (écran dédié séparé). */
+  category?: "qdlb" | "vs";
 };
 
-const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "LI", "BLOCKQUOTE", "A", "BR", "DIV"]);
+const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "LI", "BLOCKQUOTE", "FIGURE", "A", "BR", "DIV"]);
 
 // Nettoie le HTML produit par contentEditable : retire les styles/polices
 // ramenés par un copier-coller depuis une autre source (Word, un site...) et
@@ -95,9 +101,20 @@ const ICONS = {
       <polyline points="7 9 3 12 7 15" />
     </svg>
   ),
+  // Citation mise en exergue (retour du 06/09) — un cadre avec deux petites
+  // marques de citation dedans, pour se distinguer visuellement de l'icône
+  // "quote" simple ci-dessus (celle-là transforme le texte sur place ;
+  // celle-ci duplique la phrase dans un bloc séparé).
+  pullQuote: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4.5" width="18" height="15" rx="2" />
+      <path d="M8.2 9.8c-1 0-1.8.8-1.8 2s.5 1.8 1.3 1.8c.5 0 .9-.4.9-.9 0-.4-.3-.7-.7-.8.1-.7.6-1.2 1.1-1.4" />
+      <path d="M14.7 9.8c-1 0-1.8.8-1.8 2s.5 1.8 1.3 1.8c.5 0 .9-.4.9-.9 0-.4-.3-.7-.7-.8.1-.7.6-1.2 1.1-1.4" />
+    </svg>
+  ),
 };
 
-export default function RichTextEditor({ name, defaultValue, placeholder, minHeight = 160, compact = false }: Props) {
+export default function RichTextEditor({ name, defaultValue, placeholder, minHeight = 160, compact = false, category }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   // États actifs de la sélection courante (retour du 06/09) — surligne le
@@ -262,6 +279,51 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
     sanitizeAndSync();
   }
 
+  // "Citation mise en exergue" (pull quote, retour du 06/09) — distincte du
+  // bouton "Citation" ci-dessus : celui-là transforme le texte sélectionné
+  // SUR PLACE (blockquote) ; celle-ci DUPLIQUE la phrase sélectionnée dans
+  // un nouveau bloc <figure> inséré juste après le paragraphe qui la
+  // contient — le texte d'origine ne bouge pas, ne change pas. <figure> est
+  // la balise sémantique HTML5 exacte pour ce cas ("contenu qui pourrait
+  // être déplacé sans changer le sens du texte principal") — jamais de
+  // class="pull-quote" pour porter ce style : sanitize() (plus haut)
+  // retire tout attribut class sans distinction, une classe serait perdue
+  // au premier passage.
+  function insertPullQuote() {
+    const editor = editorRef.current;
+    const selection = window.getSelection();
+    if (!editor || !selection || selection.rangeCount === 0) return;
+    const text = selection.toString().trim();
+    if (!text) return;
+
+    const range = selection.getRangeAt(0);
+    if (!editor.contains(range.commonAncestorContainer)) return;
+
+    const figure = document.createElement("figure");
+    figure.textContent = text;
+
+    // Remonte jusqu'au bloc de haut niveau (enfant direct de l'éditeur)
+    // contenant la sélection, pour insérer la citation juste après LUI —
+    // jamais après un simple <li>/<b> intermédiaire.
+    let node: Node | null = range.commonAncestorContainer;
+    if (node.nodeType !== Node.ELEMENT_NODE) node = node.parentElement;
+    let block = node as Element | null;
+    while (block && block !== editor && block.parentElement !== editor) {
+      block = block.parentElement;
+    }
+
+    if (!block || block === editor) {
+      // Sélection à même l'éditeur, sans bloc parent identifiable (texte
+      // "nu" pas encore encapsulé dans un <p> — artefact contentEditable
+      // documenté plus haut) : ajoute simplement à la fin.
+      editor.appendChild(figure);
+    } else {
+      block.parentElement?.insertBefore(figure, block.nextSibling);
+    }
+
+    sanitizeAndSync();
+  }
+
   function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
     // Colle en texte brut plutôt que le HTML de la source (Word, un site web…) :
     // la police/couleur d'origine ne doit jamais s'importer dans l'article.
@@ -311,6 +373,11 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
         >
           {ICONS.quote}
         </button>
+        {!compact && (
+          <button type="button" className={toolbarBtnClass} onClick={insertPullQuote} title="Citation mise en exergue">
+            {ICONS.pullQuote}
+          </button>
+        )}
         <button type="button" className={toolbarBtnClass} data-active={active.has("ul")} onClick={() => toggleList("ul")} title="Liste à puces">
           {ICONS.bulletList}
         </button>
@@ -331,7 +398,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
       </div>
       <div
         ref={editorRef}
-        className={compact ? "desc-editable" : "body-input"}
+        className={compact ? "desc-editable" : `body-input${category ? ` ${category}` : ""}`}
         contentEditable
         suppressContentEditableWarning
         style={{ minHeight }}

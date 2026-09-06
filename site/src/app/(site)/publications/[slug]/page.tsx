@@ -9,7 +9,7 @@ import {
   ARTICLE_TYPE_LABEL,
 } from "@/lib/content/articles";
 import { getCategoriesForArticle } from "@/lib/content/categories";
-import { extractParagraphs, stripHtml } from "@/lib/richtext";
+import { extractParagraphs, stripHtml, nbspBeforeClosingGuillemet } from "@/lib/richtext";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import ShareCartouche from "@/components/articles/ShareCartouche";
@@ -90,7 +90,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <section className="article-header">
           <div className="content-col">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
-            <h1 className="article-title">{article.title}</h1>
+            <h1 className="article-title">{nbspBeforeClosingGuillemet(article.title)}</h1>
             {/* Nouvelle structure (retour du 05/09, remplace la précédente) :
                 ligne 1 auteur | temps de lecture | vues, ligne 2 date seule.
                 Italique, même taille sur les deux lignes. */}
@@ -115,28 +115,31 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         <section className="article-body">
           <div className="content-col">
-            {/* Chapeau dans le corps de l'article (retour du 03/09) — en
-                haut, avant le premier paragraphe (pas d'ordre imposé pour
-                La Vie Supérieure au-delà de ça). */}
-            {article.excerpt && <p className="article-lede">{article.excerpt}</p>}
-            {/* overflowAnchor:"none" (retour du 05/09, point 5) — sans
-                largeur/hauteur connues à l'avance, l'image ne réserve pas sa
-                place : quand elle finit de charger après le premier rendu,
-                le "scroll anchoring" du navigateur (une fonctionnalité
-                normalement utile, qui compense les décalages de mise en
-                page pour garder le contenu déjà visible stable) pouvait
-                décaler la page vers le bas dès l'arrivée, cachant le titre —
-                exactement le symptôme rapporté. Ce div n'est plus utilisé
-                comme ancre de compensation, sans changer sa taille/son
-                apparence. */}
+            {/* Chapeau APRÈS l'image sur La Vie Supérieure (retour du 06/09,
+                3e passage) — volontairement dans cet ordre, différent de Que
+                Dit la Bible, pour distinguer l'expérience de lecture des
+                deux rubriques. overflowAnchor:"none" (retour du 05/09,
+                point 5) — sans largeur/hauteur connues à l'avance, l'image
+                ne réserve pas sa place : quand elle finit de charger après
+                le premier rendu, le "scroll anchoring" du navigateur (une
+                fonctionnalité normalement utile, qui compense les décalages
+                de mise en page pour garder le contenu déjà visible stable)
+                pouvait décaler la page vers le bas dès l'arrivée, cachant le
+                titre — exactement le symptôme rapporté. Ce div n'est plus
+                utilisé comme ancre de compensation, sans changer sa
+                taille/son apparence. */}
             {article.cover_url && (
               <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden", overflowAnchor: "none" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
               </div>
             )}
+            {article.excerpt && <p className="article-lede">{nbspBeforeClosingGuillemet(article.excerpt)}</p>}
+            {/* Classe "vs" (retour du 06/09) — colore citation/citation en
+                exergue en bleu ici, violet sur Que Dit la Bible (voir
+                globals.css et RichTextEditor). */}
             {(unlocked ? paragraphs : paragraphs.slice(0, 4)).map((html, i) => (
-              <div key={i} className="body-html" dangerouslySetInnerHTML={{ __html: html }} />
+              <div key={i} className="body-html vs" dangerouslySetInnerHTML={{ __html: nbspBeforeClosingGuillemet(html) }} />
             ))}
 
             {/* Réservé aux comptes connectés, comme la lecture complète de
@@ -232,7 +235,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <section className="article-header">
         <div className="content-col">
           <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
-          <h1 className="article-title">{article.title}</h1>
+          <h1 className="article-title">{nbspBeforeClosingGuillemet(article.title)}</h1>
           {/* Nouvelle structure (retour du 05/09, remplace la précédente) :
               ligne 1 auteur | temps de lecture | vues, ligne 2 date seule.
               Italique, même taille sur les deux lignes. */}
@@ -259,12 +262,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="content-col">
           {/* Chapeau avant le verset d'ouverture (retour du 03/09, ordre
               exact demandé pour Que Dit la Bible). */}
-          {article.excerpt && <p className="article-lede">{article.excerpt}</p>}
+          {article.excerpt && <p className="article-lede">{nbspBeforeClosingGuillemet(article.excerpt)}</p>}
 
           {article.verse_reference && article.verse_text && (
             <div className="verse-box">
               <div className="ref">{article.verse_reference}</div>
-              <p>« {article.verse_text} »</p>
+              {/* Espace insécable avant le guillemet fermant (retour du
+                  06/09, règle typographique française) — ces guillemets sont
+                  ajoutés par ce gabarit, pas tapés par Serge. */}
+              <p>« {article.verse_text}{" "}»</p>
             </div>
           )}
 
@@ -278,8 +284,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           )}
 
           {paragraphs.length > 0 && <h2>Parlons-en</h2>}
+          {/* Classe "qdlb" explicite (retour du 06/09) — violet par défaut
+              de toute façon, mais nommée pour que le mécanisme reste clair
+              si une autre rubrique s'ajoute un jour à ce gabarit. */}
           {paragraphs.map((html, i) => (
-            <div key={i} className="body-html" dangerouslySetInnerHTML={{ __html: html }} />
+            <div key={i} className="body-html qdlb" dangerouslySetInnerHTML={{ __html: nbspBeforeClosingGuillemet(html) }} />
           ))}
 
           {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du
@@ -296,7 +305,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <>
               <h2>Prière</h2>
               <div className="prayer-box">
-                <p>{article.prayer}</p>
+                <p>{nbspBeforeClosingGuillemet(article.prayer)}</p>
               </div>
             </>
           )}
@@ -307,7 +316,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               {article.further_verses.map((v, i) => (
                 <div className="further-verse" key={i}>
                   <div className="ref">{v.reference}</div>
-                  <p>« {v.text} »</p>
+                  {/* Espace insécable avant le guillemet fermant (retour du
+                      06/09) — même raison que le verse-box plus haut. */}
+                  <p>« {v.text}{" "}»</p>
                 </div>
               ))}
             </>

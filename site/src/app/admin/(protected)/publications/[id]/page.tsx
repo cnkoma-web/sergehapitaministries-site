@@ -157,7 +157,19 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
           <div className="content-area">
             <div className="content-body">
               <input type="text" name="title" defaultValue={article.title} required className="title-input" placeholder="Titre de l'article" />
-              <RichTextEditor key={article.id} name="body" defaultValue={article.body} placeholder="Écrivez votre article ici…" minHeight={300} />
+              {/* category (retour du 06/09) — colore citation/citation en
+                  exergue selon la rubrique (bleu VS, violet QDLB). Reflète
+                  la catégorie au chargement de la page, pas un changement
+                  en direct si Serge la modifie dans le sélecteur ci-dessus
+                  sans encore avoir enregistré. */}
+              <RichTextEditor
+                key={article.id}
+                name="body"
+                defaultValue={article.body}
+                placeholder="Écrivez votre article ici…"
+                minHeight={300}
+                category={article.type === "vs" ? "vs" : "qdlb"}
+              />
             </div>
           </div>
         </div>
