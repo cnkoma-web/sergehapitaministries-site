@@ -42,6 +42,15 @@ export default async function AdminRoseePage({
             <label>Date</label>
             <input name="article_date" type="date" defaultValue={today} required />
           </div>
+          {/* Titre (retour du 07/09) — facultatif : laissé vide, l'entrée
+              garde le titre reconstruit automatiquement depuis la date
+              ("Rosée Matinale — [date]"), comme avant ce champ. Utilisé dans
+              la liste "Articles similaires" de l'éditeur et dans le message
+              de partage personnalisé (voir src/lib/share.ts). */}
+          <div className="editor-field">
+            <label>Titre (facultatif)</label>
+            <input type="text" name="title" placeholder="Repli automatique : « Rosée Matinale — [date] »" />
+          </div>
           <div className="editor-field">
             <label>Citation / pensée du jour</label>
             <textarea name="verse_text" rows={3} required />

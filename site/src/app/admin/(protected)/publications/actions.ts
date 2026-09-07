@@ -188,10 +188,17 @@ export async function publishRosee(formData: FormData) {
   const body = bodyRaw ? paragraphsToHtml(bodyRaw) : "";
   if (!verse_text) return;
 
+  // Champ "Titre" (retour du 07/09) — optionnel : laissé vide, on retombe
+  // sur l'ancien comportement (titre reconstruit depuis la date), utilisé
+  // ailleurs sur le site (liste "Articles similaires", message de partage)
+  // tant que Serge n'a pas renseigné un vrai titre pour cette entrée.
+  const submittedTitle = String(formData.get("title") ?? "").trim();
+  const autoTitle = `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
+
   await supabase.from("articles").insert({
     type: "rm",
     slug: `rm-${article_date}`,
-    title: `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`,
+    title: submittedTitle || autoTitle,
     article_date,
     verse_text,
     body: body || null,
@@ -222,13 +229,20 @@ export async function updateRoseeEntry(formData: FormData) {
   const body = String(formData.get("body") ?? "").trim();
   const article_date = String(formData.get("article_date") ?? "") || undefined;
 
+  // Champ "Titre" (retour du 07/09) — même règle qu'à la création : vide,
+  // le titre continue de se reconstruire depuis la date (comportement
+  // d'origine, avant ce champ) ; rempli, il prend le dessus et n'est plus
+  // écrasé par un changement de date ultérieur.
+  const submittedTitle = String(formData.get("title") ?? "").trim();
+  const autoTitle = article_date
+    ? `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
+    : undefined;
+
   await supabase
     .from("articles")
     .update({
       article_date,
-      title: article_date
-        ? `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
-        : undefined,
+      title: submittedTitle || autoTitle,
       verse_text,
       body: body || null,
       cover_url: String(formData.get("cover_url") ?? "").trim() || null,

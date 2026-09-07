@@ -53,6 +53,18 @@ export default async function AdminRoseeEntryPage({ params }: { params: Promise<
             </div>
           </div>
 
+          {/* Titre (retour du 07/09) — facultatif : laissé vide, le titre
+              continue de se reconstruire automatiquement depuis la date
+              ("Rosée Matinale — [date]"), comme avant ce champ. Utilisé
+              dans la liste "Articles similaires" de l'éditeur et dans le
+              message de partage personnalisé (voir src/lib/share.ts) —
+              jusqu'ici, ces deux endroits n'avaient que le titre
+              reconstruit depuis la date. */}
+          <div className="editor-field">
+            <label>Titre (facultatif)</label>
+            <input type="text" name="title" defaultValue={entry.title} placeholder="Repli automatique : « Rosée Matinale — [date] »" />
+          </div>
+
           <div className="editor-field">
             <label>Citation / pensée du jour</label>
             <textarea name="verse_text" defaultValue={entry.verse_text ?? ""} rows={3} required />

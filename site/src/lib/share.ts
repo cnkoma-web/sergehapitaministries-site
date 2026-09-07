@@ -12,10 +12,12 @@ const CATEGORY_PHRASE: Record<ShareCategory, string> = {
   vs: "l'enseignement du jour",
 };
 
+// "Retrouve" plutôt que "Découvre" (retour du 07/09) — un texte propre à
+// chaque catégorie, pas un simple mot remplacé partout à l'identique.
 const CATEGORY_INVITE: Record<ShareCategory, string> = {
-  rm: "Découvre la pensée complète ici",
-  qdlb: "Découvre la pensée complète ici",
-  vs: "Découvre l'enseignement complet ici",
+  rm: "Retrouve la pensée complète ici",
+  qdlb: "Retrouve l'intégralité de la réflexion ici",
+  vs: "Retrouve l'enseignement complet ici",
 };
 
 // Phrase au-dessus des icônes de partage, sur la page elle-même (retour du

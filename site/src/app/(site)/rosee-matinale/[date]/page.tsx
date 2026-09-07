@@ -9,8 +9,12 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
   const entries = await getPublishedArticles("rm");
   const current = entries.find((e) => e.article_date === date);
   if (!current) return {};
-  const dateLabel = new Date(current.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
-  const title = `Rosée Matinale — ${dateLabel} | Serge Hapita Ministries`;
+  // current.title (retour du 07/09) — remplace un titre reconstruit ici même
+  // depuis la date, trouvé pendant la revue du nouveau champ "Titre" Rosée
+  // Matinale : un endroit de plus qui utilisait la date en guise de titre
+  // sans que Serge s'en aperçoive (page inchangée à l'écran, seul l'onglet
+  // du navigateur/le partage sur les réseaux le montraient).
+  const title = `${current.title} | Serge Hapita Ministries`;
   const description = current.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
   return {
     title,

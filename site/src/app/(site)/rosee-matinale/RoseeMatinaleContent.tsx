@@ -115,12 +115,12 @@ export default function RoseeMatinaleContent({
           couleur exacte demandée, plus --lavender-deep. */}
       <section className="share-zone">
         <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
-          <ShareCartouche
-            title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`}
-            url={pageUrl}
-            category="rm"
-            excerpt={current.verse_text ?? undefined}
-          />
+          {/* current.title (retour du 07/09, 3e passage) — remplace un titre
+              reconstruit ici même depuis la date, en double-emploi maladroit
+              avec le vrai champ "Titre" de l'entrée (voir l'écran d'édition
+              Rosée Matinale) : celui-ci reflète désormais un titre choisi
+              par Serge, pas seulement son repli automatique. */}
+          <ShareCartouche title={current.title} url={pageUrl} category="rm" excerpt={current.verse_text ?? undefined} />
         </div>
       </section>
 

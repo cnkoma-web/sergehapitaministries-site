@@ -9,10 +9,12 @@ import RoseeMatinaleContent from "./RoseeMatinaleContent";
 export async function generateMetadata(): Promise<Metadata> {
   const entries = await getPublishedArticles("rm");
   const current = entries[0];
-  const dateLabel = current
-    ? new Date(current.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
-    : "";
-  const title = `Rosée Matinale${dateLabel ? ` — ${dateLabel}` : ""} | Serge Hapita Ministries`;
+  // current.title (retour du 07/09) — remplace un titre reconstruit ici même
+  // depuis la date, trouvé pendant la revue du nouveau champ "Titre" Rosée
+  // Matinale : un endroit de plus qui utilisait la date en guise de titre
+  // sans que Serge s'en aperçoive (page inchangée à l'écran, seul l'onglet
+  // du navigateur/le partage sur les réseaux le montraient).
+  const title = `${current?.title ?? "Rosée Matinale"} | Serge Hapita Ministries`;
   const description = current?.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
   // Toujours l'entrée du jour courant, jamais un jour précis (cette route n'a
   // pas de segment de date — voir /rosee-matinale/[date] pour l'archive,
