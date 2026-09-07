@@ -82,6 +82,24 @@ export async function getRelatedArticles(type: ArticleType, excludeId: string, l
   return all.filter((a) => a.id !== excludeId).slice(0, limit);
 }
 
+/** "Autres articles similaires" sur Rosée Matinale (retour du 07/09) — pas
+ * d'équivalent "même type" ici (une seule entrée par jour, aucun lien
+ * manuel possible sur cet éditeur) : met en avant les publications des deux
+ * AUTRES rubriques à la place, mélangées et triées par date — jamais
+ * d'autres entrées Rosée Matinale. */
+export async function getLatestNonRoseeArticles(limit = 3): Promise<Article[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("articles")
+    .select(COLUMNS)
+    .in("type", ["qdlb", "vs"])
+    .eq("status", "published")
+    .order("article_date", { ascending: false })
+    .limit(limit);
+  if (error || !data) return [];
+  return data;
+}
+
 /** Articles similaires liés manuellement par Serge (cahier §6.2) — si aucun
  * lien manuel n'a été fait, on retombe sur les plus récents du même type. */
 export async function getArticlesByIds(ids: string[]): Promise<Article[]> {

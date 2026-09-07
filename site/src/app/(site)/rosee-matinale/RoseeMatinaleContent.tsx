@@ -3,6 +3,7 @@ import type { Article } from "@/lib/content/articles";
 import { extractParagraphs } from "@/lib/richtext";
 import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
+import RelatedArticlesSection from "@/components/articles/RelatedArticlesSection";
 import LikeButton from "@/components/articles/LikeButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -34,6 +35,7 @@ export default function RoseeMatinaleContent({
   archive,
   archivePageNum,
   basePath,
+  relatedArticles,
 }: {
   current: Article;
   previous: Article | null;
@@ -41,6 +43,7 @@ export default function RoseeMatinaleContent({
   archive: Article[];
   archivePageNum: number;
   basePath: string;
+  relatedArticles: Article[];
 }) {
   const pageUrl = `${SITE_URL}${dayHref(current.article_date)}`;
   const paragraphs = extractParagraphs(current.body || "");
@@ -115,9 +118,18 @@ export default function RoseeMatinaleContent({
         </div>
       </section>
 
+      {/* "Autres articles similaires" (retour du 07/09) — composant partagé
+          avec Que Dit la Bible / La Vie Supérieure, jamais reconstruit ici.
+          Toujours Que Dit la Bible / La Vie Supérieure, jamais d'autre
+          entrée Rosée Matinale (voir getLatestNonRoseeArticles). Fond
+          lavande (.related-articles, déjà cette couleur par défaut) — reste
+          sur fond blanc juste après le trait de partage ci-dessus, avant
+          l'archive plus bas. */}
+      <RelatedArticlesSection articles={relatedArticles} />
+
       <section className="rm-archive" id="archive">
         <div className="wrap">
-          <h2>Les jours précédents</h2>
+          <h2>Rosées matinales précédentes</h2>
           <p className="sub">Chaque jour, une nouvelle pensée s&apos;ajoute à cette liste.</p>
           {archive.length === 0 ? (
             <p className="rm-empty">Ceci est la toute première pensée publiée — l&apos;archive se remplira à partir de demain.</p>

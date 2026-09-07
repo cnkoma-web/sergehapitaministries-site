@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPublishedArticles } from "@/lib/content/articles";
+import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import ViewTracker from "@/components/articles/ViewTracker";
 import RoseeMatinaleContent from "../RoseeMatinaleContent";
 
@@ -50,6 +50,9 @@ export default async function RoseeMatinaleDatePage({
   const next = entries[currentIndex - 1] ?? null;
   const archive = entries.filter((_, i) => i !== currentIndex);
   const archivePageNum = Math.max(1, Number(archivePage) || 1);
+  // "Autres articles similaires" (retour du 07/09) — jamais d'autres entrées
+  // Rosée Matinale, uniquement Que Dit la Bible / La Vie Supérieure.
+  const relatedArticles = await getLatestNonRoseeArticles(3);
 
   return (
     <>
@@ -65,6 +68,7 @@ export default async function RoseeMatinaleDatePage({
         archive={archive}
         archivePageNum={archivePageNum}
         basePath={`/rosee-matinale/${date}`}
+        relatedArticles={relatedArticles}
       />
     </>
   );

@@ -15,6 +15,7 @@ import { isRealUser } from "@/lib/supabase/realUser";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import LikeButton from "@/components/articles/LikeButton";
 import ViewTracker from "@/components/articles/ViewTracker";
+import RelatedArticlesSection from "@/components/articles/RelatedArticlesSection";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -359,50 +360,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      {related.length > 0 && (
-        <section className="related-articles">
-          <div className="wrap">
-            {/* Intitulé neutre, sans nom de catégorie entre guillemets
-                (retour du 05/09). */}
-            <h2>Autres articles similaires</h2>
-            <div className="related-grid">
-              {related.map((a) => (
-                // Corrigé (retour du 05/09, 2e signalement) : plus de lien
-                // unique étiré sur toute la carte (métadonnées et espace vide
-                // compris) — même défaut que celui déjà corrigé sur les
-                // cartes des hubs, réapparu ici. Revenu au même principe
-                // exact que .feed-item : seuls le titre et le chapeau sont
-                // cliquables, chacun avec son propre lien, survol violet
-                // souris uniquement (jamais "collé" sur tactile), :active
-                // pour le retour visuel bref au toucher.
-                <div className="related-card" key={a.id}>
-                  <div className="verse">
-                    {/* Format complet en toutes lettres, identique au reste
-                        des articles (retour du 05/09) — plus le format
-                        abrégé "19 août". */}
-                    {new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                  </div>
-                  <h3>
-                    <Link href={`/publications/${a.slug}`}>{a.title}</Link>
-                  </h3>
-                  {/* Chapeau ajouté sous le titre (retour du 05/09). */}
-                  {a.excerpt && (
-                    <p className="related-card-excerpt">
-                      <Link href={`/publications/${a.slug}`}>{a.excerpt}</Link>
-                    </p>
-                  )}
-                  {/* Libellé aligné sur celui des hubs (retour du 05/09) —
-                      plus "Lire l'article →". Lien indépendant, ne recouvre
-                      que son propre texte. */}
-                  <Link href={`/publications/${a.slug}`} className="related-card-link">
-                    Lire la suite →
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Extrait dans un composant partagé (retour du 07/09) — réutilisé tel
+          quel par Rosée Matinale, corrige au passage le chapeau manquant
+          quand une entrée Rosée Matinale est suggérée ici (liée
+          manuellement) : elle n'a jamais de champ "excerpt", voir le repli
+          dans RelatedArticlesSection. */}
+      <RelatedArticlesSection articles={related} />
 
       <Newsletter />
       <Footer variant="light" />
