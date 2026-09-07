@@ -209,7 +209,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
             </section>
 
-            {/* Zone de partage --lavender-deep (retour du 07/09) — voir le
+            {/* Zone de partage --purple pleine (retour du 07/09) — voir le
                 commentaire équivalent sur le gabarit Que Dit la Bible plus
                 bas dans ce fichier. */}
             <section className="share-zone">
@@ -218,7 +218,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
             </section>
 
-            <section className="section" style={{ paddingTop: 0 }}>
+            {/* paddingBottom:0 (retour du 07/09, revue complète) — .back-cta
+                porte désormais lui-même un espacement symétrique, plus besoin
+                que cette section en ajoute côté haut ET bas. */}
+            <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
               <div className="content-col">
                 <div className="back-cta">
                   <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
@@ -250,7 +253,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
             </section>
 
-            <section className="section" style={{ paddingTop: 0 }}>
+            <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
               <div className="content-col">
                 <div className="back-cta">
                   <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
@@ -379,7 +382,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
-      {/* Zone de partage --lavender-deep (retour du 07/09) — avant, un
+      {/* Zone de partage --purple pleine (retour du 07/09) — avant, un
           simple trait fin séparait ce bloc du texte au-dessus ; la démarcation
           est maintenant une vraie zone de couleur, comme "Autres articles
           similaires" juste après (--lavender pâle). "← Toutes les
@@ -391,11 +394,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </div>
       </section>
 
+      {/* Revue complète des zones de partage (retour du 07/09, 2e passage) :
+          le trait qui séparait autrefois .back-cta du bloc au-dessus est
+          retiré (redondant, la bande --purple juste au-dessus démarque déjà
+          nettement) et son espacement est désormais symétrique (voir
+          .back-cta) pour que le bouton soit centré dans sa propre zone
+          blanche, entre la bande de partage et "Autres articles
+          similaires" juste en dessous. */}
       <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <div className="content-col">
-          {/* .back-cta garde son propre trait/espacement au-dessus (retour
-              du 07/09) — sépare toujours ce lien de ce qu'il y a juste
-              avant, que ce soit blanc ou --lavender-deep. */}
           <div className="back-cta">
             <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
           </div>

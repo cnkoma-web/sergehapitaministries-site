@@ -90,15 +90,11 @@ export default function RoseeMatinaleContent({
               texte. Accessible à tout le monde, sans compte (Rosée Matinale
               reste public). */}
           <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" />
-        </div>
-      </section>
 
-      {/* Navigation + partage regroupés dans une seule zone --lavender-deep
-          (retour du 07/09) — avant, seuls de simples traits fins les
-          séparaient du texte au-dessus et l'un de l'autre, sans réelle
-          démarcation. */}
-      <section className="share-zone">
-        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+          {/* Navigation ramenée dans la zone blanche du texte (retour du
+              07/09, 2e passage — annule le regroupement du passage
+              précédent) : reste avec son propre trait de séparation, pas
+              dans la bande de partage colorée juste en dessous. */}
           <div className="rm-nav-days">
             {previous ? (
               <Link href={dayHref(previous.article_date)}>← Jour précédent</Link>
@@ -112,7 +108,13 @@ export default function RoseeMatinaleContent({
               <span className="disabled">Jour suivant →</span>
             )}
           </div>
+        </div>
+      </section>
 
+      {/* Bande de partage --purple pleine (retour du 07/09, 2e passage) —
+          couleur exacte demandée, plus --lavender-deep. */}
+      <section className="share-zone">
+        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
           <ShareCartouche
             title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`}
             url={pageUrl}

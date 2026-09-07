@@ -146,7 +146,11 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
         </div>
       </section>
 
-      <section className="section product-desc">
+      {/* paddingBottom:0 (retour du 07/09, revue complète des zones de
+          partage) — le partage n'est plus un simple bloc dans cette même
+          colonne de texte (voir .share-zone juste en dessous), plus besoin
+          d'espace réservé ici en bas. */}
+      <section className="section product-desc" style={{ paddingBottom: 0 }}>
         <div className="content-col">
           <h2>À propos de ce livre</h2>
           {book.description ? (
@@ -156,10 +160,18 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
           ) : (
             <p>Description complète à venir.</p>
           )}
-          {/* Partage (retour du 05/09) — même système que les articles :
-              image Open Graph dédiée (voir opengraph-image.tsx dans ce même
-              dossier), message personnalisé calqué sur celui des
-              publications (buildBookShareMessage), mêmes boutons/ordre/style. */}
+        </div>
+      </section>
+
+      {/* Zone de partage --purple pleine (retour du 07/09, revue complète) —
+          même schéma que les publications (voir ShareCartouche/globals.css) :
+          bien démarquée par sa propre bande de couleur plutôt qu'un simple
+          bloc sans fond dans la colonne de texte. Corrige au passage un vrai
+          bug jamais signalé isolément : le message "Lien copié !"
+          (.copy-feedback, texte blanc) était invisible sur le fond blanc
+          d'origine, faute de cette bande de couleur derrière lui. */}
+      <section className="share-zone">
+        <div className="content-col">
           <ShareCartouche title={book.title} url={pageUrl} bookDescription={shareDescription} />
         </div>
       </section>

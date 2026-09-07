@@ -626,7 +626,11 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    zone du texte au-dessus et de "Autres articles similaires" en dessous
    (--lavender pâle) — plus besoin de traits pour marquer la séparation. */
 .share-block{margin:0;padding:22px 0;}
-.share-invite{text-align:center;font-size:14px;color:var(--ink-soft);margin:0 0 18px;}
+/* Italique + gras combinés (retour du 07/09, 2e passage) — les deux
+   styles à la fois, pas l'un ou l'autre. Blanc plutôt que --ink-soft
+   (retour du 07/09, 2e passage) : --ink-soft est un gris-encre sombre,
+   illisible sur le fond --purple plein de .share-zone. */
+.share-invite{text-align:center;font-size:14px;font-style:italic;font-weight:700;color:#fff;margin:0 0 18px;}
 .share-row{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;}
 .share-icon{display:flex;align-items:center;justify-content:center;width:21px;height:21px;transition:transform .15s;}
 .share-icon:hover{transform:scale(1.15);}
@@ -635,24 +639,28 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    rangée plutôt qu'un simple changement d'opacité, facile à manquer.
    D'abord tenté en bulle au-dessus de l'icône : invisible sur mobile,
    rognée par le défilement horizontal de la rangée (overflow-x:auto force
-   aussi overflow-y à se comporter en clip) — constaté en vérifiant. */
-.copy-feedback{text-align:center;font-size:13px;font-weight:700;color:var(--purple);margin:14px 0 0;}
+   aussi overflow-y à se comporter en clip) — constaté en vérifiant. Blanc
+   plutôt que --purple (retour du 07/09, 2e passage) : texte violet sur
+   fond --purple plein serait invisible. */
+.copy-feedback{text-align:center;font-size:13px;font-weight:700;color:#fff;margin:14px 0 0;}
 /* Zone de partage en pleine largeur (retour du 07/09) — section à part
    entière (même principe que .related-articles), pas juste un fond posé
    sur la colonne de texte : donne à la démarcation le même poids visuel
-   que "Autres articles similaires" juste en dessous. --lavender-deep,
-   plus soutenu que le --lavender pâle de cette dernière, pour que les deux
-   zones lavande restent bien distinctes l'une de l'autre. Regroupe aussi
-   la navigation "Jour précédent/suivant" sur Rosée Matinale, qui vivait
-   jusqu'ici dans une zone séparée par un trait — les deux forment
-   désormais une seule zone continue. */
-.share-zone{background:var(--lavender-deep);padding:16px 0;}
-/* Icônes des réseaux sociaux en blanc sur ce fond plus soutenu (retour du
-   07/09) — sinon, certaines (Facebook bleu, WhatsApp vert...) restent
-   lisibles mais l'icône "Copier le lien" (gris clair) et "E-mail" s'y
-   fondent visuellement. Cible les attributs fill/stroke directement (les
-   couleurs de marque sont posées en attributs de présentation SVG, pas en
-   CSS) — jamais fill="none" du cadre de l'icône "Copier", qui doit rester
+   que "Autres articles similaires" juste en dessous. --purple plein
+   (retour du 07/09, 2e passage — remplace --lavender-deep) : couleur
+   exacte demandée, déjà utilisée pour le badge de catégorie, le survol des
+   liens et l'icône "œil" du compteur de vues — jamais le lavande pâle ni
+   le lavande foncé utilisés ailleurs sur la page. La navigation "Jour
+   précédent/suivant" est restée dans la zone blanche du texte (voir
+   RoseeMatinaleContent.tsx) — cette zone ne contient plus que le bloc de
+   partage lui-même. */
+.share-zone{background:var(--purple);padding:16px 0;}
+/* Icônes des réseaux sociaux en blanc sur ce fond plein (retour du 07/09)
+   — sinon, certaines (Facebook bleu, WhatsApp vert...) restent lisibles
+   mais l'icône "Copier le lien" (gris clair) et "E-mail" s'y fondent
+   visuellement. Cible les attributs fill/stroke directement (les couleurs
+   de marque sont posées en attributs de présentation SVG, pas en CSS) —
+   jamais fill="none" du cadre de l'icône "Copier", qui doit rester
    transparent, seul son trait passe en blanc. */
 .share-zone .share-icon svg path[fill]{fill:#fff !important;}
 .share-zone .share-icon svg[stroke]{stroke:#fff !important;}
@@ -705,7 +713,16 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .like-button.liked{color:var(--purple);cursor:default;}
 .like-button:disabled{opacity:.85;}
 .like-error{margin-top:10px;font-size:13px;color:var(--ink-soft);}
-.back-cta{text-align:center;margin-top:32px;padding-top:28px;border-top:1px solid var(--line);}
+/* Trait de séparation + espacement asymétrique retirés (retour du 07/09,
+   revue complète des zones de partage) : ce lien suivait autrefois un
+   simple bloc de partage sans fond, d'où le besoin d'un trait pour le
+   distinguer. Il suit désormais toujours la bande --purple pleine
+   (.share-zone) qui démarque déjà nettement la zone — un second trait juste
+   en dessous était redondant. Padding symétrique (au lieu de
+   margin-top+padding-top d'un côté, rien de l'autre) pour que le bouton
+   soit réellement centré dans son espace blanc, entre la bande de partage
+   au-dessus et ce qui suit en dessous. */
+.back-cta{text-align:center;padding:40px 0;}
 .related-articles{background:var(--lavender);padding-top:56px;padding-bottom:56px;}
 .related-articles h2{font-size:22px;margin-bottom:28px;text-align:center;}
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
@@ -785,11 +802,11 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .rm-quote-wrap{max-width:640px;margin:0 auto;text-align:center;position:relative;}
 .rm-quote-mark{font-family:'Fraunces',serif;font-size:90px;color:var(--teal);opacity:.25;line-height:1;margin-bottom:-30px;}
 .rm-quote-text{font-family:'Fraunces',serif;font-style:italic;font-size:23px;line-height:1.65;color:var(--ink);}
-/* border-bottom retiré (retour du 07/09) — la navigation vit désormais dans
-   la même zone --lavender-deep que le bloc de partage juste en dessous
-   (voir .share-zone), plus besoin d'un trait pour les séparer l'une de
-   l'autre. */
-.rm-nav-days{display:flex;justify-content:space-between;align-items:center;padding:28px 0;}
+/* border-bottom restauré (retour du 07/09, 2e passage — annule le retrait
+   du passage précédent) : la navigation est revenue dans la zone blanche
+   du texte, avec son propre trait de séparation d'origine — jamais dans la
+   bande de partage colorée juste en dessous (voir .share-zone). */
+.rm-nav-days{display:flex;justify-content:space-between;align-items:center;padding:28px 0;border-bottom:1px solid var(--line);}
 .rm-nav-days a{font-size:13.5px;font-weight:700;color:var(--ink-soft);}
 .rm-nav-days a:hover{color:var(--teal);}
 .rm-nav-days .disabled{color:var(--line);cursor:default;}

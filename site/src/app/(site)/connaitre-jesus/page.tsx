@@ -63,7 +63,11 @@ export default function ConnaitreJesusPage() {
         </div>
       </section>
 
-      <section className="cj-body">
+      {/* paddingBottom:0 en ligne (retour du 07/09, revue complète des zones
+          de partage) — scopé à cette seule occurrence de .cj-body (celle qui
+          se termine par le partage) : la seconde plus bas dans ce fichier
+          garde son padding d'origine, inchangée. */}
+      <section className="cj-body" style={{ paddingBottom: 0 }}>
         <div className="content-col">
           <p>
             Il y a presque deux mille ans, un homme du nom de Jésus est né d&apos;une vierge. Il a déclaré qu&apos;il
@@ -116,7 +120,19 @@ export default function ConnaitreJesusPage() {
             <p>« Déclaré Fils de Dieu avec puissance, selon l&apos;Esprit de sainteté, par sa résurrection d&apos;entre les morts. »</p>
             <div className="ref">Actes 1:9 · Romains 1:4</div>
           </div>
+        </div>
+      </section>
 
+      {/* Zone de partage --purple pleine (retour du 07/09, revue complète) —
+          même schéma que les publications/fiches livres : bien démarquée par
+          sa propre bande de couleur plutôt qu'un simple bloc sans fond.
+          Corrige au passage un vrai bug jamais signalé isolément : le
+          message "Lien copié !" (.copy-feedback, texte blanc) était
+          invisible sur le fond blanc d'origine, faute de cette bande de
+          couleur derrière lui. Pas de phrase d'invitation ici (page sans
+          "category" ni "bookDescription" — voir ShareCartouche). */}
+      <section className="share-zone">
+        <div className="content-col">
           <ShareCartouche title="Connaître Jésus" url={PAGE_URL} />
         </div>
       </section>
