@@ -24,10 +24,13 @@ const CATEGORY_INVITE: Record<ShareCategory, string> = {
 // 05/09, 4e passage) — formulations fixées avec Serge, jamais sur les
 // fiches livres (voir ShareCartouche : rendue uniquement quand `category`
 // est fourni).
+// "Bénis quelqu'un" plutôt que "Bénis quelqu'un que tu connais" (retour du
+// 07/09) — seule cette partie change, la fin reste propre à chaque
+// catégorie.
 export const SHARE_BLOCK_INVITE: Record<ShareCategory, string> = {
-  rm: "Bénis quelqu'un que tu connais en partageant ce message.",
-  qdlb: "Bénis quelqu'un que tu connais en partageant cette réflexion.",
-  vs: "Bénis quelqu'un que tu connais en partageant cet enseignement.",
+  rm: "Bénis quelqu'un en partageant ce message.",
+  qdlb: "Bénis quelqu'un en partageant cette réflexion.",
+  vs: "Bénis quelqu'un en partageant cet enseignement.",
 };
 
 // Tronque au dernier mot complet, jamais en plein milieu d'un mot — ne

@@ -59,6 +59,13 @@ export default function RoseeMatinaleContent({
       >
         <div className="wrap">
           <div className="cat">Rosée Matinale</div>
+          {/* Titre de l'entrée du jour (retour du 07/09, 2e passage) —
+              distinct du libellé de catégorie ci-dessus (qui reste "Rosée
+              Matinale", fixe) : le nouveau champ "Titre", rempli au cas par
+              cas par Serge dans l'admin (repli automatique sur le même
+              texte que la date ci-dessous s'il ne l'a pas encore renseigné
+              pour cette entrée — voir l'écran d'édition). */}
+          <h1 className="entry-title">{current.title}</h1>
           <div className="date">
             {new Date(current.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
@@ -82,8 +89,19 @@ export default function RoseeMatinaleContent({
           en dessous. */}
       <section className="section" style={{ paddingTop: 32, paddingBottom: 24 }}>
         <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+          {/* Classe "rm-body-html" (retour du 07/09) — sans elle, une
+              "citation mise en exergue" insérée dans le corps ne recevait
+              aucun style particulier ici (violet, italique, centrée,
+              taille agrandie) : cette page n'a jamais eu l'équivalent de
+              ".body-html" utilisé par Que Dit la Bible/La Vie Supérieure
+              pour cibler ce même bloc en CSS (voir globals.css). */}
           {paragraphs.map((html, i) => (
-            <div key={i} style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: html }} />
+            <div
+              key={i}
+              className="rm-body-html"
+              style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }}
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
           ))}
 
           {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du

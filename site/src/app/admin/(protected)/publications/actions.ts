@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { computeReadingTime } from "@/lib/readingTime";
-import { paragraphsToHtml } from "@/lib/richtext";
 import { setArticleCategories } from "@/lib/content/categories";
 
 function slugify(text: string): string {
@@ -184,8 +183,12 @@ export async function publishRosee(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
   const verse_text = String(formData.get("verse_text") ?? "").trim();
-  const bodyRaw = String(formData.get("body") ?? "").trim();
-  const body = bodyRaw ? paragraphsToHtml(bodyRaw) : "";
+  // Plus de paragraphsToHtml ici (retour du 07/09) — ce champ vient
+  // désormais du même RichTextEditor que l'écran d'édition (retour du
+  // 07/09, unification des deux éditeurs), qui produit déjà du HTML tout
+  // fait via son propre champ caché, pas du texte brut à convertir en
+  // paragraphes comme le faisait l'ancien <textarea> simple.
+  const body = String(formData.get("body") ?? "").trim();
   if (!verse_text) return;
 
   // Champ "Titre" (retour du 07/09) — optionnel : laissé vide, on retombe

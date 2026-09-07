@@ -590,8 +590,10 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    RichTextEditor retire tout attribut class sans distinction, une classe
    ne survivrait pas à l'édition. */
 .article-body > .content-col > .body-html figure,
+.rm-body-html figure,
 .product-desc figure,
-.body-input figure{margin:32px 0;text-align:center;font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:26px;line-height:1.4;color:var(--purple);}
+.body-input figure,
+.desc-editable figure{margin:32px 0;text-align:center;font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:26px;line-height:1.4;color:var(--purple);}
 /* Bleu sur La Vie Supérieure, violet sur Que Dit la Bible (retour du
    06/09) — même logique de couleur par rubrique que .feed-badge, appliquée
    ici à la citation ET à la citation mise en exergue. */
@@ -604,8 +606,10 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    draggable="true" posés par sanitize() dans RichTextEditor), jamais du
    texte en ligne classique : un curseur "grab" et un léger fond au survol
    signalent ce comportement, absent du rendu public. */
-.body-input figure{cursor:grab;border-radius:8px;transition:background .1s;}
-.body-input figure:hover{background:var(--lavender);}
+.body-input figure,
+.desc-editable figure{cursor:grab;border-radius:8px;transition:background .1s;}
+.body-input figure:hover,
+.desc-editable figure:hover{background:var(--lavender);}
 /* Identité visuelle distincte (retour du 05/09) — italique + fond gris
    clair, même principe que le trait vertical de "Aller plus loin"
    (.further-verse) : affichage public de la Prière, pas seulement le champ
@@ -776,7 +780,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .article-body > .content-col > .body-html ul,
   .article-body > .content-col > .body-html ol{font-size:16px;line-height:1.85;margin-bottom:26px;}
   .article-body > .content-col > .body-html blockquote{font-size:16px;line-height:1.85;margin-bottom:26px;}
-  .article-body > .content-col > .body-html figure{font-size:21px;margin:26px 0;}
+  .article-body > .content-col > .body-html figure,
+  .rm-body-html figure{font-size:21px;margin:26px 0;}
   .prayer-box{padding:20px 20px;}
   .prayer-box p{font-size:16px;line-height:1.85;}
   .further-verse{padding-left:16px;}
@@ -792,6 +797,11 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .rm-photo-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(20,16,42,.85) 0%, rgba(20,16,42,.35) 60%, rgba(20,16,42,.1) 100%);}
 .rm-photo-hero .wrap{position:relative;z-index:1;padding:40px 0;}
 .rm-photo-hero .cat{color:#fff;font-family:'Fraunces',serif;font-size:28px;margin-bottom:8px;}
+/* Titre de l'entrée du jour (retour du 07/09) — le nouveau champ "Titre",
+   distinct du libellé de catégorie ".cat" ci-dessus (qui reste "Rosée
+   Matinale", fixe, inchangé) : entre le badge de catégorie et la date,
+   police plus grande que les deux, comme demandé. */
+.rm-photo-hero .entry-title{color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:38px;line-height:1.25;margin:0 0 10px;}
 .rm-photo-hero .date{color:rgba(255,255,255,.8);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
 .rm-photo-hero .article-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:rgba(255,255,255,.65);margin-top:10px;text-transform:none;letter-spacing:normal;font-weight:400;}
 .rm-photo-hero .article-meta span{display:flex;align-items:center;gap:5px;}
@@ -836,6 +846,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .rm-quote-text{font-size:19px;}
   .rm-quote-mark{font-size:70px;}
   .rm-photo-hero{min-height:260px;}
+  .rm-photo-hero .entry-title{font-size:26px;}
   .explore-grid{grid-template-columns:1fr;}
 }
 

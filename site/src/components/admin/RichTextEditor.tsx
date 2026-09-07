@@ -504,11 +504,14 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
         >
           {ICONS.quote}
         </button>
-        {!compact && (
-          <button type="button" className={toolbarBtnClass} onClick={insertPullQuote} title="Citation mise en exergue">
-            {ICONS.pullQuote}
-          </button>
-        )}
+        {/* Plus jamais masqué en mode compact (retour du 07/09) — c'était
+            le vrai bug derrière "le bouton ne fonctionne pas" sur l'éditeur
+            Rosée Matinale (compact) : le bouton n'existait tout simplement
+            pas dans cette barre d'outils réduite, seule la citation
+            classique (bouton "Citation" ci-dessus) y était présente. */}
+        <button type="button" className={toolbarBtnClass} onClick={insertPullQuote} title="Citation mise en exergue">
+          {ICONS.pullQuote}
+        </button>
         <button type="button" className={toolbarBtnClass} data-active={active.has("ul")} onClick={() => toggleList("ul")} title="Liste à puces">
           {ICONS.bulletList}
         </button>

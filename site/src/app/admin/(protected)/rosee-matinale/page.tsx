@@ -3,6 +3,7 @@ import { getArticlesAdmin } from "@/lib/content/articles";
 import { publishRosee, deleteArticle } from "../publications/actions";
 import Pagination from "@/components/admin/Pagination";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 
 const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
 const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "actif" };
@@ -35,7 +36,14 @@ export default async function AdminRoseePage({
         complète se modifie comme un article classique (éditeur détaillé).
       </p>
 
-      <div className="editor-card">
+      {/* Centré, même disposition que l'écran d'édition (retour du 07/09,
+          unification des deux éditeurs) — jusqu'ici, la création utilisait
+          encore une disposition différente (pleine largeur) et un simple
+          <textarea> sans mise en forme pour le corps, plutôt que le même
+          RichTextEditor déjà utilisé pour modifier une entrée existante
+          (bouton "Citation mise en exergue" compris). Un seul éditeur pour
+          les deux cas, jamais deux versions différentes à maintenir. */}
+      <div className="editor-card" style={{ maxWidth: 720, margin: "0 auto" }}>
         <h3>{alreadyPublishedToday ? "Une entrée existe déjà pour aujourd'hui" : "Publier l'entrée du jour"}</h3>
         <form action={publishRosee}>
           <div className="editor-field" style={{ maxWidth: 220 }}>
@@ -56,8 +64,8 @@ export default async function AdminRoseePage({
             <textarea name="verse_text" rows={3} required />
           </div>
           <div className="editor-field">
-            <label>Corps (développement, séparé en paragraphes par une ligne vide)</label>
-            <textarea name="body" rows={6} />
+            <label>Corps (développement, facultatif)</label>
+            <RichTextEditor name="body" placeholder="Développement facultatif…" minHeight={160} compact />
           </div>
           <div className="editor-field">
             <label>Image de couverture</label>
