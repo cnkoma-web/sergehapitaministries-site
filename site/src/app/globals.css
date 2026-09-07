@@ -795,15 +795,19 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 /* ===== ROSÉE MATINALE ===== */
 .rm-photo-hero{position:relative;min-height:380px;display:flex;align-items:flex-end;background-size:cover;background-position:center center;background-repeat:no-repeat;width:100%;}
 .rm-photo-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg, rgba(20,16,42,.85) 0%, rgba(20,16,42,.35) 60%, rgba(20,16,42,.1) 100%);}
-.rm-photo-hero .wrap{position:relative;z-index:1;padding:40px 0;}
+/* text-align:center (retour du 07/09, 3e passage) — titre, badge, date et
+   méta désormais tous centrés, comme demandé. */
+.rm-photo-hero .wrap{position:relative;z-index:1;padding:40px 0;text-align:center;}
+/* Titre de l'entrée du jour en premier (retour du 07/09, 3e passage —
+   inverse l'ordre du passage précédent), avec un vrai espace net avant le
+   bloc badge/date qui suit (contrairement à eux, restés collés l'un à
+   l'autre comme avant ce champ) — le nouveau champ "Titre", distinct du
+   libellé de catégorie ".cat" ci-dessous (qui reste "Rosée Matinale", fixe,
+   inchangé), police plus grande que lui. */
+.rm-photo-hero .entry-title{color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:38px;line-height:1.25;margin:0 0 24px;}
 .rm-photo-hero .cat{color:#fff;font-family:'Fraunces',serif;font-size:28px;margin-bottom:8px;}
-/* Titre de l'entrée du jour (retour du 07/09) — le nouveau champ "Titre",
-   distinct du libellé de catégorie ".cat" ci-dessus (qui reste "Rosée
-   Matinale", fixe, inchangé) : entre le badge de catégorie et la date,
-   police plus grande que les deux, comme demandé. */
-.rm-photo-hero .entry-title{color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:38px;line-height:1.25;margin:0 0 10px;}
 .rm-photo-hero .date{color:rgba(255,255,255,.8);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
-.rm-photo-hero .article-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:rgba(255,255,255,.65);margin-top:10px;text-transform:none;letter-spacing:normal;font-weight:400;}
+.rm-photo-hero .article-meta{display:flex;align-items:center;justify-content:center;gap:16px;font-size:12px;color:rgba(255,255,255,.65);margin-top:10px;text-transform:none;letter-spacing:normal;font-weight:400;}
 .rm-photo-hero .article-meta span{display:flex;align-items:center;gap:5px;}
 /* Bas resserré (retour du 30/08) : l'espace vide avec le bloc du message
    juste en dessous était trop marqué (padding 64 + padding 88 du bloc
@@ -846,7 +850,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .rm-quote-text{font-size:19px;}
   .rm-quote-mark{font-size:70px;}
   .rm-photo-hero{min-height:260px;}
-  .rm-photo-hero .entry-title{font-size:26px;}
+  .rm-photo-hero .entry-title{font-size:26px;margin:0 0 18px;}
   .explore-grid{grid-template-columns:1fr;}
 }
 

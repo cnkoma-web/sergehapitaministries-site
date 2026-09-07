@@ -58,14 +58,15 @@ export default function RoseeMatinaleContent({
         aria-label={current.cover_url ? current.cover_alt ?? undefined : undefined}
       >
         <div className="wrap">
-          <div className="cat">Rosée Matinale</div>
-          {/* Titre de l'entrée du jour (retour du 07/09, 2e passage) —
-              distinct du libellé de catégorie ci-dessus (qui reste "Rosée
-              Matinale", fixe) : le nouveau champ "Titre", rempli au cas par
-              cas par Serge dans l'admin (repli automatique sur le même
-              texte que la date ci-dessous s'il ne l'a pas encore renseigné
-              pour cette entrée — voir l'écran d'édition). */}
+          {/* Titre de l'entrée du jour en premier (retour du 07/09, 3e
+              passage — inverse l'ordre du passage précédent) — distinct du
+              libellé de catégorie ci-dessous (qui reste "Rosée Matinale",
+              fixe) : le nouveau champ "Titre", rempli au cas par cas par
+              Serge dans l'admin (repli automatique sur le même texte que la
+              date ci-dessous s'il ne l'a pas encore renseigné pour cette
+              entrée — voir l'écran d'édition). */}
           <h1 className="entry-title">{current.title}</h1>
+          <div className="cat">Rosée Matinale</div>
           <div className="date">
             {new Date(current.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </div>
