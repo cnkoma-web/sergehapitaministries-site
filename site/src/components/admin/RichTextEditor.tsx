@@ -311,10 +311,38 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   // class="pull-quote" pour porter ce style : sanitize() (plus haut)
   // retire tout attribut class sans distinction, une classe serait perdue
   // au premier passage.
+  // Renvoie le <figure> actuellement sélectionné EN ENTIER (posé par
+  // handleClick via range.selectNode), pas un simple curseur texte à
+  // l'intérieur d'un paragraphe — retour du 07/09, condition partagée par
+  // le bouton (bascule suppression) et le clavier (Suppr/Retour arrière).
+  function getSelectedFigure(): HTMLElement | null {
+    const selection = window.getSelection();
+    const editor = editorRef.current;
+    if (!selection || !editor || selection.rangeCount === 0) return null;
+    const range = selection.getRangeAt(0);
+    if (range.startContainer !== editor) return null;
+    const node = editor.childNodes[range.startOffset];
+    return node instanceof HTMLElement && node.tagName === "FIGURE" ? node : null;
+  }
+
   function insertPullQuote() {
     const editor = editorRef.current;
     const selection = window.getSelection();
     if (!editor || !selection || selection.rangeCount === 0) return;
+
+    // Bascule (retour du 07/09) : si la sélection courante est déjà
+    // exactement une citation en exergue, le bouton la retire proprement au
+    // lieu d'essayer d'en créer une seconde à partir de son propre texte —
+    // bug corrigé : sans cette vérification, re-cliquer le bouton (ou
+    // cliquer dessus après avoir sélectionné le bloc) dupliquait la
+    // citation en cascade au lieu de la supprimer.
+    const selectedFigure = getSelectedFigure();
+    if (selectedFigure) {
+      selectedFigure.remove();
+      sanitizeAndSync();
+      return;
+    }
+
     const text = selection.toString().trim();
     if (!text) return;
 
@@ -411,6 +439,22 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
     sanitizeAndSync();
   }
 
+  // Suppr/Retour arrière gérés explicitement quand une citation en exergue
+  // est sélectionnée (retour du 07/09) — le comportement natif du
+  // navigateur pour supprimer un nœud contenteditable="false" niché dans du
+  // contenteditable="true" s'est révélé peu fiable en vérifiant (le
+  // <figure> restait en place, et le paragraphe adjacent se retrouvait
+  // mis en gras par erreur) : on prend la main entièrement plutôt que de
+  // laisser le navigateur improviser une suppression.
+  function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key !== "Backspace" && e.key !== "Delete") return;
+    const figure = getSelectedFigure();
+    if (!figure) return;
+    e.preventDefault();
+    figure.remove();
+    sanitizeAndSync();
+  }
+
   function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
     // Colle en texte brut plutôt que le HTML de la source (Word, un site web…) :
     // la police/couleur d'origine ne doit jamais s'importer dans l'article.
@@ -494,6 +538,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
         onBlur={sanitizeAndSync}
         onPaste={handlePaste}
         onClick={handleClick}
+        onKeyDown={handleKeyDown}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDrop={handleDrop}

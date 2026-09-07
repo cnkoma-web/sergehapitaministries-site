@@ -617,16 +617,15 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 /* Taille alignée sur le corps du texte (retour du 04/09). */
 .further-verse p{font-style:italic;font-size:18px;color:var(--ink-soft);line-height:1.65;margin:0;}
 .blessing{text-align:center;font-weight:700;color:var(--purple);font-size:15px;letter-spacing:.04em;margin-top:52px;padding-top:36px;border-top:1px solid var(--line);}
-/* Bloc de partage (retour du 05/09, 4e passage) — plus de capsule ni
+/* Bloc de partage (retour du 05/09, 4e passage ; fond retiré des traits au
+   profit d'un fond de couleur, retour du 07/09) — plus de capsule ni
    d'étiquette "Partager :" : une phrase d'invitation (sur les publications
    uniquement, jamais les livres) puis les icônes nues (sans cercle de
-   fond), le tout encadré par deux traits fins, un repère discret plutôt
-   qu'un bloc visuellement chargé. */
-.share-block{margin:28px 0;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-/* Rosée Matinale a déjà son propre trait juste au-dessus (fin de la
-   navigation Jour précédent/suivant) — sans ce modificateur, les deux
-   traits collés donnaient un effet de "trois traits" successifs. */
-.share-block.share-block-no-top{border-top:0;padding-top:0;}
+   fond). Les traits fins ont été remplacés par une zone de fond
+   --lavender-deep (voir .share-zone plus bas) qui délimite nettement cette
+   zone du texte au-dessus et de "Autres articles similaires" en dessous
+   (--lavender pâle) — plus besoin de traits pour marquer la séparation. */
+.share-block{margin:0;padding:22px 0;}
 .share-invite{text-align:center;font-size:14px;color:var(--ink-soft);margin:0 0 18px;}
 .share-row{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;}
 .share-icon{display:flex;align-items:center;justify-content:center;width:21px;height:21px;transition:transform .15s;}
@@ -638,6 +637,25 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    rognée par le défilement horizontal de la rangée (overflow-x:auto force
    aussi overflow-y à se comporter en clip) — constaté en vérifiant. */
 .copy-feedback{text-align:center;font-size:13px;font-weight:700;color:var(--purple);margin:14px 0 0;}
+/* Zone de partage en pleine largeur (retour du 07/09) — section à part
+   entière (même principe que .related-articles), pas juste un fond posé
+   sur la colonne de texte : donne à la démarcation le même poids visuel
+   que "Autres articles similaires" juste en dessous. --lavender-deep,
+   plus soutenu que le --lavender pâle de cette dernière, pour que les deux
+   zones lavande restent bien distinctes l'une de l'autre. Regroupe aussi
+   la navigation "Jour précédent/suivant" sur Rosée Matinale, qui vivait
+   jusqu'ici dans une zone séparée par un trait — les deux forment
+   désormais une seule zone continue. */
+.share-zone{background:var(--lavender-deep);padding:16px 0;}
+/* Icônes des réseaux sociaux en blanc sur ce fond plus soutenu (retour du
+   07/09) — sinon, certaines (Facebook bleu, WhatsApp vert...) restent
+   lisibles mais l'icône "Copier le lien" (gris clair) et "E-mail" s'y
+   fondent visuellement. Cible les attributs fill/stroke directement (les
+   couleurs de marque sont posées en attributs de présentation SVG, pas en
+   CSS) — jamais fill="none" du cadre de l'icône "Copier", qui doit rester
+   transparent, seul son trait passe en blanc. */
+.share-zone .share-icon svg path[fill]{fill:#fff !important;}
+.share-zone .share-icon svg[stroke]{stroke:#fff !important;}
 /* Zone tactile minimale 44×44 sur mobile (retour du 05/09) — norme
    d'accessibilité tactile reconnue par Apple et Google, en dessous de
    laquelle une icône est trop petite pour un doigt. Sur mobile, SMS
@@ -693,9 +711,14 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
 .related-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;}
 .related-card .verse{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em;}
-.related-card h3{font-size:15px;line-height:1.35;margin-bottom:10px;}
+/* Aligné sur la taille du corps de texte de l'article en cours de lecture
+   (retour du 07/09) — pas la taille des cartes d'accueil (référence citée
+   mais volontairement pas recopiée telle quelle) : 18px, comme
+   .article-body > .content-col > .body-html > p ci-dessus, 16px sur mobile
+   (voir @media plus bas). La date (.verse) garde sa taille, plus petite. */
+.related-card h3{font-size:18px;line-height:1.4;margin-bottom:10px;}
 /* Chapeau ajouté sous le titre (retour du 05/09). */
-.related-card-excerpt{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.related-card-excerpt{font-size:18px;color:var(--ink-soft);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .related-card-link{font-size:12.5px;font-weight:700;color:var(--purple);}
 /* Corrigé (retour du 05/09, 2e signalement) — plus de lien étiré sur toute
    la carte (::after + position:absolute, retiré) : même défaut déjà
@@ -741,6 +764,8 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .prayer-box p{font-size:16px;line-height:1.85;}
   .further-verse{padding-left:16px;}
   .related-grid{grid-template-columns:1fr;}
+  .related-card h3{font-size:16px;}
+  .related-card-excerpt{font-size:16px;}
   .gate-box{padding:28px 22px;}
   .gate-actions{flex-direction:column;}
 }
@@ -760,7 +785,11 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .rm-quote-wrap{max-width:640px;margin:0 auto;text-align:center;position:relative;}
 .rm-quote-mark{font-family:'Fraunces',serif;font-size:90px;color:var(--teal);opacity:.25;line-height:1;margin-bottom:-30px;}
 .rm-quote-text{font-family:'Fraunces',serif;font-style:italic;font-size:23px;line-height:1.65;color:var(--ink);}
-.rm-nav-days{display:flex;justify-content:space-between;align-items:center;padding:28px 0;border-bottom:1px solid var(--line);}
+/* border-bottom retiré (retour du 07/09) — la navigation vit désormais dans
+   la même zone --lavender-deep que le bloc de partage juste en dessous
+   (voir .share-zone), plus besoin d'un trait pour les séparer l'une de
+   l'autre. */
+.rm-nav-days{display:flex;justify-content:space-between;align-items:center;padding:28px 0;}
 .rm-nav-days a{font-size:13.5px;font-weight:700;color:var(--ink-soft);}
 .rm-nav-days a:hover{color:var(--teal);}
 .rm-nav-days .disabled{color:var(--line);cursor:default;}
@@ -1474,11 +1503,21 @@ footer.footer--dark{
 .pubs .feed-item h3 a:hover{color:var(--lavender);}
 .pubs .feed-item .excerpt{color:rgba(255,255,255,.6);}
 .pubs .feed-item .excerpt a:hover{color:rgba(255,255,255,.85);}
-.social-card{border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center;transition:all .2s ease;}
+/* min-width:0 (retour du 07/09) — piège CSS Grid classique : sans ça, une
+   cellule de grille ne rétrécit jamais sous la largeur "de contenu" de ce
+   qu'elle contient (min-width:auto par défaut). Le repère "@sergehapita..."
+   ci-dessous est un seul mot insécable assez long pour forcer la grille
+   entière (.social-grid, 2 colonnes sur mobile) à dépasser la largeur de
+   l'écran — c'est la cause du débordement horizontal/bande blanche à
+   droite constaté sur mobile. */
+.social-card{border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center;transition:all .2s ease;min-width:0;}
 .social-card:hover{border-color:var(--purple);transform:translateY(-3px);}
 .social-card .icon{width:46px;height:46px;border-radius:50%;background:var(--lavender);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 14px;}
 .social-card h5{font-size:15.5px;margin-bottom:4px;}
-.social-card span{font-size:12.5px;color:var(--ink-soft);display:block;margin-bottom:14px;}
+/* overflow-wrap (retour du 07/09) — laisse "@sergehapitaministries" passer
+   à la ligne plutôt que de forcer sa carte (et donc la grille) à s'élargir
+   au-delà de l'espace disponible. */
+.social-card span{font-size:12.5px;color:var(--ink-soft);display:block;margin-bottom:14px;overflow-wrap:break-word;}
 
 @media (max-width:980px){
   .hero-inner{grid-template-columns:1fr;}

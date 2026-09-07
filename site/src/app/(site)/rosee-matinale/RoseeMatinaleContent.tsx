@@ -90,7 +90,15 @@ export default function RoseeMatinaleContent({
               texte. Accessible à tout le monde, sans compte (Rosée Matinale
               reste public). */}
           <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" />
+        </div>
+      </section>
 
+      {/* Navigation + partage regroupés dans une seule zone --lavender-deep
+          (retour du 07/09) — avant, seuls de simples traits fins les
+          séparaient du texte au-dessus et l'un de l'autre, sans réelle
+          démarcation. */}
+      <section className="share-zone">
+        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
           <div className="rm-nav-days">
             {previous ? (
               <Link href={dayHref(previous.article_date)}>← Jour précédent</Link>
@@ -105,15 +113,11 @@ export default function RoseeMatinaleContent({
             )}
           </div>
 
-          {/* hideTopRule (retour du 05/09, 4e passage) — .rm-nav-days a déjà
-              son propre trait juste au-dessus, l'effet "trois traits"
-              rapporté venait de ce doublon. */}
           <ShareCartouche
             title={`Rosée Matinale — ${new Date(current.article_date).toLocaleDateString("fr-FR")}`}
             url={pageUrl}
             category="rm"
             excerpt={current.verse_text ?? undefined}
-            hideTopRule
           />
         </div>
       </section>
@@ -122,9 +126,9 @@ export default function RoseeMatinaleContent({
           avec Que Dit la Bible / La Vie Supérieure, jamais reconstruit ici.
           Toujours Que Dit la Bible / La Vie Supérieure, jamais d'autre
           entrée Rosée Matinale (voir getLatestNonRoseeArticles). Fond
-          lavande (.related-articles, déjà cette couleur par défaut) — reste
-          sur fond blanc juste après le trait de partage ci-dessus, avant
-          l'archive plus bas. */}
+          --lavender pâle (.related-articles), juste après la zone de
+          partage --lavender-deep ci-dessus (2e passage, 07/09) — les deux
+          teintes de lavande restent bien distinctes l'une de l'autre. */}
       <RelatedArticlesSection articles={relatedArticles} />
 
       <section className="rm-archive" id="archive">

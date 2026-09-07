@@ -41,7 +41,6 @@ export default function ShareCartouche({
   category,
   excerpt,
   bookDescription,
-  hideTopRule = false,
 }: {
   title: string;
   url: string;
@@ -55,12 +54,6 @@ export default function ShareCartouche({
   // Description du livre, débarrassée de son HTML par l'appelant (voir
   // livres/[slug]/page.tsx) — jamais utilisé en même temps que category.
   bookDescription?: string;
-  // La rangée nav "Jour précédent/suivant" de Rosée Matinale a déjà son
-  // propre trait de séparation juste au-dessus (retour du 05/09, 4e passage)
-  // — sans ce drapeau, les deux traits collés donnaient un effet de "trois
-  // traits" successifs. Jamais utilisé ailleurs (les pages d'articles n'ont
-  // pas ce problème).
-  hideTopRule?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -81,7 +74,7 @@ export default function ShareCartouche({
   const encodedPlainMessage = encodeURIComponent(plainMessage);
 
   return (
-    <div className={`share-block${hideTopRule ? " share-block-no-top" : ""}`}>
+    <div className="share-block">
       {/* Jamais sur les fiches livres (retour du 05/09, 4e passage) — le
           partage y garde uniquement les icônes, sans phrase d'invitation. */}
       {category && <p className="share-invite">{SHARE_BLOCK_INVITE[category]}</p>}

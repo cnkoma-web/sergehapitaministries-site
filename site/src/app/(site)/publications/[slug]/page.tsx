@@ -206,8 +206,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     ))}
                   </div>
                 )}
+              </div>
+            </section>
 
+            {/* Zone de partage --lavender-deep (retour du 07/09) — voir le
+                commentaire équivalent sur le gabarit Que Dit la Bible plus
+                bas dans ce fichier. */}
+            <section className="share-zone">
+              <div className="content-col">
                 <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
+              </div>
+            </section>
+
+            <section className="section" style={{ paddingTop: 0 }}>
+              <div className="content-col">
                 <div className="back-cta">
                   <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
                 </div>
@@ -217,23 +229,35 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         )}
 
         {unlocked && (
-          <section className="section" style={{ paddingTop: 0 }}>
-            <div className="content-col">
-              {categories.length > 0 && (
-                <div className="chip-row" style={{ marginBottom: 20 }}>
-                  {categories.map((c) => (
-                    <span key={c.id} className="chip">
-                      {c.name}
-                    </span>
-                  ))}
+          <>
+            {categories.length > 0 && (
+              <section className="section" style={{ paddingTop: 0 }}>
+                <div className="content-col">
+                  <div className="chip-row">
+                    {categories.map((c) => (
+                      <span key={c.id} className="chip">
+                        {c.name}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              )}
-              <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
-              <div className="back-cta">
-                <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
+              </section>
+            )}
+
+            <section className="share-zone">
+              <div className="content-col">
+                <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
               </div>
-            </div>
-          </section>
+            </section>
+
+            <section className="section" style={{ paddingTop: 0 }}>
+              <div className="content-col">
+                <div className="back-cta">
+                  <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
+                </div>
+              </div>
+            </section>
+          </>
         )}
 
         <Newsletter />
@@ -352,8 +376,26 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           )}
 
           <div className="blessing">Que Dieu te bénisse abondamment</div>
+        </div>
+      </section>
 
+      {/* Zone de partage --lavender-deep (retour du 07/09) — avant, un
+          simple trait fin séparait ce bloc du texte au-dessus ; la démarcation
+          est maintenant une vraie zone de couleur, comme "Autres articles
+          similaires" juste après (--lavender pâle). "← Toutes les
+          publications" reste en dehors : ce n'est pas une invitation au
+          partage, juste un lien de retour. */}
+      <section className="share-zone">
+        <div className="content-col">
           <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <div className="content-col">
+          {/* .back-cta garde son propre trait/espacement au-dessus (retour
+              du 07/09) — sépare toujours ce lien de ce qu'il y a juste
+              avant, que ce soit blanc ou --lavender-deep. */}
           <div className="back-cta">
             <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
           </div>
