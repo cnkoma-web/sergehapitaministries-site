@@ -31,6 +31,17 @@ function sanitize(root: HTMLElement) {
     node.removeAttribute("class");
     node.removeAttribute("face");
     node.removeAttribute("color");
+    // Bloc "citation mise en exergue" traité comme un élément déplaçable en
+    // bloc, jamais comme du texte en ligne (retour du 07/09) — contenteditable
+    // et draggable réappliqués systématiquement ici (pas seulement à la
+    // création) : un <figure> chargé depuis du contenu déjà enregistré avant
+    // ce correctif n'aurait sinon jamais ces attributs. contenteditable
+    // n'est pas concerné par le nettoyage ci-dessus (style/class/face/color
+    // uniquement), donc rien ne l'efface une fois posé.
+    if (node.tagName === "FIGURE") {
+      node.setAttribute("contenteditable", "false");
+      node.setAttribute("draggable", "true");
+    }
     if (node.tagName === "SPAN" || node.tagName === "FONT" || !ALLOWED_TAGS.has(node.tagName)) {
       // Déballe la balise (garde son contenu texte/enfants), au lieu de la
       // supprimer entièrement — on ne veut perdre ni le gras ni le texte.
@@ -117,6 +128,9 @@ const ICONS = {
 export default function RichTextEditor({ name, defaultValue, placeholder, minHeight = 160, compact = false, category }: Props) {
   const editorRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
+  // Bloc <figure> actuellement en train d'être glissé (retour du 07/09) —
+  // voir handleDragStart/handleDrop plus bas.
+  const draggedFigureRef = useRef<HTMLElement | null>(null);
   // États actifs de la sélection courante (retour du 06/09) — surligne le
   // bouton concerné pendant l'édition (gras/italique/souligné/liste), comme
   // Google Docs/Notion. Recalculé à chaque déplacement du curseur.
@@ -142,6 +156,14 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
     }
     document.addEventListener("selectionchange", updateActiveStates);
     return () => document.removeEventListener("selectionchange", updateActiveStates);
+  }, []);
+
+  // Normalise les <figure> déjà enregistrées avant ce correctif (retour du
+  // 07/09) — contenteditable/draggable n'existaient pas encore à leur
+  // création, sans ce passage elles resteraient du texte en ligne classique
+  // tant que Serge ne les recrée pas à la main.
+  useEffect(() => {
+    if (editorRef.current) sanitize(editorRef.current);
   }, []);
 
   // Ne recopie QUE la valeur, sans toucher au DOM en cours d'édition — appelé à
@@ -324,6 +346,71 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
     sanitizeAndSync();
   }
 
+  // Déplacement manuel du bloc "citation mise en exergue" par glisser-
+  // déposer (retour du 07/09) — remplace la position automatique décidée
+  // par insertPullQuote ci-dessus, aucune règle ne pouvant deviner la bonne
+  // place dans tous les cas. contenteditable="false" (posé par sanitize())
+  // fait du <figure> un bloc atomique plutôt que du texte en ligne : le
+  // clic le sélectionne en entier (jamais un simple curseur texte à
+  // l'intérieur), donc le déplacer — glisser ou couper/coller — conserve sa
+  // mise en forme intégralement, puisque c'est tout l'élément qui se
+  // déplace, jamais seulement le texte qu'il contient.
+  // Un clic sur un élément contenteditable="false" ne le sélectionne pas
+  // forcément en entier tout seul (constaté en vérifiant : le navigateur
+  // pose parfois juste un curseur texte juste à côté, dans le contenu
+  // éditable environnant) — sélectionne explicitement tout le nœud
+  // <figure> au clic, pour que Copier/Couper (Ctrl/Cmd+C/X) saisissent
+  // toujours le bloc entier, jamais seulement une partie de son texte.
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
+    const figure = (e.target as HTMLElement).closest?.("figure");
+    if (!figure || !editorRef.current?.contains(figure)) return;
+    const range = document.createRange();
+    range.selectNode(figure);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
+
+  function handleDragStart(e: React.DragEvent<HTMLDivElement>) {
+    const figure = (e.target as HTMLElement).closest?.("figure");
+    if (!figure) return;
+    draggedFigureRef.current = figure;
+    e.dataTransfer.effectAllowed = "move";
+    // Certains navigateurs n'autorisent le glisser-déposer que si des
+    // données sont effectivement transférées — jamais utilisées ensuite,
+    // c'est le nœud DOM lui-même qui est déplacé au dépôt, pas ce texte.
+    e.dataTransfer.setData("text/plain", figure.textContent ?? "");
+  }
+
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    if (!draggedFigureRef.current) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+    const editor = editorRef.current;
+    const dragged = draggedFigureRef.current;
+    draggedFigureRef.current = null;
+    if (!editor || !dragged) return;
+    e.preventDefault();
+
+    // Bloc de haut niveau le plus proche verticalement du point de dépôt —
+    // insère la citation juste avant lui, ou en fin d'éditeur si le dépôt a
+    // lieu sous le dernier bloc.
+    const blocks = Array.from(editor.children).filter((el) => el !== dragged);
+    let insertBeforeEl: Element | null = null;
+    for (const block of blocks) {
+      const rect = block.getBoundingClientRect();
+      if (e.clientY < rect.top + rect.height / 2) {
+        insertBeforeEl = block;
+        break;
+      }
+    }
+    editor.insertBefore(dragged, insertBeforeEl);
+    sanitizeAndSync();
+  }
+
   function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
     // Colle en texte brut plutôt que le HTML de la source (Word, un site web…) :
     // la police/couleur d'origine ne doit jamais s'importer dans l'article.
@@ -406,6 +493,10 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
         onInput={sync}
         onBlur={sanitizeAndSync}
         onPaste={handlePaste}
+        onClick={handleClick}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
         onFocus={() => document.execCommand("defaultParagraphSeparator", false, "p")}
         dangerouslySetInnerHTML={{ __html: defaultValue ?? "" }}
       />

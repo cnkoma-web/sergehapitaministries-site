@@ -89,12 +89,15 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
     related_article_ids: formData.getAll("related_article_ids").map(String).filter(Boolean),
     body: body || null,
     reading_time_minutes: body ? computeReadingTime(body) : null,
+    // Prière & Déclaration (retour du 07/09) — champ commun aux deux types
+    // depuis son extension à La Vie Supérieure, plus réservé à Que Dit la
+    // Bible seul.
+    prayer: String(formData.get("prayer") ?? "").trim() || null,
   };
 
   if (type === "qdlb") {
     update.verse_reference = String(formData.get("verse_reference") ?? "").trim() || null;
     update.verse_text = String(formData.get("verse_text") ?? "").trim() || null;
-    update.prayer = String(formData.get("prayer") ?? "").trim() || null;
     update.further_verses = readFurtherVerses(formData);
   }
   if (type === "vs") {

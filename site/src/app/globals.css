@@ -599,6 +599,13 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .body-input.vs blockquote{border-left-color:var(--blue);}
 .article-body > .content-col > .body-html.vs figure,
 .body-input.vs figure{color:var(--blue);}
+/* Affordance de déplacement, éditeur uniquement (retour du 07/09) — le
+   bloc est déplaçable en glisser-déposer (contenteditable="false" +
+   draggable="true" posés par sanitize() dans RichTextEditor), jamais du
+   texte en ligne classique : un curseur "grab" et un léger fond au survol
+   signalent ce comportement, absent du rendu public. */
+.body-input figure{cursor:grab;border-radius:8px;transition:background .1s;}
+.body-input figure:hover{background:var(--lavender);}
 /* Identité visuelle distincte (retour du 05/09) — italique + fond gris
    clair, même principe que le trait vertical de "Aller plus loin"
    (.further-verse) : affichage public de la Prière, pas seulement le champ

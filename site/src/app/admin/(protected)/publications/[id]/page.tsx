@@ -100,6 +100,21 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
             <textarea name="excerpt" defaultValue={article.excerpt ?? ""} placeholder="Résumé court affiché dans les listes d'articles…" />
           </div>
 
+          {/* Prière & Déclaration (retour du 07/09) — étendu à La Vie
+              Supérieure, plus réservé à Que Dit la Bible : même champ, même
+              style publié (voir .prayer-box), pour les deux rubriques.
+              Jamais sur Rosée Matinale (écran d'édition séparé). */}
+          <div className="editor-field">
+            <label>Prière & Déclaration (optionnel)</label>
+            <textarea
+              name="prayer"
+              className="prayer-field"
+              defaultValue={article.prayer ?? ""}
+              rows={3}
+              placeholder="Affichée dans l'article, en fin de lecture, seulement si remplie."
+            />
+          </div>
+
           {article.type === "qdlb" && (
             <>
               <div className="editor-field">
@@ -109,16 +124,6 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
               <div className="editor-field">
                 <label>Texte du verset</label>
                 <textarea name="verse_text" defaultValue={article.verse_text ?? ""} rows={2} />
-              </div>
-              <div className="editor-field">
-                <label>Prière (optionnel)</label>
-                <textarea
-                  name="prayer"
-                  className="prayer-field"
-                  defaultValue={article.prayer ?? ""}
-                  rows={3}
-                  placeholder="Affichée dans l'article, avant « Aller plus loin », seulement si remplie."
-                />
               </div>
               <div className="editor-field">
                 <label>Versets complémentaires</label>

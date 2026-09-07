@@ -148,6 +148,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {unlocked && (
               <LikeButton articleId={article.id} initialCount={article.like_count} mode="authenticated" initiallyLiked={alreadyLiked} />
             )}
+
+            {/* Prière & Déclaration (retour du 07/09) — champ étendu à La
+                Vie Supérieure, jusqu'ici réservé à Que Dit la Bible (même
+                champ, même style, voir plus bas dans ce fichier). Réservée
+                aux comptes connectés comme le reste du corps. */}
+            {unlocked && article.prayer && (
+              <>
+                <h2>Prière & Déclaration</h2>
+                <div className="prayer-box">
+                  <p>{nbspBeforeClosingGuillemet(article.prayer)}</p>
+                </div>
+              </>
+            )}
           </div>
         </section>
 
@@ -303,7 +316,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               seulement le champ d'édition dans l'admin. */}
           {article.prayer && (
             <>
-              <h2>Prière</h2>
+              <h2>Prière & Déclaration</h2>
               <div className="prayer-box">
                 <p>{nbspBeforeClosingGuillemet(article.prayer)}</p>
               </div>
