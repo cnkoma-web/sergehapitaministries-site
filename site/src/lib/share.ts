@@ -6,11 +6,18 @@
 //   plateformes ne les interprètent pas, elles les afficheraient tels quels.
 export type ShareCategory = "qdlb" | "vs" | "rm";
 
+// "du [jour] [mois]" (retour du 07/09) — remplace "du jour" par la vraie
+// date de publication, jour + mois en toutes lettres, jamais l'année (pas
+// utile ici, contrairement aux dates affichées ailleurs sur le site).
 const CATEGORY_PHRASE: Record<ShareCategory, string> = {
-  rm: "la Rosée matinale du jour",
-  qdlb: "la réflexion biblique du jour",
-  vs: "l'enseignement du jour",
+  rm: "la Rosée matinale",
+  qdlb: "la réflexion biblique",
+  vs: "l'enseignement",
 };
+
+function formatShareDate(articleDate: string): string {
+  return new Date(articleDate).toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+}
 
 // "Retrouve" plutôt que "Découvre" (retour du 07/09) — un texte propre à
 // chaque catégorie, pas un simple mot remplacé partout à l'identique.
@@ -52,12 +59,14 @@ const ARTICLE_EXCERPT_MAX_LENGTH = 200;
 function buildMessage({
   category,
   title,
+  articleDate,
   excerpt,
   url,
   formatted,
 }: {
   category: ShareCategory;
   title: string;
+  articleDate: string;
   excerpt?: string;
   url: string;
   formatted: boolean;
@@ -71,37 +80,41 @@ function buildMessage({
     excerptBlock = `\n\n${formatted ? `_${excerptText}_` : excerptText}`;
   }
   const blessing = formatted ? "_*demeure abondamment béni.*_" : "demeure abondamment béni.";
-  return `Bonjour,\n\nSerge partage avec toi ${CATEGORY_PHRASE[category]} : ${titlePart}${excerptBlock}\n\n👉 ${CATEGORY_INVITE[category]} :\n${url}\n\nBonne lecture et ${blessing}`;
+  return `Bonjour,\n\nSerge partage avec toi ${CATEGORY_PHRASE[category]} du ${formatShareDate(articleDate)} : ${titlePart}${excerptBlock}\n\n👉 ${CATEGORY_INVITE[category]} :\n${url}\n\nBonne lecture et ${blessing}`;
 }
 
 /** WhatsApp/Telegram — supportent le gras et l'italique façon markdown. */
 export function buildShareMessage({
   category,
   title,
+  articleDate,
   excerpt,
   url,
 }: {
   category: ShareCategory;
   title: string;
+  articleDate: string;
   excerpt?: string;
   url: string;
 }): string {
-  return buildMessage({ category, title, excerpt, url, formatted: true });
+  return buildMessage({ category, title, articleDate, excerpt, url, formatted: true });
 }
 
 /** SMS/X — aucun symbole de mise en forme, ces plateformes ne les interprètent pas. */
 export function buildPlainShareMessage({
   category,
   title,
+  articleDate,
   excerpt,
   url,
 }: {
   category: ShareCategory;
   title: string;
+  articleDate: string;
   excerpt?: string;
   url: string;
 }): string {
-  return buildMessage({ category, title, excerpt, url, formatted: false });
+  return buildMessage({ category, title, articleDate, excerpt, url, formatted: false });
 }
 
 // Fiche livre (retour du 05/09, 4e passage) — tutoiement comme les

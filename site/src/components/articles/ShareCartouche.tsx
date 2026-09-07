@@ -39,12 +39,18 @@ export default function ShareCartouche({
   title,
   url,
   category,
+  articleDate,
   excerpt,
   bookDescription,
 }: {
   title: string;
   url: string;
   category?: ShareCategory;
+  // Date de publication (retour du 07/09) — "du jour" remplacé par la vraie
+  // date dans le message de partage (buildShareMessage), jour + mois en
+  // toutes lettres. Requis dès que `category` est fourni (QDLB/VS/RM), voir
+  // les 4 appels de ce composant qui passent l'un et l'autre ensemble.
+  articleDate?: string;
   // Chapeau déjà enregistré pour la publication (retour du 05/09, 4e
   // passage) — jamais un nouveau champ, repris tel quel par buildShareMessage
   // pour l'extrait affiché dans le message. Optionnel : certaines
@@ -62,8 +68,8 @@ export default function ShareCartouche({
   let formattedMessage: string;
   let plainMessage: string;
   if (category) {
-    formattedMessage = buildShareMessage({ category, title, excerpt, url });
-    plainMessage = buildPlainShareMessage({ category, title, excerpt, url });
+    formattedMessage = buildShareMessage({ category, title, articleDate: articleDate ?? "", excerpt, url });
+    plainMessage = buildPlainShareMessage({ category, title, articleDate: articleDate ?? "", excerpt, url });
   } else if (bookDescription) {
     formattedMessage = buildBookShareMessage({ title, description: bookDescription, url });
     plainMessage = buildPlainBookShareMessage({ title, description: bookDescription, url });

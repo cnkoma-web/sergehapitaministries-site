@@ -139,7 +139,13 @@ export default function RoseeMatinaleContent({
               avec le vrai champ "Titre" de l'entrée (voir l'écran d'édition
               Rosée Matinale) : celui-ci reflète désormais un titre choisi
               par Serge, pas seulement son repli automatique. */}
-          <ShareCartouche title={current.title} url={pageUrl} category="rm" excerpt={current.verse_text ?? undefined} />
+          <ShareCartouche
+            title={current.title}
+            url={pageUrl}
+            category="rm"
+            articleDate={current.article_date}
+            excerpt={current.verse_text ?? undefined}
+          />
         </div>
       </section>
 

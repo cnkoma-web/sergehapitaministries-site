@@ -805,7 +805,12 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    libellé de catégorie ".cat" ci-dessous (qui reste "Rosée Matinale", fixe,
    inchangé), police plus grande que lui. */
 .rm-photo-hero .entry-title{color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:38px;line-height:1.25;margin:0 0 24px;}
-.rm-photo-hero .cat{color:#fff;font-family:'Fraunces',serif;font-size:28px;margin-bottom:8px;}
+/* Manrope (retour du 07/09) — plus Fraunces (police des titres du site),
+   qui créait une confusion visuelle avec le titre de l'entrée juste
+   au-dessus, lui aussi en Fraunces : même police que la date ci-dessous
+   (Manrope, sans-serif), seules différences une taille plus grande (24px,
+   au lieu de 28px) et un poids gras. */
+.rm-photo-hero .cat{color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:24px;margin-bottom:8px;}
 .rm-photo-hero .date{color:rgba(255,255,255,.8);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
 .rm-photo-hero .article-meta{display:flex;align-items:center;justify-content:center;gap:16px;font-size:12px;color:rgba(255,255,255,.65);margin-top:10px;text-transform:none;letter-spacing:normal;font-weight:400;}
 .rm-photo-hero .article-meta span{display:flex;align-items:center;gap:5px;}

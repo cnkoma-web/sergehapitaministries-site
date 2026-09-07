@@ -214,7 +214,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 bas dans ce fichier. */}
             <section className="share-zone">
               <div className="content-col">
-                <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
+                <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
               </div>
             </section>
 
@@ -249,7 +249,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
             <section className="share-zone">
               <div className="content-col">
-                <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
+                <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
               </div>
             </section>
 
@@ -390,7 +390,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           partage, juste un lien de retour. */}
       <section className="share-zone">
         <div className="content-col">
-          <ShareCartouche title={article.title} url={pageUrl} category={article.type} excerpt={shareExcerpt} />
+          <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
         </div>
       </section>
 
