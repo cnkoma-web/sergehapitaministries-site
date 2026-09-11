@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ForgotPasswordForm() {
-  const [sent, setSent] = useState(false);
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,16 +33,10 @@ export default function ForgotPasswordForm() {
       setError("Impossible d'envoyer l'e-mail pour le moment. Réessayez plus tard.");
       return;
     }
-    setSent(true);
-  }
-
-  if (sent) {
-    return (
-      <div className="admin-error" style={{ background: "#E3F5E9", color: "#1F8A4C" }}>
-        Si un compte existe avec cette adresse, un e-mail de réinitialisation vient d&apos;être
-        envoyé. Pensez à vérifier vos spams.
-      </div>
-    );
+    // V2 (Lot 7, 11/09) — vraie page dédiée (/compte/email-envoye), comme
+    // la maquette, plutôt qu'un message affiché en ligne sous le formulaire
+    // (décision prise avec Serge le 11/09).
+    router.push("/compte/email-envoye");
   }
 
   return (

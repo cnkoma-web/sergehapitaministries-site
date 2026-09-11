@@ -114,13 +114,11 @@ function LoginForm() {
 function SignupForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setSuccess(null);
 
     const formData = new FormData(e.currentTarget);
     const password = String(formData.get("password"));
@@ -168,8 +166,10 @@ function SignupForm() {
       return;
     }
 
-    setSuccess("Compte créé ! Vérifiez votre boîte mail pour confirmer votre adresse avant de vous connecter.");
-    (e.target as HTMLFormElement).reset();
+    // V2 (Lot 7, 11/09) — vraie page dédiée (/compte/verification-email),
+    // comme la maquette, plutôt qu'un message affiché en ligne sous le
+    // formulaire (décision prise avec Serge le 11/09).
+    router.push("/compte/verification-email");
   }
 
   return (
@@ -178,7 +178,6 @@ function SignupForm() {
       <div className="account-divider">ou par e-mail</div>
 
       {error && <div className="admin-error">{error}</div>}
-      {success && <div className="admin-error" style={{ background: "#E3F5E9", color: "#1F8A4C" }}>{success}</div>}
 
       <label className="field-label" htmlFor="signup-first-name">
         Prénom *

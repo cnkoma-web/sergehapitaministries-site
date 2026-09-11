@@ -68,7 +68,10 @@ export default function NewPasswordForm() {
       setError(updatePasswordErrorMessage(updateError.code));
       return;
     }
-    router.push("/mon-compte");
+    // V2 (Lot 7, 11/09) — vraie page intermédiaire (/compte/mot-de-passe-
+    // modifie), comme la maquette, plutôt qu'un redirect direct vers
+    // /mon-compte (décision prise avec Serge le 11/09).
+    router.push("/compte/mot-de-passe-modifie");
     router.refresh();
   }
 

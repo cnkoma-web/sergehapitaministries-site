@@ -3041,3 +3041,34 @@ footer.footer--dark{
   .inv-row{grid-template-columns:1fr;}
   .amount-grid{grid-template-columns:repeat(2,1fr);}
 }
+
+/* ============================================================
+   V2 (Lot 7, 11/09) — Écrans du parcours de connexion (vérification
+   e-mail, e-mail envoyé, mot de passe modifié, compte activé). Reproduit
+   prototype-html/account-flow.js (contenu injecté par JS dans la
+   maquette, jamais présent dans le HTML statique — templates transcrits
+   ici tels quels) § .account-flow-shell/.account-flow-card (commerce.css).
+   ============================================================ */
+.v2-account-flow-page{background:#fbfaff;}
+.v2-account-flow-shell{padding-block:64px 92px;}
+.v2-account-flow-card{max-width:660px;margin-inline:auto;overflow:hidden;border:1px solid var(--v2-line);border-radius:14px;background:#fff;box-shadow:var(--v2-shadow);}
+.v2-account-flow-heading{padding:31px 36px 26px;color:#fff;background:var(--v2-ink);}
+.v2-account-flow-heading .v2-eyebrow{margin-bottom:11px;}
+.v2-account-flow-heading h1{max-width:560px;margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(35px,5vw,49px);font-weight:500;line-height:1.04;}
+.v2-account-flow-body{padding:35px 36px 38px;}
+.v2-account-flow-body>p{margin:0 0 23px;color:var(--v2-muted);font-size:15px;line-height:1.7;}
+.v2-account-flow-status{display:grid;grid-template-columns:42px 1fr;gap:16px;align-items:start;padding:18px;border:1px solid rgba(109,49,242,.18);border-radius:8px;background:var(--v2-violet-pale);}
+.v2-account-flow-status svg{width:42px;height:42px;padding:10px;border-radius:50%;fill:none;stroke:var(--v2-violet-deep);stroke-width:1.8;background:#fff;}
+.v2-account-flow-status strong{display:block;margin-bottom:4px;font-family:var(--v2-serif);font-size:19px;color:var(--v2-ink);}
+.v2-account-flow-status p{margin:0;color:var(--v2-muted);font-size:12px;line-height:1.55;}
+.v2-account-flow-links{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--v2-line);}
+.v2-account-flow-links a{color:var(--v2-violet-deep);font-size:12px;font-weight:800;}
+.v2-account-flow-links a.v2-account-flow-primary,
+.v2-account-flow-primary{min-height:50px;display:inline-flex;align-items:center;justify-content:center;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-size:13px;font-weight:800;text-decoration:none;}
+
+@media (max-width:720px){
+  .v2-account-flow-shell{padding-block:38px 65px;}
+  .v2-account-flow-heading{padding:25px 22px 22px;}
+  .v2-account-flow-body{padding:27px 22px 30px;}
+  .v2-account-flow-links{flex-direction:column;}
+}
