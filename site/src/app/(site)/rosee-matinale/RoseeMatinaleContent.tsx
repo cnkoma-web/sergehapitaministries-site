@@ -50,7 +50,12 @@ export default function RoseeMatinaleContent({
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
 
   return (
-    <>
+    // V2 (retour du 11/09, Lot 3) — reproduit prototype-html/rosee-matinale/
+    // index.html § .rm-hero/.rm-chapeau/.entry-body-section/.rm-nav-days/
+    // .related-section/.archive-section (voir globals.css § .v2-rm-page).
+    // "Poursuivre la lecture" (.rm-explore) n'a pas d'équivalent dans le
+    // prototype (voir le commentaire détaillé dans globals.css).
+    <div className="v2-rm-page">
       <section
         className="rm-photo-hero"
         style={{ backgroundImage: `url(${current.cover_url || "/rosee-matinale-hero.jpg"})` }}
@@ -218,6 +223,6 @@ export default function RoseeMatinaleContent({
 
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }

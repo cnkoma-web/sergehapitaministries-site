@@ -2308,3 +2308,122 @@ footer.footer--dark{
   .v2-pub-hero-links{gap:8px;}
   .v2-pub-hero-links a{min-width:0;flex:1 1 45%;}
 }
+
+/* ============================================================
+   V2 (retour du 11/09, Lot 3) — Gabarit d'article (Que Dit la
+   Bible/La Vie Supérieure, publications/[slug]) et Rosée
+   Matinale (rosee-matinale, rosee-matinale/[date]). Reproduit,
+   pour les blocs présents dans le prototype, prototype-html/
+   rosee-matinale/index.html § .entry-hero, .rm-hero, .rm-chapeau,
+   .entry-body-section, .like-row, .rm-nav-days, .related-section,
+   .archive-section (publications.css). Composants et logique
+   réels inchangés (gating La Vie Supérieure, LikeButton,
+   ViewTracker, RelatedArticlesSection, Pagination de l'archive) —
+   habillage CSS uniquement, sous .v2-article-page/.v2-rm-page.
+
+   Plusieurs blocs (verse-box, prayer-box, further-verse, chip-row,
+   gate-box, toc-teaser, rm-explore) sont des fonctionnalités
+   réelles du site sans équivalent dans le prototype statique (qui
+   ne montre qu'un seul article déjà publié, sans citation
+   biblique ni mur d'accès ni thématiques) : ils reprennent la
+   palette v2 (encre/violet/ligne) plutôt qu'un habillage copié
+   d'un écran qui ne les montre pas — à signaler si Serge souhaite
+   une maquette dédiée pour l'un de ces blocs. */
+
+.v2-article-page,.v2-rm-page{background:#fff;}
+.v2-article-page .content-col,.v2-rm-page .content-col{max-width:760px;}
+
+/* --- En-tête d'article (Que Dit la Bible / La Vie Supérieure) --- */
+.v2-article-page .article-header{padding:84px 0 70px;color:#fff;background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.55),transparent 29%),var(--v2-ink);}
+.v2-article-page.vs .article-header{background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.42),transparent 29%),linear-gradient(130deg,#17142d,#2d245b);}
+.v2-article-page .article-cat-badge{margin:0 0 22px;padding:0;border-radius:0;background:none;color:#d8ccff;font-size:13px;font-weight:750;letter-spacing:.08em;}
+.v2-article-page .article-title{max-width:900px;color:#fff;font-family:var(--v2-serif);font-size:clamp(38px,5.4vw,58px);font-weight:500;line-height:1.08;letter-spacing:-.03em;margin-bottom:0;}
+.v2-article-page .article-meta-line{margin-top:28px;color:#cdbbff;font-size:13px;font-style:normal;}
+.v2-article-page .article-meta-line .views{color:#e7deff;}
+
+/* --- Corps --- */
+.v2-article-page .article-body{padding:70px 0 20px;}
+.v2-article-page .article-body .content-col p.article-lede{color:var(--v2-ink-soft);font-family:var(--v2-serif);font-size:19px;line-height:1.75;}
+.v2-article-page .article-body h2{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
+.v2-article-page .article-body>.content-col>p,
+.v2-article-page .article-body>.content-col>.body-html>p{color:var(--v2-ink);font-family:var(--v2-serif);font-size:19px;line-height:1.85;}
+.v2-article-page .verse-box{background:var(--v2-violet-pale);border-left-color:var(--v2-violet);border-radius:0 12px 12px 0;}
+.v2-article-page .verse-box .ref{color:var(--v2-violet-deep);}
+.v2-article-page .verse-box p{color:var(--v2-ink);font-family:var(--v2-serif);}
+.v2-article-page .prayer-box{background:var(--v2-paper);border:1px solid var(--v2-line);border-radius:12px;}
+.v2-article-page .prayer-box p{color:var(--v2-ink);font-family:var(--v2-serif);}
+.v2-article-page .further-verse{border-left-color:var(--v2-line);}
+.v2-article-page .further-verse .ref{color:var(--v2-muted);}
+.v2-article-page .further-verse p{color:var(--v2-muted);font-family:var(--v2-serif);}
+.v2-article-page .chip{background:var(--v2-violet-pale);color:var(--v2-violet-deep);}
+.v2-article-page .chip button{color:var(--v2-violet-deep);}
+.v2-article-page .blessing{color:var(--v2-violet-deep);border-top-color:var(--v2-line);font-family:var(--v2-sans);}
+.v2-article-page .like-button{color:var(--v2-violet-deep);}
+.v2-article-page .like-button:hover:not(:disabled):not(.liked){color:var(--v2-violet);}
+.v2-article-page .like-button.liked{color:var(--v2-violet-deep);}
+.v2-article-page .gate-box{background:var(--v2-violet-pale);border-color:var(--v2-line);border-radius:16px;}
+.v2-article-page .gate-box .lock{background:var(--v2-ink);}
+.v2-article-page .gate-box h3{color:var(--v2-ink);font-family:var(--v2-serif);}
+.v2-article-page .gate-box p{color:var(--v2-muted);}
+.v2-article-page .toc-teaser h4{color:var(--v2-muted);}
+.v2-article-page .toc-list li{border-color:var(--v2-line);color:var(--v2-muted);}
+.v2-article-page .back-cta .btn-outline{border-color:var(--v2-ink);color:var(--v2-ink);}
+
+/* --- Rosée Matinale : héros photo + citation d'ouverture --- */
+.v2-rm-page .rm-photo-hero{min-height:460px;}
+.v2-rm-page .rm-photo-hero::after{background:linear-gradient(0deg,rgba(23,15,44,.88) 0%,rgba(23,15,44,.4) 55%,rgba(23,15,44,.12) 100%);}
+.v2-rm-page .rm-photo-hero .entry-title{font-family:var(--v2-serif);font-weight:500;letter-spacing:-.02em;}
+.v2-rm-page .rm-photo-hero .cat{font-family:var(--v2-serif);font-weight:500;color:#d9ccff;}
+.v2-rm-page .rm-photo-hero .date{color:#e5dcff;font-family:var(--v2-sans);}
+.v2-rm-page .rm-photo-hero .article-meta{color:#d7c9ff;}
+.v2-rm-page .rm-quote-zone{background:var(--v2-violet-pale);}
+.v2-rm-page .rm-quote-mark{color:var(--v2-violet);opacity:1;}
+.v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);}
+.v2-rm-page .rm-body-html{color:var(--v2-ink);font-family:var(--v2-serif);}
+.v2-rm-page .like-button{color:var(--v2-violet-deep);}
+.v2-rm-page .like-button:hover:not(:disabled):not(.liked){color:var(--v2-violet);}
+.v2-rm-page .like-button.liked{color:var(--v2-violet-deep);}
+.v2-rm-page .rm-nav-days{border-top:1px solid var(--v2-line);border-bottom:0;}
+.v2-rm-page .rm-nav-days a,.v2-rm-page .rm-nav-days span{color:var(--v2-violet-deep);}
+.v2-rm-page .rm-nav-days .disabled{color:#cdc8d8;}
+.v2-rm-page .rm-nav-days .archive-link{color:var(--v2-violet-deep);}
+
+/* --- Rosée Matinale : archive + "poursuivre la lecture" --- */
+.v2-rm-page .rm-archive{background:var(--v2-violet-pale);padding:76px 0 96px;}
+.v2-rm-page .rm-archive h2{font-family:var(--v2-serif);font-size:36px;font-weight:500;}
+.v2-rm-page .rm-archive .sub{color:var(--v2-muted);}
+.v2-rm-page .rm-list{max-width:100%;border-top:1px solid rgba(79,37,216,.16);}
+.v2-rm-page .rm-item{border-top-color:rgba(79,37,216,.16);}
+.v2-rm-page .rm-item .date{color:var(--v2-violet-deep);}
+.v2-rm-page .rm-item .excerpt{color:var(--v2-ink-soft);}
+.v2-rm-page .rm-item:hover .excerpt{color:var(--v2-violet-deep);}
+.v2-rm-page .rm-archive .pagination{border-top:0;justify-content:center;color:var(--v2-muted);}
+.v2-rm-page .rm-archive .pagination .pages a,.v2-rm-page .rm-archive .pagination .pages button{width:40px;height:40px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-ink);}
+.v2-rm-page .rm-archive .pagination .pages a.active,.v2-rm-page .rm-archive .pagination .pages button.active{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
+.v2-rm-page .rm-explore{background:#fff;}
+.v2-rm-page .rm-explore h2{font-family:var(--v2-serif);font-size:32px;font-weight:500;}
+.v2-rm-page .explore-card{padding:28px;border:1px solid var(--v2-line);border-radius:14px;}
+.v2-rm-page .explore-card .icon{width:40px;height:40px;display:grid;place-items:center;border-radius:8px;margin-bottom:16px;color:#fff;background:linear-gradient(135deg,#4f25d8,#7b36ed);font-size:13px;font-weight:800;}
+.v2-rm-page .explore-card h3{font-family:var(--v2-serif);font-size:19px;font-weight:500;margin-bottom:8px;}
+.v2-rm-page .explore-card p{color:var(--v2-muted);font-size:14px;margin-bottom:14px;}
+.v2-rm-page .explore-card a{color:var(--v2-violet-deep);font-size:13px;font-weight:750;}
+
+/* --- Autres articles similaires — partagé Que Dit la Bible/La Vie
+   Supérieure/Rosée Matinale. Reproduit prototype § .related-section/
+   .related-card. --- */
+.v2-article-page .related-articles,.v2-rm-page .related-articles{background:#f4f1ff;padding:80px 0 96px;}
+.v2-article-page .related-articles h2,.v2-rm-page .related-articles h2{font-family:var(--v2-serif);font-size:36px;font-weight:500;text-align:left;}
+.v2-article-page .related-grid,.v2-rm-page .related-grid{gap:18px;}
+.v2-article-page .related-card,.v2-rm-page .related-card{position:relative;padding:28px 26px;border:1px solid rgba(79,37,216,.14);border-radius:14px;background:#fff;box-shadow:0 13px 34px rgba(23,20,45,.07);}
+.v2-article-page .related-card::before,.v2-rm-page .related-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(#6d31f2,#a985ff);}
+.v2-article-page .related-card .verse,.v2-rm-page .related-card .verse{width:fit-content;padding:6px 10px;border-radius:999px;color:var(--v2-violet-deep);background:#eee8ff;font-size:11px;font-weight:800;}
+.v2-article-page .related-card h3,.v2-rm-page .related-card h3{margin:16px 0 10px;font-family:var(--v2-serif);font-size:20px;font-weight:500;line-height:1.28;}
+.v2-article-page .related-card h3 a:hover,.v2-rm-page .related-card h3 a:hover{color:var(--v2-violet-deep);}
+.v2-article-page .related-card-excerpt,.v2-rm-page .related-card-excerpt{color:var(--v2-muted);font-family:var(--v2-serif);font-size:16px;line-height:1.6;}
+.v2-article-page .related-card-excerpt a:hover,.v2-rm-page .related-card-excerpt a:hover{color:var(--v2-violet-deep);}
+.v2-article-page .related-card-link,.v2-rm-page .related-card-link{color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
+
+@media (max-width:720px){
+  .v2-article-page .article-header{padding:64px 0 52px;}
+  .v2-rm-page .rm-photo-hero{min-height:340px;}
+}

@@ -86,7 +86,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // si CE compte a déjà aimé cet article, sans attendre un clic.
     const alreadyLiked = unlocked && user ? await hasUserLikedArticle(article.id, user.id) : false;
     return (
-      <>
+      // V2 (retour du 11/09, Lot 3) — reproduit prototype-html/rosee-matinale/
+      // index.html § .entry-hero/.entry-body-section (variante "life", voir
+      // globals.css § .v2-article-page.vs) : le prototype ne montre qu'un seul
+      // gabarit d'article publié, le mur d'accès et les thématiques n'y
+      // figurent pas (voir commentaire détaillé dans globals.css).
+      <div className="v2-article-page vs">
         <ViewTracker articleId={article.id} />
         <section className="article-header">
           <div className="content-col">
@@ -265,13 +270,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         <Newsletter />
         <Footer variant="light" />
-      </>
+      </div>
     );
   }
 
   // Gabarit Que Dit la Bible — jamais verrouillé.
   return (
-    <>
+    // V2 (retour du 11/09, Lot 3) — voir le commentaire équivalent sur la
+    // branche La Vie Supérieure ci-dessus.
+    <div className="v2-article-page qdlb">
       <ViewTracker articleId={article.id} />
       <section className="article-header">
         <div className="content-col">
@@ -418,6 +425,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }
