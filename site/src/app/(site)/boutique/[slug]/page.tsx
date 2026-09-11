@@ -35,15 +35,20 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
   const available = goodie.status === "available";
 
   return (
-    <>
+    // V2 (retour du 11/09, Lot 5) — reproduit prototype-html/boutique/
+    // t-shirt-voix-prophetique/index.html § .book-detail-hero/.book-detail/
+    // .book-description (mêmes classes que la fiche livre, voir globals.css
+    // § .v2-product-page). Réhabillage visuel uniquement : getGoodieBySlug,
+    // GoodiePurchasePanel, Stars, ReviewSection inchangés.
+    <div className="v2-product-page">
+      <div className="v2-wrap v2-breadcrumbs">
+        <Link href="/boutique">Boutique</Link>
+        <span>›</span>
+        <span>{goodie.title}</span>
+      </div>
+
       <section className="product-section">
         <div className="wrap">
-          <div className="book-nav">
-            <span />
-            <Link href="/boutique" className="book-nav-catalogue">Toute la boutique</Link>
-            <span />
-          </div>
-
           <div className="product-grid">
             <div className={goodie.image_url ? "product-cover" : "product-cover placeholder"} style={{ aspectRatio: "1/1" }}>
               {goodie.image_url ? (
@@ -101,6 +106,6 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
       <ReviewSection goodieId={goodie.id} />
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }

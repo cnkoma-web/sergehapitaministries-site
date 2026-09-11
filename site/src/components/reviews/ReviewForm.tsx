@@ -56,22 +56,27 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
     <form className="review-form" onSubmit={handleSubmit}>
       <h3>Laisser un avis</h3>
       {error && <div className="admin-error">{error}</div>}
-      <div className="star-input">
-        {[1, 2, 3, 4, 5].map((v) => (
-          <span
-            key={v}
-            className={v <= (hoverRating || rating) ? "active" : undefined}
-            onClick={() => setRating(v)}
-            onMouseEnter={() => setHoverRating(v)}
-            onMouseLeave={() => setHoverRating(0)}
-          >
-            ★
-          </span>
-        ))}
+      <div>
+        <label>Votre note</label>
+        <div className="star-input">
+          {[1, 2, 3, 4, 5].map((v) => (
+            <span
+              key={v}
+              className={v <= (hoverRating || rating) ? "active" : undefined}
+              onClick={() => setRating(v)}
+              onMouseEnter={() => setHoverRating(v)}
+              onMouseLeave={() => setHoverRating(0)}
+            >
+              ★
+            </span>
+          ))}
+        </div>
       </div>
-      <input type="text" name="author_name" placeholder="Votre nom" />
-      <textarea name="body" placeholder="Votre avis…" />
-      <button className="btn btn-primary" type="submit" disabled={loading}>
+      <label htmlFor="review-name">Votre nom</label>
+      <input id="review-name" type="text" name="author_name" />
+      <label htmlFor="review-body">Votre avis</label>
+      <textarea id="review-body" name="body" />
+      <button type="submit" disabled={loading}>
         {loading ? "Envoi…" : "Envoyer mon avis →"}
       </button>
     </form>

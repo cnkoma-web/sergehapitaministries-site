@@ -57,15 +57,22 @@ export default async function MonComptePage() {
   }));
 
   return (
-    <>
-      <section className="util-hero">
-        <div className="wrap">
-          <h1>Mon compte</h1>
-          <p>Gérez vos informations, suivez vos commandes et votre accès à La Vie Supérieure.</p>
+    // V2 (retour du 11/09, Lot 5) — reproduit prototype-html/mon-compte/
+    // index.html § .dashboard-shell/.dashboard-head/.dashboard-grid/
+    // .dashboard-tabs (commerce.css). Réhabillage visuel uniquement :
+    // DashTabs (5 rubriques réelles, dans le même ordre que la maquette)
+    // inchangé.
+    <div className="v2-dashboard-page">
+      <div className="v2-commerce-wrap v2-dashboard-shell">
+        <div className="v2-dashboard-head">
+          <div>
+            <p className="v2-eyebrow">
+              <span /> Espace personnel
+            </p>
+            <h1 style={{ margin: 0, fontFamily: "var(--v2-serif)", fontSize: "clamp(45px,6vw,68px)", fontWeight: 500, lineHeight: 1 }}>Mon compte</h1>
+            <p style={{ margin: "12px 0 0", color: "var(--v2-muted)" }}>Retrouvez ici vos informations et votre activité.</p>
+          </div>
         </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <DashTabs
           userId={user.id}
           firstName={profile?.first_name ?? ""}
@@ -74,7 +81,7 @@ export default async function MonComptePage() {
           reviews={myReviews}
           orders={myOrders}
         />
-      </section>
-    </>
+      </div>
+    </div>
   );
 }

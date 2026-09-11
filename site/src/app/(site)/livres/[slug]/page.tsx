@@ -50,28 +50,26 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
   const shareDescription = book.description ? stripHtml(book.description) : undefined;
 
   return (
-    <>
-      <section className="product-section">
-        {/* Pas de --content-col ici (retour du 31/08) : la zone image+infos
-            est un affichage produit, pas du texte de lecture — elle garde la
-            largeur standard .wrap. Seul l'écart interne (gap) est resserré,
-            voir .product-grid. Le texte de lecture en dessous
-            (.product-desc) reste, lui, sur --content-col. */}
-        <div className="wrap">
-          <div className="book-nav">
-            {prev ? (
-              <Link href={`/livres/${prev.slug}`} className="book-nav-link" title={prev.title}>← Précédent</Link>
-            ) : (
-              <span />
-            )}
-            <Link href="/livres" className="book-nav-catalogue">Tout le catalogue</Link>
-            {next ? (
-              <Link href={`/livres/${next.slug}`} className="book-nav-link" title={next.title}>Suivant →</Link>
-            ) : (
-              <span />
-            )}
-          </div>
+    // V2 (retour du 11/09, Lot 5) — reproduit prototype-html/livres/
+    // manifester-ce-que-dieu-a-prevu/index.html § .book-detail-hero/
+    // .book-detail/.book-description/.reviews-section (commerce.css).
+    // Réhabillage visuel uniquement : getBookBySlug, getAdjacentBooks,
+    // CoverRollover, Stars, ReviewSection, AddToCartButton, ShareCartouche
+    // inchangés. Le fil d'Ariane remplace l'ancienne navigation
+    // prev/catalogue/next en haut de page (absente de la maquette) — cette
+    // navigation reste réelle, déplacée en bas de fiche (§ .book-sequence,
+    // voir juste avant les avis), à l'identique de la maquette.
+    <div className="v2-product-page">
+      <div className="v2-wrap v2-breadcrumbs">
+        <Link href="/">Accueil</Link>
+        <span>›</span>
+        <Link href="/livres">Livres</Link>
+        <span>›</span>
+        <span>{book.title}</span>
+      </div>
 
+      <section className="product-section">
+        <div className="wrap">
           <div className="product-grid">
             {/* Regroupe couverture + galerie dans un même axe (retour du
                 03/09) : elles partagent maintenant le même centrage plutôt
@@ -176,9 +174,18 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
         </div>
       </section>
 
+      {/* Navigation prev/suivant (§ .book-sequence) — même donnée réelle
+          (getAdjacentBooks) que l'ancienne .book-nav, déplacée en bas de
+          fiche pour reproduire la position exacte de la maquette. */}
+      <nav className="v2-wrap v2-book-sequence" aria-label="Navigation entre les livres">
+        {prev ? <Link href={`/livres/${prev.slug}`}>← Précédent</Link> : <span />}
+        <Link href="/livres" className="v2-book-sequence-mid">Tous les livres</Link>
+        {next ? <Link href={`/livres/${next.slug}`}>Suivant →</Link> : <span />}
+      </nav>
+
       <ReviewSection bookId={book.id} />
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }
