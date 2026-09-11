@@ -1861,7 +1861,7 @@ footer.footer--dark{
    le prototype l'avait par erreur ("GPT a oublié de le corriger" — Serge).
    La phrase-clé garde la taille du blockquote ci-dessus, son
    développement continue ici en plus petit, dans le même bloc. */
-.v2-ds-hero-quote-secondary{display:block;margin-top:18px;color:rgba(255,255,255,.68);font-style:normal;font-size:16px;line-height:1.7;}
+.v2-ds-hero-quote-secondary{display:block;margin-top:18px;color:rgba(255,255,255,.68);font-family:var(--v2-sans);font-style:normal;font-size:16px;line-height:1.7;}
 
 .v2-ds-opening{padding-block:120px;background:#fff;}
 .v2-ds-opening-grid{display:grid;grid-template-columns:220px minmax(0,790px);justify-content:space-between;gap:90px;}
