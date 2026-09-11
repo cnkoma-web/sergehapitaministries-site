@@ -2234,3 +2234,77 @@ footer.footer--dark{
   .v2-cj-theme-grid{grid-template-columns:1fr;}
   .v2-cj-theme.wide{grid-column:span 1;}
 }
+
+/* ============================================================
+   V2 (retour du 11/09, Lot 3) — Hub Publications + hubs par
+   catégorie (Que Dit la Bible, La Vie Supérieure). Reproduit
+   prototype-html/publications/index.html § .pub-hero, .feed-,
+   .pagination (publications.css). Composants réels inchangés
+   (PublicationFeedItem, Pagination) : habillage uniquement, via
+   les classes qu'ils exposent déjà, sous le conteneur .v2-pub-page
+   ajouté par chaque page — jamais de changement de leur DOM.
+
+   Le prototype décrit .feed-entry sur 2 mises en page distinctes
+   (desktop 3 colonnes avec numéro d'index, mobile 1 colonne avec
+   CTA en ligne dans le chapeau). Le composant réel
+   (PublicationFeedItem) utilise déjà, à toutes les tailles
+   d'écran, la structure "1 colonne, CTA en ligne" — un choix
+   antérieur déjà motivé dans son propre fichier (troncature
+   calibrée par le code, jamais un lien détaché sous le chapeau).
+   On reprend donc ici l'habillage de la variante mobile du
+   prototype à toutes les tailles plutôt que de réintroduire une
+   2e mise en page desktop avec numéro d'index : la structure DOM
+   réelle ne change jamais pour un simple habillage (méthode §3).
+   ============================================================ */
+.v2-pub-page{background:#fff;}
+
+.v2-pub-hero{position:relative;overflow:hidden;padding:76px 0 68px;color:#fff;background:radial-gradient(circle at 83% 18%,rgba(123,63,228,.7),transparent 27%),linear-gradient(125deg,#17142d 8%,#24203e 58%,#382168 100%);}
+.v2-pub-hero::before{content:"";position:absolute;width:460px;height:460px;right:-170px;bottom:-320px;border:1px solid rgba(255,255,255,.18);border-radius:50%;box-shadow:0 0 0 64px rgba(255,255,255,.025),0 0 0 128px rgba(255,255,255,.018);}
+.v2-pub-hero-inner{position:relative;}
+.v2-pub-hero h1{margin:0 0 18px;color:#fff;font-family:var(--v2-serif);font-size:clamp(44px,6vw,66px);font-weight:500;line-height:1.02;letter-spacing:-.04em;}
+.v2-pub-hero-inner>p{margin:0;max-width:620px;color:rgba(255,255,255,.76);font-size:17px;line-height:1.72;}
+
+/* Hub général uniquement (retour du 11/09) — les liens de catégorie du
+   prototype (§ .hero-category-links). "Je Confesse" n'existe pas encore
+   (Lot 4) : 3 tuiles pour l'instant, une 4e s'ajoutera avec cette
+   fonctionnalité, jamais avant qu'elle existe réellement. Les hubs par
+   catégorie (Que Dit la Bible, La Vie Supérieure) n'ont pas de maquette
+   dédiée dans le dossier : ils reprennent l'habillage simple ci-dessus
+   (eyebrow/h1/description) sans cette grille — à signaler si Serge
+   souhaite une maquette dédiée plus tard. */
+.v2-pub-hero-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;list-style:none;padding:0;}
+.v2-pub-hero-links a{display:flex;flex-direction:column;gap:2px;min-width:158px;padding:12px 16px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.06);transition:background .2s ease,border-color .2s ease;}
+.v2-pub-hero-links a:hover{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.14);}
+.v2-pub-hero-links small{color:#cdbbff;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
+.v2-pub-hero-links strong{color:#fff;font-size:14px;line-height:1.25;}
+
+.v2-pub-page .feed-section{padding:72px 0 88px;background:#fff;}
+.v2-pub-page .empty-state{color:var(--v2-muted);font-size:16px;}
+.v2-pub-page .feed-list{border-top:1px solid var(--v2-line);}
+.v2-pub-page .feed-item{display:block;padding:32px 0;border-bottom:1px solid var(--v2-line);border-top:0;}
+.v2-pub-page .feed-list .feed-item:first-child{border-top:0;}
+.v2-pub-page .feed-meta{margin-bottom:13px;}
+.v2-pub-page .feed-badge{padding:5px 12px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;background:var(--v2-ink);}
+.v2-pub-page .feed-badge.vs{background:#49369b;}
+.v2-pub-page .feed-badge.rm{background:#7b3fe4;}
+.v2-pub-page .feed-date{color:var(--v2-muted);font-size:13px;}
+.v2-pub-page .feed-views{color:var(--v2-violet-deep);font-size:13px;}
+.v2-pub-page .feed-item h3{margin:0 0 10px;font-size:clamp(26px,3vw,34px);font-weight:500;line-height:1.16;letter-spacing:-.015em;color:var(--v2-ink);font-family:var(--v2-serif);}
+.v2-pub-page .feed-item h3 a:hover,.v2-pub-page .feed-item h3 a:active{color:var(--v2-violet-deep);}
+.v2-pub-page .excerpt{max-width:820px;color:var(--v2-muted);font-family:var(--v2-serif);font-size:16px;line-height:1.72;}
+.v2-pub-page .excerpt a:hover,.v2-pub-page .excerpt a:active{color:var(--v2-violet-deep);}
+.v2-pub-page .feed-cta-inline{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:.8em;}
+
+.v2-pub-page .rm-reminder{padding:56px 0 76px;background:var(--v2-violet-pale);}
+.v2-pub-page .rm-reminder .feed-item{border-top:0;border-bottom:0;padding:0;}
+
+.v2-pub-page .pagination{border-top:0;padding:8px 0 0;margin-top:8px;color:var(--v2-muted);}
+.v2-pub-page .pagination .pages a,.v2-pub-page .pagination .pages button{width:40px;height:40px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-ink);}
+.v2-pub-page .pagination .pages a:hover{border-color:var(--v2-violet-deep);color:var(--v2-violet-deep);}
+.v2-pub-page .pagination .pages a.active,.v2-pub-page .pagination .pages button.active{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
+.v2-pub-page .pagination .pages a[aria-disabled="true"]{opacity:.4;pointer-events:none;}
+
+@media (max-width:720px){
+  .v2-pub-hero-links{gap:8px;}
+  .v2-pub-hero-links a{min-width:0;flex:1 1 45%;}
+}

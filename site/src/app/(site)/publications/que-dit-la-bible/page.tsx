@@ -28,9 +28,15 @@ export default async function QueDitLaBiblePage({ searchParams }: { searchParams
   const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
 
   return (
-    <>
-      <section className="util-hero pubs-hero">
-        <div className="wrap">
+    // V2 (retour du 11/09, Lot 3) — même habillage que le hub général (voir
+    // globals.css § .v2-pub-page), sans la grille de liens de catégorie
+    // (pas de maquette dédiée pour ce hub dans le dossier).
+    <div className="v2-pub-page">
+      <section className="v2-pub-hero">
+        <div className="v2-wrap v2-pub-hero-inner">
+          <p className="v2-eyebrow light">
+            <span /> Publications
+          </p>
           <h1>Que Dit la Bible ?</h1>
           <p>{description}</p>
         </div>
@@ -55,6 +61,6 @@ export default async function QueDitLaBiblePage({ searchParams }: { searchParams
 
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }

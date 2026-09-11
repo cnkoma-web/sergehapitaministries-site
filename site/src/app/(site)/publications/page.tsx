@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getArticlesFeed } from "@/lib/content/articles";
 import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
@@ -42,11 +43,32 @@ export default async function PublicationsPage({
   const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
 
   return (
-    <>
-      <section className="util-hero pubs-hero">
-        <div className="wrap">
+    // V2 (retour du 11/09, Lot 3) — reproduit prototype-html/publications/
+    // index.html § .pub-hero/.feed-section/.daily-reminders + publications.css.
+    // Flux et pagination réels inchangés (getArticlesFeed, Pagination) —
+    // voir globals.css § .v2-pub-page pour le détail de l'habillage.
+    <div className="v2-pub-page">
+      <section className="v2-pub-hero">
+        <div className="v2-wrap v2-pub-hero-inner">
+          <p className="v2-eyebrow light">
+            <span /> Enseignement &amp; encouragement
+          </p>
           <h1>Publications</h1>
           <p>{description}</p>
+          <nav className="v2-pub-hero-links" aria-label="Catégories de publications">
+            <Link href="/publications/que-dit-la-bible">
+              <small>Enseignement</small>
+              <strong>Que dit la Bible ?</strong>
+            </Link>
+            <Link href="/publications/la-vie-superieure">
+              <small>Membres</small>
+              <strong>La Vie Supérieure</strong>
+            </Link>
+            <Link href="/rosee-matinale">
+              <small>Chaque jour</small>
+              <strong>Rosée Matinale</strong>
+            </Link>
+          </nav>
         </div>
       </section>
 
@@ -85,6 +107,6 @@ export default async function PublicationsPage({
 
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }
