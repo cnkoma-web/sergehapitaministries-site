@@ -3,18 +3,11 @@ import Link from "next/link";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import { getBooks } from "@/lib/content/books";
-import { getHomeFeed, getRoseeDuJour } from "@/lib/content/articles";
+import { getRoseeDuJour } from "@/lib/content/articles";
 import { getActiveStats } from "@/lib/content/stats";
 import { getSocialLinks } from "@/lib/content/footer";
-import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
 import CoverRollover from "@/components/shop/CoverRollover";
 import PublisherLink from "@/components/shop/PublisherLink";
-import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
-import Pagination from "@/components/admin/Pagination";
-
-// Règle fixe (retour du 05/09, point 6) — même règle que les hubs : 4
-// publications par page, partout où ce flux apparaît (accueil compris).
-const PUBS_PER_PAGE = 4;
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -39,8 +32,6 @@ export const metadata: Metadata = {
   },
 };
 
-const HERO_IMAGES = ["/de-serge-hero.jpg", "/rosee-matinale-hero.jpg", "/hero-3.jpg"];
-
 const SOCIAL_ICON: Record<string, string> = { YouTube: "▶", Instagram: "◎", TikTok: "♪", Facebook: "f" };
 const SOCIAL_HANDLE: Record<string, string> = {
   YouTube: "@sergehapita",
@@ -49,304 +40,389 @@ const SOCIAL_HANDLE: Record<string, string> = {
   Facebook: "Serge Hapita Ministries",
 };
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, Number(pageParam) || 1);
-
-  const [books, roseeDuJour, stats, socialLinks, texts] = await Promise.all([
+export default async function HomePage() {
+  const [books, roseeDuJour, stats, socialLinks] = await Promise.all([
     getBooks(),
     getRoseeDuJour(),
     getActiveStats(),
     getSocialLinks(),
-    getInterfaceTexts(),
   ]);
 
   const latestBooks = books.slice(0, 3);
-  // Flux unique, toutes catégories mélangées, trié par date (point 5,
-  // retour du 05/09) — prêt à accueillir une 3e catégorie d'articles sans
-  // modification de code : voir le commentaire de getHomeFeed. Paginé
-  // (point 6, retour du 05/09) : 4 par page, comme les hubs — remplace le
-  // réglage admin "home.publications_per_category" (devenu sans effet,
-  // cette limite est désormais une règle fixe partagée avec les hubs).
-  const { articles: homeFeed, total: homeFeedTotal } = await getHomeFeed(page, PUBS_PER_PAGE);
-  // Réglage admin (retour du 03/09) — nombre de lignes d'extrait affichées
-  // sur les cartes, pas une valeur fixée dans le code.
-  const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
 
   return (
-    <>
-      <section className="hero">
-        {HERO_IMAGES.map((src, i) => (
-          <div key={src} className={i === 0 ? "hero-slide active" : "hero-slide"} style={{ backgroundImage: `url('${src}')` }} />
-        ))}
-        <div className="wrap hero-inner">
-          <div>
-            <div className="eyebrow">Porter le salut de Christ jusqu&apos;aux extrémités de la terre</div>
+    // V2 (retour du 11/09, Lot 3) — reproduit prototype-html/index.html
+    // (styles.css § .hero/.dew-*/.jesus-*/.publications-section/
+    // .category-*/.events-*/.books-*), à l'identique de la maquette : pas
+    // de flux chronologique mélangé sur l'accueil (annulé le 11/09, décision
+    // explicite de Serge — les capsules du jour + la vitrine de catégories
+    // suffisent ici, contrairement au hub Publications qui garde le sien).
+    // Voir globals.css § .v2-home pour l'écart restant assumé (Agenda
+    // provisoire en dur en attendant le Lot 11).
+    <div className="v2-home">
+      <section className="v2-home-hero" id="ministere">
+        <div className="v2-home-hero-photo" style={{ backgroundImage: "url('/v2/home-hero-community.jpg')" }} aria-hidden="true" />
+        <div className="v2-home-hero-glow" aria-hidden="true" />
+        <div className="v2-wrap v2-home-hero-inner">
+          <div className="v2-home-hero-copy">
+            <p className="v2-eyebrow light">
+              <span /> Porter le salut de Christ jusqu&apos;aux extrémités de la terre
+            </p>
             <h1>
-              Un ministère qui révèle Christ au croyant, affermit le chrétien dans l&apos;identité de fils et
-              manifeste le Royaume de Dieu.
+              Révéler Christ.
+              <br />
+              Affermir le chrétien.
+              <br />
+              <em>Manifester le Royaume.</em>
             </h1>
-            {/* Retour du 05/09 (2e passage) — "Lire davantage" repasse dans la
-                continuité du paragraphe (plus sur sa propre ligne) : même
-                police/taille, seul le gras le distingue, aucun retour à la
-                ligne ni retrait particulier. */}
-            <p className="hero-lede">
-              Serge Hapita est un prophète de la révélation et de la conscience filiale. Son ministère porte une
-              onction qui ravive la foi, restaure la communion avec Dieu le Père et la conscience de
-              l&apos;identité de fils. Quand il partage la Parole, c&apos;est plus qu&apos;un discours, c&apos;est
-              une rencontre avec l&apos;Esprit : la vie se manifeste, l&apos;esprit se réveille, la foi se met à
-              l&apos;œuvre.{" "}
-              <Link href="/de-serge" className="hero-lede-link">
-                Lire davantage
-              </Link>
+            <p className="v2-home-hero-text">
+              <span className="v2-home-hero-summary">
+                Serge Hapita est un prophète de la révélation et de la conscience filiale. Son ministère porte une
+                onction qui ravive la foi, restaure la communion avec Dieu le Père et la conscience de
+                l&apos;identité de fils. Quand il partage la Parole, c&apos;est une rencontre avec l&apos;Esprit : la
+                vie se manifeste, l&apos;esprit se réveille, la foi se met à l&apos;œuvre.
+              </span>{" "}
+              <Link href="/mission">Lire davantage</Link>
             </p>
-            <div className="hero-cta">
-              <Link href="/connaitre-jesus" className="btn btn-primary">
-                Je désire connaître Jésus →
+            <div className="v2-home-hero-actions">
+              <Link href="/connaitre-jesus" className="v2-button v2-button-primary">
+                Je désire connaître Jésus <span>→</span>
               </Link>
-              <Link href="/invitation" className="btn btn-outline">
-                J&apos;invite Serge
+              <Link href="/invitation" className="v2-button v2-button-ghost">
+                J&apos;invite Serge <span>↗</span>
               </Link>
-            </div>
-          </div>
-          <div className="book-feature">
-            <div className="book-card">
-              {roseeDuJour ? (
-                <>
-                  {/* Badge seul, date séparée en dessous (retour du 05/09) —
-                      auparavant combinés dans le même badge ("ROSÉE MATINALE
-                      · 1er septembre"), ce qui l'allongeait au point de
-                      parfois passer sur 2 lignes et empiéter sur le texte en
-                      dessous. Date au format complet avec l'année, comme
-                      partout ailleurs sur le site. */}
-                  <span className="tag">Rosée Matinale</span>
-                  <div className="book-date">
-                    {new Date(roseeDuJour.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                  </div>
-                  {/* 4 lignes minimum, "…" automatique si le texte continue
-                      au-delà (retour du 05/09) — via line-clamp plutôt
-                      qu'une coupure à un nombre de caractères fixe, plus
-                      fiable d'une largeur de carte à l'autre. */}
-                  <p className="book-sub">{(roseeDuJour.verse_text || roseeDuJour.body || "").slice(0, 400)}</p>
-                </>
-              ) : (
-                <p className="book-sub">La pensée du jour arrive bientôt.</p>
-              )}
-              <div className="book-actions">
-                <Link href="/rosee-matinale" className="btn btn-primary">
-                  Lire la pensée du jour
-                </Link>
-                <Link href="/publications" className="btn btn-ghost">
-                  Publications
-                </Link>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section">
-        <div className="wrap video-feature-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "center" }}>
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%" }}>
-            <div className="eyebrow">Vidéo à la une</div>
-            <h2 style={{ fontSize: 26, margin: "10px 0 14px" }}>Connaître Jésus</h2>
-            <p style={{ color: "var(--ink-soft)", fontSize: 14.5, lineHeight: 1.55 }}>
-              Le cœur du message de Jésus : sa mission, sa mort, sa résurrection, et ce qu&apos;il offre à chacun
-              aujourd&apos;hui.
-            </p>
+      {/* Rosée matinale du jour — carte flottante sur la charnière hero →
+          contenu (§ .dew-wrap). Donnée réelle inchangée (getRoseeDuJour). */}
+      <section className="v2-wrap" aria-label="Rosée matinale du jour">
+        <div className="v2-dew-wrap">
+          <article className="v2-dew-card">
+            <div className="v2-dew-label">Rosée Matinale</div>
+            {roseeDuJour ? (
+              <>
+                <div className="v2-dew-content">
+                  <h2>{roseeDuJour.title}</h2>
+                  <p>{(roseeDuJour.verse_text || roseeDuJour.body || "").slice(0, 220)}</p>
+                </div>
+                <Link href="/rosee-matinale">Lire la pensée du jour →</Link>
+              </>
+            ) : (
+              <>
+                <div className="v2-dew-content">
+                  <p>La pensée du jour arrive bientôt.</p>
+                </div>
+                <Link href="/publications">Publications →</Link>
+              </>
+            )}
+          </article>
+        </div>
+      </section>
+
+      {/* Passerelle Connaître Jésus (§ .jesus-gateway) — miniature + lien
+          vers la page dédiée, qui porte elle la vraie vidéo intégrée (voir
+          connaitre-jesus/page.tsx) : traitement volontairement différent de
+          cette page-là, pas un oubli — une vignette d'appel suffit sur
+          l'accueil, la même vidéo reste à un clic. */}
+      <section className="v2-jesus-gateway" id="jesus">
+        <div className="v2-wrap">
+          <div className="v2-section-heading">
+            <div>
+              <p className="v2-eyebrow">
+                <span /> La porte vers la vie
+              </p>
+              <h2>Connaître Jésus</h2>
+            </div>
+            <p>Découvrez pourquoi Jésus est venu, ce qu&apos;il a accompli et la vie qu&apos;il offre aujourd&apos;hui à celui qui croit en lui.</p>
           </div>
-          <div style={{ aspectRatio: "16/9", borderRadius: 12, overflow: "hidden" }}>
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/_8Iucad0hFg"
-              title="Connaître Jésus"
-              style={{ border: 0, display: "block" }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+
+          <div className="v2-jesus-stage">
+            <Link href="/connaitre-jesus" className="v2-jesus-video-frame" aria-label="Découvrir la présentation Connaître Jésus">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/v2/home-video-thumb.jpg" alt="Miniature de la vidéo Connaître Jésus" />
+              <span className="play" aria-hidden="true">▶</span>
+            </Link>
+            <div className="v2-jesus-intro">
+              <p className="micro-label">Une histoire incroyable. Et pourtant…</p>
+              <h3>Pourquoi Jésus est-il venu ?</h3>
+              <p>
+                Il y a presque deux mille ans, Jésus de Nazareth est venu porter le salut, révéler le Père et donner
+                la vie éternelle à quiconque croit.
+              </p>
+              <Link href="/connaitre-jesus" className="v2-button v2-button-primary">
+                Entrer dans cet univers <span>→</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="v2-jesus-topics" aria-label="Découvrir Jésus">
+            <Link href="/connaitre-jesus#naissance">
+              <span>01</span>
+              <strong>Sa naissance miraculeuse</strong>
+              <b>→</b>
+            </Link>
+            <Link href="/connaitre-jesus#oeuvre">
+              <span>02</span>
+              <strong>Sa mission et ses œuvres</strong>
+              <b>→</b>
+            </Link>
+            <Link href="/connaitre-jesus#resurrection">
+              <span>03</span>
+              <strong>Sa mort et sa résurrection</strong>
+              <b>→</b>
+            </Link>
+            <Link href="/connaitre-jesus#recevoir">
+              <span>04</span>
+              <strong>Recevoir la vie en Jésus</strong>
+              <b>→</b>
+            </Link>
           </div>
         </div>
       </section>
 
+      {/* Repères chiffrés (getActiveStats) — fonctionnalité réelle,
+          réglable dans l'admin, sans emplacement dans la maquette de
+          l'accueil : réutilise l'habillage déjà posé pour De Serge
+          (.v2-ds-stats, Lot 2) plutôt que d'en inventer un nouveau. */}
       {stats.length > 0 && (
-        <section className="stats">
-          <div className="wrap">
+        <section className="v2-ds-stats" aria-label="Repères du ministère">
+          <div className="v2-wrap v2-ds-stats-grid">
             {stats.map((s) => (
-              <div className="stat" key={s.key}>
-                <div className="num">{s.value}</div>
-                <div className="label">{s.label}</div>
+              <div key={s.key}>
+                <strong>{s.value}</strong>
+                <span>{s.label}</span>
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* Flux unique, toutes catégories mélangées, trié par date (point 5,
-          retour du 05/09) — remplace les deux blocs séparés par catégorie
-          d'avant : sur mobile/tablette, l'utilisateur voyait tout le bloc
-          "Que Dit la Bible" avant "La Vie Supérieure" au lieu d'un vrai
-          mélange chronologique. Même composant que le hub Publications
-          (PublicationFeedItem), prêt à accueillir une 3e catégorie future
-          sans développement supplémentaire (voir getHomeFeed). */}
-      <section className="pubs" id="publications">
-        <div className="wrap pubs-inner-pad">
-          <div className="section-head">
-            <h2>Publications</h2>
-            <Link href="/publications" className="see-all">
+      {/* Vitrine statique par catégorie (§ .publications-section/
+          .category-grid) — menu de navigation, pas un aperçu de contenu
+          (voir la note en tête de section dans globals.css). 3 cartes pour
+          l'instant : "Je Confesse" s'ajoutera au Lot 4, jamais avant que la
+          fonctionnalité existe réellement. */}
+      <section className="v2-category-section" id="publications">
+        <div className="v2-wrap">
+          <div className="v2-section-heading" style={{ color: "#fff" }}>
+            <div>
+              <p className="v2-eyebrow light">
+                <span /> Trois expressions de la Parole
+              </p>
+              <h2 style={{ color: "#fff" }}>Une Parole pour chaque besoin</h2>
+            </div>
+            <Link href="/publications" style={{ color: "#c7b6f5", fontSize: 14, fontWeight: 750 }}>
               Toutes les publications →
             </Link>
           </div>
 
-          {homeFeed.length === 0 ? (
-            <p style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>Les premières publications arrivent bientôt.</p>
-          ) : (
-            <div className="feed-list">
-              {homeFeed.map((a) => (
-                <PublicationFeedItem article={a} excerptLines={excerptLines} variant="home" key={a.id} />
-              ))}
-            </div>
-          )}
-          {homeFeedTotal > 0 && (
-            <Pagination page={page} perPage={PUBS_PER_PAGE} total={homeFeedTotal} basePath="/" showPerPageSelector={false} />
-          )}
+          <div className="v2-category-grid">
+            <article className="v2-category-card dew">
+              <div className="v2-category-number">01</div>
+              <div className="v2-category-copy">
+                <p className="v2-category-name">Rosée Matinale</p>
+                <h3>Mieux penser, mieux choisir et mieux vivre.</h3>
+                <p>Des pensées courtes et percutantes qui apportent sagesse, recul et inspiration pour la vie quotidienne.</p>
+              </div>
+              <Link href="/rosee-matinale">Lire la pensée du jour →</Link>
+            </article>
+            <article className="v2-category-card bible">
+              <div className="v2-category-number">02</div>
+              <div className="v2-category-copy">
+                <p className="v2-category-name">Que dit la Bible ?</p>
+                <h3>Dieu a dit, alors nous disons aussi</h3>
+                <p>Un examen quotidien des Écritures pour construire la véritable connaissance de Dieu dans la vie de ceux qui nous suivent.</p>
+              </div>
+              <Link href="/publications/que-dit-la-bible">Examiner les Écritures →</Link>
+            </article>
+            <article className="v2-category-card life">
+              <div className="v2-category-number">03</div>
+              <div className="v2-category-copy">
+                <p className="v2-category-name">La Vie Supérieure</p>
+                <h3>Une connaissance destinée à devenir l&apos;expérience de la vie en Christ.</h3>
+                <p>Des enseignements approfondis consacrés aux réalités de la nouvelle création et à leur manifestation dans la vie du chrétien.</p>
+              </div>
+              <Link href="/publications/la-vie-superieure">Entrer dans l&apos;enseignement →</Link>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section className="section" id="livres">
-        <div className="wrap">
-          <div className="section-head">
+      {/* Agenda / Événements (§ .events-section) — PROVISOIRE (retour du
+          11/09) : contenu en dur repris de la maquette, aucune donnée ni
+          écran admin ne le pilote encore. Décidé avec Serge : à rendre
+          dynamique dans un Lot 11 dédié (nouvelle table + admin CRUD),
+          avant la bascule finale — jamais laissé figé au-delà. */}
+      <section className="v2-events-section" id="evenements">
+        <div className="v2-wrap">
+          <div className="v2-section-heading">
+            <div>
+              <p className="v2-eyebrow">
+                <span /> Agenda
+              </p>
+              <h2>Rencontres et conférences</h2>
+            </div>
+            <p>Retrouvez les prochains rendez-vous du ministère et revivez les événements qui ont marqué La Vie Supérieure.</p>
+          </div>
+
+          <div className="v2-events-grid">
+            <article className="v2-next-event">
+              <div className="v2-event-kicker">Prochain rendez-vous</div>
+              <div className="v2-event-date">
+                <strong>À venir</strong>
+                <span>Prochaines dates annoncées ici</span>
+              </div>
+              <div className="v2-event-body">
+                <p>Conférence</p>
+                <h3>La Vie Supérieure</h3>
+                <span>Un temps d&apos;enseignement consacré aux réalités de la vie en Christ.</span>
+              </div>
+              <a href="https://laviesup.com/" target="_blank" rel="noopener noreferrer">
+                Découvrir le site de l&apos;événement ↗
+              </a>
+            </article>
+            <div className="v2-past-events">
+              <p className="v2-eyebrow" style={{ marginBottom: 20 }}>
+                <span /> À revivre
+              </p>
+              <a className="v2-past-event" href="https://laviesup.com/" target="_blank" rel="noopener noreferrer">
+                <time dateTime="2026-04-23">23–25 avril 2026</time>
+                <div>
+                  <strong>La Vie Supérieure — Gabon</strong>
+                  <span>Le Beaulieu, Akanda</span>
+                </div>
+                <b>→</b>
+              </a>
+              <a className="v2-past-event" href="#">
+                <time dateTime="2026-08-22">22 août 2026</time>
+                <div>
+                  <strong>Sommet des Chrétiens Entrepreneurs</strong>
+                  <span>Rencontre en ligne</span>
+                </div>
+                <b>→</b>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="v2-books-section v2-wrap" id="livres">
+        <div className="v2-section-heading">
+          <div>
+            <p className="v2-eyebrow">
+              <span /> amDG Éditions
+            </p>
             <h2>
               Dernières <em>parutions</em>
             </h2>
-            <Link href="/livres" className="see-all">
-              Voir tout le catalogue →
-            </Link>
           </div>
-          {/* Livres en premier, capsule amDG en dernier (retour du 05/09) —
-              particulièrement sensible sur mobile où l'ordre du DOM devient
-              l'ordre d'empilement vertical : il fallait auparavant faire
-              défiler toute la capsule avant de voir un seul livre.
-              gridTemplateColumns inversé en même temps (2fr .85fr) pour
-              garder les livres dans la colonne large. */}
-          <div style={{ display: "grid", gridTemplateColumns: "2fr .85fr", gap: 32, alignItems: "start" }} className="livres-split">
-            {latestBooks.length === 0 ? (
-              <p className="empty-state">Le catalogue est en cours de préparation.</p>
-            ) : (
-              <div className="books-grid" style={{ gridTemplateColumns: `repeat(${latestBooks.length}, 1fr)` }}>
-                {latestBooks.map((book) => (
-                  <div className="book" key={book.id}>
-                    {book.cover_url ? (
-                      <Link href={`/livres/${book.slug}`} className="book-thumb">
-                        {book.badge && <span className="badge">{book.badge}</span>}
-                        <CoverRollover src={book.cover_url} hoverSrc={book.hover_cover_url} alt={book.title} />
-                      </Link>
-                    ) : (
-                      <Link href={`/livres/${book.slug}`} className="book-thumb placeholder">
-                        {book.badge && <span className="badge">{book.badge}</span>}
-                        <div>
-                          <div className="ph-collection">{book.publisher}</div>
-                          <div className="ph-title">{book.title}</div>
-                        </div>
-                      </Link>
-                    )}
-                    <div className="book-body">
-                      <div className="publisher">
-                        <PublisherLink publisher={book.publisher} />
-                      </div>
-                      <h4>
-                        <Link href={`/livres/${book.slug}`}>{book.title}</Link>
-                      </h4>
-                      <Link href="/de-serge" className="author">{book.author}</Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "28px 24px" }}>
-              <div className="eyebrow" style={{ textTransform: "none" }}>
-                amDG Éditions
-              </div>
-              <h3 style={{ fontSize: 20, margin: "10px 0 12px", lineHeight: 1.3 }}>Une collection en pleine croissance</h3>
-              <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, marginBottom: 18 }}>
-                {books.length} ouvrage{books.length > 1 ? "s" : ""} publié{books.length > 1 ? "s" : ""} à ce jour, entre
-                enseignement, prophétie et vie chrétienne. Chaque livre prolonge le message porté sur ce site.
-              </p>
-              <Link href="/livres" className="btn btn-outline" style={{ width: "100%", justifyContent: "center" }}>
-                Voir le catalogue →
-              </Link>
-            </div>
-          </div>
+          <Link href="/livres" style={{ color: "var(--v2-violet-deep)", fontSize: 14, fontWeight: 750 }}>
+            Voir tout le catalogue →
+          </Link>
         </div>
-      </section>
-
-      <section className="give" id="partenariat">
-        <div className="wrap">
-          <div>
-            <div className="eyebrow">Soutenir</div>
-            <h2>Associez-vous à cette œuvre du Royaume de Dieu</h2>
-            <p>
-              Depuis des générations, la Parole de Dieu a apporté la guérison, le salut et la lumière dans la vie de
-              milliers de personnes. Ce n&apos;est possible que grâce à votre générosité.
-            </p>
-            <Link href="/partenariat" className="btn btn-primary">
-              Devenir semeur de la Parole →
-            </Link>
-          </div>
-          <div className="give-points">
-            <div className="give-point">
-              <div className="num">I</div>
-              <div>
-                <h5>Un ministère libre</h5>
-                <p>Sans dépendance, entièrement soutenu par la générosité.</p>
-              </div>
-            </div>
-            <div className="give-point">
-              <div className="num">II</div>
-              <div>
-                <h5>Des publications exigeantes</h5>
-                <p>Votre soutien rend possible chaque nouvel ouvrage.</p>
-              </div>
-            </div>
-            <div className="give-point">
-              <div className="num">III</div>
-              <div>
-                <h5>Un don unique, mensuel ou annuel</h5>
-                <p>Vous choisissez le montant et la fréquence.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="reseaux">
-        <div className="wrap">
-          <div className="section-head">
-            <h2>
-              Suivre <em>Serge Hapita</em>
-            </h2>
-          </div>
-          <div className="social-grid">
-            {socialLinks.map((link) => (
-              <a className="social-card" key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
-                <div className="icon">{SOCIAL_ICON[link.label] ?? "★"}</div>
-                <h5>{link.label}</h5>
-                <span>{SOCIAL_HANDLE[link.label] ?? ""}</span>
-                <span className="btn btn-ghost" style={{ padding: "8px 16px", fontSize: 12.5 }}>
-                  Suivre →
-                </span>
-              </a>
+        {latestBooks.length === 0 ? (
+          <p className="empty-state">Le catalogue est en cours de préparation.</p>
+        ) : (
+          <div className="v2-books-grid">
+            {latestBooks.map((book, i) => (
+              <article className={`v2-book-card${i === 0 ? " main" : ""}`} key={book.id}>
+                {book.cover_url ? (
+                  <Link href={`/livres/${book.slug}`} className="v2-book-cover">
+                    <CoverRollover src={book.cover_url} hoverSrc={book.hover_cover_url} alt={book.title} />
+                  </Link>
+                ) : (
+                  <Link href={`/livres/${book.slug}`} className="v2-book-cover" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,var(--v2-violet),var(--v2-violet-deep))", padding: 14, textAlign: "center" }}>
+                    <div style={{ fontFamily: "var(--v2-serif)", fontWeight: 600, color: "#fff", fontSize: 16, lineHeight: 1.3 }}>{book.title}</div>
+                  </Link>
+                )}
+                <div className="v2-book-info">
+                  {book.badge && <span>{book.badge}</span>}
+                  <h3>{book.title}</h3>
+                  {i === 0 && (
+                    <p>
+                      <PublisherLink publisher={book.publisher} />
+                    </p>
+                  )}
+                  <Link href={`/livres/${book.slug}`}>Découvrir {i === 0 ? "le livre" : ""} →</Link>
+                </div>
+              </article>
             ))}
           </div>
+        )}
+      </section>
+
+      <section className="v2-support-section" id="partenariat">
+        <div className="v2-support-orb" aria-hidden="true" />
+        <div className="v2-wrap v2-support-grid">
+          <div className="v2-support-copy">
+            <p className="v2-eyebrow light">
+              <span /> Soutenir
+            </p>
+            <h2>Associez-vous à cette œuvre du Royaume de Dieu</h2>
+            <p>
+              Depuis des générations, la Parole de Dieu apporte la guérison, le salut et la lumière dans la vie de
+              milliers de personnes. Votre générosité permet à cette œuvre de poursuivre sa mission.
+            </p>
+            <Link href="/partenariat" className="v2-button v2-button-light">
+              Devenir semeur de la Parole <span>→</span>
+            </Link>
+          </div>
+          <div className="v2-support-points">
+            <div>
+              <b>I</b>
+              <p>
+                <strong>Un ministère libre</strong>
+                <span>Entièrement soutenu par la générosité.</span>
+              </p>
+            </div>
+            <div>
+              <b>II</b>
+              <p>
+                <strong>Une Parole accessible</strong>
+                <span>Des enseignements diffusés au plus grand nombre.</span>
+              </p>
+            </div>
+            <div>
+              <b>III</b>
+              <p>
+                <strong>Une œuvre en mouvement</strong>
+                <span>Des livres, des missions et des actions concrètes.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="v2-community-section v2-wrap">
+        <div className="v2-community-title">
+          <p className="v2-eyebrow">
+            <span /> Rester connecté
+          </p>
+          <h2>
+            La Parole continue
+            <br />
+            au fil de la semaine.
+          </h2>
+        </div>
+        <div className="v2-social-list">
+          {socialLinks.map((link) => (
+            <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+              <span>{SOCIAL_ICON[link.label] ?? "★"}</span>
+              <div>
+                <strong>{link.label}</strong>
+                <small>{SOCIAL_HANDLE[link.label] ?? ""}</small>
+              </div>
+              <b>→</b>
+            </a>
+          ))}
         </div>
       </section>
 
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }

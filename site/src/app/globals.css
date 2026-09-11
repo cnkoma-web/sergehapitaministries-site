@@ -2427,3 +2427,149 @@ footer.footer--dark{
   .v2-article-page .article-header{padding:64px 0 52px;}
   .v2-rm-page .rm-photo-hero{min-height:340px;}
 }
+
+/* ============================================================
+   V2 (retour du 11/09, Lot 3, dernier morceau) — Page d'accueil.
+   Reproduit prototype-html/index.html (styles.css § .hero, .dew-*,
+   .jesus-*, .publications-section/.category-*, .events-*, .books-*).
+   .v2-support-, .v2-community-, .v2-social-list déjà posés au Lot 2
+   (De Serge) sont réutilisés tels quels ici, mêmes classes.
+
+   Écart assumé avec la maquette, décidé avec Serge le 11/09 : la section
+   Agenda (.v2-events-*) est codée ici avec le contenu en dur de la
+   maquette — aucune donnée/écran admin ne la pilote encore (voir Lot 11
+   du plan, à construire avant la bascule finale).
+
+   Le flux chronologique réel de l'accueil (getHomeFeed, toutes
+   catégories mélangées, validé le 05/09) n'apparaît PAS ici — annulé le
+   11/09 sur instruction explicite de Serge : la maquette ne prévoit que
+   les capsules du jour + le menu de navigation .category-grid pour
+   l'accueil, jamais ce flux (qui garde sa place sur le hub Publications,
+   § .v2-pub-page, lui bien prévu par la maquette).
+   Repères statistiques (getActiveStats, fonctionnalité réelle sans
+   emplacement dans la maquette) : réutilise .v2-ds-stats du Lot 2.
+   ============================================================ */
+.v2-home{background:#fff;}
+
+.v2-home-hero{position:relative;min-height:520px;isolation:isolate;overflow:hidden;color:#fff;background:radial-gradient(circle at 74% 30%,#5125aa 0,transparent 35%),linear-gradient(120deg,#17142d 10%,#25164a 56%,#351467 100%);}
+.v2-home-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(17,13,37,.98) 0%,rgba(19,14,42,.9) 47%,rgba(22,14,41,.35) 72%,rgba(18,13,34,.67) 100%);}
+.v2-home-hero-photo{position:absolute;z-index:-2;inset:0 0 0 auto;width:54%;background-size:cover;background-position:center 48%;filter:saturate(.86) contrast(1.04);opacity:.78;}
+.v2-home-hero-glow{position:absolute;z-index:-1;width:520px;height:520px;right:-180px;bottom:-250px;border-radius:50%;background:rgba(141,77,255,.32);filter:blur(2px);}
+.v2-home-hero-inner{position:relative;min-height:520px;display:flex;align-items:center;padding-block:46px 92px;}
+.v2-home-hero-copy{width:min(720px,67%);}
+.v2-home-hero h1{margin:0;max-width:790px;color:#fff;font-family:var(--v2-serif);font-size:clamp(45px,5.5vw,76px);font-weight:500;line-height:1.03;letter-spacing:-.035em;}
+.v2-home-hero h1 em{color:#c8adff;font-weight:500;font-style:normal;}
+.v2-home-hero-text{margin:30px 0 0;max-width:690px;color:rgba(255,255,255,.78);font-size:17px;line-height:1.75;}
+.v2-home-hero-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;}
+.v2-home-hero-text a{display:inline-block;margin-top:5px;color:#fff;border-bottom:1px solid rgba(255,255,255,.5);font-weight:500;}
+.v2-home-hero-text a:hover{font-weight:750;}
+.v2-home-hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;}
+
+/* --- Rosée matinale du jour : carte flottante sur la charnière hero → contenu --- */
+.v2-dew-wrap{position:relative;z-index:3;margin-top:-78px;}
+.v2-dew-card{min-height:176px;display:grid;grid-template-columns:180px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
+.v2-dew-label{align-self:stretch;display:grid;place-items:center;border-radius:12px;color:#fff;background:var(--v2-violet-deep);text-align:center;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
+.v2-dew-date{display:flex;flex-direction:column;gap:3px;color:var(--v2-muted);font-size:14px;grid-row:1;}
+.v2-dew-date span{color:var(--v2-violet-deep);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
+.v2-dew-content h2{margin:0 0 6px;font-family:var(--v2-serif);font-size:26px;font-weight:500;line-height:1.16;}
+.v2-dew-content p{margin:0;color:var(--v2-muted);font-size:15px;line-height:1.5;}
+.v2-dew-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
+
+/* --- Connaître Jésus : passerelle vidéo --- */
+.v2-jesus-gateway{position:relative;padding-block:110px 100px;overflow:hidden;background:linear-gradient(180deg,var(--v2-paper),#f1edff);}
+.v2-jesus-stage{position:relative;display:grid;grid-template-columns:1.25fr .75fr;min-height:440px;overflow:hidden;border-radius:22px;color:#fff;background:var(--v2-ink);box-shadow:var(--v2-shadow);}
+.v2-jesus-video-frame{min-height:440px;position:relative;display:block;overflow:hidden;}
+.v2-jesus-video-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(16,12,37,.38));}
+.v2-jesus-video-frame img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+.v2-jesus-video-frame:hover img{transform:scale(1.04);}
+.v2-jesus-video-frame .play{position:absolute;inset:0;margin:auto;width:66px;height:66px;display:grid;place-items:center;border-radius:50%;color:var(--v2-ink);background:#fff;font-size:20px;}
+.v2-jesus-intro{padding:48px 40px;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(circle at 100% 0,rgba(133,64,244,.55),transparent 43%),linear-gradient(145deg,#20183d,#17142d);}
+.v2-jesus-intro .micro-label{margin:0 0 10px;color:#cdbbff;font-size:13px;font-weight:750;}
+.v2-jesus-intro h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:34px;font-weight:500;line-height:1.12;}
+.v2-jesus-intro p:not(.micro-label){margin:18px 0 24px;color:rgba(255,255,255,.68);font-size:15px;line-height:1.6;}
+.v2-jesus-topics{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin-top:18px;border:1px solid var(--v2-line);background:#fff;}
+.v2-jesus-topics a{min-height:120px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:22px 18px;border-right:1px solid var(--v2-line);}
+.v2-jesus-topics a:last-child{border-right:0;}
+.v2-jesus-topics span{color:var(--v2-violet);font-family:var(--v2-serif);font-size:18px;}
+.v2-jesus-topics strong{font-family:var(--v2-serif);font-size:16px;font-weight:500;line-height:1.25;}
+.v2-jesus-topics b{color:var(--v2-violet);transition:transform .2s ease;}
+.v2-jesus-topics a:hover b{transform:translateX(4px);}
+
+/* --- "Une Parole pour chaque besoin" : vitrine statique par catégorie --- */
+.v2-category-section{padding-block:100px;color:#fff;background:var(--v2-ink);}
+.v2-category-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.v2-category-card{min-height:340px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:32px;border:1px solid rgba(255,255,255,.13);isolation:isolate;border-radius:4px;}
+.v2-category-card::after{content:"";position:absolute;z-index:-1;width:250px;height:250px;right:-115px;bottom:-140px;border:1px solid rgba(255,255,255,.16);border-radius:50%;box-shadow:0 0 0 44px rgba(255,255,255,.022),0 0 0 88px rgba(255,255,255,.018);}
+.v2-category-card.dew{background:linear-gradient(145deg,#8b63db,#6d3cc5);}
+.v2-category-card.bible{background:linear-gradient(145deg,#5144dd,#3029a9);}
+.v2-category-card.life{background:linear-gradient(145deg,#2d2759,#17142d);}
+.v2-category-number{position:absolute;z-index:-1;top:15px;right:22px;color:rgba(255,255,255,.13);font-family:var(--v2-serif);font-size:clamp(88px,10vw,140px);line-height:.78;letter-spacing:-.08em;}
+.v2-category-copy{position:relative;z-index:1;margin:auto 0;}
+.v2-category-name{width:fit-content;margin:0 0 14px;padding:7px 12px;border-radius:999px;color:#fff;background:rgba(255,255,255,.12);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
+.v2-category-card.dew .v2-category-name{color:#4f238e;background:#eadcff;}
+.v2-category-card.bible .v2-category-name{color:#29299b;background:#dce0ff;}
+.v2-category-card.life .v2-category-name{color:#211b43;background:#d9d3ff;}
+.v2-category-card h3{max-width:440px;margin:0 0 14px;color:#fff;font-family:var(--v2-serif);font-size:27px;font-weight:500;line-height:1.14;}
+.v2-category-card>.v2-category-copy>p:last-child{max-width:480px;margin:0;color:rgba(255,255,255,.72);font-size:14px;line-height:1.55;}
+.v2-category-card>a{position:relative;z-index:1;width:fit-content;margin-top:20px;padding:10px 14px;border:1px solid rgba(255,255,255,.64);border-radius:4px;color:#fff;font-size:13px;font-weight:800;transition:transform .2s ease,color .2s ease,background .2s ease;}
+.v2-category-card>a:hover{transform:translateY(-2px);color:var(--v2-ink);background:#fff;}
+
+/* --- Agenda / Événements (provisoire, voir Lot 11) --- */
+.v2-events-section{padding-block:100px;background:#fff;}
+.v2-events-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:24px;}
+.v2-next-event{min-height:420px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:36px;border-radius:20px;color:#fff;background:radial-gradient(circle at 85% 15%,rgba(162,105,255,.75),transparent 29%),linear-gradient(135deg,#2d26dc,#6a2cf0 70%,#8d4dff);box-shadow:var(--v2-shadow);}
+.v2-next-event::after{content:"";position:absolute;width:300px;height:300px;right:-170px;bottom:-170px;border:1px solid rgba(255,255,255,.25);border-radius:50%;box-shadow:0 0 0 50px rgba(255,255,255,.035);}
+.v2-event-kicker{font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.13em;}
+.v2-event-date{display:flex;flex-direction:column;margin-top:40px;}
+.v2-event-date strong{font-family:var(--v2-serif);font-size:42px;font-weight:500;line-height:1;}
+.v2-event-date span{margin-top:8px;color:rgba(255,255,255,.66);font-size:13px;}
+.v2-event-body{margin-top:auto;}
+.v2-event-body p{margin:0 0 6px;color:#d9caff;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;}
+.v2-event-body h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:34px;font-weight:500;}
+.v2-event-body>span{display:block;max-width:450px;color:rgba(255,255,255,.73);font-size:14px;}
+.v2-next-event>a{position:relative;z-index:1;width:fit-content;margin-top:24px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.5);color:#fff;font-size:13px;font-weight:800;}
+.v2-past-events{padding:36px;border:1px solid var(--v2-line);border-radius:20px;background:var(--v2-paper);}
+.v2-past-event{min-height:120px;display:grid;grid-template-columns:96px 1fr auto;align-items:center;gap:18px;border-top:1px solid var(--v2-line);padding:18px 0;}
+.v2-past-event:first-child{border-top:0;padding-top:0;}
+.v2-past-event time{color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
+.v2-past-event div{display:flex;flex-direction:column;}
+.v2-past-event strong{font-family:var(--v2-serif);font-weight:500;font-size:19px;line-height:1.25;}
+.v2-past-event span{color:var(--v2-muted);font-size:13px;}
+.v2-past-event b{color:var(--v2-violet);}
+
+/* --- Dernières parutions --- */
+.v2-books-section{padding-block:100px 120px;}
+.v2-books-grid{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:24px;align-items:stretch;}
+.v2-book-card{border:1px solid var(--v2-line);background:#fff;min-width:0;}
+.v2-book-card.main{display:grid;grid-template-columns:1.08fr .92fr;background:var(--v2-ink);color:#fff;}
+.v2-book-cover{display:block;position:relative;overflow:hidden;background:#161227;}
+.v2-book-cover img{width:100%;height:100%;aspect-ratio:.665;object-fit:cover;transition:transform .35s ease;}
+.v2-book-card:hover .v2-book-cover img{transform:scale(1.025);}
+.v2-book-card.main .v2-book-cover img{aspect-ratio:auto;}
+.v2-book-info{padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
+.v2-book-card.main .v2-book-info{padding:40px 32px;justify-content:center;}
+.v2-book-info>span{color:var(--v2-violet);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
+.v2-book-card.main .v2-book-info>span{color:#cbb8ff;}
+.v2-book-info h3{margin:14px 0 12px;font-family:var(--v2-serif);font-size:24px;font-weight:500;line-height:1.15;}
+.v2-book-card.main .v2-book-info h3{color:#fff;font-size:32px;}
+.v2-book-info p{color:var(--v2-muted);font-size:14px;}
+.v2-book-card.main .v2-book-info p{color:rgba(255,255,255,.6);}
+.v2-book-info a{margin-top:auto;padding-top:22px;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
+.v2-book-card.main .v2-book-info a{color:#fff;}
+
+@media (max-width:960px){
+  .v2-home-hero-copy{width:100%;}
+  .v2-home-hero-photo{width:100%;opacity:.3;}
+  .v2-dew-card{grid-template-columns:1fr;text-align:center;}
+  .v2-dew-date{align-items:center;}
+  .v2-jesus-stage{grid-template-columns:1fr;}
+  .v2-jesus-topics{grid-template-columns:1fr 1fr;}
+  .v2-category-grid{grid-template-columns:1fr;}
+  .v2-events-grid{grid-template-columns:1fr;}
+  .v2-books-grid{grid-template-columns:1fr;}
+  .v2-book-card.main{grid-template-columns:1fr;}
+}
+@media (max-width:720px){
+  .v2-jesus-topics{grid-template-columns:1fr;}
+  .v2-jesus-topics a{border-right:0;border-bottom:1px solid var(--v2-line);}
+}
