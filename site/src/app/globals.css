@@ -217,8 +217,15 @@ header{
    .v2-ticker) n'existe pas dans le prototype (un seul lien fixe) — la
    fonctionnalité CMS existante (getTickerMessages, /admin/ticker) est
    conservée et habillée avec ce nouveau style, à la place du lien fixe. */
-.v2-site-header{position:relative;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--v2-line);}
-.v2-network-bar{background:var(--v2-ink);color:rgba(255,255,255,.83);font-size:13px;letter-spacing:.02em;}
+/* font-family posé ici, sur les conteneurs (comme body{font-family:var(--sans)}
+   dans le prototype) — bug réel trouvé par Serge en comparant le rendu au
+   prototype ("la police n'est pas en gras, ressemble à la V1") : les
+   règles .v2-* ci-dessous ne fixaient que font-weight/font-size, jamais
+   font-family, donc tout héritait silencieusement de body{font-family:
+   'Manrope',sans-serif} (l'ancien système) au lieu de --v2-sans (Inter) —
+   700 en Manrope n'a pas le même rendu visuel que 650-700 en Inter. */
+.v2-site-header{position:relative;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--v2-line);font-family:var(--v2-sans);}
+.v2-network-bar{background:var(--v2-ink);color:rgba(255,255,255,.83);font-size:13px;letter-spacing:.02em;font-family:var(--v2-sans);}
 .v2-network-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:34px;padding-block:7px;}
 .v2-partner-nav{display:flex;align-items:center;gap:14px;white-space:nowrap;}
 .v2-partner-nav a{transition:color .2s ease;}
@@ -318,7 +325,7 @@ header{
 }
 
 /* Pied de page */
-.v2-footer{padding-block:72px 28px;color:var(--v2-muted);background:var(--v2-paper);}
+.v2-footer{padding-block:72px 28px;color:var(--v2-muted);background:var(--v2-paper);font-family:var(--v2-sans);}
 .v2-footer-grid{display:grid;grid-template-columns:.9fr 1.1fr;align-items:start;gap:90px;}
 .v2-footer-about h2{margin:0 0 12px;font-family:var(--v2-serif);font-size:25px;font-weight:500;color:var(--v2-ink);}
 .v2-footer-about p{max-width:460px;margin:0;font-size:15px;line-height:1.7;}
