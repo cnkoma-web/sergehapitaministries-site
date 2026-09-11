@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { getArticlesFeed } from "@/lib/content/articles";
-import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
-import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
+import CategoryHubFeed from "@/components/articles/CategoryHubFeed";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
-const title = "Que Dit la Bible ? | Serge Hapita Ministries";
-const description = "Une exhortation structurée : verset clé, enseignement, confession et application concrète.";
+const title = "Que dit la Bible ? | Serge Hapita Ministries";
+const description = "Un examen quotidien des Écritures, dont le contenu et la puissance permettent de construire la véritable image de Dieu dans la vie de ceux qui nous suivent.";
 const PER_PAGE = 4; // Règle fixe (retour du 05/09) — 4 par page partout où ce flux apparaît.
 
 export const metadata: Metadata = {
@@ -18,43 +17,43 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description },
 };
 
-// Hub dédié à une seule catégorie (menu Publications > Que Dit la Bible),
-// rétabli après sa disparition — distinct du hub général /publications
-// (retour du 30/08).
+// V2 (11/09, reconstruction complète) — reproduit fidèlement
+// prototype-html/publications/que-dit-la-bible/index.html § .category-hero
+// (fond encre, "01" en filigrane) + .category-feed.direct-feed (voir
+// src/components/articles/CategoryHubFeed.tsx pour le détail du choix de
+// gabarit). Corrige l'écart signalé par Serge le 11/09 : cette page avait
+// été construite avec l'habillage générique du hub /publications (voir
+// globals.css § .v2-pub-page), sans avoir regardé sa propre maquette,
+// pourtant bien distincte (héros avec numéro de rubrique, flux à une
+// colonne avec article "à la une").
 export default async function QueDitLaBiblePage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const [{ articles, total }, texts] = await Promise.all([getArticlesFeed(["qdlb"], page, PER_PAGE), getInterfaceTexts()]);
-  const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
+  const { articles, total } = await getArticlesFeed(["qdlb"], page, PER_PAGE);
 
   return (
-    // V2 (retour du 11/09, Lot 3) — même habillage que le hub général (voir
-    // globals.css § .v2-pub-page), sans la grille de liens de catégorie
-    // (pas de maquette dédiée pour ce hub dans le dossier).
-    <div className="v2-pub-page">
-      <section className="v2-pub-hero">
-        <div className="v2-wrap v2-pub-hero-inner">
-          <p className="v2-eyebrow light">
-            <span /> Publications
-          </p>
-          <h1>Que Dit la Bible ?</h1>
-          <p>{description}</p>
+    <div className="v2-category-hub-page">
+      <section className="v2-category-hub-hero">
+        <div className="v2-wrap v2-category-hub-hero-inner">
+          <div className="v2-category-hub-mark">01</div>
+          <div>
+            <h1>Que dit la Bible ?</h1>
+            <p>{description}</p>
+          </div>
         </div>
       </section>
 
-      <section className="feed-section">
-        <div className="content-col">
+      <section className="v2-category-hub-feed">
+        <div className="v2-wrap">
           {articles.length === 0 ? (
             <p className="empty-state">Les premiers articles arrivent bientôt.</p>
           ) : (
-            <div className="feed-list">
-              {articles.map((a) => (
-                <PublicationFeedItem article={a} excerptLines={excerptLines} key={a.id} />
-              ))}
-            </div>
+            <CategoryHubFeed articles={articles} type="qdlb" showFeatured={page === 1} />
           )}
           {total > 0 && (
-            <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/que-dit-la-bible" showPerPageSelector={false} />
+            <div className="v2-category-hub-pagination">
+              <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/que-dit-la-bible" showPerPageSelector={false} />
+            </div>
           )}
         </div>
       </section>
