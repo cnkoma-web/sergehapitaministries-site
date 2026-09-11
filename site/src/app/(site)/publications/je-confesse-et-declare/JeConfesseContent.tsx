@@ -75,8 +75,7 @@ export default async function JeConfesseContent({
               pas un guillemet ajouté séparément juste après). */}
           <h1>
             « {settings.verseText}
-            {" "}»
-            <cite>{settings.verseReference}</cite>
+            {" "}» <cite>{settings.verseReference}</cite>
           </h1>
           <div className="v2-jc-hero-context">
             <span className="v2-jc-badge">Je Confesse</span>
