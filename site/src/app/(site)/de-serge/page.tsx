@@ -48,11 +48,20 @@ export default async function DeSergePage() {
               <br />
               par la <em>Parole de Dieu.</em>
             </h1>
-            <blockquote>« C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie. »</blockquote>
-            <p>
-              Dieu a prévu pour chaque être humain une vie qui trouve sa plénitude en Christ. La véritable réussite,
-              c&apos;est de la découvrir et de la vivre.
-            </p>
+            {/* Une seule citation continue, guillemet fermant après
+                "vivre." (retour du 11/09, bug réel signalé par Serge) —
+                le prototype refermait par erreur après "sa vie." puis
+                repartait sur un second paragraphe sans guillemets, alors
+                que c'est une seule et même citation, sur 2 niveaux de
+                police (la phrase-clé, puis son développement, plus
+                petit). */}
+            <blockquote>
+              « C&apos;est bien de réussir dans la vie, mais c&apos;est encore mieux de réussir sa vie.
+              <span className="v2-ds-hero-quote-secondary">
+                Dieu a prévu pour chaque être humain une vie qui trouve sa plénitude en Christ. La véritable
+                réussite, c&apos;est de la découvrir et de la vivre. »
+              </span>
+            </blockquote>
           </div>
         </div>
       </section>

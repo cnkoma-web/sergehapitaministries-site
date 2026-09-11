@@ -257,6 +257,10 @@ header{
 .v2-desktop-menu a,.v2-nav-dropdown-trigger{position:relative;padding-block:9px;cursor:pointer;color:var(--v2-ink);}
 .v2-desktop-menu>a::after,.v2-nav-dropdown-trigger::after{content:"";position:absolute;left:0;right:100%;bottom:2px;height:2px;background:var(--v2-violet);transition:right .2s ease;}
 .v2-desktop-menu a:hover::after{right:0;}
+/* Trait actif permanent (retour du 11/09, bug réel signalé par Serge) —
+   voir DesktopNav.tsx pour le calcul de l'état actif par page courante. */
+.v2-desktop-menu a.active::after,
+.v2-nav-dropdown.active .v2-nav-dropdown-trigger::after{right:0;}
 .v2-nav-dropdown{position:relative;}
 /* Survol/focus sur un simple <div>, jamais <details>/<summary> (retour du
    11/09) — bug réel trouvé en testant : le rendu interne de <details> fermé
@@ -1850,7 +1854,14 @@ footer.footer--dark{
 .v2-ds-hero h1{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(50px,6.5vw,88px);font-weight:500;line-height:.98;letter-spacing:-.05em;}
 .v2-ds-hero h1 em{color:#cbb7ff;font-weight:500;font-style:normal;}
 .v2-ds-hero blockquote{max-width:650px;margin:38px 0 18px;padding-left:24px;border-left:2px solid #9b6bff;font-family:var(--v2-serif);font-size:clamp(21px,2.2vw,29px);font-style:italic;line-height:1.35;}
-.v2-ds-hero-copy>p:last-child{max-width:620px;margin:0 0 0 26px;color:rgba(255,255,255,.68);font-size:16px;line-height:1.7;}
+/* Citation complète sur 2 niveaux de police (retour du 11/09, bug réel
+   signalé par Serge) — une seule citation continue ("C'est bien de
+   réussir... jusqu'à ... de la vivre."), pas une citation refermée après
+   "sa vie." suivie d'un second paragraphe séparé sans guillemets, comme
+   le prototype l'avait par erreur ("GPT a oublié de le corriger" — Serge).
+   La phrase-clé garde la taille du blockquote ci-dessus, son
+   développement continue ici en plus petit, dans le même bloc. */
+.v2-ds-hero-quote-secondary{display:block;margin-top:18px;color:rgba(255,255,255,.68);font-style:normal;font-size:16px;line-height:1.7;}
 
 .v2-ds-opening{padding-block:120px;background:#fff;}
 .v2-ds-opening-grid{display:grid;grid-template-columns:220px minmax(0,790px);justify-content:space-between;gap:90px;}
@@ -1970,7 +1981,7 @@ footer.footer--dark{
   .v2-ds-hero-copy{width:100%;}
   .v2-ds-hero h1{font-size:50px;}
   .v2-ds-hero blockquote{margin-top:30px;font-size:22px;}
-  .v2-ds-hero-copy>p:last-child{margin-left:0;font-size:15px;}
+  .v2-ds-hero-quote-secondary{font-size:15px;}
   .v2-ds-opening,.v2-ds-story,.v2-ds-association{padding-block:88px;}
   .v2-ds-opening-grid,.v2-ds-story-heading{grid-template-columns:1fr;gap:34px;}
   .v2-section-index span{width:64px;height:64px;font-size:23px;}

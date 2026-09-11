@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getMainNav, isDropdown } from "@/lib/content/nav";
+import { getMainNav } from "@/lib/content/nav";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import { getCartCount } from "@/lib/cart/cart";
 import MobileNav from "./MobileNav";
+import DesktopNav from "./DesktopNav";
 
 // V2 (retour du 11/09, Lot 1) — reproduit prototype-html/index.html §
 // .site-header/.main-nav : logo à gauche, menu centré, icônes réelles (SVG)
@@ -32,34 +33,7 @@ export default async function Header() {
         <Link href="/" className="v2-brand" aria-label="Accueil Serge Hapita Ministries">
           <Image src="/logo.png" alt="Serge Hapita Ministries" width={170} height={64} priority />
         </Link>
-        <nav className="v2-desktop-menu" aria-label="Navigation principale">
-          {nav.map((item) =>
-            isDropdown(item) ? (
-              <div key={item.label} className="v2-nav-dropdown">
-                {item.href ? (
-                  <Link href={item.href} className="v2-nav-dropdown-trigger">
-                    {item.label} <span aria-hidden="true">⌄</span>
-                  </Link>
-                ) : (
-                  <button type="button" className="v2-nav-dropdown-trigger">
-                    {item.label} <span aria-hidden="true">⌄</span>
-                  </button>
-                )}
-                <div className="v2-nav-dropdown-menu">
-                  {item.links.map((link) => (
-                    <Link key={link.href} href={link.href}>
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Link key={item.href} href={item.href}>
-                {item.label}
-              </Link>
-            )
-          )}
-        </nav>
+        <DesktopNav nav={nav} />
         <div className="v2-nav-actions">
           <label htmlFor="v2-search-toggle" className="v2-icon-button v2-action-icon" title="Rechercher" aria-label="Rechercher sur le site">
             <svg viewBox="0 0 24 24" aria-hidden="true">
