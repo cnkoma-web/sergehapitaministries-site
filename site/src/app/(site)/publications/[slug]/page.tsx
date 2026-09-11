@@ -86,61 +86,57 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // si CE compte a déjà aimé cet article, sans attendre un clic.
     const alreadyLiked = unlocked && user ? await hasUserLikedArticle(article.id, user.id) : false;
     return (
-      // V2 (retour du 11/09, Lot 3) — reproduit prototype-html/rosee-matinale/
-      // index.html § .entry-hero/.entry-body-section (variante "life", voir
-      // globals.css § .v2-article-page.vs) : le prototype ne montre qu'un seul
-      // gabarit d'article publié, le mur d'accès et les thématiques n'y
-      // figurent pas (voir commentaire détaillé dans globals.css).
+      // V2 (11/09, restructuré après audit structurel — voir le commentaire
+      // détaillé au-dessus de .v2-article-page dans globals.css). Reproduit
+      // fidèlement prototype-html/publications/nouvel-article-61cdg/
+      // index.html § .entry-hero.life/.entry-kicker/.entry-chapeau/
+      // .entry-meta/.entry-body/.like-row/.topic-list. Le mur d'accès
+      // (gate-box/toc-teaser) reste sans équivalent prototype (jamais montré
+      // dans un exemple d'article déjà publié) — voir le commentaire
+      // détaillé dans globals.css.
       <div className="v2-article-page vs">
         <ViewTracker articleId={article.id} />
         <section className="article-header">
           <div className="content-col">
-            <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
+            {/* .entry-kicker (prototype) : badge seul sur La Vie Supérieure,
+                pas de libellé de type à côté (contrairement à Que Dit la
+                Bible, voir plus bas dans ce fichier). */}
+            <div className="article-kicker">
+              <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.vs}</div>
+            </div>
             <h1 className="article-title">{nbspBeforeClosingGuillemet(article.title)}</h1>
-            {/* Nouvelle structure (retour du 05/09, remplace la précédente) :
-                ligne 1 auteur | temps de lecture | vues, ligne 2 date seule.
-                Italique, même taille sur les deux lignes. */}
+            {/* .entry-chapeau (prototype) : dans le héros, entre le titre et
+                les métadonnées — jamais dans le corps (correction du 11/09,
+                voir globals.css). */}
+            {article.excerpt && <p className="article-chapeau">{nbspBeforeClosingGuillemet(article.excerpt)}</p>}
+            {/* .entry-meta (prototype) : une seule ligne (auteur | temps de
+                lecture | vues | date), pas deux lignes séparées (correction
+                du 11/09). */}
             <div className="article-meta-line">
-              <div className="meta-line">
-                {article.author_name && <span>{article.author_name}</span>}
-                {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
-                <span className="views">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  {article.view_count} vue{article.view_count > 1 ? "s" : ""}
-                </span>
-              </div>
-              <div className="meta-line">
-                <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
-              </div>
+              {article.author_name && <span>{article.author_name}</span>}
+              {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
+              <span className="views">
+                {article.view_count} vue{article.view_count > 1 ? "s" : ""}
+              </span>
+              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
             </div>
           </div>
         </section>
 
         <section className="article-body">
           <div className="content-col">
-            {/* Chapeau APRÈS l'image sur La Vie Supérieure (retour du 06/09,
-                3e passage) — volontairement dans cet ordre, différent de Que
-                Dit la Bible, pour distinguer l'expérience de lecture des
-                deux rubriques. overflowAnchor:"none" (retour du 05/09,
-                point 5) — sans largeur/hauteur connues à l'avance, l'image
-                ne réserve pas sa place : quand elle finit de charger après
-                le premier rendu, le "scroll anchoring" du navigateur (une
-                fonctionnalité normalement utile, qui compense les décalages
-                de mise en page pour garder le contenu déjà visible stable)
-                pouvait décaler la page vers le bas dès l'arrivée, cachant le
-                titre — exactement le symptôme rapporté. Ce div n'est plus
-                utilisé comme ancre de compensation, sans changer sa
-                taille/son apparence. */}
+            {/* overflowAnchor:"none" (retour du 05/09, point 5) — sans
+                largeur/hauteur connues à l'avance, l'image ne réserve pas sa
+                place : quand elle finit de charger après le premier rendu,
+                le "scroll anchoring" du navigateur pouvait décaler la page
+                vers le bas dès l'arrivée, cachant le titre. Ce div n'est
+                plus utilisé comme ancre de compensation. */}
             {article.cover_url && (
               <div style={{ marginBottom: 28, borderRadius: 12, overflow: "hidden", overflowAnchor: "none" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={article.cover_url} alt={article.cover_alt || article.title} style={{ width: "100%", height: "auto", display: "block" }} />
               </div>
             )}
-            {article.excerpt && <p className="article-lede">{nbspBeforeClosingGuillemet(article.excerpt)}</p>}
             {/* Classe "vs" (retour du 06/09) — colore citation/citation en
                 exergue en bleu ici, violet sur Que Dit la Bible (voir
                 globals.css et RichTextEditor). */}
@@ -148,24 +144,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <div key={i} className="body-html vs" dangerouslySetInnerHTML={{ __html: nbspBeforeClosingGuillemet(html) }} />
             ))}
 
-            {/* Réservé aux comptes connectés, comme la lecture complète de
-                l'article (retour du 05/09) — pas de bouton du tout tant que
-                le mur d'accès n'est pas franchi. */}
+            {/* Ordre exact de la maquette (.entry-body) : le corps se
+                termine par J'aime puis les thématiques, jamais l'inverse —
+                les deux réservés aux comptes connectés, même barrière que la
+                lecture elle-même (retour du 05/09). */}
             {unlocked && (
               <LikeButton articleId={article.id} initialCount={article.like_count} mode="authenticated" initiallyLiked={alreadyLiked} />
             )}
-
-            {/* Prière & Déclaration (retour du 07/09) — champ étendu à La
-                Vie Supérieure, jusqu'ici réservé à Que Dit la Bible (même
-                champ, même style, voir plus bas dans ce fichier). Réservée
-                aux comptes connectés comme le reste du corps. */}
-            {unlocked && article.prayer && (
-              <>
-                <h2>Prière & Déclaration</h2>
-                <div className="prayer-box">
-                  <p>{nbspBeforeClosingGuillemet(article.prayer)}</p>
-                </div>
-              </>
+            {unlocked && categories.length > 0 && (
+              <div className="chip-row">
+                {categories.map((c) => (
+                  <span key={c.id} className="chip">
+                    {c.name}
+                  </span>
+                ))}
+              </div>
             )}
           </div>
         </section>
@@ -213,60 +206,41 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 )}
               </div>
             </section>
-
-            {/* Zone de partage --purple pleine (retour du 07/09) — voir le
-                commentaire équivalent sur le gabarit Que Dit la Bible plus
-                bas dans ce fichier. */}
-            <section className="share-zone">
-              <div className="content-col">
-                <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
-              </div>
-            </section>
-
-            {/* paddingBottom:0 (retour du 07/09, revue complète) — .back-cta
-                porte désormais lui-même un espacement symétrique, plus besoin
-                que cette section en ajoute côté haut ET bas. */}
-            <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
-              <div className="content-col">
-                <div className="back-cta">
-                  <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
-                </div>
-              </div>
-            </section>
           </>
         )}
 
-        {unlocked && (
-          <>
-            {categories.length > 0 && (
-              <section className="section" style={{ paddingTop: 0 }}>
-                <div className="content-col">
-                  <div className="chip-row">
-                    {categories.map((c) => (
-                      <span key={c.id} className="chip">
-                        {c.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
+        {/* Zone de partage --purple pleine, toujours juste après
+            .entry-body-section (prototype), verrouillé ou non. */}
+        <section className="share-zone">
+          <div className="content-col">
+            <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
+          </div>
+        </section>
 
-            <section className="share-zone">
-              <div className="content-col">
-                <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
-              </div>
-            </section>
-
-            <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
-              <div className="content-col">
-                <div className="back-cta">
-                  <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
-                </div>
-              </div>
-            </section>
-          </>
+        {/* "Prière & Déclaration" (retour du 07/09, champ étendu à La Vie
+            Supérieure) — même grille .article-extras que Que Dit la Bible
+            (prototype § .article-extras/.prayer-card), réservée aux comptes
+            connectés comme le reste du corps. Jamais de "Aller plus loin"
+            ici : further_verses reste propre à Que Dit la Bible (voir
+            actions.ts). */}
+        {unlocked && article.prayer && (
+          <section className="article-extras">
+            <div className="wrap article-extras-grid">
+              <article className="extra-card prayer-card">
+                <h2>Prière & Déclaration</h2>
+                <p>{nbspBeforeClosingGuillemet(article.prayer)}</p>
+              </article>
+            </div>
+          </section>
         )}
+
+        <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
+          <div className="content-col">
+            <div className="back-cta">
+              <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
+            </div>
+          </div>
+        </section>
 
         <Newsletter />
         <Footer variant="light" />
@@ -276,49 +250,52 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   // Gabarit Que Dit la Bible — jamais verrouillé.
   return (
-    // V2 (retour du 11/09, Lot 3) — voir le commentaire équivalent sur la
-    // branche La Vie Supérieure ci-dessus.
+    // V2 (11/09, restructuré après audit structurel — voir le commentaire
+    // détaillé au-dessus de .v2-article-page dans globals.css). Reproduit
+    // fidèlement prototype-html/publications/nouvel-article-ozsqc/
+    // index.html § .entry-hero/.entry-kicker/.entry-type/.entry-chapeau/
+    // .entry-meta/.entry-body/.scripture-card/.article-blessing/
+    // .topic-list/.like-row/.article-extras.
     <div className="v2-article-page qdlb">
       <ViewTracker articleId={article.id} />
       <section className="article-header">
         <div className="content-col">
-          <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
+          {/* .entry-kicker (prototype) : badge + libellé de type fixe
+              ("Enseignement", propre à toute la rubrique — jamais un champ
+              par article, comme "Rosée Matinale"/"Je Confesse" ailleurs sur
+              le site). */}
+          <div className="article-kicker">
+            <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
+            <span className="article-type">Enseignement</span>
+          </div>
           <h1 className="article-title">{nbspBeforeClosingGuillemet(article.title)}</h1>
-          {/* Nouvelle structure (retour du 05/09, remplace la précédente) :
-              ligne 1 auteur | temps de lecture | vues, ligne 2 date seule.
-              Italique, même taille sur les deux lignes. */}
+          {/* .entry-chapeau (prototype) : dans le héros, entre le titre et
+              les métadonnées — jamais dans le corps (correction du 11/09,
+              voir globals.css). */}
+          {article.excerpt && <p className="article-chapeau">{nbspBeforeClosingGuillemet(article.excerpt)}</p>}
+          {/* .entry-meta (prototype) : une seule ligne (auteur | temps de
+              lecture | vues | date), pas deux lignes séparées (correction du
+              11/09). */}
           <div className="article-meta-line">
-            <div className="meta-line">
-              {article.author_name && <span>{article.author_name}</span>}
-              {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
-              <span className="views">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-                {article.view_count} vue{article.view_count > 1 ? "s" : ""}
-              </span>
-            </div>
-            <div className="meta-line">
-              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
-            </div>
+            {article.author_name && <span>{article.author_name}</span>}
+            {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
+            <span className="views">
+              {article.view_count} vue{article.view_count > 1 ? "s" : ""}
+            </span>
+            <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
           </div>
         </div>
       </section>
 
       <section className="article-body">
         <div className="content-col">
-          {/* Chapeau avant le verset d'ouverture (retour du 03/09, ordre
-              exact demandé pour Que Dit la Bible). */}
-          {article.excerpt && <p className="article-lede">{nbspBeforeClosingGuillemet(article.excerpt)}</p>}
-
           {article.verse_reference && article.verse_text && (
             <div className="verse-box">
               <div className="ref">{article.verse_reference}</div>
               {/* Espace insécable avant le guillemet fermant (retour du
                   06/09, règle typographique française) — ces guillemets sont
                   ajoutés par ce gabarit, pas tapés par Serge. */}
-              <p>« {article.verse_text}{" "}»</p>
+              <p>« {article.verse_text}{" "}»</p>
             </div>
           )}
 
@@ -339,44 +316,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <div key={i} className="body-html qdlb" dangerouslySetInnerHTML={{ __html: nbspBeforeClosingGuillemet(html) }} />
           ))}
 
-          {/* Bouton "J'aime" (retour du 05/09) — juste après le corps du
-              texte, avant "Aller plus loin"/Prière/thématiques. Accessible à
-              tout le monde, sans compte (Que Dit la Bible reste public). */}
-          <LikeButton articleId={article.id} initialCount={article.like_count} mode="public" />
+          {/* Ordre exact de la maquette (.entry-body) : corps → bénédiction
+              → thématiques → J'aime, dans cet ordre précis (corrigé le
+              11/09 — Prière/"Aller plus loin" ne vivent plus ici, voir la
+              grille .article-extras après le partage plus bas). */}
+          <p className="blessing">Que Dieu te bénisse.</p>
 
-          {/* Positionnée avant "Aller plus loin" (retour du 03/09). Identité
-              visuelle distincte (retour du 05/09) : italique + fond gris
-              clair, même principe que le trait vertical déjà utilisé pour
-              "Aller plus loin" (.further-verse) — affichage public, pas
-              seulement le champ d'édition dans l'admin. */}
-          {article.prayer && (
-            <>
-              <h2>Prière & Déclaration</h2>
-              <div className="prayer-box">
-                <p>{nbspBeforeClosingGuillemet(article.prayer)}</p>
-              </div>
-            </>
-          )}
-
-          {article.further_verses.length > 0 && (
-            <>
-              <h2>Aller plus loin</h2>
-              {article.further_verses.map((v, i) => (
-                <div className="further-verse" key={i}>
-                  <div className="ref">{v.reference}</div>
-                  {/* Espace insécable avant le guillemet fermant (retour du
-                      06/09) — même raison que le verse-box plus haut. */}
-                  <p>« {v.text}{" "}»</p>
-                </div>
-              ))}
-            </>
-          )}
-
-          {/* Ordre corrigé (retour du 04/09) : thématiques avant la
-              bénédiction, avec un vrai espacement entre les deux (pas
-              seulement le trait de séparation de .blessing). */}
           {categories.length > 0 && (
-            <div className="chip-row" style={{ marginBottom: 40 }}>
+            <div className="chip-row">
               {categories.map((c) => (
                 <span key={c.id} className="chip">
                   {c.name}
@@ -385,29 +332,49 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </div>
           )}
 
-          <div className="blessing">Que Dieu te bénisse abondamment</div>
+          {/* Accessible à tout le monde, sans compte (Que Dit la Bible reste
+              public). */}
+          <LikeButton articleId={article.id} initialCount={article.like_count} mode="public" />
         </div>
       </section>
 
-      {/* Zone de partage --purple pleine (retour du 07/09) — avant, un
-          simple trait fin séparait ce bloc du texte au-dessus ; la démarcation
-          est maintenant une vraie zone de couleur, comme "Autres articles
-          similaires" juste après (--lavender pâle). "← Toutes les
-          publications" reste en dehors : ce n'est pas une invitation au
-          partage, juste un lien de retour. */}
+      {/* Zone de partage --purple pleine, toujours juste après
+          .entry-body-section (prototype). */}
       <section className="share-zone">
         <div className="content-col">
           <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
         </div>
       </section>
 
-      {/* Revue complète des zones de partage (retour du 07/09, 2e passage) :
-          le trait qui séparait autrefois .back-cta du bloc au-dessus est
-          retiré (redondant, la bande --purple juste au-dessus démarque déjà
-          nettement) et son espacement est désormais symétrique (voir
-          .back-cta) pour que le bouton soit centré dans sa propre zone
-          blanche, entre la bande de partage et "Autres articles
-          similaires" juste en dessous. */}
+      {/* "Prière & Déclaration" / "Aller plus loin" — grille à 2 colonnes
+          après le partage (prototype § .article-extras/.extra-card/
+          .prayer-card/.further-reading), corrigée le 11/09 : vivaient
+          jusqu'ici en blocs simples empilés dans la colonne de texte, avant
+          le partage — jamais conforme à la maquette. */}
+      {(article.prayer || article.further_verses.length > 0) && (
+        <section className="article-extras">
+          <div className="wrap article-extras-grid">
+            {article.prayer && (
+              <article className="extra-card prayer-card">
+                <h2>Prière & Déclaration</h2>
+                <p>{nbspBeforeClosingGuillemet(article.prayer)}</p>
+              </article>
+            )}
+            {article.further_verses.length > 0 && (
+              <article className="extra-card further-reading">
+                <h2>Aller plus loin</h2>
+                {article.further_verses.map((v, i) => (
+                  <p key={i}>
+                    <strong>{v.reference}</strong>
+                    <span>{v.text}</span>
+                  </p>
+                ))}
+              </article>
+            )}
+          </div>
+        </section>
+      )}
+
       <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <div className="content-col">
           <div className="back-cta">

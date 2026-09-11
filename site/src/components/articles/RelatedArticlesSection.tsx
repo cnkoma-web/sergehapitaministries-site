@@ -45,9 +45,12 @@ export default function RelatedArticlesSection({ articles, heading = "Autres art
               // compris) — même principe que .feed-item : seuls le titre et
               // le chapeau sont cliquables, chacun avec son propre lien.
               <div className="related-card" key={a.id}>
-                <div className="verse">
-                  {new Date(a.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                </div>
+                {/* .related-card time (prototype) : un vrai <time>, "7
+                    septembre 2026" sans le jour de la semaine — écarts
+                    corrigés le 11/09. */}
+                <time className="verse" dateTime={a.article_date}>
+                  {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                </time>
                 <h3>
                   <Link href={href}>{a.title}</Link>
                 </h3>
