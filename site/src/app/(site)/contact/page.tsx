@@ -28,25 +28,29 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <>
-      <section className="util-hero">
-        <div className="wrap">
+    // V2 (retour du 11/09, Lot 6) — reproduit prototype-html/contact/
+    // index.html § .engagement-hero/.contact-section (engagement.css).
+    // Réhabillage visuel uniquement : submitContactForm inchangé.
+    <div className="v2-engagement-page v2-contact-page">
+      <section className="v2-engagement-hero contact">
+        <div className="v2-engagement-wrap v2-engagement-hero-inner">
+          <p className="v2-eyebrow light">
+            <span /> Écrivez-nous
+          </p>
           <h1>Contact</h1>
-          <p>Une question, un message ? Nous serons heureux de vous lire.</p>
         </div>
       </section>
 
-      <section className="section">
-        <div className="wrap" style={{ maxWidth: 560, margin: "0 auto" }}>
-          <div className="form-block">
-            <h2 style={{ fontSize: 20, marginBottom: 20 }}>Envoyez-nous un message</h2>
-            <ContactForm />
-          </div>
+      <section className="v2-engagement-wrap v2-contact-section">
+        <div className="v2-contact-heading">
+          <h2>Parlons-en.</h2>
+          <p>Une question, un témoignage ou un message&nbsp;? Écrivez directement à Serge Hapita Ministries.</p>
         </div>
+        <ContactForm />
       </section>
 
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }

@@ -36,16 +36,22 @@ export default function ContactForm() {
       <label htmlFor="contact-message">Message *</label>
       <textarea id="contact-message" name="message" required />
 
-      <div style={{ textAlign: "center" }}>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          style={{ paddingLeft: 36, paddingRight: 36 }}
-          disabled={isPending}
-        >
-          {isPending ? "Envoi…" : "Envoyer →"}
-        </button>
-      </div>
+      {/* Case RGPD (retour du 11/09, Lot 6) — ajoutée pour reproduire la
+          maquette : purement une validation côté formulaire avant envoi,
+          jamais stockée (aucune colonne dédiée sur contact_submissions),
+          même principe que le consentement déjà réel du formulaire
+          Invitation. */}
+      <label className="v2-form-consent">
+        <input type="checkbox" required />
+        <span>
+          J&apos;accepte que mes informations soient utilisées pour répondre à mon message, conformément à la{" "}
+          <a href="/politique-de-confidentialite">politique de confidentialité</a>.
+        </span>
+      </label>
+
+      <button type="submit" className="v2-primary-submit" disabled={isPending}>
+        {isPending ? "Envoi…" : "Envoyer le message →"}
+      </button>
     </form>
   );
 }

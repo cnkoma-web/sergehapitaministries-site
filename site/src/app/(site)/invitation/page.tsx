@@ -23,36 +23,31 @@ export const metadata: Metadata = {
 
 export default function InvitationPage() {
   return (
-    <>
-      <section className="inv-hero">
-        <div className="bg-illustration">
-          <svg viewBox="0 0 400 200" width="100%" height="100%" style={{ maxWidth: 900 }}>
-            <rect x="60" y="50" width="280" height="180" rx="8" fill="#fff" opacity=".15" />
-            <path d="M60 55 L200 160 L340 55" stroke="#fff" strokeWidth="4" fill="none" opacity=".25" />
-            <rect x="60" y="50" width="280" height="180" rx="8" fill="none" stroke="#fff" strokeWidth="3" opacity=".2" />
-            <circle cx="200" cy="60" r="16" fill="#fff" opacity=".18" />
-            <path d="M192 60 L198 66 L210 52" stroke="#fff" strokeWidth="3" fill="none" opacity=".3" />
-          </svg>
-        </div>
-        <div className="wrap">
+    // V2 (retour du 11/09, Lot 6) — reproduit prototype-html/invitation/
+    // index.html § .engagement-hero/.invitation-intro/.invitation-form
+    // (engagement.css). Réhabillage visuel uniquement : submitInvitationForm
+    // inchangé — tous les champs de la maquette existaient déjà réellement.
+    <div className="v2-engagement-page v2-invitation-page">
+      <section className="v2-engagement-hero invitation">
+        <div className="v2-engagement-wrap v2-engagement-hero-inner">
+          <p className="v2-eyebrow light">
+            <span /> À propos
+          </p>
           <h1>Invitation</h1>
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 32 }}>
-        <div className="wrap inv-form-wrap">
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <h2 style={{ fontSize: 24, marginBottom: 10 }}>Vous souhaitez inviter Serge ?</h2>
-            <p style={{ color: "var(--ink-soft)", fontSize: 15 }}>
-              Envoyez-nous toutes les informations sur votre projet.
-            </p>
-          </div>
-          <InvitationForm />
-        </div>
+      <section className="v2-engagement-wrap v2-invitation-intro">
+        <h2>Vous souhaitez inviter Serge&nbsp;?</h2>
+        <p>Envoyez-nous toutes les informations sur votre projet.</p>
       </section>
+
+      <div className="v2-engagement-wrap">
+        <InvitationForm />
+      </div>
 
       <Newsletter />
       <Footer variant="light" />
-    </>
+    </div>
   );
 }

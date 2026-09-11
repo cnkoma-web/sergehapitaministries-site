@@ -15,7 +15,10 @@ export default function InvitationForm() {
       }}
     >
       <div className="inv-form-section">
-        <h2>Vos coordonnées</h2>
+        <div className="form-section-heading">
+          <span>01</span>
+          <h2>Vos coordonnées</h2>
+        </div>
         <div className="inv-row">
           <div>
             <label className="field-label">Prénom *</label>
@@ -39,7 +42,10 @@ export default function InvitationForm() {
       </div>
 
       <div className="inv-form-section">
-        <h2>Votre structure</h2>
+        <div className="form-section-heading">
+          <span>02</span>
+          <h2>Votre structure</h2>
+        </div>
         <div style={{ marginBottom: 14 }}>
           <label className="field-label">Hôte (Église / Ministère qui invite) *</label>
           <input type="text" name="hote" required />
@@ -57,7 +63,10 @@ export default function InvitationForm() {
       </div>
 
       <div className="inv-form-section">
-        <h2>L&apos;événement</h2>
+        <div className="form-section-heading">
+          <span>03</span>
+          <h2>L&apos;événement</h2>
+        </div>
         <div className="inv-row">
           <div>
             <label className="field-label">Type d&apos;invitation *</label>
@@ -108,7 +117,10 @@ export default function InvitationForm() {
       </div>
 
       <div className="inv-form-section">
-        <h2>Informations complémentaires</h2>
+        <div className="form-section-heading">
+          <span>04</span>
+          <h2>Informations complémentaires</h2>
+        </div>
         <div style={{ marginBottom: 14 }}>
           <label className="field-label">Prévoyez-vous de couvrir les frais de voyage et d&apos;hébergement ? *</label>
           <div className="radio-row">
@@ -137,20 +149,19 @@ export default function InvitationForm() {
         </div>
       </div>
 
-      <label className="consent-label">
-        <input type="checkbox" required />
-        <span>
-          En envoyant votre demande, vous acceptez nos{" "}
-          <a href="/termes-et-conditions" style={{ color: "var(--purple)" }}>
-            conditions
-          </a>
-          , que nous vous invitons à lire avant.
-        </span>
-      </label>
+      <div style={{ padding: "0 48px 42px" }}>
+        <label className="consent-label">
+          <input type="checkbox" required />
+          <span>
+            En envoyant votre demande, vous acceptez nos{" "}
+            <a href="/termes-et-conditions">conditions</a>, que nous vous invitons à lire avant.
+          </span>
+        </label>
 
-      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={isPending}>
-        {isPending ? "Envoi…" : "Envoyer →"}
-      </button>
+        <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={isPending}>
+          {isPending ? "Envoi…" : "Envoyer la demande →"}
+        </button>
+      </div>
     </form>
   );
 }

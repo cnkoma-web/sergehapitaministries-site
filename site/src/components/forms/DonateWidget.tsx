@@ -40,13 +40,16 @@ export default function DonateWidget() {
   }
 
   return (
+    // V2 (retour du 11/09, Lot 6) — le titre/texte d'intro (auparavant
+    // dupliqué ici) vit désormais dans .v2-donation-copy, à côté de la
+    // carte plutôt que dedans (voir partenariat/page.tsx) — reproduit
+    // prototype-html/partenariat/index.html § .donation-card, qui ne
+    // porte que "Votre don" en h3.
     <div className="donate-card">
-      <h2>Devenez un semeur de la Parole par votre don</h2>
-      <p>
-        Merci beaucoup d&apos;avoir envisagé de devenir partenaire en soutenant ce ministère. Nous ne prenons pas
-        votre générosité à la légère. Votre soutien financier est le fondement de cet important travail ministériel.
-      </p>
+      <h3>Votre don</h3>
+      <p>Choisissez la fréquence et le montant de votre soutien.</p>
 
+      <span className="v2-choice-label">Fréquence</span>
       <div className="freq-toggle">
         {FREQUENCIES.map((f) => (
           <button
@@ -60,6 +63,7 @@ export default function DonateWidget() {
         ))}
       </div>
 
+      <span className="v2-choice-label">Montant</span>
       <div className="amount-grid">
         {PRESET_AMOUNTS.map((a) => (
           <button
@@ -98,6 +102,9 @@ export default function DonateWidget() {
         </div>
       )}
 
+      <span className="v2-choice-label">
+        Commentaire <span style={{ fontWeight: 500, color: "var(--v2-muted)", fontSize: 11 }}>(facultatif)</span>
+      </span>
       <textarea
         maxLength={100}
         placeholder="Commentaire (facultatif)"
