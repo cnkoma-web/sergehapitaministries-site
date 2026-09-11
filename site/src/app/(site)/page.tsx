@@ -7,6 +7,7 @@ import { getRoseeDuJour, getConfessionDuJour } from "@/lib/content/articles";
 import { stripHtml } from "@/lib/richtext";
 import { getActiveStats } from "@/lib/content/stats";
 import { getSocialLinks } from "@/lib/content/footer";
+import { getNextEvent, getPastEvents, formatEventDateRange } from "@/lib/content/events";
 import CoverRollover from "@/components/shop/CoverRollover";
 import PublisherLink from "@/components/shop/PublisherLink";
 
@@ -42,12 +43,14 @@ const SOCIAL_HANDLE: Record<string, string> = {
 };
 
 export default async function HomePage() {
-  const [books, roseeDuJour, confessionDuJour, stats, socialLinks] = await Promise.all([
+  const [books, roseeDuJour, confessionDuJour, stats, socialLinks, nextEvent, pastEvents] = await Promise.all([
     getBooks(),
     getRoseeDuJour(),
     getConfessionDuJour(),
     getActiveStats(),
     getSocialLinks(),
+    getNextEvent(),
+    getPastEvents(2), // 2 événements passés (cahier/maquette § .past-events).
   ]);
 
   const latestBooks = books.slice(0, 3);
@@ -59,8 +62,8 @@ export default async function HomePage() {
     // de flux chronologique mélangé sur l'accueil (annulé le 11/09, décision
     // explicite de Serge — les capsules du jour + la vitrine de catégories
     // suffisent ici, contrairement au hub Publications qui garde le sien).
-    // Voir globals.css § .v2-home pour l'écart restant assumé (Agenda
-    // provisoire en dur en attendant le Lot 11).
+    // Agenda désormais branché sur de vraies données (Lot 11, 11/09) — voir
+    // src/lib/content/events.ts.
     <div className="v2-home">
       <section className="v2-home-hero" id="ministere">
         <div className="v2-home-hero-photo" style={{ backgroundImage: "url('/v2/home-hero-community.jpg')" }} aria-hidden="true" />
@@ -302,11 +305,15 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Agenda / Événements (§ .events-section) — PROVISOIRE (retour du
-          11/09) : contenu en dur repris de la maquette, aucune donnée ni
-          écran admin ne le pilote encore. Décidé avec Serge : à rendre
-          dynamique dans un Lot 11 dédié (nouvelle table + admin CRUD),
-          avant la bascule finale — jamais laissé figé au-delà. */}
+      {/* Agenda / Événements (§ .events-section) — branché sur de vraies
+          données (Lot 11, 11/09, nouvelle table + admin CRUD dédiés) :
+          prochain rendez-vous calculé (événement visible le plus proche non
+          encore passé), 2 derniers événements passés. Repli sur le texte de
+          la maquette ("Prochaines dates annoncées ici") tant qu'aucun
+          événement à venir n'est saisi — jamais de contenu fictif affiché
+          comme réel. Un événement passé sans lien externe s'affiche sans
+          être cliquable (retour du 11/09) — jamais un href="#" qui ne mène
+          nulle part. */}
       <section className="v2-events-section" id="evenements">
         <div className="v2-wrap">
           <div className="v2-section-heading">
@@ -323,38 +330,51 @@ export default async function HomePage() {
             <article className="v2-next-event">
               <div className="v2-event-kicker">Prochain rendez-vous</div>
               <div className="v2-event-date">
-                <strong>À venir</strong>
-                <span>Prochaines dates annoncées ici</span>
+                <strong>{nextEvent ? formatEventDateRange(nextEvent.start_date, nextEvent.end_date) : "À venir"}</strong>
+                {!nextEvent && <span>Prochaines dates annoncées ici</span>}
               </div>
               <div className="v2-event-body">
-                <p>Conférence</p>
-                <h3>La Vie Supérieure</h3>
-                <span>Un temps d&apos;enseignement consacré aux réalités de la vie en Christ.</span>
+                <p>{nextEvent?.type ?? "Conférence"}</p>
+                <h3>{nextEvent?.title ?? "La Vie Supérieure"}</h3>
+                <span>
+                  {nextEvent?.description ?? "Un temps d'enseignement consacré aux réalités de la vie en Christ."}
+                </span>
               </div>
-              <a href="https://laviesup.com/" target="_blank" rel="noopener noreferrer">
-                Découvrir le site de l&apos;événement ↗
-              </a>
+              {nextEvent?.external_url && (
+                <a href={nextEvent.external_url} target="_blank" rel="noopener noreferrer">
+                  Découvrir le site de l&apos;événement ↗
+                </a>
+              )}
             </article>
             <div className="v2-past-events">
               <p className="v2-eyebrow" style={{ marginBottom: 20 }}>
                 <span /> À revivre
               </p>
-              <a className="v2-past-event" href="https://laviesup.com/" target="_blank" rel="noopener noreferrer">
-                <time dateTime="2026-04-23">23–25 avril 2026</time>
-                <div>
-                  <strong>La Vie Supérieure — Gabon</strong>
-                  <span>Le Beaulieu, Akanda</span>
-                </div>
-                <b>→</b>
-              </a>
-              <a className="v2-past-event" href="#">
-                <time dateTime="2026-08-22">22 août 2026</time>
-                <div>
-                  <strong>Sommet des Chrétiens Entrepreneurs</strong>
-                  <span>Rencontre en ligne</span>
-                </div>
-                <b>→</b>
-              </a>
+              {pastEvents.length === 0 ? (
+                <p className="empty-state">Les premiers événements passés apparaîtront ici.</p>
+              ) : (
+                pastEvents.map((e) => {
+                  const content = (
+                    <>
+                      <time dateTime={e.start_date}>{formatEventDateRange(e.start_date, e.end_date)}</time>
+                      <div>
+                        <strong>{e.title}</strong>
+                        {e.location && <span>{e.location}</span>}
+                      </div>
+                      {e.external_url && <b>→</b>}
+                    </>
+                  );
+                  return e.external_url ? (
+                    <a className="v2-past-event" href={e.external_url} target="_blank" rel="noopener noreferrer" key={e.id}>
+                      {content}
+                    </a>
+                  ) : (
+                    <div className="v2-past-event" key={e.id}>
+                      {content}
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
