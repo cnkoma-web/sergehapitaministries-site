@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Footer from "@/components/layout/Footer";
+import LegalPageLayout from "@/components/layout/LegalPageLayout";
 
 const title = "Termes et conditions | Serge Hapita Ministries";
 const description = "Termes et conditions d'utilisation du site sergehapitaministries.org.";
@@ -20,18 +20,13 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description },
 };
 
+// V2 (retour du 11/09, Lot 8) — réhabillage visuel uniquement (voir
+// LegalPageLayout.tsx). Texte inchangé : voir le commentaire équivalent
+// dans mentions-legales/page.tsx sur les fichiers reference/
+// contenus-juridiques-integres/*.md du 10/09.
 export default function TermesEtConditionsPage() {
   return (
-    <>
-      <section className="legal-hero">
-        <div className="wrap">
-          <h1>Termes et conditions</h1>
-          <p>Dernière mise à jour : à préciser lors de la mise en ligne</p>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="content-col legal-body">
+    <LegalPageLayout title="Termes et conditions" lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne" currentHref="/termes-et-conditions">
           <h2>Objet</h2>
           <p>
             Les présentes conditions régissent l&apos;utilisation du site sergehapitaministries.org ainsi que
@@ -90,10 +85,8 @@ export default function TermesEtConditionsPage() {
           <h2>Propriété intellectuelle</h2>
           <p>
             Voir nos{" "}
-            <a href="/mentions-legales" style={{ color: "var(--purple)" }}>
-              mentions légales
-            </a>{" "}
-            pour les dispositions relatives à la propriété intellectuelle des contenus du site.
+            <a href="/mentions-legales">mentions légales</a> pour les dispositions relatives à la propriété
+            intellectuelle des contenus du site.
           </p>
 
           <h2>Modification des conditions</h2>
@@ -111,15 +104,8 @@ export default function TermesEtConditionsPage() {
           <h2>Contact</h2>
           <p>
             Pour toute question relative à ces conditions, vous pouvez nous contacter via notre{" "}
-            <a href="/contact" style={{ color: "var(--purple)" }}>
-              formulaire de contact
-            </a>
-            .
+            <a href="/contact">formulaire de contact</a>.
           </p>
-        </div>
-      </section>
-
-      <Footer variant="dark" />
-    </>
+    </LegalPageLayout>
   );
 }

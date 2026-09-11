@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Footer from "@/components/layout/Footer";
+import LegalPageLayout from "@/components/layout/LegalPageLayout";
 
 const title = "Mentions légales | Serge Hapita Ministries";
 const description = "Mentions légales du site sergehapitaministries.org.";
@@ -24,18 +24,15 @@ export const metadata: Metadata = {
   },
 };
 
+// V2 (retour du 11/09, Lot 8) — réhabillage visuel uniquement (voir
+// LegalPageLayout.tsx). Texte inchangé : les fichiers reference/
+// contenus-juridiques-integres/mentions-legales-source.md (livrés le
+// 10/09) se sont révélés être une capture du HTML rendu du site actuel,
+// pas un nouveau texte juridique — vérifié et confirmé avec Serge le
+// 11/09, jamais supposé silencieusement.
 export default function MentionsLegalesPage() {
   return (
-    <>
-      <section className="util-hero">
-        <div className="wrap">
-          <h1>Mentions légales</h1>
-          <p>Dernière mise à jour : à préciser lors de la mise en ligne</p>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="content-col legal-body">
+    <LegalPageLayout title="Mentions légales" lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne" currentHref="/mentions-legales">
           <h2>Éditeur du site</h2>
           <p>
             Le site sergehapitaministries.org est édité par Serge Hapita, dans le cadre de son
@@ -88,16 +85,8 @@ export default function MentionsLegalesPage() {
           <h2>Contact</h2>
           <p>
             Pour toute question relative aux présentes mentions légales, vous pouvez nous
-            contacter via notre{" "}
-            <a href="/contact" style={{ color: "var(--purple)" }}>
-              formulaire de contact
-            </a>
-            .
+            contacter via notre <a href="/contact">formulaire de contact</a>.
           </p>
-        </div>
-      </section>
-
-      <Footer variant="dark" />
-    </>
+    </LegalPageLayout>
   );
 }

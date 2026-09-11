@@ -3072,3 +3072,44 @@ footer.footer--dark{
   .v2-account-flow-body{padding:27px 22px 30px;}
   .v2-account-flow-links{flex-direction:column;}
 }
+
+/* ============================================================
+   V2 (Lot 8, 11/09) — Pages légales (mentions/confidentialité/cookies/
+   termes). Reproduit prototype-html/mentions-legales/index.html §
+   .legal-hero/.legal-layout/.legal-nav/.legal-body (commerce.css).
+   Réhabillage visuel uniquement, texte inchangé (décidé avec Serge le
+   11/09 : les fichiers reference/contenus-juridiques-integres/*.md du
+   10/09 sont des captures du HTML rendu du site actuel, pas un nouveau
+   texte — voir la note dans chaque page).
+   ============================================================ */
+.v2-legal-page{background:#fbfaff;}
+.v2-legal-hero{min-height:190px;display:flex;align-items:center;color:#fff;background:linear-gradient(120deg,#17142d,#38226e);}
+.v2-legal-hero-inner{padding-block:38px 42px;}
+.v2-legal-hero h1{max-width:800px;margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(40px,6vw,67px);font-weight:500;line-height:1;letter-spacing:-.035em;}
+.v2-legal-hero p{margin:12px 0 0;color:rgba(255,255,255,.65);font-size:12px;}
+.v2-legal-layout{display:grid;grid-template-columns:210px minmax(0,760px);gap:65px;align-items:start;padding-block:63px 92px;}
+.v2-legal-nav{position:sticky;top:24px;display:grid;gap:9px;padding:17px;border:1px solid var(--v2-line);border-radius:9px;background:#fff;}
+.v2-legal-nav strong{margin-bottom:5px;color:var(--v2-muted);font-size:10px;text-transform:uppercase;letter-spacing:.11em;}
+.v2-legal-nav a{color:var(--v2-ink-soft);font-size:12px;line-height:1.35;}
+.v2-legal-nav a[aria-current="page"],.v2-legal-nav a:hover{color:var(--v2-violet-deep);font-weight:800;}
+.v2-legal-body{min-width:0;}
+.v2-legal-body h2{margin:43px 0 13px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:27px;font-weight:600;line-height:1.2;}
+.v2-legal-body h2:first-child{margin-top:0;}
+.v2-legal-body p,.v2-legal-body li{color:var(--v2-ink-soft);font-size:16px;line-height:1.8;}
+.v2-legal-body ul{padding-left:21px;}
+.v2-legal-body a{color:var(--v2-violet-deep);text-decoration:underline;text-underline-offset:3px;}
+
+@media (max-width:980px){
+  .v2-legal-layout{grid-template-columns:1fr;gap:28px;}
+  .v2-legal-nav{position:static;grid-template-columns:repeat(2,minmax(0,1fr));}
+  .v2-legal-nav strong{grid-column:1/-1;}
+}
+@media (max-width:720px){
+  .v2-legal-hero{min-height:160px;}
+  .v2-legal-hero-inner{padding-block:30px 33px;}
+  .v2-legal-layout{padding-block:38px 72px;}
+}
+@media (max-width:520px){
+  .v2-legal-nav{grid-template-columns:1fr;}
+  .v2-legal-body h2{font-size:25px;}
+}

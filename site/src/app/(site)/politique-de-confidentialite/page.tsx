@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Footer from "@/components/layout/Footer";
+import LegalPageLayout from "@/components/layout/LegalPageLayout";
 
 const title = "Politique de confidentialité | Serge Hapita Ministries";
 const description = "Politique de confidentialité du site sergehapitaministries.org.";
@@ -20,18 +20,17 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description },
 };
 
+// V2 (retour du 11/09, Lot 8) — réhabillage visuel uniquement (voir
+// LegalPageLayout.tsx). Texte inchangé : voir le commentaire équivalent
+// dans mentions-legales/page.tsx sur les fichiers reference/
+// contenus-juridiques-integres/*.md du 10/09.
 export default function PolitiqueDeConfidentialitePage() {
   return (
-    <>
-      <section className="legal-hero">
-        <div className="wrap">
-          <h1>Politique de confidentialité</h1>
-          <p>Dernière mise à jour : à préciser lors de la mise en ligne</p>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="content-col legal-body">
+    <LegalPageLayout
+      title="Politique de confidentialité"
+      lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne"
+      currentHref="/politique-de-confidentialite"
+    >
           <h2>Quelles données collectons-nous ?</h2>
           <p>
             Selon les formulaires que vous utilisez sur ce site, nous pouvons collecter : votre nom, votre e-mail,
@@ -89,9 +88,7 @@ export default function PolitiqueDeConfidentialitePage() {
           </ul>
           <p>
             Pour exercer l&apos;un de ces droits, vous pouvez nous contacter via notre{" "}
-            <a href="/contact" style={{ color: "var(--purple)" }}>
-              formulaire de contact
-            </a>
+            <a href="/contact">formulaire de contact</a>
             .
           </p>
 
@@ -99,9 +96,7 @@ export default function PolitiqueDeConfidentialitePage() {
           <p>
             Ce site peut utiliser des cookies techniques nécessaires à son fonctionnement. Pour plus de détails,
             consultez notre{" "}
-            <a href="/politique-de-cookies" style={{ color: "var(--purple)" }}>
-              politique de cookies
-            </a>
+            <a href="/politique-de-cookies">politique de cookies</a>
             .
           </p>
 
@@ -114,15 +109,8 @@ export default function PolitiqueDeConfidentialitePage() {
           <h2>Contact</h2>
           <p>
             Pour toute question relative à cette politique de confidentialité, vous pouvez nous contacter via notre{" "}
-            <a href="/contact" style={{ color: "var(--purple)" }}>
-              formulaire de contact
-            </a>
-            .
+            <a href="/contact">formulaire de contact</a>.
           </p>
-        </div>
-      </section>
-
-      <Footer variant="dark" />
-    </>
+    </LegalPageLayout>
   );
 }
