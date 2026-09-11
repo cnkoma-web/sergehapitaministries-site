@@ -11,6 +11,7 @@ const SECTIONS = [
   { href: "/admin/categories", label: "Catégories" },
   { href: "/admin/rosee-matinale", label: "Rosée Matinale" },
   { href: "/admin/je-confesse", label: "Je Confesse" },
+  { href: "/admin/podcast", label: "Podcast" },
   { href: "/admin/videos", label: "Vidéos" },
   { href: "/admin/avis", label: "Avis" },
   { href: "/admin/commandes", label: "Commandes" },

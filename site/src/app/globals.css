@@ -3113,3 +3113,122 @@ footer.footer--dark{
   .v2-legal-nav{grid-template-columns:1fr;}
   .v2-legal-body h2{font-size:25px;}
 }
+
+/* ============================================================
+   V2 (Lot 9, 11/09) — Podcast, nouvelle fonctionnalité additive.
+   Reproduit prototype-html/podcast/index.html § .podcast-hero/
+   .podcast-filters/.podcast-library/.podcast-grid/.podcast-card/
+   .podcast-share-card/.podcast-card-content/.podcast-player-
+   preview/.podcast-card-bottom/.podcast-share-actions/
+   .podcast-pagination (publications.css) sous .v2-podcast-page.
+   Ausha pas encore souscrit (confirmé le 11/09) : les 4 exemples
+   de la maquette affichent tous "Audio à connecter"/"Durée à
+   renseigner" — ces placeholders ne sont PAS repris ici, le champ
+   audio_url est obligatoire à la publication (voir actions.ts),
+   la durée s'affiche seulement quand elle est renseignée.
+   ============================================================ */
+.v2-podcast-page{background:#fff;}
+
+.v2-podcast-hero{padding:76px 0 60px;color:#fff;background:radial-gradient(circle at 82% 20%,rgba(150,102,255,.45),transparent 27%),linear-gradient(128deg,#17142d,#30205a);}
+.v2-podcast-hero h1{margin:14px 0 0;color:#fff;font-family:var(--v2-serif);font-size:clamp(52px,6.4vw,72px);font-weight:500;line-height:.95;letter-spacing:-.05em;}
+.v2-podcast-hero-inner>p{max-width:720px;margin:16px 0 0;color:rgba(255,255,255,.76);font-family:var(--v2-serif);font-size:18px;line-height:1.5;}
+
+.v2-podcast-filters{display:flex;flex-wrap:wrap;gap:7px;margin-top:28px;list-style:none;padding:0;}
+.v2-podcast-filters a{display:inline-flex;align-items:center;min-height:36px;padding:7px 14px;border:1px solid rgba(255,255,255,.25);border-radius:999px;color:#fff;background:rgba(255,255,255,.06);font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.02em;transition:color .2s ease,border-color .2s ease,background .2s ease;}
+.v2-podcast-filters a:hover,.v2-podcast-filters a.active{color:var(--v2-ink);border-color:#fff;background:#fff;}
+
+.v2-podcast-library{padding:60px 0 84px;background:#f4f1ff;}
+.v2-podcast-library-head{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:26px;}
+.v2-podcast-library-head h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(34px,4vw,46px);font-weight:500;line-height:1;}
+.v2-podcast-library-head p{margin:0 0 3px;color:var(--v2-muted);font-size:14px;}
+
+.v2-podcast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+.v2-podcast-card{display:grid;grid-template-columns:152px minmax(0,1fr);overflow:hidden;border:1px solid rgba(79,37,216,.14);border-radius:12px;background:#fff;box-shadow:0 12px 28px rgba(23,20,45,.07);}
+
+.v2-podcast-share-card{position:relative;min-height:286px;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 16px;color:#fff;background:radial-gradient(circle at 82% 16%,rgba(169,133,255,.52),transparent 27%),linear-gradient(145deg,#17142d,#362267);}
+.v2-podcast-share-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;}
+.v2-podcast-share-card::before{content:"▶";position:relative;width:42px;height:42px;display:grid;place-items:center;margin-bottom:auto;padding-left:2px;border:1px solid rgba(255,255,255,.4);border-radius:50%;background:rgba(255,255,255,.08);font-size:12px;}
+.v2-podcast-share-card>span,.v2-podcast-share-card>strong,.v2-podcast-share-card>small{position:relative;}
+.v2-podcast-share-card>span{margin-bottom:9px;color:#d9ccff;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;}
+.v2-podcast-share-card strong{max-width:145px;color:#fff;font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.02;}
+.v2-podcast-share-card small{margin-top:16px;color:rgba(255,255,255,.62);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;}
+/* Couleurs par univers — mêmes valeurs que .badge-confess/.badge-dew/.badge-
+   life du prototype, appliquées ici au fond de la carte de partage. */
+.v2-podcast-card.jc .v2-podcast-share-card{color:var(--v2-ink);background:radial-gradient(circle at 82% 16%,rgba(255,255,255,.72),transparent 27%),linear-gradient(145deg,#eee8ff,#cdb8fa);}
+.v2-podcast-card.jc .v2-podcast-share-card::before{border-color:rgba(79,37,216,.25);background:rgba(255,255,255,.38);}
+.v2-podcast-card.jc .v2-podcast-share-card>span,.v2-podcast-card.jc .v2-podcast-share-card small{color:var(--v2-violet-deep);}
+.v2-podcast-card.rm .v2-podcast-share-card{background:radial-gradient(circle at 80% 18%,rgba(255,255,255,.16),transparent 25%),linear-gradient(145deg,#5f3aaf,#7b3fe4);}
+.v2-podcast-card.vs .v2-podcast-share-card{background:radial-gradient(circle at 82% 16%,rgba(111,80,193,.52),transparent 27%),linear-gradient(145deg,#151229,#29204d);}
+
+.v2-podcast-card-content{display:flex;flex-direction:column;padding:20px 20px 18px;}
+/* .feed-badge (globals.css §L624) n'a pas de width:fit-content contrairement
+   à son équivalent .category-badge du prototype — jamais remarqué ailleurs
+   sur le site car toujours placé dans un conteneur flex en ligne
+   (.feed-cat-group), jamais en colonne comme ici : align-items:stretch (la
+   valeur par défaut d'un flex-column) l'étirait sinon sur toute la largeur
+   de la carte. Correction ciblée à cet usage précis (juste le badge, pas
+   tout le conteneur, pour ne rien changer aux autres enfants qui doivent,
+   eux, garder leur pleine largeur) plutôt que la règle partagée, hors
+   périmètre du Lot 9. */
+.v2-podcast-card-content>.feed-badge{align-self:flex-start;width:fit-content;}
+.v2-podcast-card-content h3{margin:13px 0 8px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(24px,2.1vw,30px);font-weight:500;line-height:1.05;letter-spacing:-.025em;}
+.v2-podcast-card-content h3 a:hover{color:var(--v2-violet-deep);}
+.v2-podcast-card-content>p{margin:0;max-width:690px;color:var(--v2-muted);font-size:14px;line-height:1.52;}
+.v2-podcast-card-meta{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:12px;color:var(--v2-violet-deep);font-size:12px;font-weight:750;}
+
+.v2-podcast-player-preview{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:11px;align-items:center;margin-top:18px;padding:10px;border-radius:9px;color:#fff;background:#1d1830;}
+.v2-podcast-play{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;color:#fff;background:var(--v2-violet-deep);font-size:13px;border:0;cursor:pointer;}
+.v2-podcast-progress{height:3px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.22);}
+.v2-podcast-progress span{width:0;height:100%;display:block;background:#b995ff;}
+.v2-podcast-player-preview>time{color:rgba(255,255,255,.66);font-size:12px;}
+
+.v2-podcast-card-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;}
+.v2-podcast-card-bottom>a{color:var(--v2-violet-deep);font-size:12px;font-weight:800;white-space:nowrap;}
+
+.podcast-share-actions{position:relative;display:flex;gap:7px;}
+.podcast-share-actions a,.podcast-share-actions button{min-height:36px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 9px;border:1px solid rgba(79,37,216,.2);border-radius:6px;color:var(--v2-violet-deep);background:#f7f5ff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:color .2s ease,border-color .2s ease,background .2s ease;}
+.podcast-share-actions a:hover,.podcast-share-actions button:hover{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
+.podcast-share-actions svg{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.podcast-share-actions svg .filled{fill:currentColor;stroke:none;}
+.podcast-share-actions .share-feedback{position:absolute;right:0;top:calc(100% + 4px);min-width:120px;color:var(--v2-muted);font-size:11px;text-align:right;}
+
+.v2-podcast-pagination{margin-top:28px;padding-top:20px;border-top:1px solid rgba(79,37,216,.13);color:var(--v2-muted);font-size:12px;}
+.v2-podcast-pagination .pagination{margin-top:0;color:var(--v2-muted);}
+.v2-podcast-pagination .pagination .pages a{width:40px;height:40px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-ink);}
+.v2-podcast-pagination .pagination .pages a:hover{border-color:var(--v2-violet-deep);color:var(--v2-violet-deep);}
+.v2-podcast-pagination .pagination .pages a.active{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
+.v2-podcast-pagination .pagination .pages a[aria-disabled="true"]{opacity:.4;pointer-events:none;}
+
+/* --- Fiche détail d'un épisode (pas de maquette dédiée dans le dossier —
+   la maquette ne montre que la bibliothèque avec ses cartes ; palette v2
+   reprise pour un gabarit cohérent avec le reste du site, à signaler si
+   Serge souhaite un écran dédié plus tard). --- */
+.v2-podcast-detail-hero{padding:70px 0 56px;color:#fff;background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.55),transparent 29%),var(--v2-ink);}
+.v2-podcast-detail-hero h1{max-width:820px;margin:18px 0 0;color:#fff;font-family:var(--v2-serif);font-size:clamp(34px,4.6vw,52px);font-weight:500;line-height:1.1;letter-spacing:-.03em;}
+.v2-podcast-detail-hero p{margin:18px 0 0;max-width:640px;color:rgba(255,255,255,.76);font-size:16px;line-height:1.6;}
+.v2-podcast-detail-body{padding:56px 0 84px;}
+.v2-podcast-detail-player{display:grid;grid-template-columns:1fr;gap:18px;max-width:760px;margin:0 auto;}
+.v2-podcast-audio{width:100%;}
+.v2-podcast-detail-link{color:var(--v2-violet-deep);font-weight:700;}
+
+@media (max-width:980px){
+  .v2-podcast-grid{grid-template-columns:1fr;}
+  .v2-podcast-card{grid-template-columns:190px minmax(0,1fr);}
+}
+@media (max-width:720px){
+  .v2-podcast-hero{padding:56px 0 46px;}
+  .v2-podcast-hero h1{font-size:48px;}
+  .v2-podcast-filters{margin-top:19px;}
+  .v2-podcast-library{padding:44px 0 60px;}
+  .v2-podcast-library-head{display:block;margin-bottom:22px;}
+  .v2-podcast-library-head p{margin-top:13px;}
+  .v2-podcast-card{grid-template-columns:1fr;}
+  .v2-podcast-share-card{min-height:180px;padding:20px;}
+  .v2-podcast-share-card strong{max-width:290px;font-size:25px;}
+  .v2-podcast-card-content{padding:21px 19px 22px;}
+  .v2-podcast-card-content h3{font-size:27px;}
+  .v2-podcast-card-bottom{align-items:flex-start;flex-direction:column;}
+  .podcast-share-actions{width:100%;}
+  .podcast-share-actions a,.podcast-share-actions button{flex:1 1 0;}
+  .podcast-share-actions .share-feedback{left:0;right:auto;text-align:left;}
+}
