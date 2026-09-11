@@ -4,6 +4,7 @@ import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import { getBooks } from "@/lib/content/books";
 import { getRoseeDuJour, getConfessionDuJour } from "@/lib/content/articles";
+import { stripHtml } from "@/lib/richtext";
 import { getActiveStats } from "@/lib/content/stats";
 import { getSocialLinks } from "@/lib/content/footer";
 import CoverRollover from "@/components/shop/CoverRollover";
@@ -125,9 +126,12 @@ export default async function HomePage() {
 
       {/* Je Confesse du jour (Lot 4, 11/09) — même principe que la capsule
           Rosée Matinale ci-dessus (§ .confession-wrap). Donnée réelle
-          (getConfessionDuJour). Pas de titre éditorial affiché ici non plus
-          (voir JeConfesseContent.tsx) : le verset + sa référence tiennent
-          lieu de citation. */}
+          (getConfessionDuJour). Extrait du corps de la proclamation du jour
+          (corrigé le 11/09) — le verset d'en-tête et la signature de
+          clôture sont désormais des réglages fixes de la rubrique (voir
+          JeConfesseContent.tsx), jamais affichés ici : cette carte montre
+          un aperçu de la déclaration du jour, comme la carte Rosée
+          Matinale voisine. */}
       <section className="v2-wrap" aria-label="Proclamation du jour — Je Confesse">
         <div className="v2-confession-wrap">
           <article className="v2-confession-card">
@@ -135,7 +139,7 @@ export default async function HomePage() {
             {confessionDuJour ? (
               <>
                 <div className="v2-confession-content">
-                  <blockquote>« {confessionDuJour.verse_text} »</blockquote>
+                  <blockquote>« {stripHtml(confessionDuJour.body ?? "").slice(0, 160)} »</blockquote>
                 </div>
                 <Link href="/publications/je-confesse-et-declare">Lire et proclamer →</Link>
               </>

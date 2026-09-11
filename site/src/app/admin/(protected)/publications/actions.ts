@@ -268,25 +268,23 @@ export async function updateRoseeEntry(formData: FormData) {
   redirect(`/admin/rosee-matinale/${id}?saved=1`);
 }
 
-// ===== Je Confesse (Lot 4, 11/09) — même principe exact que Rosée
-// Matinale ci-dessus : publication rapide de l'entrée du jour + écran
-// d'édition dédié. Différences volontaires avec Rosée Matinale (cahier) :
-// pas de champ "Titre" du tout (jamais de titre éditorial, contrairement à
-// Rosée Matinale — le titre reste toujours reconstruit depuis la date, y
-// compris à l'usage interne : liste admin, message de partage, "Articles
-// similaires"), une référence biblique distincte du texte de la
-// proclamation (verse_reference + verse_text, comme Que Dit la Bible),
-// pas d'image de couverture (le hero Je Confesse est un dégradé, jamais
-// une photo — voir prototype-html/publications/je-confesse-et-declare),
-// et un corps (déclaration développée) obligatoire, pas facultatif. =====
+// ===== Je Confesse (Lot 4, 11/09 — corrigé le 11/09 après relecture de la
+// maquette) — même principe exact que Rosée Matinale ci-dessus : publication
+// rapide de l'entrée du jour + écran d'édition dédié. Correction impérative
+// (retour du 11/09) : le verset d'en-tête (Proverbes 18:20) et la signature
+// de clôture (Romains 10:10) sont FIXES pour toute la rubrique — réglages
+// globaux (interface_texts, § getJeConfesseSettings dans interfaceTexts.ts),
+// jamais un champ par proclamation. Seuls deux champs varient par
+// proclamation : l'image de couverture (comme Rosée Matinale) et le corps
+// de la déclaration (obligatoire, contrairement à Rosée Matinale où il est
+// facultatif). Toujours pas de champ "Titre" (titre reconstruit depuis la
+// date, jamais éditorial). =====
 
 export async function publishConfession(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
-  const verse_reference = String(formData.get("verse_reference") ?? "").trim();
-  const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!verse_text || !body) return;
+  if (!body) return;
 
   const title = `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
 
@@ -295,9 +293,9 @@ export async function publishConfession(formData: FormData) {
     slug: `jc-${article_date}`,
     title,
     article_date,
-    verse_reference: verse_reference || null,
-    verse_text,
     body,
+    cover_url: String(formData.get("cover_url") ?? "").trim() || null,
+    cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,
     seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
     access: "free",
     status: "published",
@@ -313,9 +311,8 @@ export async function publishConfession(formData: FormData) {
 export async function updateConfessionEntry(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
-  const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!id || !verse_text || !body) return;
+  if (!id || !body) return;
 
   const article_date = String(formData.get("article_date") ?? "") || undefined;
   const title = article_date
@@ -327,9 +324,9 @@ export async function updateConfessionEntry(formData: FormData) {
     .update({
       article_date,
       title,
-      verse_reference: String(formData.get("verse_reference") ?? "").trim() || null,
-      verse_text,
       body,
+      cover_url: String(formData.get("cover_url") ?? "").trim() || null,
+      cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,
       seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
       status: String(formData.get("status") ?? "published"),
       reading_time_minutes: computeReadingTime(body),

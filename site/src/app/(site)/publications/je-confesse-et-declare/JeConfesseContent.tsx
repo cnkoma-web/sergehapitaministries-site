@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Article } from "@/lib/content/articles";
-import { extractParagraphs } from "@/lib/richtext";
+import { getJeConfesseSettings } from "@/lib/content/interfaceTexts";
+import { extractParagraphs, stripHtml } from "@/lib/richtext";
 import ArticleMeta from "@/components/articles/ArticleMeta";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import RelatedArticlesSection from "@/components/articles/RelatedArticlesSection";
@@ -17,23 +18,26 @@ function dayHref(date: string): string {
   return `/publications/je-confesse-et-declare/${date}`;
 }
 
-// V2 (Lot 4, 11/09) — reproduit prototype-html/publications/
-// je-confesse-et-declare/index.html § .rm-hero.confess-hero/.entry-body-
-// section/.confess-chapeau/.like-row/.rm-nav-days/.related-section/
-// .archive-section. Calqué sur RoseeMatinaleContent.tsx (même principe :
-// rendu partagé entre la route "aujourd'hui" et la route par jour de
-// l'archive), avec les différences volontaires du cahier : pas de titre
-// éditorial (le verset + sa référence tiennent lieu de h1, jamais
-// current.title ici), pas de photo de fond (dégradé, comme le prototype),
-// une citation de clôture fixe (Romains 10:10, jamais éditée par Serge —
-// aucune entrée du dossier ne suggère qu'elle varie d'un jour à l'autre).
+// V2 (Lot 4, 11/09 — corrigé le 11/09 après relecture de la maquette par
+// Serge) — reproduit prototype-html/publications/je-confesse-et-declare/
+// index.html § .rm-hero.confess-hero/.entry-body-section/.confess-chapeau/
+// .like-row/.rm-nav-days/.related-section/.archive-section. Calqué sur
+// RoseeMatinaleContent.tsx (même principe : rendu partagé entre la route
+// "aujourd'hui" et la route par jour de l'archive).
+//
+// Correction impérative du 11/09 : le verset d'en-tête (Proverbes 18:20)
+// et la signature de clôture (Romains 10:10) sont FIXES pour toute la
+// rubrique — réglages globaux (getJeConfesseSettings, interface_texts),
+// jamais un champ par proclamation. Seuls varient par proclamation :
+// l'image de couverture (affichée en filigrane à 30% d'opacité dans le
+// héros, jamais un portrait par défaut) et le corps de la déclaration.
 //
 // Section "Version audio" du prototype (§ .confession-audio, pointant vers
 // /podcast/#je-confesse) volontairement omise pour l'instant : la route
 // Podcast n'existe pas encore (Lot 9) — jamais un lien qui mènerait à une
 // page inexistante. Le champ podcast_episode_id est déjà préparé sur
 // l'article (voir articles.ts) pour ce lot futur.
-export default function JeConfesseContent({
+export default async function JeConfesseContent({
   current,
   previous,
   next,
@@ -53,10 +57,15 @@ export default function JeConfesseContent({
   const pageUrl = `${SITE_URL}${dayHref(current.article_date)}`;
   const paragraphs = extractParagraphs(current.body || "");
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
+  const settings = await getJeConfesseSettings();
 
   return (
     <div className="v2-rm-page v2-jc-page">
       <section className="v2-jc-hero">
+        {/* Image propre à cette proclamation, en filigrane (30% d'opacité)
+            sous le dégradé — jamais de portrait par défaut si aucune image
+            n'a été renseignée dans l'admin. */}
+        {current.cover_url && <div className="v2-jc-hero-image" style={{ backgroundImage: `url(${current.cover_url})` }} aria-hidden="true" />}
         <div className="v2-wrap v2-jc-hero-copy">
           {/* Espace insécable avant le guillemet fermant (même règle
               typographique française que verse-box/further-verse dans
@@ -65,9 +74,9 @@ export default function JeConfesseContent({
               ici (elle ne traite qu'un " »" déjà présent dans le texte,
               pas un guillemet ajouté séparément juste après). */}
           <h1>
-            « {current.verse_text}
-            {" "}»
-            {current.verse_reference && <cite>{current.verse_reference}</cite>}
+            « {settings.verseText}
+            {" "}»
+            <cite>{settings.verseReference}</cite>
           </h1>
           <div className="v2-jc-hero-context">
             <span className="v2-jc-badge">Je Confesse</span>
@@ -82,20 +91,17 @@ export default function JeConfesseContent({
       <section className="section" style={{ paddingTop: 88, paddingBottom: 0 }}>
         <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
           {paragraphs.map((html, i) => (
-            <div key={i} className="rm-body-html" style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: html }} />
+            <div key={i} className="v2-jc-body-html" dangerouslySetInnerHTML={{ __html: html }} />
           ))}
         </div>
       </section>
 
-      {/* Citation de clôture fixe (Romains 10:10) — voir le commentaire en
-          tête de fichier : jamais éditée par Serge, identique sur toutes
-          les entrées. */}
+      {/* Signature de clôture fixe — voir le commentaire en tête de
+          fichier : jamais éditée par proclamation, réglage global. */}
       <section className="v2-jc-chapeau">
         <blockquote>
-          Ayez l&apos;audace de dire les mêmes choses que Dieu a dites à votre sujet dans sa Parole. C&apos;est ce qui
-          vous fait jouir des bienfaits du salut. C&apos;est en confessant de la bouche ce que l&apos;on croit du
-          cœur que l&apos;on parvient au salut.
-          <cite>Romains 10:10</cite>
+          {settings.signatureText}
+          <cite>{settings.signatureReference}</cite>
         </blockquote>
       </section>
 
@@ -112,7 +118,13 @@ export default function JeConfesseContent({
 
       <section className="share-zone">
         <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
-          <ShareCartouche title={current.title} url={pageUrl} category="jc" articleDate={current.article_date} excerpt={current.verse_text ?? undefined} />
+          <ShareCartouche
+            title={current.title}
+            url={pageUrl}
+            category="jc"
+            articleDate={current.article_date}
+            excerpt={current.body ? stripHtml(current.body) : undefined}
+          />
         </div>
       </section>
 
@@ -130,7 +142,7 @@ export default function JeConfesseContent({
                 {archivePaged.map((entry) => (
                   <Link href={dayHref(entry.article_date)} className="rm-item" key={entry.id}>
                     <div className="date">{new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</div>
-                    <div className="excerpt">{entry.verse_text}</div>
+                    <div className="excerpt">{stripHtml(entry.body ?? "").slice(0, 140)}</div>
                   </Link>
                 ))}
               </div>

@@ -4,11 +4,14 @@ import { notFound } from "next/navigation";
 import { getArticleByIdAdmin } from "@/lib/content/articles";
 import { updateConfessionEntry, deleteArticle } from "../../publications/actions";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import SavedToast from "@/components/admin/SavedToast";
 
-// V2 (Lot 4, 11/09) — calqué sur admin/rosee-matinale/[id]/page.tsx (voir
-// le commentaire détaillé dans publications/actions.ts pour les
-// différences volontaires avec Rosée Matinale).
+// V2 (Lot 4, 11/09 — corrigé le 11/09 après relecture de la maquette) —
+// calqué sur admin/rosee-matinale/[id]/page.tsx (voir le commentaire
+// détaillé dans publications/actions.ts pour les différences volontaires
+// avec Rosée Matinale). Le verset d'en-tête et la signature de clôture
+// sont des réglages globaux (/admin/textes), jamais édités ici.
 export default async function AdminJeConfesseEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const entry = await getArticleByIdAdmin(id);
@@ -56,13 +59,15 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
           </div>
 
           <div className="editor-field">
-            <label>Référence biblique</label>
-            <input type="text" name="verse_reference" defaultValue={entry.verse_reference ?? ""} placeholder="Ex. Proverbes 18:20" />
-          </div>
-
-          <div className="editor-field">
-            <label>Verset (affiché en tête, avec sa référence)</label>
-            <textarea name="verse_text" defaultValue={entry.verse_text ?? ""} rows={2} required />
+            <label>Image de couverture</label>
+            <ArticleCoverField currentUrl={entry.cover_url} />
+            <input
+              type="text"
+              name="cover_alt"
+              defaultValue={entry.cover_alt ?? ""}
+              placeholder="Texte alternatif (description de l'image)"
+              style={{ marginTop: 8 }}
+            />
           </div>
 
           <div className="editor-field">

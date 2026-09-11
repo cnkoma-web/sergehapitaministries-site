@@ -2595,17 +2595,24 @@ footer.footer--dark{
    ============================================================ */
 
 /* --- Page dédiée (jour + archive), voir JeConfesseContent.tsx --- */
-.v2-jc-hero{position:relative;min-height:420px;display:flex;align-items:center;isolation:isolate;overflow:hidden;padding:70px 0;color:#fff;background:radial-gradient(circle at 18% 32%,rgba(219,205,255,.34),transparent 25%),radial-gradient(circle at 82% 68%,rgba(154,113,255,.3),transparent 27%),linear-gradient(135deg,#17122d 0%,#37205f 52%,#7452ad 100%);}
-.v2-jc-hero-copy{max-width:860px;margin:0 auto;text-align:center;}
-.v2-jc-hero h1{margin:0 auto 25px;color:#fff;font-family:var(--v2-serif);font-size:clamp(28px,4vw,40px);font-weight:600;line-height:1.3;letter-spacing:-.015em;}
-.v2-jc-hero h1 cite{display:block;margin-top:10px;color:rgba(255,255,255,.62);font-family:var(--v2-sans);font-size:15px;font-style:normal;font-weight:600;}
+/* Corrigé le 11/09 (relecture de la maquette) — structure et valeurs
+   exactes données par Serge : fond violet permanent → image de la
+   proclamation en filigrane (30%, cover, centrée) → dégradé violet →
+   verset+référence permanents → séparateur → capsule/date/durée/vues. */
+.v2-jc-hero{position:relative;min-height:420px;display:flex;align-items:center;isolation:isolate;overflow:hidden;padding:70px 0;color:#fff;background:linear-gradient(135deg,#17122d 0%,#37205f 52%,#7452ad 100%);}
+.v2-jc-hero-image{position:absolute;z-index:-2;inset:0;background-size:cover;background-position:center;opacity:.3;}
+.v2-jc-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(20,14,40,.78),rgba(76,49,124,.28),rgba(23,15,44,.48));}
+.v2-jc-hero-copy{position:relative;max-width:860px;margin:0 auto;text-align:center;}
+.v2-jc-hero h1{margin:0 auto 25px;color:#fff;font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
+.v2-jc-hero h1 cite{font-family:var(--v2-sans);font-size:.55em;font-style:normal;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.62);}
 .v2-jc-hero-context{width:min(600px,100%);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.34);}
 .v2-jc-badge{display:block;margin:0 auto 13px;color:#fff;font-family:var(--v2-serif);font-size:22px;font-weight:600;}
 .v2-jc-date{display:block;color:#e5dcff;font-size:13px;}
 .v2-jc-hero-context .article-meta{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:13px;color:#d7c9ff;font-size:12px;}
-.v2-jc-chapeau{padding:54px 0;background:#eee8ff;}
-.v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(22px,2.8vw,32px);font-weight:500;font-style:italic;line-height:1.5;text-align:center;}
-.v2-jc-chapeau cite{display:block;margin-top:18px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.v2-jc-body-html{margin-bottom:20px;color:#343044;font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
+.v2-jc-chapeau{padding:54px 0;background:#f3edff;}
+.v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
+.v2-jc-chapeau cite{display:block;margin-top:18px;color:#4f25d8;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
 
 /* --- Capsule d'accueil (§ .confession-wrap/.confession-card), même
    principe que .v2-dew-* (Lot 3) --- */
@@ -2621,4 +2628,8 @@ footer.footer--dark{
 
 @media (max-width:960px){
   .v2-confession-card{grid-template-columns:1fr;text-align:center;}
+}
+@media (max-width:720px){
+  .v2-jc-hero h1{font-size:24.5px;}
+  .v2-jc-body-html{font-size:18px;line-height:1.82;}
 }
