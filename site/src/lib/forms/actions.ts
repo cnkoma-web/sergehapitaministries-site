@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { sendNotificationEmail } from "@/lib/email/resend";
+import { sendNotificationEmail, sendCustomerEmail } from "@/lib/email/resend";
+import { renderGabaritEmail } from "@/lib/email/template";
 
 // Les trois formulaires ci-dessous remplacent les alert() des maquettes
 // statiques (cahier §Partie 5, point 8) : la donnée est toujours enregistrée
@@ -28,6 +29,25 @@ export async function submitContactForm(formData: FormData): Promise<void> {
   await sendNotificationEmail(
     `Nouveau message de contact — ${sujet}`,
     `<p><strong>${nom}</strong> (${email})</p><p><strong>Sujet :</strong> ${sujet}</p><p>${message.replace(/\n/g, "<br>")}</p>`
+  );
+
+  // Accusé de réception au visiteur (Lot 10, 11/09) — reproduit
+  // gabarits-emails/accuse-reception-contact.html. Décidé avec Serge :
+  // nouvel envoi réel, pas seulement un gabarit préparé sans être branché.
+  // "{{ prenom }}" du gabarit devient le nom complet saisi (le formulaire
+  // n'a qu'un seul champ "Nom", pas de prénom séparé — jamais de donnée
+  // inventée pour coller au gabarit).
+  await sendCustomerEmail(
+    email,
+    "Votre message a bien été reçu",
+    renderGabaritEmail({
+      eyebrow: "Contact",
+      title: "Votre message a bien été reçu.",
+      bodyHtml:
+        `<p style="margin:0 0 18px;color:#5f5a6d;font-size:16px;line-height:1.7">Bonjour ${nom},</p>` +
+        `<p style="margin:0 0 25px;color:#5f5a6d;font-size:16px;line-height:1.7">Merci pour votre message. Une réponse vous sera adressée dès que possible.</p>` +
+        `<p style="margin:0;color:#8b8695;font-size:12px;line-height:1.6">Serge Hapita Ministries</p>`,
+    })
   );
 
   redirect("/confirmation?type=contact");

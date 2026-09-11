@@ -21,6 +21,21 @@ const PURPLE = EMAIL_PURPLE;
 const PAPER = "#FCFBFF";
 const LINE = "#E4E0F0";
 
+// V2 Lot 10 (11/09) — habillage repris tel quel de DOSSIER-INTERFACE-
+// SERGE-HAPITA-MINISTRIES/gabarits-emails/*.html (les 3 gabarits fournis
+// partagent exactement cette structure : en-tête dégradé encre→violet avec
+// le logo blanc, eyebrow violet en petites capsules, titre Georgia, corps,
+// pied de page discret). Distinct de renderEmail() ci-dessus (habillage
+// "carte blanche" déjà en usage pour les e-mails Stripe) — les deux
+// coexistent, celui-ci sert uniquement aux gabarits explicitement fournis
+// par la maquette pour ce lot, jamais pour reskinner les e-mails Stripe non
+// concernés par ce lot.
+export function renderGabaritEmail({ eyebrow, title, bodyHtml }: { eyebrow: string; title: string; bodyHtml: string }): string {
+  return `<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title></head>
+<body style="margin:0;background:#f4f1fb;font-family:Arial,sans-serif;color:#17142d"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f1fb;padding:28px 12px"><tr><td align="center"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;background:#fff;border-radius:14px;overflow:hidden"><tr><td align="center" style="padding:34px 24px;background:linear-gradient(135deg,#17142d,#6d31f2)"><img src="https://sergehapitaministries.org/logo-white.png" width="230" alt="Serge Hapita Ministries" style="display:block;max-width:75%;height:auto"></td></tr><tr><td style="padding:38px 34px"><p style="margin:0 0 10px;color:#6d31f2;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.12em">${eyebrow}</p><h1 style="margin:0 0 18px;font-family:Georgia,serif;font-size:32px;line-height:1.15">${title}</h1>${bodyHtml}</td></tr></table></td></tr></table></body></html>`;
+}
+
 export function renderEmail(bodyHtml: string): string {
   return `<!DOCTYPE html>
 <html lang="fr">
