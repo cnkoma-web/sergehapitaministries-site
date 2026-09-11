@@ -2479,7 +2479,7 @@ footer.footer--dark{
 
 /* --- Rosée matinale du jour : carte flottante sur la charnière hero → contenu --- */
 .v2-dew-wrap{position:relative;z-index:3;margin-top:-78px;}
-.v2-dew-card{min-height:176px;display:grid;grid-template-columns:180px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
+.v2-dew-card{min-height:176px;display:grid;grid-template-columns:180px 200px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
 .v2-dew-label{align-self:stretch;display:grid;place-items:center;border-radius:12px;color:#fff;background:var(--v2-violet-deep);text-align:center;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
 .v2-dew-date{display:flex;flex-direction:column;gap:3px;color:var(--v2-muted);font-size:14px;grid-row:1;}
 .v2-dew-date span{color:var(--v2-violet-deep);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
@@ -2617,7 +2617,8 @@ footer.footer--dark{
 /* --- Capsule d'accueil (§ .confession-wrap/.confession-card), même
    principe que .v2-dew-* (Lot 3) --- */
 .v2-confession-wrap{position:relative;z-index:2;margin-top:22px;}
-.v2-confession-card{min-height:176px;display:grid;grid-template-columns:210px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
+.v2-confession-card{min-height:176px;display:grid;grid-template-columns:210px 170px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
+.v2-confession-meta{color:var(--v2-violet-deep);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.11em;}
 .v2-confession-label{align-self:stretch;display:grid;place-items:center;padding:18px 12px;border:1px solid rgba(109,49,242,.16);border-radius:12px;color:var(--v2-violet-deep);background:#ded3fa;text-align:center;white-space:nowrap;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
 .v2-confession-content blockquote{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:21px;font-weight:600;line-height:1.35;}
 .v2-confession-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}

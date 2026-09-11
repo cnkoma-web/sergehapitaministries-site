@@ -106,6 +106,12 @@ export default async function HomePage() {
             <div className="v2-dew-label">Rosée Matinale</div>
             {roseeDuJour ? (
               <>
+                <div className="v2-dew-date">
+                  <span>Édition du jour</span>
+                  <time dateTime={roseeDuJour.article_date}>
+                    {new Date(roseeDuJour.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                  </time>
+                </div>
                 <div className="v2-dew-content">
                   <h2>{roseeDuJour.title}</h2>
                   <p>{(roseeDuJour.verse_text || roseeDuJour.body || "").slice(0, 220)}</p>
@@ -114,6 +120,9 @@ export default async function HomePage() {
               </>
             ) : (
               <>
+                <div className="v2-dew-date">
+                  <span>Édition du jour</span>
+                </div>
                 <div className="v2-dew-content">
                   <p>La pensée du jour arrive bientôt.</p>
                 </div>
@@ -136,6 +145,7 @@ export default async function HomePage() {
         <div className="v2-confession-wrap">
           <article className="v2-confession-card">
             <div className="v2-confession-label">Je Confesse</div>
+            <div className="v2-confession-meta">Proclamation du jour</div>
             {confessionDuJour ? (
               <>
                 <div className="v2-confession-content">
