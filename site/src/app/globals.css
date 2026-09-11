@@ -2415,7 +2415,13 @@ footer.footer--dark{
 .v2-article-page .article-extras-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .v2-article-page .extra-card{padding:34px;border:1px solid rgba(79,37,216,.14);border-radius:15px;background:#fff;}
 .v2-article-page .extra-card:only-child{grid-column:1/-1;max-width:600px;margin:0 auto;}
-.v2-article-page .extra-card h2{margin:0 0 21px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:29px;font-weight:500;line-height:1.2;}
+/* .extra-card h2 (prototype) : aucune graisse déclarée → gras par défaut du
+   navigateur pour un <h2> (700), pas 500 — écart trouvé (retour du 11/09) :
+   la règle globale pré-V2 h1,h2,h3,h4{font-weight:500} du site s'appliquait
+   à tort ici en l'absence d'une valeur explicite, contrairement à la
+   maquette qui ne la neutralise jamais pour ce titre précis. Même bug
+   trouvé et corrigé sur .related-articles h2/.rm-archive h2 plus bas. */
+.v2-article-page .extra-card h2{margin:0 0 21px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:29px;font-weight:700;line-height:1.2;}
 .v2-article-page .extra-card>p{margin:0 0 18px;color:var(--v2-muted);font-family:var(--v2-sans);font-size:16px;line-height:1.75;}
 .v2-article-page .extra-card>p:last-child{margin-bottom:0;}
 .v2-article-page .prayer-card{background:var(--v2-paper);}
@@ -2467,16 +2473,36 @@ footer.footer--dark{
 .v2-rm-page .rm-nav-days .disabled{color:#cdc8d8;}
 .v2-rm-page .rm-nav-days .archive-link{color:var(--v2-violet-deep);}
 
-/* --- Rosée Matinale : archive + "poursuivre la lecture" --- */
+/* --- Rosée Matinale : archive + "poursuivre la lecture" ---
+   Audit structurel complet (retour du 11/09, suite du principe posé par
+   Serge : la maquette fait foi sur la structure autant que sur le style)
+   contre prototype-html/publications.css § .archive-section/.archive-intro/
+   .archive-list/.archive-row/.archive-pagination. */
 .v2-rm-page .rm-archive{background:var(--v2-violet-pale);padding:76px 0 96px;}
-.v2-rm-page .rm-archive h2{font-family:var(--v2-serif);font-size:36px;font-weight:500;}
-.v2-rm-page .rm-archive .sub{color:var(--v2-muted);}
+/* .archive-section h2 (prototype) : 40px, gras par défaut (700, aucune
+   graisse déclarée — même bug que .related-articles h2/.extra-card h2). */
+.v2-rm-page .rm-archive h2{font-family:var(--v2-serif);font-size:40px;font-weight:700;}
+/* .archive-intro (prototype) : hérite du sans-serif du body (Inter), 16px,
+   aligné à gauche — la règle pré-V2 (.sub, 14px centré) n'était jamais
+   neutralisée. */
+.v2-rm-page .rm-archive .sub{color:var(--v2-muted);font-family:var(--v2-sans);font-size:16px;text-align:left;}
 .v2-rm-page .rm-list{max-width:100%;border-top:1px solid rgba(79,37,216,.16);}
-.v2-rm-page .rm-item{border-top-color:rgba(79,37,216,.16);}
-.v2-rm-page .rm-item .date{color:var(--v2-violet-deep);}
-.v2-rm-page .rm-item .excerpt{color:var(--v2-ink-soft);}
+/* .archive-row (prototype) : grille 96px + 1fr, gap 32px, aligné en haut,
+   bordure BASSE (pas haute) — la règle pré-V2 (flex, gap 20, aligné sur la
+   ligne de base, bordure haute) ne correspondait pas structurellement. */
+.v2-rm-page .rm-item{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:start;gap:32px;padding:24px 0;border-top:0;border-bottom:1px solid rgba(79,37,216,.16);}
+/* .archive-row time (prototype) : Inter, 13px, 750 — la règle pré-V2
+   (13px/700, largeur fixe 90px au lieu de la colonne de grille) est proche
+   mais pas exacte. */
+.v2-rm-page .rm-item .date{width:auto;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:750;}
+/* .archive-row > span (prototype) : hérite du sans-serif du body (Inter),
+   16px/1.6 — la règle pré-V2 (14.5px, sans interligne déclaré) pas exacte. */
+.v2-rm-page .rm-item .excerpt{color:var(--v2-ink-soft);font-family:var(--v2-sans);font-size:16px;line-height:1.6;}
 .v2-rm-page .rm-item:hover .excerpt{color:var(--v2-violet-deep);}
-.v2-rm-page .rm-archive .pagination{border-top:0;justify-content:center;color:var(--v2-muted);}
+/* .archive-pagination (prototype) : justify-content:space-between (le
+   texte "Affichage X–Y sur Z" à gauche, la navigation à droite) — la règle
+   pré-V2 centrait tout, jamais conforme à la maquette. */
+.v2-rm-page .rm-archive .pagination{border-top:0;justify-content:space-between;color:var(--v2-muted);font-family:var(--v2-sans);font-size:13px;}
 .v2-rm-page .rm-archive .pagination .pages a,.v2-rm-page .rm-archive .pagination .pages button{width:40px;height:40px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-ink);}
 .v2-rm-page .rm-archive .pagination .pages a.active,.v2-rm-page .rm-archive .pagination .pages button.active{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
 .v2-rm-page .rm-explore{background:#fff;}
@@ -2492,7 +2518,9 @@ footer.footer--dark{
    .related-card. --- */
 .v2-article-page .related-articles,.v2-rm-page .related-articles{background:#f4f1ff;padding:80px 0 96px;}
 /* .related-section h2 (prototype) : Georgia 39px — écart trouvé (36px) */
-.v2-article-page .related-articles h2,.v2-rm-page .related-articles h2{font-family:var(--v2-serif);font-size:39px;font-weight:500;text-align:left;}
+/* .related-section h2 (prototype) : aucune graisse déclarée → gras 700 par
+   défaut, pas 500 (même bug que .extra-card h2, voir plus haut) */
+.v2-article-page .related-articles h2,.v2-rm-page .related-articles h2{font-family:var(--v2-serif);font-size:39px;font-weight:700;text-align:left;}
 .v2-article-page .related-grid,.v2-rm-page .related-grid{gap:18px;}
 .v2-article-page .related-card,.v2-rm-page .related-card{position:relative;padding:28px 26px;border:1px solid rgba(79,37,216,.14);border-radius:14px;background:#fff;box-shadow:0 13px 34px rgba(23,20,45,.07);}
 .v2-article-page .related-card::before,.v2-rm-page .related-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(#6d31f2,#a985ff);}
@@ -2527,7 +2555,9 @@ footer.footer--dark{
   /* .pull-sentence (prototype, media 720px) : ne déborde plus la colonne, 22px */
   .v2-article-page .article-body>.content-col>.body-html figure,
   .v2-rm-page .rm-body-html figure{margin:36px 0;padding:29px 24px;font-size:22px;}
-  /* .article-extras-grid (prototype, media 980px) : 1 seule colonne */
+  /* .archive-row (prototype, media 720px) : 1 seule colonne */
+  .v2-rm-page .rm-item{grid-template-columns:1fr;gap:8px;}
+  .v2-rm-page .rm-archive .pagination{align-items:flex-start;flex-direction:column;}
 }
 @media (max-width:980px){
   .v2-article-page .article-extras-grid{grid-template-columns:1fr;}
