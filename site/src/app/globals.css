@@ -278,7 +278,18 @@ header{
 .v2-icon-button{width:42px;height:42px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--v2-ink);cursor:pointer;position:relative;}
 .v2-icon-button:hover{background:var(--v2-violet-pale);}
 .v2-icon-button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.v2-cart-count{position:absolute;top:2px;right:2px;min-width:15px;height:15px;padding:0 3px;border-radius:50%;background:var(--v2-violet);color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+/* .v2-action-icon (retour du 11/09, bug réel signalé par Serge) — carrés
+   à coins arrondis, jamais des ronds : j'avais reproduit uniquement
+   .icon-button (le rond de base) du prototype, en manquant la classe
+   .action-icon qu'il ajoute par-dessus sur recherche/compte/panier (pas
+   sur le bouton menu mobile, qui reste rond). Les deux classes sont
+   posées ensemble, exactement comme prototype-html/index.html. */
+.v2-action-icon{width:47px;height:47px;border:1px solid rgba(23,20,45,.16);border-radius:8px;background:#fff;box-shadow:0 6px 16px rgba(23,20,45,.06);}
+.v2-action-icon svg{width:23px;height:23px;}
+.v2-action-icon:hover,.v2-action-icon[aria-expanded="true"]{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
+.v2-cart-action{position:relative;}
+.v2-cart-count{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding-inline:4px;display:grid;place-items:center;border:2px solid #fff;border-radius:999px;color:#fff;background:var(--v2-violet-deep);font-size:10px;font-weight:850;line-height:1;}
+.v2-action-icon:hover .v2-cart-count{color:var(--v2-violet-deep);background:#fff;}
 .v2-menu-button{display:none;}
 
 /* Recherche — bascule en pur CSS (case à cocher invisible), même principe
@@ -318,6 +329,8 @@ header{
   .v2-brand img{width:132px;}
   .v2-nav-actions{gap:5px;}
   .v2-icon-button{width:40px;height:40px;}
+  .v2-action-icon{width:41px;height:41px;}
+  .v2-action-icon svg{width:21px;height:21px;}
   .v2-icon-button svg{width:21px;height:21px;}
   .v2-search-panel-inner{grid-template-columns:1fr;gap:10px;padding-block:18px;min-height:0;}
   .v2-search-panel label{font-size:17px;}
@@ -1826,7 +1839,15 @@ footer.footer--dark{
 .v2-ds-hero-orbit{position:absolute;z-index:-1;width:570px;height:570px;right:-250px;bottom:-320px;border:1px solid rgba(255,255,255,.16);border-radius:50%;box-shadow:0 0 0 90px rgba(255,255,255,.025),0 0 0 180px rgba(255,255,255,.018);}
 .v2-ds-hero-inner{min-height:690px;display:flex;align-items:center;padding-block:82px;}
 .v2-ds-hero-copy{width:min(730px,68%);}
-.v2-ds-hero h1{margin:0;font-family:var(--v2-serif);font-size:clamp(50px,6.5vw,88px);font-weight:500;line-height:.98;letter-spacing:-.05em;}
+/* color:#fff explicite ici, jamais laissé hériter du fond sombre de la
+   section (retour du 11/09, bug réel signalé par Serge) : une règle
+   globale préexistante (h1,h2,h3,h4{color:var(--ink)}, ligne 75) cible
+   directement l'élément et l'emporte sur une couleur seulement héritée
+   d'un ancêtre, quelle que soit la spécificité du sélecteur d'origine de
+   cette dernière — d'où le texte "sombre" constaté. Vrai partout où un
+   titre h1-h4 vit sur un fond sombre dans ce Lot 2, jamais spécifique à
+   cette seule page. */
+.v2-ds-hero h1{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(50px,6.5vw,88px);font-weight:500;line-height:.98;letter-spacing:-.05em;}
 .v2-ds-hero h1 em{color:#cbb7ff;font-weight:500;font-style:normal;}
 .v2-ds-hero blockquote{max-width:650px;margin:38px 0 18px;padding-left:24px;border-left:2px solid #9b6bff;font-family:var(--v2-serif);font-size:clamp(21px,2.2vw,29px);font-style:italic;line-height:1.35;}
 .v2-ds-hero-copy>p:last-child{max-width:620px;margin:0 0 0 26px;color:rgba(255,255,255,.68);font-size:16px;line-height:1.7;}
@@ -1874,13 +1895,19 @@ footer.footer--dark{
 .v2-ds-closing-signature{position:relative;overflow:hidden;margin:82px 0 0;padding:clamp(45px,7vw,78px);color:#fff;background:linear-gradient(135deg,#18142e,#342066 58%,#6d31f2);box-shadow:var(--v2-shadow);}
 .v2-ds-closing-signature::after{content:"\201C";position:absolute;right:28px;bottom:-78px;color:rgba(255,255,255,.08);font-family:var(--v2-serif);font-size:230px;line-height:1;}
 .v2-ds-closing-signature p{position:relative;z-index:1;max-width:930px;margin:0;font-family:var(--v2-serif);font-size:clamp(29px,4vw,49px);font-style:italic;line-height:1.4;}
-.v2-ds-closing-signature footer{position:relative;z-index:1;margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.2);color:#d7c7ff;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;}
+/* background:none explicite (retour du 11/09, bug réel signalé par
+   Serge — "bande blanche" derrière la signature) : une règle globale
+   préexistante (footer{background:var(--footer-bg)...}, pensée pour le
+   composant <Footer> de page, jamais pour un usage sémantique local comme
+   ici) cible tout élément <footer>, y compris celui-ci, repris tel quel
+   du prototype pour la signature. */
+.v2-ds-closing-signature footer{position:relative;z-index:1;margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.2);background:none;color:#d7c7ff;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;}
 
 .v2-ds-invite{padding-block:64px;color:#fff;background:#7b3fe4;}
 .v2-ds-invite-inner{display:flex;align-items:center;justify-content:space-between;gap:40px;}
 .v2-ds-invite .v2-eyebrow{margin-bottom:12px;}
 .v2-ds-invite-copy{max-width:660px;margin:0 0 10px;color:rgba(255,255,255,.76);font-size:17px;line-height:1.6;}
-.v2-ds-invite h2{margin:0;font-family:var(--v2-serif);font-size:clamp(39px,5vw,62px);font-weight:500;letter-spacing:-.035em;}
+.v2-ds-invite h2{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(39px,5vw,62px);font-weight:500;letter-spacing:-.035em;}
 .v2-ds-invite .v2-button{min-width:190px;}
 
 .v2-ds-stats{padding-block:54px;color:#fff;background:var(--v2-ink);}
@@ -1905,7 +1932,7 @@ footer.footer--dark{
 .v2-support-section{position:relative;overflow:hidden;padding-block:120px;color:#fff;background:linear-gradient(135deg,#2822d6 0%,#6a2cf0 62%,#8b35e8 100%);}
 .v2-support-orb{position:absolute;width:640px;height:640px;right:-230px;top:-280px;border:1px solid rgba(255,255,255,.18);border-radius:50%;box-shadow:0 0 0 110px rgba(255,255,255,.025),0 0 0 220px rgba(255,255,255,.02);}
 .v2-support-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:100px;align-items:center;}
-.v2-support-copy h2{max-width:650px;}
+.v2-support-copy h2{color:#fff;max-width:650px;}
 .v2-support-copy>p:not(.v2-eyebrow){max-width:620px;margin:28px 0 34px;color:rgba(255,255,255,.74);font-size:17px;}
 .v2-support-points{border-top:1px solid rgba(255,255,255,.27);}
 .v2-support-points>div{display:grid;grid-template-columns:46px 1fr;gap:20px;padding:26px 0;border-bottom:1px solid rgba(255,255,255,.27);}
@@ -1980,7 +2007,7 @@ footer.footer--dark{
 .v2-mission-orbit.one{width:600px;height:600px;right:-215px;top:-320px;box-shadow:0 0 0 95px rgba(255,255,255,.025),0 0 0 190px rgba(255,255,255,.018);}
 .v2-mission-orbit.two{width:320px;height:320px;right:28%;bottom:-245px;}
 .v2-mission-hero-inner{padding-block:105px;}
-.v2-mission-hero h1{max-width:900px;margin:0;font-family:var(--v2-serif);font-size:clamp(52px,7vw,90px);font-weight:500;line-height:1.01;letter-spacing:-.048em;}
+.v2-mission-hero h1{color:#fff;max-width:900px;margin:0;font-family:var(--v2-serif);font-size:clamp(52px,7vw,90px);font-weight:500;line-height:1.01;letter-spacing:-.048em;}
 .v2-mission-hero h1 em{color:#d6c7ff;font-weight:500;font-style:normal;}
 
 .v2-mission-opening{padding-block:125px;background:#fff;}
@@ -2001,7 +2028,7 @@ footer.footer--dark{
 .v2-mission-truth-image{position:sticky;top:140px;height:690px;margin:0;overflow:hidden;background:#262040;}
 .v2-mission-truth-image img{object-position:58% center;}
 .v2-mission-truth-copy{padding-top:20px;}
-.v2-mission-truth-copy h2,.v2-mission-sonship-copy h2,.v2-mission-kingdom-copy h2,.v2-mission-next h2{margin:0 0 38px;font-family:var(--v2-serif);font-size:clamp(43px,5vw,70px);font-weight:500;line-height:1.02;letter-spacing:-.045em;}
+.v2-mission-truth-copy h2,.v2-mission-sonship-copy h2,.v2-mission-kingdom-copy h2,.v2-mission-next h2{color:#fff;margin:0 0 38px;font-family:var(--v2-serif);font-size:clamp(43px,5vw,70px);font-weight:500;line-height:1.02;letter-spacing:-.045em;}
 .v2-mission-truth-copy .v2-eyebrow{margin-bottom:31px;}
 .v2-mission-truth-copy p{color:rgba(255,255,255,.66);}
 
@@ -2089,7 +2116,7 @@ footer.footer--dark{
 .v2-cj-orbit.one{width:520px;height:520px;right:5%;top:-260px;box-shadow:0 0 0 85px rgba(255,255,255,.025);}
 .v2-cj-orbit.two{width:340px;height:340px;right:27%;bottom:-230px;}
 .v2-cj-hero-inner{padding-block:100px;}
-.v2-cj-hero h1{margin:0;font-family:var(--v2-serif);font-size:clamp(78px,12vw,154px);font-weight:500;line-height:.77;letter-spacing:-.065em;}
+.v2-cj-hero h1{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(78px,12vw,154px);font-weight:500;line-height:.77;letter-spacing:-.065em;}
 .v2-cj-hero h1 em{position:relative;left:clamp(55px,8vw,115px);color:#d4c4ff;font-weight:500;font-style:normal;}
 .v2-cj-hero-inner>p:not(.v2-eyebrow){margin:55px 0 36px;color:rgba(255,255,255,.77);font-family:var(--v2-serif);font-size:25px;font-style:italic;}
 .v2-cj-scroll{display:inline-flex;align-items:center;gap:15px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.45);font-size:13px;font-weight:800;color:#fff;}
@@ -2130,7 +2157,7 @@ footer.footer--dark{
 
 .v2-cj-purpose{padding-block:120px;color:#fff;background:var(--v2-ink);}
 .v2-cj-purpose-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:110px;}
-.v2-cj-purpose-grid h2{max-width:560px;margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;}
+.v2-cj-purpose-grid h2{color:#fff;max-width:560px;margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;}
 .v2-cj-purpose-copy>p{margin:0 0 24px;color:rgba(255,255,255,.67);font-size:17px;line-height:1.8;}
 .v2-cj-purpose-copy blockquote{margin:45px 0 0;padding:30px 32px;border-left:3px solid #8d4dff;color:#fff;background:rgba(255,255,255,.045);font-family:var(--v2-serif);font-size:24px;font-style:italic;line-height:1.55;}
 .v2-cj-purpose-copy cite{display:block;margin-top:13px;color:#bfa7f2;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:750;}
@@ -2146,6 +2173,7 @@ footer.footer--dark{
 .v2-cj-theme h3{margin:0 0 8px;font-family:var(--v2-serif);font-size:25px;font-weight:500;line-height:1.18;}
 .v2-cj-theme p{margin:0;color:var(--v2-muted);font-size:14px;}
 .v2-cj-theme.dark{color:#fff;border-color:transparent;background:var(--v2-ink);}
+.v2-cj-theme.dark h3,.v2-cj-theme.accent h3{color:#fff;}
 .v2-cj-theme.dark p{color:rgba(255,255,255,.62);}
 .v2-cj-theme.dark>span{color:#fff;background:var(--v2-violet);}
 .v2-cj-theme.accent{color:#fff;border-color:transparent;background:linear-gradient(135deg,#362bd6,#8037ef);}
@@ -2155,7 +2183,7 @@ footer.footer--dark{
 .v2-cj-receive{position:relative;overflow:hidden;padding-block:125px;color:#fff;background:linear-gradient(135deg,#3228dc,#7731ef);}
 .v2-cj-receive::before{content:"";position:absolute;width:660px;height:660px;left:-370px;top:-390px;border:1px solid rgba(255,255,255,.18);border-radius:50%;box-shadow:0 0 0 105px rgba(255,255,255,.025);}
 .v2-cj-receive-grid{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;gap:100px;align-items:center;}
-.v2-cj-receive-copy h2{margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;}
+.v2-cj-receive-copy h2{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;}
 .v2-cj-receive-copy>p:not(.v2-eyebrow):not(.v2-cj-promise){margin:28px 0;max-width:560px;color:rgba(255,255,255,.75);font-size:17px;}
 .v2-cj-promise{max-width:540px;padding:24px 0;border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);font-family:var(--v2-serif);font-size:22px;font-style:italic;}
 .v2-cj-promise span{display:block;margin-top:7px;color:#d7c7ff;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;}

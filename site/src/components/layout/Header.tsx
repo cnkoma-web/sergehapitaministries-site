@@ -61,19 +61,19 @@ export default async function Header() {
           )}
         </nav>
         <div className="v2-nav-actions">
-          <label htmlFor="v2-search-toggle" className="v2-icon-button" title="Rechercher" aria-label="Rechercher sur le site">
+          <label htmlFor="v2-search-toggle" className="v2-icon-button v2-action-icon" title="Rechercher" aria-label="Rechercher sur le site">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="11" cy="11" r="6.5" />
               <path d="m16 16 4 4" />
             </svg>
           </label>
-          <Link href={accountHref} className="v2-icon-button" title="Mon compte" aria-label="Mon compte">
+          <Link href={accountHref} className="v2-icon-button v2-action-icon" title="Mon compte" aria-label="Mon compte">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="8" r="4" />
               <path d="M4.5 21c.7-4.3 3.2-6.5 7.5-6.5s6.8 2.2 7.5 6.5" />
             </svg>
           </Link>
-          <Link href="/panier" className="v2-icon-button" title="Panier" aria-label="Panier">
+          <Link href="/panier" className="v2-icon-button v2-action-icon v2-cart-action" title="Panier" aria-label="Panier">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6" />
               <circle cx="9.5" cy="19" r="1" />
