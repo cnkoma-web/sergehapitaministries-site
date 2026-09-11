@@ -10,6 +10,7 @@ const SECTIONS = [
   { href: "/admin/publications", label: "Publications" },
   { href: "/admin/categories", label: "Catégories" },
   { href: "/admin/rosee-matinale", label: "Rosée Matinale" },
+  { href: "/admin/je-confesse", label: "Je Confesse" },
   { href: "/admin/videos", label: "Vidéos" },
   { href: "/admin/avis", label: "Avis" },
   { href: "/admin/commandes", label: "Commandes" },

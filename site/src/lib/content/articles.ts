@@ -1,6 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 
-export type ArticleType = "qdlb" | "vs" | "rm";
+// "jc" (Je Confesse, Lot 4, additive) — même modèle technique que "rm" :
+// une entrée par jour, pas de titre éditorial propre (verset+référence en
+// tiennent lieu, voir getConfessionDuJour/getConfessionArchive plus bas).
+export type ArticleType = "qdlb" | "vs" | "rm" | "jc";
 
 export type Article = {
   id: string;
@@ -33,21 +36,26 @@ export type Article = {
   // publication (cahier §6.5 : "JJ/MM/AAAA · HHhMM") à côté de la date
   // éditoriale (article_date), qui elle n'a pas de composante horaire.
   created_at: string;
+  // Lien optionnel vers un épisode Podcast (Lot 9, préparé au Lot 4) —
+  // toujours null tant que le Lot 9 n'existe pas, aucune UI ne l'édite
+  // encore.
+  podcast_episode_id: string | null;
 };
 
 // Libellés/initiales dérivés du type plutôt que stockés en base (une seule
-// source de vérité — cahier §1.1 : pastille avec initiales QB/VS/RM).
+// source de vérité — cahier §1.1 : pastille avec initiales QB/VS/RM/JC).
 export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
   qdlb: "Que Dit la Bible ?",
   vs: "La Vie Supérieure",
   rm: "Rosée Matinale",
+  jc: "Je Confesse",
 };
-export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", vs: "VS", rm: "RM" };
+export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", vs: "VS", rm: "RM", jc: "JC" };
 
 const COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at, podcast_episode_id";
 const ADMIN_COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at, podcast_episode_id";
 
 export async function getPublishedArticles(type: ArticleType): Promise<Article[]> {
   const supabase = await createClient();
@@ -124,6 +132,19 @@ export async function getRoseeArchive(): Promise<Article[]> {
   return articles.slice(1);
 }
 
+/** Je Confesse (Lot 4) — même principe exact que Rosée Matinale ci-dessus :
+ * l'entrée du jour est la plus récente proclamation publiée, l'archive est
+ * tout le reste. Pas de champ "is_current" séparé ici non plus. */
+export async function getConfessionDuJour(): Promise<Article | null> {
+  const articles = await getPublishedArticles("jc");
+  return articles[0] ?? null;
+}
+
+export async function getConfessionArchive(): Promise<Article[]> {
+  const articles = await getPublishedArticles("jc");
+  return articles.slice(1);
+}
+
 export async function countPublishedArticles(): Promise<number> {
   const supabase = await createClient();
   const { count } = await supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "published");
@@ -183,21 +204,24 @@ export async function getArticlesFeed(
   return { articles: data, total: count ?? 0 };
 }
 
-/** Flux unique de l'accueil (retour du 05/09) — un seul pêle-mêle
- * chronologique mélangeant toutes les catégories d'articles, comme sur le
- * hub Publications, plus Rosée Matinale qui garde sa propre porte d'entrée
- * dédiée ailleurs sur la page. Exclut par le type plutôt que d'énumérer
- * "qdlb"/"vs" : une 3e catégorie d'articles ajoutée plus tard apparaît ici
- * automatiquement, sans modifier cette fonction. */
+/** Flux "toutes catégories mélangées" (retour du 05/09) — plus utilisé sur
+ * l'accueil depuis le Lot 3 (retour du 11/09, instruction explicite : la
+ * maquette de l'accueil ne prévoit que les capsules du jour + la vitrine
+ * .category-grid, jamais ce flux), gardé ici tel quel au cas où un futur
+ * lot en aurait besoin ailleurs. Exclut Rosée Matinale ET Je Confesse (Lot
+ * 4) : les deux ont leur propre porte d'entrée dédiée par capsule, jamais
+ * mélangées dans un flux pêle-mêle. Exclut par le type plutôt que
+ * d'énumérer "qdlb"/"vs" : une future catégorie d'articles classique
+ * apparaîtrait ici automatiquement, sans modifier cette fonction. */
 // Paginé (retour du 05/09, point 6) — même règle et même pagination que les
-// hubs (4 par page), plus une seule liste sans page pour l'accueil.
+// hubs (4 par page).
 export async function getHomeFeed(page: number, perPage: number): Promise<{ articles: Article[]; total: number }> {
   const supabase = await createClient();
   const from = (page - 1) * perPage;
   const { data, error, count } = await supabase
     .from("articles")
     .select(COLUMNS, { count: "exact" })
-    .neq("type", "rm")
+    .not("type", "in", "(rm,jc)")
     .eq("status", "published")
     .order("article_date", { ascending: false })
     .order("created_at", { ascending: false })

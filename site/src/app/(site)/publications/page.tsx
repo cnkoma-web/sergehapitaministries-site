@@ -8,7 +8,7 @@ import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
 const title = "Publications | Serge Hapita Ministries";
-const description = "Rosée Matinale, Que Dit la Bible ? et La Vie Supérieure — trois formats, un seul message.";
+const description = "Rosée Matinale, Que Dit la Bible ?, Je Confesse et La Vie Supérieure — quatre formats, un seul message.";
 const PER_PAGE = 4; // Règle fixe (retour du 05/09) — 4 par page partout où ce flux apparaît, y compris l'accueil.
 
 export const metadata: Metadata = {
@@ -28,16 +28,19 @@ export default async function PublicationsPage({
   const page = Math.max(1, Number(pageParam) || 1);
 
   // Deux flux distincts, l'un après l'autre — pas un flux unique mélangeant
-  // les trois catégories : Flux 1 = Que Dit la Bible + La Vie Supérieure.
-  // Flux 2 = Rosée Matinale du jour uniquement (retour du 30/08) — une autre
-  // porte d'entrée vers Rosée Matinale, comme sur l'accueil, pas une liste
-  // des jours précédents (l'archive complète reste sur /rosee-matinale).
-  const [qbVs, rmToday, texts] = await Promise.all([
+  // les catégories : Flux 1 = Que Dit la Bible + La Vie Supérieure.
+  // Flux 2 = Rosée Matinale + Je Confesse (Lot 4) du jour, côte à côte —
+  // deux autres portes d'entrée dédiées, comme sur l'accueil, pas une
+  // liste des jours précédents (l'archive complète de chacune reste sur
+  // sa propre page).
+  const [qbVs, rmToday, jcToday, texts] = await Promise.all([
     getArticlesFeed(["qdlb", "vs"], page, PER_PAGE),
     getArticlesFeed(["rm"], 1, 1),
+    getArticlesFeed(["jc"], 1, 1),
     getInterfaceTexts(),
   ]);
   const todayRosee = rmToday.articles[0] ?? null;
+  const todayConfession = jcToday.articles[0] ?? null;
   // Réglage admin (retour du 03/09) — nombre de lignes d'extrait affichées
   // sur les cartes, pas une valeur fixée dans le code.
   const excerptLines = Number(texts["publications.excerpt_lines"]) || 2;
@@ -68,6 +71,10 @@ export default async function PublicationsPage({
               <small>Chaque jour</small>
               <strong>Rosée Matinale</strong>
             </Link>
+            <Link href="/publications/je-confesse-et-declare">
+              <small>Chaque jour</small>
+              <strong>Je Confesse</strong>
+            </Link>
           </nav>
         </div>
       </section>
@@ -92,14 +99,18 @@ export default async function PublicationsPage({
         </div>
       </section>
 
-      {/* Flux 2 — Rosée Matinale du jour, fond distinct pour qu'on comprenne
-          immédiatement qu'il s'agit d'un ensemble différent. Pas de titre de
-          section, pas de liste des jours précédents ici (retour du 30/08). */}
-      {todayRosee && (
+      {/* Flux 2 — Rosée Matinale + Je Confesse (Lot 4) du jour, côte à côte,
+          fond distinct pour qu'on comprenne immédiatement qu'il s'agit d'un
+          ensemble différent. Pas de titre de section, pas de liste des
+          jours précédents ici (retour du 30/08). Grille à 2 colonnes
+          seulement si les deux capsules ont une entrée aujourd'hui — sinon
+          la seule présente garde toute la largeur. */}
+      {(todayRosee || todayConfession) && (
         <section className="rm-reminder">
           <div className="content-col">
-            <div className="feed-list">
-              <PublicationFeedItem article={todayRosee} excerptLines={excerptLines} />
+            <div className={todayRosee && todayConfession ? "daily-reminder-grid" : "feed-list"}>
+              {todayRosee && <PublicationFeedItem article={todayRosee} excerptLines={excerptLines} />}
+              {todayConfession && <PublicationFeedItem article={todayConfession} excerptLines={excerptLines} />}
             </div>
           </div>
         </section>

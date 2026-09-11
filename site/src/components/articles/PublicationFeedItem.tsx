@@ -4,11 +4,11 @@ import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import { stripHtml } from "@/lib/richtext";
 
 // Libellé du bouton selon la catégorie, propre aux hubs (retour du 04/09).
-const CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire la suite", vs: "Découvrir", rm: "Lire la suite" };
+const CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire la suite", vs: "Découvrir", rm: "Lire la suite", jc: "Confesser" };
 // Libellés historiques de l'accueil (retour du 03/09), conservés tels quels
 // (retour du 05/09) : le passage de l'accueil à un flux unique change la
 // structure de la liste, pas ce texte de bouton déjà tranché séparément.
-const HOME_CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire →", vs: "Découvrir →", rm: "Lire →" };
+const HOME_CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire →", vs: "Découvrir →", rm: "Lire →", jc: "Confesser →" };
 
 // Nombre moyen de caractères par ligne d'extrait à ~15px (retour du 05/09,
 // point 6) — sert à couper le chapeau nous-mêmes, en code, à une longueur
@@ -81,7 +81,15 @@ export default function PublicationFeedItem({
   variant?: "hub" | "home";
 }) {
   // Vraie URL par jour depuis le 05/09 (restructuration) — plus de "?date=".
-  const href = article.type === "rm" ? `/rosee-matinale/${article.article_date}` : `/publications/${article.slug}`;
+  // Je Confesse (Lot 4) suit le même principe que Rosée Matinale — une
+  // page dédiée par jour, jamais /publications/[slug] (pas de titre
+  // éditorial propre, donc pas de vrai slug porteur de sens ici).
+  const href =
+    article.type === "rm"
+      ? `/rosee-matinale/${article.article_date}`
+      : article.type === "jc"
+        ? `/publications/je-confesse-et-declare/${article.article_date}`
+        : `/publications/${article.slug}`;
   const rawExcerpt = article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || "");
   const dateLabel = new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const ctaLabel = variant === "home" ? HOME_CTA_LABEL[article.type] : CTA_LABEL[article.type];

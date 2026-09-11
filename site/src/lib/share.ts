@@ -4,7 +4,7 @@
 //   plateformes interprètent cette mise en forme.
 // - brute (SMS/X) : mêmes mots, sans aucun symbole de mise en forme — ces
 //   plateformes ne les interprètent pas, elles les afficheraient tels quels.
-export type ShareCategory = "qdlb" | "vs" | "rm";
+export type ShareCategory = "qdlb" | "vs" | "rm" | "jc";
 
 // "du [jour] [mois]" (retour du 07/09) — remplace "du jour" par la vraie
 // date de publication, jour + mois en toutes lettres, jamais l'année (pas
@@ -13,6 +13,7 @@ const CATEGORY_PHRASE: Record<ShareCategory, string> = {
   rm: "la Rosée matinale",
   qdlb: "la réflexion biblique",
   vs: "l'enseignement",
+  jc: "la proclamation",
 };
 
 function formatShareDate(articleDate: string): string {
@@ -25,6 +26,7 @@ const CATEGORY_INVITE: Record<ShareCategory, string> = {
   rm: "Retrouve la pensée complète ici",
   qdlb: "Retrouve l'intégralité de la réflexion ici",
   vs: "Retrouve l'enseignement complet ici",
+  jc: "Retrouve la proclamation complète ici",
 };
 
 // Phrase au-dessus des icônes de partage, sur la page elle-même (retour du
@@ -38,6 +40,7 @@ export const SHARE_BLOCK_INVITE: Record<ShareCategory, string> = {
   rm: "Bénis quelqu'un en partageant ce message.",
   qdlb: "Bénis quelqu'un en partageant cette réflexion.",
   vs: "Bénis quelqu'un en partageant cet enseignement.",
+  jc: "Bénis quelqu'un en partageant cette proclamation.",
 };
 
 // Tronque au dernier mot complet, jamais en plein milieu d'un mot — ne

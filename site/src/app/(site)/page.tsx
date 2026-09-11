@@ -3,7 +3,7 @@ import Link from "next/link";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import { getBooks } from "@/lib/content/books";
-import { getRoseeDuJour } from "@/lib/content/articles";
+import { getRoseeDuJour, getConfessionDuJour } from "@/lib/content/articles";
 import { getActiveStats } from "@/lib/content/stats";
 import { getSocialLinks } from "@/lib/content/footer";
 import CoverRollover from "@/components/shop/CoverRollover";
@@ -41,9 +41,10 @@ const SOCIAL_HANDLE: Record<string, string> = {
 };
 
 export default async function HomePage() {
-  const [books, roseeDuJour, stats, socialLinks] = await Promise.all([
+  const [books, roseeDuJour, confessionDuJour, stats, socialLinks] = await Promise.all([
     getBooks(),
     getRoseeDuJour(),
+    getConfessionDuJour(),
     getActiveStats(),
     getSocialLinks(),
   ]);
@@ -114,6 +115,34 @@ export default async function HomePage() {
               <>
                 <div className="v2-dew-content">
                   <p>La pensée du jour arrive bientôt.</p>
+                </div>
+                <Link href="/publications">Publications →</Link>
+              </>
+            )}
+          </article>
+        </div>
+      </section>
+
+      {/* Je Confesse du jour (Lot 4, 11/09) — même principe que la capsule
+          Rosée Matinale ci-dessus (§ .confession-wrap). Donnée réelle
+          (getConfessionDuJour). Pas de titre éditorial affiché ici non plus
+          (voir JeConfesseContent.tsx) : le verset + sa référence tiennent
+          lieu de citation. */}
+      <section className="v2-wrap" aria-label="Proclamation du jour — Je Confesse">
+        <div className="v2-confession-wrap">
+          <article className="v2-confession-card">
+            <div className="v2-confession-label">Je Confesse</div>
+            {confessionDuJour ? (
+              <>
+                <div className="v2-confession-content">
+                  <blockquote>« {confessionDuJour.verse_text} »</blockquote>
+                </div>
+                <Link href="/publications/je-confesse-et-declare">Lire et proclamer →</Link>
+              </>
+            ) : (
+              <>
+                <div className="v2-confession-content">
+                  <blockquote>La proclamation du jour arrive bientôt.</blockquote>
                 </div>
                 <Link href="/publications">Publications →</Link>
               </>
@@ -202,15 +231,14 @@ export default async function HomePage() {
 
       {/* Vitrine statique par catégorie (§ .publications-section/
           .category-grid) — menu de navigation, pas un aperçu de contenu
-          (voir la note en tête de section dans globals.css). 3 cartes pour
-          l'instant : "Je Confesse" s'ajoutera au Lot 4, jamais avant que la
-          fonctionnalité existe réellement. */}
+          (voir la note en tête de section dans globals.css). 4 cartes
+          depuis le Lot 4 (Je Confesse ajoutée). */}
       <section className="v2-category-section" id="publications">
         <div className="v2-wrap">
           <div className="v2-section-heading" style={{ color: "#fff" }}>
             <div>
               <p className="v2-eyebrow light">
-                <span /> Trois expressions de la Parole
+                <span /> Quatre expressions de la Parole
               </p>
               <h2 style={{ color: "#fff" }}>Une Parole pour chaque besoin</h2>
             </div>
@@ -238,8 +266,17 @@ export default async function HomePage() {
               </div>
               <Link href="/publications/que-dit-la-bible">Examiner les Écritures →</Link>
             </article>
-            <article className="v2-category-card life">
+            <article className="v2-category-card confess">
               <div className="v2-category-number">03</div>
+              <div className="v2-category-copy">
+                <p className="v2-category-name">Je Confesse</p>
+                <h3>La Parole de Dieu dans votre bouche.</h3>
+                <p>Des déclarations et des proclamations fondées sur la Parole de Dieu, à affirmer avec foi sur votre vie.</p>
+              </div>
+              <Link href="/publications/je-confesse-et-declare">Découvrir Je Confesse →</Link>
+            </article>
+            <article className="v2-category-card life">
+              <div className="v2-category-number">04</div>
               <div className="v2-category-copy">
                 <p className="v2-category-name">La Vie Supérieure</p>
                 <h3>Une connaissance destinée à devenir l&apos;expérience de la vie en Christ.</h3>

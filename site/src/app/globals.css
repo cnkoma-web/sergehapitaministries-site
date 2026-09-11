@@ -2287,6 +2287,7 @@ footer.footer--dark{
 .v2-pub-page .feed-badge{padding:5px 12px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;background:var(--v2-ink);}
 .v2-pub-page .feed-badge.vs{background:#49369b;}
 .v2-pub-page .feed-badge.rm{background:#7b3fe4;}
+.v2-pub-page .feed-badge.jc{color:var(--v2-violet-deep);background:#ded3fa;}
 .v2-pub-page .feed-date{color:var(--v2-muted);font-size:13px;}
 .v2-pub-page .feed-views{color:var(--v2-violet-deep);font-size:13px;}
 .v2-pub-page .feed-item h3{margin:0 0 10px;font-size:clamp(26px,3vw,34px);font-weight:500;line-height:1.16;letter-spacing:-.015em;color:var(--v2-ink);font-family:var(--v2-serif);}
@@ -2298,6 +2299,16 @@ footer.footer--dark{
 .v2-pub-page .rm-reminder{padding:56px 0 76px;background:var(--v2-violet-pale);}
 .v2-pub-page .rm-reminder .feed-item{border-top:0;border-bottom:0;padding:0;}
 
+/* Deux capsules du jour côte à côte (Rosée Matinale + Je Confesse, Lot 4) —
+   reproduit prototype-html/publications/index.html § .daily-reminders/
+   .daily-reminder-grid/.daily-reminder. Avant le Lot 4, une seule colonne
+   pleine largeur (Je Confesse n'existait pas encore) ; la grille
+   s'applique dès que les deux capsules sont présentes (voir
+   publications/page.tsx — 1 colonne en CSS de secours si une seule des
+   deux catégories a une entrée publiée aujourd'hui). */
+.v2-pub-page .daily-reminder-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.v2-pub-page .daily-reminder-grid .feed-item{padding:28px;border:1px solid rgba(79,37,216,.16);border-radius:14px;background:#fff;}
+
 .v2-pub-page .pagination{border-top:0;padding:8px 0 0;margin-top:8px;color:var(--v2-muted);}
 .v2-pub-page .pagination .pages a,.v2-pub-page .pagination .pages button{width:40px;height:40px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-ink);}
 .v2-pub-page .pagination .pages a:hover{border-color:var(--v2-violet-deep);color:var(--v2-violet-deep);}
@@ -2307,6 +2318,7 @@ footer.footer--dark{
 @media (max-width:720px){
   .v2-pub-hero-links{gap:8px;}
   .v2-pub-hero-links a{min-width:0;flex:1 1 45%;}
+  .v2-pub-page .daily-reminder-grid{grid-template-columns:1fr;}
 }
 
 /* ============================================================
@@ -2572,4 +2584,41 @@ footer.footer--dark{
 @media (max-width:720px){
   .v2-jesus-topics{grid-template-columns:1fr;}
   .v2-jesus-topics a{border-right:0;border-bottom:1px solid var(--v2-line);}
+}
+
+/* ============================================================
+   V2 (Lot 4, 11/09) — Je Confesse. Reproduit prototype-html/publications/
+   je-confesse-et-declare/index.html § .rm-hero.confess-hero/.confess-
+   chapeau, et prototype-html/index.html § .confession-wrap/.confession-
+   card (capsule d'accueil) + .category-confess (4e tuile de la vitrine,
+   voir globals.css § .v2-category-card plus haut, Lot 3).
+   ============================================================ */
+
+/* --- Page dédiée (jour + archive), voir JeConfesseContent.tsx --- */
+.v2-jc-hero{position:relative;min-height:420px;display:flex;align-items:center;isolation:isolate;overflow:hidden;padding:70px 0;color:#fff;background:radial-gradient(circle at 18% 32%,rgba(219,205,255,.34),transparent 25%),radial-gradient(circle at 82% 68%,rgba(154,113,255,.3),transparent 27%),linear-gradient(135deg,#17122d 0%,#37205f 52%,#7452ad 100%);}
+.v2-jc-hero-copy{max-width:860px;margin:0 auto;text-align:center;}
+.v2-jc-hero h1{margin:0 auto 25px;color:#fff;font-family:var(--v2-serif);font-size:clamp(28px,4vw,40px);font-weight:600;line-height:1.3;letter-spacing:-.015em;}
+.v2-jc-hero h1 cite{display:block;margin-top:10px;color:rgba(255,255,255,.62);font-family:var(--v2-sans);font-size:15px;font-style:normal;font-weight:600;}
+.v2-jc-hero-context{width:min(600px,100%);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.34);}
+.v2-jc-badge{display:block;margin:0 auto 13px;color:#fff;font-family:var(--v2-serif);font-size:22px;font-weight:600;}
+.v2-jc-date{display:block;color:#e5dcff;font-size:13px;}
+.v2-jc-hero-context .article-meta{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:13px;color:#d7c9ff;font-size:12px;}
+.v2-jc-chapeau{padding:54px 0;background:#eee8ff;}
+.v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(22px,2.8vw,32px);font-weight:500;font-style:italic;line-height:1.5;text-align:center;}
+.v2-jc-chapeau cite{display:block;margin-top:18px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+
+/* --- Capsule d'accueil (§ .confession-wrap/.confession-card), même
+   principe que .v2-dew-* (Lot 3) --- */
+.v2-confession-wrap{position:relative;z-index:2;margin-top:22px;}
+.v2-confession-card{min-height:176px;display:grid;grid-template-columns:210px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
+.v2-confession-label{align-self:stretch;display:grid;place-items:center;padding:18px 12px;border:1px solid rgba(109,49,242,.16);border-radius:12px;color:var(--v2-violet-deep);background:#ded3fa;text-align:center;white-space:nowrap;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
+.v2-confession-content blockquote{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:21px;font-weight:600;line-height:1.35;}
+.v2-confession-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
+
+/* --- 4e tuile de la vitrine de catégories --- */
+.v2-category-card.confess{background:linear-gradient(145deg,#8339ee,#5c20c4);}
+.v2-category-card.confess .v2-category-name{color:#681eb4;background:#efdfff;}
+
+@media (max-width:960px){
+  .v2-confession-card{grid-template-columns:1fr;text-align:center;}
 }

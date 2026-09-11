@@ -27,6 +27,10 @@ const INK = "#1B1730";
 const BLUE = "#2E2FE0";
 const PURPLE = "#7B3FE4";
 const TEAL = "#3D6E86";
+// Je Confesse (Lot 4, 11/09) — violet profond, distinct des trois autres
+// (jamais le sarcelle de Rosée Matinale ni le violet clair de Que Dit la
+// Bible), cohérent avec .badge-confess/.category-confess du prototype.
+const CONFESS = "#6C2BD9";
 const LAVENDER_DEEP = "#EAE6F9";
 // Version blanche dédiée (retour du 05/09) — le logo violet habituel du site
 // (/logo.png) ne contraste pas assez sur les fonds colorés violet/bleu/
@@ -37,9 +41,14 @@ const LOGO_URL = "https://sergehapitaministries.org/logo-white.png";
 // Mêmes couleurs que .feed-badge.qdlb/.vs/.rm dans globals.css — la capsule
 // de catégorie sur le site et celle de l'image de partage doivent se
 // répondre visuellement.
-export type OgCategory = "qdlb" | "vs" | "rm";
-const CATEGORY_COLOR: Record<OgCategory, string> = { qdlb: PURPLE, vs: BLUE, rm: TEAL };
-const CATEGORY_LABEL: Record<OgCategory, string> = { qdlb: "Que Dit la Bible ?", vs: "La Vie Supérieure", rm: "Rosée Matinale" };
+export type OgCategory = "qdlb" | "vs" | "rm" | "jc";
+const CATEGORY_COLOR: Record<OgCategory, string> = { qdlb: PURPLE, vs: BLUE, rm: TEAL, jc: CONFESS };
+const CATEGORY_LABEL: Record<OgCategory, string> = {
+  qdlb: "Que Dit la Bible ?",
+  vs: "La Vie Supérieure",
+  rm: "Rosée Matinale",
+  jc: "Je Confesse",
+};
 
 // Cache mémoire au niveau du module (retour du 05/09) — réutilisé d'un appel
 // à l'autre tant que l'instance de fonction serverless reste "chaude" (le cas

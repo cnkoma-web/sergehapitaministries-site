@@ -168,11 +168,14 @@ export async function deleteArticle(formData: FormData) {
   await supabase.from("articles").delete().eq("id", id);
   revalidatePath("/admin/publications");
   revalidatePath("/admin/rosee-matinale");
+  revalidatePath("/admin/je-confesse");
   revalidatePath("/publications");
   revalidatePath("/rosee-matinale");
+  revalidatePath("/publications/je-confesse-et-declare");
   revalidatePath("/");
-  // Reste sur la liste d'où l'appel vient (Publications ou Rosée Matinale) —
-  // évite d'être renvoyé ailleurs après une suppression depuis la liste.
+  // Reste sur la liste d'où l'appel vient (Publications, Rosée Matinale ou
+  // Je Confesse) — évite d'être renvoyé ailleurs après une suppression
+  // depuis la liste.
   const redirectTo = String(formData.get("redirectTo") ?? "/admin/publications");
   redirect(redirectTo);
 }
@@ -263,4 +266,79 @@ export async function updateRoseeEntry(formData: FormData) {
   // Reste sur l'écran d'édition (retour du 05/09) — voir le commentaire
   // équivalent sur updateArticle ci-dessus.
   redirect(`/admin/rosee-matinale/${id}?saved=1`);
+}
+
+// ===== Je Confesse (Lot 4, 11/09) — même principe exact que Rosée
+// Matinale ci-dessus : publication rapide de l'entrée du jour + écran
+// d'édition dédié. Différences volontaires avec Rosée Matinale (cahier) :
+// pas de champ "Titre" du tout (jamais de titre éditorial, contrairement à
+// Rosée Matinale — le titre reste toujours reconstruit depuis la date, y
+// compris à l'usage interne : liste admin, message de partage, "Articles
+// similaires"), une référence biblique distincte du texte de la
+// proclamation (verse_reference + verse_text, comme Que Dit la Bible),
+// pas d'image de couverture (le hero Je Confesse est un dégradé, jamais
+// une photo — voir prototype-html/publications/je-confesse-et-declare),
+// et un corps (déclaration développée) obligatoire, pas facultatif. =====
+
+export async function publishConfession(formData: FormData) {
+  const supabase = await createClient();
+  const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
+  const verse_reference = String(formData.get("verse_reference") ?? "").trim();
+  const verse_text = String(formData.get("verse_text") ?? "").trim();
+  const body = String(formData.get("body") ?? "").trim();
+  if (!verse_text || !body) return;
+
+  const title = `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
+
+  await supabase.from("articles").insert({
+    type: "jc",
+    slug: `jc-${article_date}`,
+    title,
+    article_date,
+    verse_reference: verse_reference || null,
+    verse_text,
+    body,
+    seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
+    access: "free",
+    status: "published",
+    reading_time_minutes: computeReadingTime(body),
+  });
+
+  revalidatePath("/admin/je-confesse");
+  revalidatePath("/publications/je-confesse-et-declare");
+  revalidatePath("/");
+  revalidatePath("/publications");
+}
+
+export async function updateConfessionEntry(formData: FormData) {
+  const supabase = await createClient();
+  const id = String(formData.get("id"));
+  const verse_text = String(formData.get("verse_text") ?? "").trim();
+  const body = String(formData.get("body") ?? "").trim();
+  if (!id || !verse_text || !body) return;
+
+  const article_date = String(formData.get("article_date") ?? "") || undefined;
+  const title = article_date
+    ? `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
+    : undefined;
+
+  await supabase
+    .from("articles")
+    .update({
+      article_date,
+      title,
+      verse_reference: String(formData.get("verse_reference") ?? "").trim() || null,
+      verse_text,
+      body,
+      seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
+      status: String(formData.get("status") ?? "published"),
+      reading_time_minutes: computeReadingTime(body),
+    })
+    .eq("id", id);
+
+  revalidatePath("/admin/je-confesse");
+  revalidatePath("/publications/je-confesse-et-declare");
+  revalidatePath("/");
+  revalidatePath("/publications");
+  redirect(`/admin/je-confesse/${id}?saved=1`);
 }
