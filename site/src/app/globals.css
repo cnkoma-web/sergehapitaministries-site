@@ -1971,3 +1971,97 @@ footer.footer--dark{
   .v2-ds-book{padding-block:90px;grid-template-columns:1fr;}
   .v2-ds-book-cover{width:min(78vw,360px);}
 }
+
+/* ===== V2 — LA MISSION (Lot 2, nouvelle page) ===== */
+.v2-mission-page{font-family:var(--v2-sans);background:var(--v2-paper);}
+.v2-mission-hero{min-height:720px;position:relative;overflow:hidden;display:flex;align-items:center;isolation:isolate;color:#fff;background:radial-gradient(circle at 78% 36%,rgba(139,61,244,.72),transparent 25%),linear-gradient(125deg,#17142d 0%,#2820a2 56%,#6d31f2 100%);}
+.v2-mission-hero::after{content:"MISSION";position:absolute;z-index:-1;right:-34px;bottom:-126px;color:rgba(255,255,255,.055);font-family:var(--v2-serif);font-size:clamp(180px,28vw,420px);line-height:1;letter-spacing:-.08em;}
+.v2-mission-orbit{position:absolute;z-index:-1;border:1px solid rgba(255,255,255,.15);border-radius:50%;}
+.v2-mission-orbit.one{width:600px;height:600px;right:-215px;top:-320px;box-shadow:0 0 0 95px rgba(255,255,255,.025),0 0 0 190px rgba(255,255,255,.018);}
+.v2-mission-orbit.two{width:320px;height:320px;right:28%;bottom:-245px;}
+.v2-mission-hero-inner{padding-block:105px;}
+.v2-mission-hero h1{max-width:900px;margin:0;font-family:var(--v2-serif);font-size:clamp(52px,7vw,90px);font-weight:500;line-height:1.01;letter-spacing:-.048em;}
+.v2-mission-hero h1 em{color:#d6c7ff;font-weight:500;font-style:normal;}
+
+.v2-mission-opening{padding-block:125px;background:#fff;}
+.v2-mission-opening-grid,.v2-mission-sonship-grid{display:grid;grid-template-columns:190px minmax(0,830px);justify-content:space-between;gap:90px;}
+.v2-mission-index{color:var(--v2-violet-deep);}
+.v2-mission-index p{width:145px;margin:17px 0 0;padding-top:13px;border-top:1px solid var(--v2-line);color:var(--v2-muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;}
+.v2-mission-copy p{margin:0;color:var(--v2-muted);font-family:var(--v2-serif);font-size:19px;line-height:1.82;}
+.v2-mission-copy p+p{margin-top:27px;}
+.v2-mission-lead{margin:0 0 34px;color:var(--v2-ink-soft);font-family:var(--v2-serif);font-size:clamp(25px,2.75vw,37px);font-style:italic;line-height:1.48;}
+.v2-mission-lead cite{display:block;margin-top:17px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;text-transform:uppercase;letter-spacing:.13em;}
+.v2-mission-wide-image{position:relative;height:min(56vw,620px);margin-top:88px;overflow:hidden;background:var(--v2-ink);}
+.v2-mission-wide-image::after,.v2-mission-truth-image::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 52%,rgba(18,14,40,.72));}
+.v2-mission-wide-image img,.v2-mission-truth-image img{width:100%;height:100%;display:block;object-fit:cover;}
+.v2-mission-wide-image img{object-position:center 31%;}
+
+.v2-mission-truth{padding-block:125px;color:#fff;background:var(--v2-ink);}
+.v2-mission-truth-grid{display:grid;grid-template-columns:minmax(330px,.88fr) minmax(460px,1.12fr);gap:clamp(55px,7vw,100px);align-items:start;}
+.v2-mission-truth-image{position:sticky;top:140px;height:690px;margin:0;overflow:hidden;background:#262040;}
+.v2-mission-truth-image img{object-position:58% center;}
+.v2-mission-truth-copy{padding-top:20px;}
+.v2-mission-truth-copy h2,.v2-mission-sonship-copy h2,.v2-mission-kingdom-copy h2,.v2-mission-next h2{margin:0 0 38px;font-family:var(--v2-serif);font-size:clamp(43px,5vw,70px);font-weight:500;line-height:1.02;letter-spacing:-.045em;}
+.v2-mission-truth-copy .v2-eyebrow{margin-bottom:31px;}
+.v2-mission-truth-copy p{color:rgba(255,255,255,.66);}
+
+.v2-mission-sonship{position:relative;overflow:hidden;padding-block:135px;color:#fff;background:radial-gradient(circle at 90% 20%,rgba(120,50,239,.34),transparent 33%),linear-gradient(135deg,#2721b8,#7230ea);}
+.v2-mission-sonship::after{content:"FILS";position:absolute;right:-14px;bottom:-98px;color:rgba(255,255,255,.065);font-family:var(--v2-serif);font-size:clamp(190px,28vw,410px);line-height:1;letter-spacing:-.07em;}
+.v2-mission-sonship-grid{position:relative;z-index:1;}
+.v2-mission-index-light{color:#fff;}
+.v2-mission-index-light span{border:1px solid rgba(255,255,255,.35);}
+.v2-mission-index-light p{color:rgba(255,255,255,.6);border-top-color:rgba(255,255,255,.28);}
+.v2-mission-sonship-copy h2{max-width:720px;}
+.v2-mission-sonship-copy p{color:rgba(255,255,255,.73);}
+.v2-mission-sonship-emphasis{margin-top:48px !important;padding:34px 38px;border:1px solid rgba(255,255,255,.22);color:#fff !important;background:rgba(255,255,255,.09);font-family:var(--v2-serif);font-size:clamp(23px,2.4vw,33px) !important;font-style:italic;line-height:1.52 !important;}
+
+.v2-mission-kingdom{position:relative;overflow:hidden;padding-block:125px;color:#fff;background:var(--v2-ink);}
+.v2-mission-kingdom-grid{display:grid;grid-template-columns:minmax(460px,1.1fr) minmax(330px,.9fr);gap:clamp(55px,7vw,100px);align-items:center;}
+.v2-mission-kingdom-copy{padding:40px 0;}
+.v2-mission-kingdom-image{height:730px;margin:0;overflow:hidden;background:#0f0c21;}
+.v2-mission-kingdom-image img{width:100%;height:100%;object-fit:contain;object-position:center;}
+.v2-mission-kingdom-copy .v2-eyebrow{margin-bottom:28px;color:#c9b6ff;}
+.v2-mission-kingdom-copy .v2-eyebrow span{background:#c9b6ff;}
+.v2-mission-kingdom-copy h2{color:#fff;}
+.v2-mission-kingdom-copy p{color:rgba(255,255,255,.75);}
+
+.v2-mission-next{position:relative;overflow:hidden;padding-block:120px;color:#fff;background:radial-gradient(circle at 82% 24%,rgba(178,119,255,.6),transparent 27%),linear-gradient(135deg,#2922d6,#7a31ef);}
+.v2-mission-next::after{content:"→";position:absolute;right:2vw;bottom:-125px;color:rgba(255,255,255,.06);font-family:var(--v2-serif);font-size:420px;line-height:1;}
+.v2-mission-next-inner{position:relative;z-index:1;}
+.v2-mission-next h2{margin-bottom:50px;}
+.v2-mission-next-links{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.v2-mission-next-links a{min-height:220px;display:flex;flex-direction:column;justify-content:space-between;padding:34px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.09);transition:background .2s ease,transform .2s ease;color:#fff;}
+.v2-mission-next-links a:hover{background:rgba(255,255,255,.16);transform:translateY(-3px);}
+.v2-mission-next-links span{max-width:480px;color:rgba(255,255,255,.72);font-size:17px;line-height:1.6;display:block;}
+.v2-mission-next-links strong{color:#fff;font-family:var(--v2-serif);font-size:clamp(25px,2.6vw,36px);font-weight:500;line-height:1.15;}
+
+@media (max-width:980px){
+  .v2-mission-opening-grid,.v2-mission-sonship-grid{grid-template-columns:135px 1fr;gap:48px;}
+  .v2-mission-truth-grid{gap:48px;}
+  .v2-mission-truth-image{height:620px;}
+  .v2-mission-kingdom-grid{grid-template-columns:1fr 340px;gap:45px;}
+  .v2-mission-kingdom-image{height:650px;}
+}
+@media (max-width:720px){
+  .v2-mission-hero{min-height:350px;}
+  .v2-mission-hero-inner{padding-block:42px 46px;}
+  .v2-mission-hero h1{font-size:40px;line-height:1.02;}
+  .v2-mission-hero::after{bottom:-62px;font-size:160px;}
+  .v2-mission-opening{padding-block:52px 78px;}
+  .v2-mission-truth,.v2-mission-sonship,.v2-mission-kingdom,.v2-mission-next{padding-block:84px;}
+  .v2-mission-opening-grid,.v2-mission-sonship-grid,.v2-mission-truth-grid{grid-template-columns:1fr;gap:38px;}
+  .v2-mission-lead{font-size:25px;}
+  .v2-mission-copy p{font-size:18px;line-height:1.78;}
+  .v2-mission-wide-image{width:100%;height:430px;margin-top:58px;}
+  .v2-mission-wide-image img{object-position:55% center;}
+  .v2-mission-truth-image{position:relative;top:auto;height:470px;}
+  .v2-mission-truth-image img{object-position:59% center;}
+  .v2-mission-truth-copy{padding-top:0;}
+  .v2-mission-truth-copy h2,.v2-mission-sonship-copy h2,.v2-mission-kingdom-copy h2,.v2-mission-next h2{font-size:43px;}
+  .v2-mission-sonship-emphasis{margin-top:38px !important;padding:29px 25px;font-size:25px !important;}
+  .v2-mission-kingdom-grid{grid-template-columns:1fr;gap:38px;}
+  .v2-mission-kingdom-copy{padding:0;}
+  .v2-mission-kingdom-image{grid-row:1;width:100%;height:auto;aspect-ratio:2/3;}
+  .v2-mission-next-links{grid-template-columns:1fr;}
+  .v2-mission-next-links a{min-height:190px;padding:28px;}
+}
