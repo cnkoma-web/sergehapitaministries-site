@@ -100,12 +100,17 @@ export default function RoseeMatinaleContent({
               aucun style particulier ici (violet, italique, centrée,
               taille agrandie) : cette page n'a jamais eu l'équivalent de
               ".body-html" utilisé par Que Dit la Bible/La Vie Supérieure
-              pour cibler ce même bloc en CSS (voir globals.css). */}
+              pour cibler ce même bloc en CSS (voir globals.css).
+              Ancien style inline (fontSize 16.5/lineHeight 1.85) retiré
+              (retour du 11/09, audit typographique) — un style inline
+              gagne toujours sur la règle CSS externe .rm-body-html (19px/
+              1.9, exact prototype-html § .entry-body > p), qu'il rendait
+              inopérante en silence. */}
           {paragraphs.map((html, i) => (
             <div
               key={i}
               className="rm-body-html"
-              style={{ fontSize: 16.5, lineHeight: 1.85, marginBottom: 20 }}
+              style={{ marginBottom: 20 }}
               dangerouslySetInnerHTML={{ __html: html }}
             />
           ))}

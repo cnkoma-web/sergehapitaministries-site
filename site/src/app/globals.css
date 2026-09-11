@@ -2348,20 +2348,39 @@ footer.footer--dark{
 /* --- En-tête d'article (Que Dit la Bible / La Vie Supérieure) --- */
 .v2-article-page .article-header{padding:84px 0 70px;color:#fff;background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.55),transparent 29%),var(--v2-ink);}
 .v2-article-page.vs .article-header{background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.42),transparent 29%),linear-gradient(130deg,#17142d,#2d245b);}
-.v2-article-page .article-cat-badge{margin:0 0 22px;padding:0;border-radius:0;background:none;color:#d8ccff;font-size:13px;font-weight:750;letter-spacing:.08em;}
-.v2-article-page .article-title{max-width:900px;color:#fff;font-family:var(--v2-serif);font-size:clamp(38px,5.4vw,58px);font-weight:500;line-height:1.08;letter-spacing:-.03em;margin-bottom:0;}
-.v2-article-page .article-meta-line{margin-top:28px;color:#cdbbff;font-size:13px;font-style:normal;}
+.v2-article-page .article-cat-badge{margin:0 0 22px;padding:0;border-radius:0;background:none;color:#d8ccff;font-family:var(--v2-sans);font-size:13px;font-weight:750;letter-spacing:.08em;}
+/* .entry-hero h1 (prototype) : Georgia, clamp(46px,6.4vw,78px), 500, 1.02,
+   -.04em — écart trouvé (retour du 11/09, audit typographique) : taille/
+   interligne/espacement approximés, pas exacts (58px/1.08/-.03em). */
+.v2-article-page .article-title{max-width:900px;color:#fff;font-family:var(--v2-serif);font-size:clamp(46px,6.4vw,78px);font-weight:500;line-height:1.02;letter-spacing:-.04em;margin-bottom:0;}
+/* .entry-meta (prototype) : hérite du sans-serif du body (Inter), 13px,
+   graisse normale — n'avait jamais de font-family explicite ici, héritait
+   à tort du Manrope pré-V2 (voir body{font-family} plus haut). */
+.v2-article-page .article-meta-line{margin-top:28px;color:#cdbbff;font-size:13px;font-style:normal;font-family:var(--v2-sans);font-weight:400;}
 .v2-article-page .article-meta-line .views{color:#e7deff;}
 
 /* --- Corps --- */
 .v2-article-page .article-body{padding:70px 0 20px;}
 .v2-article-page .article-body .content-col p.article-lede{color:var(--v2-ink-soft);font-family:var(--v2-serif);font-size:19px;line-height:1.75;}
-.v2-article-page .article-body h2{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
+/* .entry-body h2 (prototype) : Georgia, 35px, 600, 1.18, pas de majuscules ni
+   d'espacement — écart majeur trouvé (retour du 11/09, audit typographique) :
+   la règle précédente reproduisait la numérotation ::before des sections
+   (Inter, 12px, 850, majuscules, cahier §"numbered-sections") plutôt que le
+   h2 lui-même, qui est un vrai titre Georgia de 35px dans la maquette. */
+.v2-article-page .article-body h2{color:var(--v2-ink);font-family:var(--v2-serif);font-size:35px;font-weight:600;line-height:1.18;text-transform:none;letter-spacing:normal;}
 .v2-article-page .article-body>.content-col>p,
-.v2-article-page .article-body>.content-col>.body-html>p{color:var(--v2-ink);font-family:var(--v2-serif);font-size:19px;line-height:1.85;}
+.v2-article-page .article-body>.content-col>.body-html>p{color:var(--v2-ink);font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
+/* .article-blessing (prototype) : un <p> de .entry-body, donc Georgia/19px
+   hérités de .entry-body > p + italique/gras propres à la classe — le
+   composant réel utilise un <div>, jamais un <p> (ne matche donc aucune
+   règle "p"), et l'ancienne règle pré-V2 imposait 15px/lettres espacées
+   sans italique : tout doit être explicite ici. */
+.v2-article-page .blessing{color:var(--v2-violet-deep);border-top-color:var(--v2-line);font-family:var(--v2-serif);font-size:19px;font-weight:700;font-style:italic;letter-spacing:normal;}
 .v2-article-page .verse-box{background:var(--v2-violet-pale);border-left-color:var(--v2-violet);border-radius:0 12px 12px 0;}
-.v2-article-page .verse-box .ref{color:var(--v2-violet-deep);}
-.v2-article-page .verse-box p{color:var(--v2-ink);font-family:var(--v2-serif);}
+/* .scripture-card strong (prototype) : 13px/.08em — la règle pré-V2 (12px/.06em) est proche mais pas exacte */
+.v2-article-page .verse-box .ref{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;letter-spacing:.08em;}
+/* .scripture-card blockquote (prototype) : Georgia, 21px, italique, 1.72 — taille/interligne pré-V2 (20px/1.6) pas exacts */
+.v2-article-page .verse-box p{color:var(--v2-ink);font-family:var(--v2-serif);font-size:21px;line-height:1.72;}
 .v2-article-page .prayer-box{background:var(--v2-paper);border:1px solid var(--v2-line);border-radius:12px;}
 .v2-article-page .prayer-box p{color:var(--v2-ink);font-family:var(--v2-serif);}
 .v2-article-page .further-verse{border-left-color:var(--v2-line);}
@@ -2369,7 +2388,6 @@ footer.footer--dark{
 .v2-article-page .further-verse p{color:var(--v2-muted);font-family:var(--v2-serif);}
 .v2-article-page .chip{background:var(--v2-violet-pale);color:var(--v2-violet-deep);}
 .v2-article-page .chip button{color:var(--v2-violet-deep);}
-.v2-article-page .blessing{color:var(--v2-violet-deep);border-top-color:var(--v2-line);font-family:var(--v2-sans);}
 .v2-article-page .like-button{color:var(--v2-violet-deep);}
 .v2-article-page .like-button:hover:not(:disabled):not(.liked){color:var(--v2-violet);}
 .v2-article-page .like-button.liked{color:var(--v2-violet-deep);}
@@ -2381,22 +2399,46 @@ footer.footer--dark{
 .v2-article-page .toc-list li{border-color:var(--v2-line);color:var(--v2-muted);}
 .v2-article-page .back-cta .btn-outline{border-color:var(--v2-ink);color:var(--v2-ink);}
 
-/* --- Rosée Matinale : héros photo + citation d'ouverture --- */
+/* --- Rosée Matinale : héros photo + citation d'ouverture ---
+   Audit typographique complet (retour du 11/09, signalé par Serge : "pas la
+   même police, pas le même poids") — la page réelle garde les anciens noms
+   de classes d'avant V2 (.entry-title/.cat/.date/.rm-quote-text/...), qui
+   portent encore des règles de base pré-V2 (Fraunces/Manrope, tailles et
+   graisses différentes de la maquette). Les règles V2 ci-dessous ne
+   changeaient jusqu'ici QUE la couleur/famille de police, jamais les 5
+   propriétés en bloc (famille, graisse, taille, interligne, espacement) —
+   les valeurs pré-V2 continuaient donc à s'appliquer en silence pour tout
+   le reste. Chaque règle ci-dessous fixe maintenant les 5 propriétés
+   explicitement, comparées valeur par valeur à prototype-html/
+   publications.css § .rm-hero/.rm-hero .category-badge/.rm-hero-date/
+   .rm-hero-meta/.rm-chapeau blockquote/.entry-body > p/.rm-nav-days. */
 .v2-rm-page .rm-photo-hero{min-height:460px;}
 .v2-rm-page .rm-photo-hero::after{background:linear-gradient(0deg,rgba(23,15,44,.88) 0%,rgba(23,15,44,.4) 55%,rgba(23,15,44,.12) 100%);}
-.v2-rm-page .rm-photo-hero .entry-title{font-family:var(--v2-serif);font-weight:500;letter-spacing:-.02em;}
-.v2-rm-page .rm-photo-hero .cat{font-family:var(--v2-serif);font-weight:500;color:#d9ccff;}
-.v2-rm-page .rm-photo-hero .date{color:#e5dcff;font-family:var(--v2-sans);}
-.v2-rm-page .rm-photo-hero .article-meta{color:#d7c9ff;}
+/* .rm-hero h1 (prototype) : Georgia, 36.5px, 600, 1.12, -.025em (mobile 24.5px) */
+.v2-rm-page .rm-photo-hero .entry-title{font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
+/* .rm-hero .category-badge (prototype) : Georgia, 24px, 600, letter-spacing 0, pas de majuscules (mobile 20px) */
+.v2-rm-page .rm-photo-hero .cat{font-family:var(--v2-serif);font-size:24px;font-weight:600;letter-spacing:0;text-transform:none;color:#d9ccff;}
+/* .rm-hero-date (prototype) : hérite du sans-serif du body (Inter), 13px, graisse normale — la règle pré-V2 imposait à tort gras/majuscules/espacement */
+.v2-rm-page .rm-photo-hero .date{color:#e5dcff;font-family:var(--v2-sans);font-size:13px;font-weight:400;text-transform:none;letter-spacing:normal;}
+/* .rm-hero-meta (prototype) : hérite aussi du sans-serif du body (Inter), 12px, graisse normale — la police pré-V2 (Manrope, jamais explicitement corrigée ici) ne correspondait pas */
+.v2-rm-page .rm-photo-hero .article-meta{color:#d7c9ff;font-family:var(--v2-sans);font-size:12px;font-weight:400;}
 .v2-rm-page .rm-quote-zone{background:var(--v2-violet-pale);}
-.v2-rm-page .rm-quote-mark{color:var(--v2-violet);opacity:1;}
-.v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);}
-.v2-rm-page .rm-body-html{color:var(--v2-ink);font-family:var(--v2-serif);}
+/* .rm-chapeau blockquote::before (prototype) : hérite Georgia italique du blockquote parent, 72px, line-height .8 */
+.v2-rm-page .rm-quote-mark{color:var(--v2-violet);opacity:1;font-family:var(--v2-serif);font-style:italic;font-weight:500;font-size:72px;line-height:.8;}
+/* .rm-chapeau blockquote (prototype) : Georgia, clamp(25px,3.3vw,39px), 500, italique, 1.4, centré (mobile 25px fixe) */
+.v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-weight:500;font-style:italic;line-height:1.4;text-align:center;}
+/* .entry-body > p (prototype) : Georgia, 19px, 1.9 — le composant fixait ces
+   deux dernières valeurs en style inline (16.5px/1.85, voir
+   RoseeMatinaleContent.tsx) : un style inline gagne toujours sur n'importe
+   quelle règle externe, retiré du composant pour laisser ces valeurs
+   s'appliquer réellement. */
+.v2-rm-page .rm-body-html{color:var(--v2-ink);font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
 .v2-rm-page .like-button{color:var(--v2-violet-deep);}
 .v2-rm-page .like-button:hover:not(:disabled):not(.liked){color:var(--v2-violet);}
 .v2-rm-page .like-button.liked{color:var(--v2-violet-deep);}
 .v2-rm-page .rm-nav-days{border-top:1px solid var(--v2-line);border-bottom:0;}
-.v2-rm-page .rm-nav-days a,.v2-rm-page .rm-nav-days span{color:var(--v2-violet-deep);}
+/* .rm-nav-days a/span (prototype) : 13px, 750 — la règle pré-V2 (13.5px/700) était proche mais pas exacte */
+.v2-rm-page .rm-nav-days a,.v2-rm-page .rm-nav-days span{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:750;}
 .v2-rm-page .rm-nav-days .disabled{color:#cdc8d8;}
 .v2-rm-page .rm-nav-days .archive-link{color:var(--v2-violet-deep);}
 
@@ -2438,6 +2480,18 @@ footer.footer--dark{
 @media (max-width:720px){
   .v2-article-page .article-header{padding:64px 0 52px;}
   .v2-rm-page .rm-photo-hero{min-height:340px;}
+  /* .rm-hero h1/.category-badge (prototype, media 720px) : 24.5px/20px */
+  .v2-rm-page .rm-photo-hero .entry-title{font-size:24.5px;}
+  .v2-rm-page .rm-photo-hero .cat{font-size:20px;}
+  /* .rm-chapeau blockquote (prototype, media 720px) : 25px fixe */
+  .v2-rm-page .rm-quote-text{font-size:25px;}
+  /* .rm-nav-days a/span (prototype, media 720px) : 12px */
+  .v2-rm-page .rm-nav-days a,.v2-rm-page .rm-nav-days span{font-size:12px;}
+  /* .entry-body > p / h2 / .scripture-card blockquote (prototype, media 720px) */
+  .v2-article-page .article-body>.content-col>p,
+  .v2-article-page .article-body>.content-col>.body-html>p{font-size:18px;line-height:1.82;}
+  .v2-article-page .article-body h2{font-size:29px;}
+  .v2-article-page .verse-box p{font-size:19px;}
 }
 
 /* ============================================================
@@ -2606,9 +2660,13 @@ footer.footer--dark{
 .v2-jc-hero h1{margin:0 auto 25px;color:#fff;font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
 .v2-jc-hero h1 cite{font-family:var(--v2-sans);font-size:.55em;font-style:normal;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.62);}
 .v2-jc-hero-context{width:min(600px,100%);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.34);}
-.v2-jc-badge{display:block;margin:0 auto 13px;color:#fff;font-family:var(--v2-serif);font-size:22px;font-weight:600;}
-.v2-jc-date{display:block;color:#e5dcff;font-size:13px;}
-.v2-jc-hero-context .article-meta{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:13px;color:#d7c9ff;font-size:12px;}
+/* .rm-hero .category-badge (prototype, s'applique aussi à .confess-hero) :
+   24px, pas 22px — écart trouvé (retour du 11/09, audit typographique). */
+.v2-jc-badge{display:block;margin:0 auto 13px;color:#fff;font-family:var(--v2-serif);font-size:24px;font-weight:600;letter-spacing:0;text-transform:none;}
+/* .rm-hero-date/.rm-hero-meta (prototype) : héritent du sans-serif du body
+   (Inter) — jamais explicite ici, héritaient à tort du Manrope pré-V2. */
+.v2-jc-date{display:block;color:#e5dcff;font-size:13px;font-family:var(--v2-sans);font-weight:400;}
+.v2-jc-hero-context .article-meta{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:13px;color:#d7c9ff;font-size:12px;font-family:var(--v2-sans);font-weight:400;}
 .v2-jc-body-html{margin-bottom:20px;color:#343044;font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
 .v2-jc-chapeau{padding:54px 0;background:#f3edff;}
 .v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
@@ -2633,6 +2691,8 @@ footer.footer--dark{
 @media (max-width:720px){
   .v2-jc-hero h1{font-size:24.5px;}
   .v2-jc-body-html{font-size:18px;line-height:1.82;}
+  /* .rm-hero .category-badge (prototype, media 720px) : 20px */
+  .v2-jc-badge{font-size:20px;}
 }
 
 /* ============================================================
