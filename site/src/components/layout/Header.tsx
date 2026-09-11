@@ -6,80 +6,46 @@ import { isRealUser } from "@/lib/supabase/realUser";
 import { getCartCount } from "@/lib/cart/cart";
 import MobileNav from "./MobileNav";
 
+// V2 (retour du 11/09, Lot 1) — reproduit prototype-html/index.html §
+// .site-header/.main-nav : logo à gauche, menu centré, icônes réelles (SVG)
+// au lieu des émojis 🔍/👤/🛒. Données inchangées (getMainNav, isRealUser,
+// getCartCount).
+//
+// Sous-menus en <div>+:hover/:focus-within, PAS en <details>/<summary>
+// natifs comme le prototype (bug réel trouvé en vérifiant le résultat
+// réel, pas seulement le code) : le rendu interne de <details> fermé dans
+// les navigateurs Chromium récents s'appuie sur une boîte interne
+// (::details-content) qui garde le contenu à hauteur/largeur 0 même si
+// l'attribut "open" est absent et qu'un display:block est forcé par CSS
+// sur l'enfant — confirmé en testant les deux états (open=true : 210×212,
+// fermé + survolé : 0×0). Le survol/focus sur un simple <div> est la
+// technique CSS-only fiable, sans ce piège.
 export default async function Header() {
   const supabase = await createClient();
   const [nav, { data }, cartCount] = await Promise.all([getMainNav(), supabase.auth.getUser(), getCartCount()]);
   const accountHref = isRealUser(data.user) ? "/mon-compte" : "/compte";
 
   return (
-    <header>
-      {/* Bascule de la zone de recherche en pur CSS (retour du 05/09) — pas
-          de JS nécessaire, sur le même principe que le reste du site
-          (Pagination en liens/formulaires purs). La case à cocher est
-          invisible ; l'icône loupe est son <label>, et .header-search-row
-          (plus bas, même parent <header>) réagit à :checked via ~. */}
-      <input type="checkbox" id="header-search-toggle" className="header-search-toggle" />
-      <div className="header-main">
-        <div className="header-icon-zone">
-          <label htmlFor="header-search-toggle" className="header-search-icon" title="Rechercher" aria-label="Rechercher sur le site">
-            🔍
-          </label>
-        </div>
-        <Link href="/" className="logo-center">
-          <Image src="/logo.png" alt="Serge Hapita Ministries" width={207} height={78} priority />
+    <header className="v2-site-header">
+      <input type="checkbox" id="v2-search-toggle" className="v2-search-toggle" />
+      <div className="v2-wrap v2-main-nav">
+        <Link href="/" className="v2-brand" aria-label="Accueil Serge Hapita Ministries">
+          <Image src="/logo.png" alt="Serge Hapita Ministries" width={170} height={64} priority />
         </Link>
-        <div className="header-icon-zone right">
-          <Link href={accountHref} title="Mon compte" style={{ color: "inherit" }}>
-            👤
-          </Link>
-          <Link href="/panier" title="Panier" style={{ color: "inherit", position: "relative" }}>
-            🛒
-            {cartCount > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: -6,
-                  right: -10,
-                  background: "var(--purple)",
-                  color: "#fff",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  width: 16,
-                  height: 16,
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {cartCount}
-              </span>
-            )}
-          </Link>
-          <MobileNav nav={nav} />
-        </div>
-      </div>
-      {/* Entre le logo et la barre de navigation, pleine largeur (retour du
-          05/09, remplace le lien vers /recherche) — s'ouvre au clic sur la
-          loupe. La soumission mène toujours à /recherche, qui fait la
-          recherche réelle (publications, livres, goodies) : seul l'accès
-          depuis l'en-tête change, pas la recherche elle-même. */}
-      <div className="header-search-row">
-        <form method="get" action="/recherche" className="header-search-form">
-          <input type="search" name="q" placeholder="Rechercher un article, un livre…" aria-label="Rechercher sur le site" />
-        </form>
-      </div>
-      <div className="nav-row">
-        <nav className="main-nav">
+        <nav className="v2-desktop-menu" aria-label="Navigation principale">
           {nav.map((item) =>
             isDropdown(item) ? (
-              <div key={item.label} className="dropdown">
+              <div key={item.label} className="v2-nav-dropdown">
                 {item.href ? (
-                  <Link href={item.href}>{item.label} ▾</Link>
+                  <Link href={item.href} className="v2-nav-dropdown-trigger">
+                    {item.label} <span aria-hidden="true">⌄</span>
+                  </Link>
                 ) : (
-                  <span>{item.label} ▾</span>
+                  <button type="button" className="v2-nav-dropdown-trigger">
+                    {item.label} <span aria-hidden="true">⌄</span>
+                  </button>
                 )}
-                <div className="dropdown-menu">
+                <div className="v2-nav-dropdown-menu">
                   {item.links.map((link) => (
                     <Link key={link.href} href={link.href}>
                       {link.label}
@@ -94,6 +60,38 @@ export default async function Header() {
             )
           )}
         </nav>
+        <div className="v2-nav-actions">
+          <label htmlFor="v2-search-toggle" className="v2-icon-button" title="Rechercher" aria-label="Rechercher sur le site">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="m16 16 4 4" />
+            </svg>
+          </label>
+          <Link href={accountHref} className="v2-icon-button" title="Mon compte" aria-label="Mon compte">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4.5 21c.7-4.3 3.2-6.5 7.5-6.5s6.8 2.2 7.5 6.5" />
+            </svg>
+          </Link>
+          <Link href="/panier" className="v2-icon-button" title="Panier" aria-label="Panier">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6" />
+              <circle cx="9.5" cy="19" r="1" />
+              <circle cx="17" cy="19" r="1" />
+            </svg>
+            {cartCount > 0 && <span className="v2-cart-count">{cartCount}</span>}
+          </Link>
+          <MobileNav nav={nav} />
+        </div>
+      </div>
+      <div className="v2-search-panel">
+        <form method="get" action="/recherche" className="v2-wrap v2-search-panel-inner">
+          <label htmlFor="v2-search-input">Rechercher sur le site</label>
+          <input id="v2-search-input" type="search" name="q" placeholder="Un enseignement, un livre, un thème…" />
+          <button type="submit">
+            Rechercher <span>→</span>
+          </button>
+        </form>
       </div>
     </header>
   );

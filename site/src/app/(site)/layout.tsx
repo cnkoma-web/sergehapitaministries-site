@@ -15,8 +15,17 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           n'est jamais démonté d'une page publique à l'autre. */}
       <ScrollToTop />
       <CartSessionBootstrap />
-      <BrandSplit />
-      <Topbar />
+      {/* V2 (retour du 11/09, Lot 1) — BrandSplit (liens partenaires) et
+          Topbar (ticker) regroupés dans une seule bande sombre, comme
+          prototype-html/index.html § .network-bar. Chaque composant garde
+          ses propres données (getBrandSplitLinks/getTickerMessages),
+          seul le regroupement visuel change. */}
+      <div className="v2-network-bar">
+        <div className="v2-wrap v2-network-inner">
+          <BrandSplit />
+          <Topbar />
+        </div>
+      </div>
       <Header />
       {children}
     </>
