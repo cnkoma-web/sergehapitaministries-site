@@ -252,16 +252,14 @@ export default async function HomePage() {
           depuis le Lot 4 (Je Confesse ajoutée). */}
       <section className="v2-category-section" id="publications">
         <div className="v2-wrap">
-          <div className="v2-section-heading" style={{ color: "#fff" }}>
+          <div className="v2-dark-heading">
             <div>
               <p className="v2-eyebrow light">
                 <span /> Quatre expressions de la Parole
               </p>
-              <h2 style={{ color: "#fff" }}>Une Parole pour chaque besoin</h2>
+              <h2>Une Parole pour chaque besoin</h2>
             </div>
-            <Link href="/publications" style={{ color: "#c7b6f5", fontSize: 14, fontWeight: 750 }}>
-              Toutes les publications →
-            </Link>
+            <Link href="/publications">Toutes les publications →</Link>
           </div>
 
           <div className="v2-category-grid">
@@ -347,9 +345,7 @@ export default async function HomePage() {
               )}
             </article>
             <div className="v2-past-events">
-              <p className="v2-eyebrow" style={{ marginBottom: 20 }}>
-                <span /> À revivre
-              </p>
+              <p className="micro-label">À revivre</p>
               {pastEvents.length === 0 ? (
                 <p className="empty-state">Les premiers événements passés apparaîtront ici.</p>
               ) : (
@@ -383,14 +379,14 @@ export default async function HomePage() {
       <section className="v2-books-section v2-wrap" id="livres">
         <div className="v2-section-heading">
           <div>
-            <p className="v2-eyebrow">
+            <p className="v2-eyebrow v2-brand-case">
               <span /> amDG Éditions
             </p>
             <h2>
               Dernières <em>parutions</em>
             </h2>
           </div>
-          <Link href="/livres" style={{ color: "var(--v2-violet-deep)", fontSize: 14, fontWeight: 750 }}>
+          <Link href="/livres" className="v2-catalogue-link">
             Voir tout le catalogue →
           </Link>
         </div>

@@ -146,6 +146,7 @@ img{max-width:100%;display:block;}
 header{
   position:sticky;top:0;z-index:50;background:rgba(252,251,255,.92);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
+  font-family:var(--v2-sans);line-height:1.6;
 }
 /* Bandeau double-marque : 2 blocs pleine largeur cliquables */
 .brand-split{display:grid;grid-template-columns:1fr 1fr;}
@@ -225,7 +226,7 @@ header{
    'Manrope',sans-serif} (l'ancien système) au lieu de --v2-sans (Inter) —
    700 en Manrope n'a pas le même rendu visuel que 650-700 en Inter. */
 .v2-site-header{position:relative;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--v2-line);font-family:var(--v2-sans);}
-.v2-network-bar{background:var(--v2-ink);color:rgba(255,255,255,.83);font-size:13px;letter-spacing:.02em;font-family:var(--v2-sans);}
+.v2-network-bar{background:var(--v2-ink);color:rgba(255,255,255,.83);font-size:13px;letter-spacing:.02em;font-family:var(--v2-sans);line-height:1.6;}
 .v2-network-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:34px;padding-block:7px;}
 .v2-partner-nav{display:flex;align-items:center;gap:14px;white-space:nowrap;}
 .v2-partner-nav a{transition:color .2s ease;}
@@ -252,7 +253,7 @@ header{
 
 .v2-main-nav{min-height:90px;display:grid;grid-template-columns:190px 1fr auto;align-items:center;gap:20px;}
 .v2-brand{display:flex;}
-.v2-brand img{height:auto;width:170px;max-width:60vw;display:block;}
+.v2-brand img{height:auto;width:188px;max-width:60vw;display:block;}
 .v2-desktop-menu{display:flex;justify-content:center;align-items:center;gap:clamp(11px,1.15vw,20px);white-space:nowrap;font-size:13px;font-weight:650;}
 .v2-desktop-menu a,.v2-nav-dropdown-trigger{position:relative;padding-block:9px;cursor:pointer;color:var(--v2-ink);}
 .v2-desktop-menu>a::after,.v2-nav-dropdown-trigger::after{content:"";position:absolute;left:0;right:100%;bottom:2px;height:2px;background:var(--v2-violet);transition:right .2s ease;}
@@ -1849,6 +1850,10 @@ footer.footer--dark{
    réel (retour du 12/09, diff automatique confirmé par Serge — touche
    potentiellement chaque eyebrow du site, cette règle étant partagée). */
 .v2-eyebrow{margin:0 0 25px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:780;text-transform:uppercase;letter-spacing:.18em;display:flex;align-items:center;gap:12px;}
+/* .brand-case (prototype) : bloque la majuscule sur les badges portant une
+   graphie de marque figée (ex. « amDG Éditions » — a/m toujours minuscules).
+   Règle générale des eyebrows/surtitres inchangée. */
+.v2-brand-case{text-transform:none!important;}
 .v2-eyebrow span{width:34px;height:2px;background:currentColor;display:block;}
 .v2-eyebrow.light{color:#d9ccff;}
 .v2-button{min-height:52px;display:inline-flex;align-items:center;justify-content:center;gap:14px;border-radius:8px;padding:13px 22px;font-size:14px;font-weight:750;transition:transform .2s ease,background .2s ease;font-family:var(--v2-sans);}
@@ -2624,7 +2629,7 @@ footer.footer--dark{
    ============================================================ */
 .v2-home{background:#fff;}
 
-.v2-home-hero{position:relative;min-height:520px;isolation:isolate;overflow:hidden;color:#fff;background:radial-gradient(circle at 74% 30%,#5125aa 0,transparent 35%),linear-gradient(120deg,#17142d 10%,#25164a 56%,#351467 100%);}
+.v2-home-hero{position:relative;min-height:520px;isolation:isolate;overflow:hidden;color:#fff;background:radial-gradient(circle at 74% 30%,#5125aa 0,transparent 35%),linear-gradient(120deg,#17142d 10%,#25164a 56%,#351467 100%);font-family:var(--v2-sans);line-height:1.6;}
 .v2-home-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(17,13,37,.98) 0%,rgba(19,14,42,.9) 47%,rgba(22,14,41,.35) 72%,rgba(18,13,34,.67) 100%);}
 .v2-home-hero-photo{position:absolute;z-index:-2;inset:0 0 0 auto;width:54%;background-size:cover;background-position:center 48%;filter:saturate(.86) contrast(1.04);opacity:.78;}
 .v2-home-hero-glow{position:absolute;z-index:-1;width:520px;height:520px;right:-180px;bottom:-250px;border-radius:50%;background:rgba(141,77,255,.32);filter:blur(2px);}
@@ -2637,12 +2642,12 @@ footer.footer--dark{
 .v2-home-hero h1 em{color:#c8adff;font-weight:500;}
 .v2-home-hero-text{margin:30px 0 0;max-width:690px;color:rgba(255,255,255,.78);font-size:17px;line-height:1.75;}
 .v2-home-hero-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;}
-.v2-home-hero-text a{display:inline-block;margin-top:5px;color:#fff;border-bottom:1px solid rgba(255,255,255,.5);font-weight:500;}
-.v2-home-hero-text a:hover{font-weight:750;}
+.v2-home-hero-text a{display:inline-block;margin-top:5px;color:#fff;border-bottom:1px solid rgba(255,255,255,.5);font-weight:500;background:linear-gradient(rgba(165,119,255,.26),rgba(165,119,255,.26)) 0 100%/0 55% no-repeat;transition:background-size .2s ease,font-weight .2s ease;}
+.v2-home-hero-text a:hover{font-weight:750;background-size:100% 55%;}
 .v2-home-hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;}
 
 /* --- Rosée matinale du jour : carte flottante sur la charnière hero → contenu --- */
-.v2-dew-wrap{position:relative;z-index:3;margin-top:-78px;}
+.v2-dew-wrap{position:relative;z-index:3;margin-top:-78px;font-family:var(--v2-sans);line-height:1.6;}
 .v2-dew-card{min-height:176px;display:grid;grid-template-columns:180px 200px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
 .v2-dew-label{align-self:stretch;display:grid;place-items:center;border-radius:12px;color:#fff;background:var(--v2-violet-deep);text-align:center;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
 /* grid-row:1 retiré (retour du 12/09, diff automatique confirmé par
@@ -2658,39 +2663,54 @@ footer.footer--dark{
    défaut (même bug systémique que .related-articles h2/.archive-section h2/
    .extra-card h2, trouvé en relisant TOUS les titres h1-h4 du site le
    12/09 contre le CSS source des 4 fichiers du prototype). */
-.v2-dew-content h2{margin:0 0 6px;font-family:var(--v2-serif);font-size:26px;font-weight:700;line-height:1.16;}
+.v2-dew-content h2{margin:0 0 6px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:26px;font-weight:700;line-height:1.16;letter-spacing:normal;}
 .v2-dew-content p{margin:0;color:var(--v2-muted);font-size:15px;line-height:1.5;}
-.v2-dew-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
+.v2-dew-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:14px;font-weight:800;}
 
 /* --- Connaître Jésus : passerelle vidéo --- */
-.v2-jesus-gateway{position:relative;padding-block:110px 100px;overflow:hidden;background:linear-gradient(180deg,var(--v2-paper),#f1edff);}
-.v2-jesus-stage{position:relative;display:grid;grid-template-columns:1.25fr .75fr;min-height:440px;overflow:hidden;border-radius:22px;color:#fff;background:var(--v2-ink);box-shadow:var(--v2-shadow);}
-.v2-jesus-video-frame{min-height:440px;position:relative;display:block;overflow:hidden;}
+.v2-jesus-gateway{position:relative;padding-block:130px 115px;overflow:hidden;background:linear-gradient(180deg,var(--v2-paper),#f1edff);font-family:var(--v2-sans);line-height:1.6;}
+.v2-jesus-gateway::before{content:"";position:absolute;width:520px;height:520px;right:-310px;top:80px;border:1px solid rgba(109,49,242,.12);border-radius:50%;box-shadow:0 0 0 90px rgba(109,49,242,.025),0 0 0 180px rgba(109,49,242,.018);}
+.v2-jesus-gateway .v2-section-heading h2{color:var(--v2-ink);}
+.v2-jesus-stage{position:relative;display:grid;grid-template-columns:1.25fr .75fr;min-height:475px;overflow:hidden;border-radius:22px;color:#fff;background:var(--v2-ink);box-shadow:var(--v2-shadow);}
+.v2-jesus-video-frame{min-height:475px;position:relative;display:block;overflow:hidden;}
 .v2-jesus-video-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(16,12,37,.38));}
-.v2-jesus-video-frame img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
-.v2-jesus-video-frame:hover img{transform:scale(1.04);}
-.v2-jesus-video-frame .play{position:absolute;inset:0;margin:auto;width:66px;height:66px;display:grid;place-items:center;border-radius:50%;color:var(--v2-ink);background:#fff;font-size:20px;}
-.v2-jesus-intro{padding:48px 40px;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(circle at 100% 0,rgba(133,64,244,.55),transparent 43%),linear-gradient(145deg,#20183d,#17142d);}
-.v2-jesus-intro .micro-label{margin:0 0 10px;color:#cdbbff;font-size:13px;font-weight:750;}
+.v2-jesus-video-frame img{width:100%;height:100%;object-fit:cover;transform:scale(1.025);transition:transform .4s ease;}
+.v2-jesus-video-frame:hover img{transform:scale(1.055);}
+.v2-jesus-video-frame .play{position:absolute;z-index:1;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:74px;height:74px;display:grid;place-items:center;padding-left:5px;border-radius:50%;color:#fff;background:var(--v2-violet);box-shadow:0 0 0 14px rgba(255,255,255,.12);font-size:20px;}
+.v2-jesus-intro{padding:52px 42px;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(circle at 100% 0,rgba(133,64,244,.55),transparent 43%),linear-gradient(145deg,#20183d,#17142d);}
+.v2-jesus-intro .v2-button-primary{align-self:flex-start;}
+.v2-jesus-intro .micro-label{margin:0 0 18px;color:#a077ff;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.13em;}
 /* .jesus-intro h3 (prototype) : 39px/1.09, valeur fixe (pas un clamp) —
    approximée à 34px/1.12 ici (retour du 12/09, diff automatique confirmé
    par Serge — écart vérifié à largeur de viewport strictement identique
    des deux côtés, donc pas un effet de clamp/vw). */
-.v2-jesus-intro h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:39px;font-weight:500;line-height:1.09;}
-.v2-jesus-intro p:not(.micro-label){margin:18px 0 24px;color:rgba(255,255,255,.68);font-size:15px;line-height:1.6;}
+.v2-jesus-intro h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:39px;font-weight:500;line-height:1.09;letter-spacing:normal;}
+.v2-jesus-intro p:not(.micro-label){margin:22px 0 28px;color:rgba(255,255,255,.68);font-size:15px;}
 .v2-jesus-topics{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin-top:18px;border:1px solid var(--v2-line);background:#fff;}
-.v2-jesus-topics a{min-height:120px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:22px 18px;border-right:1px solid var(--v2-line);}
+.v2-jesus-topics a{min-height:130px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:15px;padding:25px 22px;border-right:1px solid var(--v2-line);}
 .v2-jesus-topics a:last-child{border-right:0;}
-.v2-jesus-topics span{color:var(--v2-violet);font-family:var(--v2-serif);font-size:18px;}
-.v2-jesus-topics strong{font-family:var(--v2-serif);font-size:16px;font-weight:500;line-height:1.25;}
+.v2-jesus-topics span{color:var(--v2-violet);font-family:var(--v2-serif);font-size:19px;}
+.v2-jesus-topics strong{color:var(--v2-ink);font-family:var(--v2-serif);font-size:17px;line-height:1.25;}
 .v2-jesus-topics b{color:var(--v2-violet);transition:transform .2s ease;}
 .v2-jesus-topics a:hover b{transform:translateX(4px);}
 
 /* --- "Une Parole pour chaque besoin" : vitrine statique par catégorie --- */
-.v2-category-section{padding-block:100px;color:#fff;background:var(--v2-ink);}
+.v2-category-section{padding-block:110px;color:#fff;background:var(--v2-ink);font-family:var(--v2-sans);line-height:1.6;}
+/* .dark-heading (prototype) : layout flex dédié, distinct de .section-heading
+   (grid) réutilisé ailleurs (jesus-gateway/events/books) — cf. écart 06.03
+   du référentiel (h2 écrasé dans une colonne 1fr au lieu d'occuper sa
+   largeur naturelle). Règle propre pour ne pas toucher .v2-section-heading,
+   partagée avec [07]/[08]. */
+.v2-dark-heading{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:48px;}
+.v2-dark-heading h2{margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(40px,5vw,64px);font-weight:500;line-height:1.06;letter-spacing:-.035em;}
+.v2-dark-heading>a{color:#c7b6f5;font-size:14px;font-weight:750;}
+@media (max-width:1100px){
+  .v2-dark-heading{display:block;margin-bottom:30px;}
+  .v2-dark-heading>a{display:inline-block;margin-top:18px;}
+}
 .v2-category-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.v2-category-card{min-height:340px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:32px;border:1px solid rgba(255,255,255,.13);isolation:isolate;border-radius:4px;}
-.v2-category-card::after{content:"";position:absolute;z-index:-1;width:250px;height:250px;right:-115px;bottom:-140px;border:1px solid rgba(255,255,255,.16);border-radius:50%;box-shadow:0 0 0 44px rgba(255,255,255,.022),0 0 0 88px rgba(255,255,255,.018);}
+.v2-category-card{min-height:390px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:34px;border:1px solid rgba(255,255,255,.13);isolation:isolate;border-radius:4px;}
+.v2-category-card::after{content:"";position:absolute;z-index:-1;width:270px;height:270px;right:-125px;bottom:-155px;border:1px solid rgba(255,255,255,.16);border-radius:50%;box-shadow:0 0 0 48px rgba(255,255,255,.022),0 0 0 96px rgba(255,255,255,.018);}
 .v2-category-card.dew{background:linear-gradient(145deg,#8b63db,#6d3cc5);}
 .v2-category-card.bible{background:linear-gradient(145deg,#5144dd,#3029a9);}
 .v2-category-card.life{background:linear-gradient(145deg,#2d2759,#17142d);}
@@ -2702,53 +2722,90 @@ footer.footer--dark{
 /* .category-name (prototype) : letter-spacing .12em — approximé à .1em
    (retour du 12/09, diff automatique confirmé par Serge). Hérite du
    sans-serif du body (Inter) dans les deux cas, jamais déclaré ici. */
-.v2-category-name{width:fit-content;margin:0 0 14px;padding:7px 12px;border-radius:999px;color:#fff;background:rgba(255,255,255,.12);font-family:var(--v2-sans);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.12em;}
+.v2-category-name{width:fit-content;margin:0 0 16px;padding:7px 12px;border-radius:999px;color:#fff;background:rgba(255,255,255,.12);font-family:var(--v2-sans);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.12em;}
 .v2-category-card.dew .v2-category-name{color:#4f238e;background:#eadcff;}
 .v2-category-card.bible .v2-category-name{color:#29299b;background:#dce0ff;}
 .v2-category-card.life .v2-category-name{color:#211b43;background:#d9d3ff;}
-.v2-category-card h3{max-width:440px;margin:0 0 14px;color:#fff;font-family:var(--v2-serif);font-size:27px;font-weight:500;line-height:1.14;}
-.v2-category-card>.v2-category-copy>p:last-child{max-width:480px;margin:0;color:rgba(255,255,255,.72);font-size:14px;line-height:1.55;}
-.v2-category-card>a{position:relative;z-index:1;width:fit-content;margin-top:20px;padding:10px 14px;border:1px solid rgba(255,255,255,.64);border-radius:4px;color:#fff;font-size:13px;font-weight:800;transition:transform .2s ease,color .2s ease,background .2s ease;}
+.v2-category-card h3{max-width:460px;margin:0 0 15px;color:#fff;font-family:var(--v2-serif);font-size:31px;font-weight:500;line-height:1.12;letter-spacing:normal;}
+.v2-category-card>.v2-category-copy>p:last-child{max-width:500px;margin:0;color:rgba(255,255,255,.72);font-size:15px;}
+.v2-category-card>a{position:relative;z-index:1;width:fit-content;margin-top:22px;padding:11px 15px;border:1px solid rgba(255,255,255,.64);border-radius:4px;color:#fff;background:rgba(18,14,40,.16);font-size:13px;font-weight:800;transition:transform .2s ease,color .2s ease,background .2s ease;}
 .v2-category-card>a:hover{transform:translateY(-2px);color:var(--v2-ink);background:#fff;}
 
 /* --- Agenda / Événements (provisoire, voir Lot 11) --- */
-.v2-events-section{padding-block:100px;background:#fff;}
+.v2-events-section{padding-block:120px;background:#fff;font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);}
+.v2-events-section .v2-section-heading{margin-bottom:46px;}
+/* h2 hérite en théorie color:var(--v2-ink) de .v2-events-section, mais la
+   règle globale h1,h2,h3,h4{color:var(--ink)} (ancien token, jamais
+   supprimée) cible l'élément directement et gagne sur l'héritage — surcharge
+   locale à cette section uniquement, .v2-section-heading étant partagé avec
+   [05]/[08] (hors de ce lot). */
+.v2-events-section .v2-section-heading h2{color:var(--v2-ink);}
 .v2-events-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:24px;}
-.v2-next-event{min-height:420px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:36px;border-radius:20px;color:#fff;background:radial-gradient(circle at 85% 15%,rgba(162,105,255,.75),transparent 29%),linear-gradient(135deg,#2d26dc,#6a2cf0 70%,#8d4dff);box-shadow:var(--v2-shadow);}
-.v2-next-event::after{content:"";position:absolute;width:300px;height:300px;right:-170px;bottom:-170px;border:1px solid rgba(255,255,255,.25);border-radius:50%;box-shadow:0 0 0 50px rgba(255,255,255,.035);}
+.v2-next-event{min-height:450px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:38px;border-radius:20px;color:#fff;background:radial-gradient(circle at 85% 15%,rgba(162,105,255,.75),transparent 29%),linear-gradient(135deg,#2d26dc,#6a2cf0 70%,#8d4dff);box-shadow:var(--v2-shadow);}
+.v2-next-event::after{content:"";position:absolute;width:320px;height:320px;right:-180px;bottom:-180px;border:1px solid rgba(255,255,255,.25);border-radius:50%;box-shadow:0 0 0 55px rgba(255,255,255,.035);}
 .v2-event-kicker{font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.13em;}
-.v2-event-date{display:flex;flex-direction:column;margin-top:40px;}
-.v2-event-date strong{font-family:var(--v2-serif);font-size:42px;font-weight:500;line-height:1;}
+.v2-event-date{display:flex;flex-direction:column;margin-top:45px;}
+.v2-event-date strong{font-family:var(--v2-serif);font-size:46px;font-weight:500;line-height:1;}
 .v2-event-date span{margin-top:8px;color:rgba(255,255,255,.66);font-size:13px;}
 .v2-event-body{margin-top:auto;}
 .v2-event-body p{margin:0 0 6px;color:#d9caff;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;}
-.v2-event-body h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:34px;font-weight:500;}
-.v2-event-body>span{display:block;max-width:450px;color:rgba(255,255,255,.73);font-size:14px;}
-.v2-next-event>a{position:relative;z-index:1;width:fit-content;margin-top:24px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.5);color:#fff;font-size:13px;font-weight:800;}
-.v2-past-events{padding:36px;border:1px solid var(--v2-line);border-radius:20px;background:var(--v2-paper);}
-.v2-past-event{min-height:120px;display:grid;grid-template-columns:96px 1fr auto;align-items:center;gap:18px;border-top:1px solid var(--v2-line);padding:18px 0;}
-.v2-past-event:first-child{border-top:0;padding-top:0;}
+.v2-event-body h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:38px;font-weight:500;letter-spacing:normal;}
+.v2-event-body>span{display:block;max-width:470px;color:rgba(255,255,255,.73);font-size:14px;}
+.v2-next-event>a{position:relative;z-index:1;width:fit-content;margin-top:26px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.5);color:#fff;font-size:13px;font-weight:800;}
+.v2-past-events{padding:38px;border:1px solid var(--v2-line);border-radius:20px;background:var(--v2-paper);}
+.v2-past-events .micro-label{margin:0 0 18px;color:#a077ff;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.13em;}
+.v2-past-event{min-height:134px;display:grid;grid-template-columns:105px 1fr auto;align-items:center;gap:20px;border-top:1px solid var(--v2-line);}
+.v2-past-event:first-child{border-top:0;}
+.v2-past-event:last-child{border-bottom:1px solid var(--v2-line);}
 .v2-past-event time{color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
 .v2-past-event div{display:flex;flex-direction:column;}
-.v2-past-event strong{font-family:var(--v2-serif);font-weight:500;font-size:19px;line-height:1.25;}
+.v2-past-event strong{font-family:var(--v2-serif);font-size:20px;line-height:1.25;}
 .v2-past-event span{color:var(--v2-muted);font-size:13px;}
 .v2-past-event b{color:var(--v2-violet);}
 
 /* --- Dernières parutions --- */
-.v2-books-section{padding-block:100px 120px;}
+.v2-books-section{padding-block:120px 135px;font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);}
+/* Même contournement local que pour [07] (voir plus haut) — h1..h4{color:
+   var(--ink)} (ancien token) l'emporte sur l'héritage, .v2-section-heading
+   étant partagé avec [05]/[07]. */
+.v2-books-section .v2-section-heading h2{color:var(--v2-ink);}
+.v2-books-section .v2-section-heading h2 em{color:var(--v2-violet);font-weight:500;}
+.v2-catalogue-link{justify-self:end;font-size:14px;font-weight:800;}
 .v2-books-grid{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:24px;align-items:stretch;}
 .v2-book-card{border:1px solid var(--v2-line);background:#fff;min-width:0;}
 .v2-book-card.main{display:grid;grid-template-columns:1.08fr .92fr;background:var(--v2-ink);color:#fff;}
-.v2-book-cover{display:block;position:relative;overflow:hidden;background:#161227;}
+/* Dans la maquette, .book-cover (un <a> resté display:inline) laisse le
+   height:100% de son img se résoudre à travers lui jusqu'à .book-card (696px,
+   stretché par .books-grid) — l'image finit par occuper toute la hauteur de
+   la carte, aspect-ratio:.665 étant de fait ignoré (mesure directe confirmée
+   : 694px sur les 3 couvertures). Cette mécanique ne se reproduit pas telle
+   quelle avec le wrapper CoverRollover (deux images en position:absolute
+   sans contenu de flux) : donner height:100% directement à .v2-book-cover
+   crée une dépendance circulaire avec le grid stretch de la carte "main" et
+   fait s'effondrer toute la rangée (testé, régression constatée). On
+   applique donc un ratio fixe stable (comportement proportionné et non
+   déformé, cohérent avec le rapport largeur/hauteur voulu) plutôt que le
+   remplissage total quirky de la maquette — écart mineur et volontaire,
+   signalé au référentiel comme CONTRÔLE MANUEL REQUIS plutôt que corrigé
+   à l'identique. */
+.v2-book-cover{display:block;position:relative;overflow:hidden;background:#161227;aspect-ratio:.665;}
 .v2-book-cover img{width:100%;height:100%;aspect-ratio:.665;object-fit:cover;transition:transform .35s ease;}
 .v2-book-card:hover .v2-book-cover img{transform:scale(1.025);}
+.v2-book-card.main .v2-book-cover{aspect-ratio:auto;}
 .v2-book-card.main .v2-book-cover img{aspect-ratio:auto;}
+/* CoverRollover (composant partagé avec /livres) applique object-fit:contain
+   par défaut (voir .cover-rollover .cr-front/.cr-back) — la maquette de la
+   grille livres de l'accueil attend object-fit:cover. Surcharge locale par
+   spécificité (3 classes), sans toucher à la règle partagée ni au composant,
+   pour ne pas affecter /livres ou /livres/[slug] (hors de ce lot). */
+.v2-book-cover .cover-rollover .cr-front,
+.v2-book-cover .cover-rollover .cr-back{object-fit:cover;}
 .v2-book-info{padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
-.v2-book-card.main .v2-book-info{padding:40px 32px;justify-content:center;}
+.v2-book-card.main .v2-book-info{padding:46px 34px;justify-content:center;}
 .v2-book-info>span{color:var(--v2-violet);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
 .v2-book-card.main .v2-book-info>span{color:#cbb8ff;}
-.v2-book-info h3{margin:14px 0 12px;font-family:var(--v2-serif);font-size:24px;font-weight:500;line-height:1.15;}
-.v2-book-card.main .v2-book-info h3{color:#fff;font-size:32px;}
+.v2-book-info h3{margin:14px 0 12px;font-family:var(--v2-serif);font-size:26px;font-weight:500;line-height:1.15;letter-spacing:normal;}
+.v2-book-card.main .v2-book-info h3{color:#fff;font-size:35px;}
 .v2-book-info p{color:var(--v2-muted);font-size:14px;}
 .v2-book-card.main .v2-book-info p{color:rgba(255,255,255,.6);}
 .v2-book-info a{margin-top:auto;padding-top:22px;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
@@ -2808,12 +2865,12 @@ footer.footer--dark{
 
 /* --- Capsule d'accueil (§ .confession-wrap/.confession-card), même
    principe que .v2-dew-* (Lot 3) --- */
-.v2-confession-wrap{position:relative;z-index:2;margin-top:22px;}
+.v2-confession-wrap{position:relative;z-index:2;margin-top:22px;font-family:var(--v2-sans);line-height:1.6;}
 .v2-confession-card{min-height:176px;display:grid;grid-template-columns:210px 170px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
 .v2-confession-meta{color:var(--v2-violet-deep);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.11em;}
 .v2-confession-label{align-self:stretch;display:grid;place-items:center;padding:18px 12px;border:1px solid rgba(109,49,242,.16);border-radius:12px;color:var(--v2-violet-deep);background:#ded3fa;text-align:center;white-space:nowrap;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
-.v2-confession-content blockquote{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:21px;font-weight:600;line-height:1.35;}
-.v2-confession-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
+.v2-confession-content blockquote{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.35;}
+.v2-confession-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:14px;font-weight:800;}
 
 /* --- 4e tuile de la vitrine de catégories --- */
 .v2-category-card.confess{background:linear-gradient(145deg,#8339ee,#5c20c4);}

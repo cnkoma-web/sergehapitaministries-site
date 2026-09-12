@@ -31,7 +31,7 @@ export default async function Header() {
       <input type="checkbox" id="v2-search-toggle" className="v2-search-toggle" />
       <div className="v2-wrap v2-main-nav">
         <Link href="/" className="v2-brand" aria-label="Accueil Serge Hapita Ministries">
-          <Image src="/logo.png" alt="Serge Hapita Ministries" width={170} height={64} priority />
+          <Image src="/logo.png" alt="Serge Hapita Ministries" width={188} height={63} priority />
         </Link>
         <DesktopNav nav={nav} />
         <div className="v2-nav-actions">
