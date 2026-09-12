@@ -1388,8 +1388,6 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .section-head .see-all:hover{color:var(--purple);}
 
 /* ===== NEWSLETTER ===== */
-.newsletter{background:var(--ink);color:#fff;}
-.newsletter .wrap{padding-top:70px;padding-bottom:70px;text-align:center;max-width:640px;}
 /* Bloc Newsletter (audit du 12/09, tous titres h1-h4 du site relus contre
    le CSS source du prototype) — jamais reconstruit en V2 depuis le début
    du chantier, entièrement pré-V2 malgré sa présence sur 15 des 23 pages :
@@ -1846,7 +1844,11 @@ footer.footer--dark{
    Repris de prototype-html/styles.css — utilisés par De Serge, Mission et
    les pages suivantes. Classes .v2-* (jamais .eyebrow/.button existants,
    déjà utilisés ailleurs sous d'autres définitions). */
-.v2-eyebrow{margin:0 0 25px;color:var(--v2-violet-deep);font-size:13px;font-weight:780;text-transform:uppercase;letter-spacing:.18em;display:flex;align-items:center;gap:12px;}
+/* .eyebrow (prototype) : hérite du sans-serif du body (Inter) — jamais
+   déclaré explicitement ici, héritait à tort du Manrope du body du site
+   réel (retour du 12/09, diff automatique confirmé par Serge — touche
+   potentiellement chaque eyebrow du site, cette règle étant partagée). */
+.v2-eyebrow{margin:0 0 25px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:780;text-transform:uppercase;letter-spacing:.18em;display:flex;align-items:center;gap:12px;}
 .v2-eyebrow span{width:34px;height:2px;background:currentColor;display:block;}
 .v2-eyebrow.light{color:#d9ccff;}
 .v2-button{min-height:52px;display:inline-flex;align-items:center;justify-content:center;gap:14px;border-radius:8px;padding:13px 22px;font-size:14px;font-weight:750;transition:transform .2s ease,background .2s ease;font-family:var(--v2-sans);}
@@ -2629,7 +2631,10 @@ footer.footer--dark{
 .v2-home-hero-inner{position:relative;min-height:520px;display:flex;align-items:center;padding-block:46px 92px;}
 .v2-home-hero-copy{width:min(720px,67%);}
 .v2-home-hero h1{margin:0;max-width:790px;color:#fff;font-family:var(--v2-serif);font-size:clamp(45px,5.5vw,76px);font-weight:500;line-height:1.03;letter-spacing:-.035em;}
-.v2-home-hero h1 em{color:#c8adff;font-weight:500;font-style:normal;}
+/* .hero h1 em (prototype) : aucun font-style déclaré → l'italique par
+   défaut d'un <em> reste actif — "font-style:normal" ajouté ici sans base
+   dans la maquette (retour du 12/09, diff automatique confirmé par Serge). */
+.v2-home-hero h1 em{color:#c8adff;font-weight:500;}
 .v2-home-hero-text{margin:30px 0 0;max-width:690px;color:rgba(255,255,255,.78);font-size:17px;line-height:1.75;}
 .v2-home-hero-summary{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;}
 .v2-home-hero-text a{display:inline-block;margin-top:5px;color:#fff;border-bottom:1px solid rgba(255,255,255,.5);font-weight:500;}
@@ -2640,7 +2645,14 @@ footer.footer--dark{
 .v2-dew-wrap{position:relative;z-index:3;margin-top:-78px;}
 .v2-dew-card{min-height:176px;display:grid;grid-template-columns:180px 200px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
 .v2-dew-label{align-self:stretch;display:grid;place-items:center;border-radius:12px;color:#fff;background:var(--v2-violet-deep);text-align:center;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
-.v2-dew-date{display:flex;flex-direction:column;gap:3px;color:var(--v2-muted);font-size:14px;grid-row:1;}
+/* grid-row:1 retiré (retour du 12/09, diff automatique confirmé par
+   Serge) — résidu de l'ancienne grille à 3 colonnes (avant l'ajout de la
+   colonne date), sans base dans la maquette (.dew-date n'a aucune
+   propriété grid-row/column) : un élément placé explicitement sur un axe
+   passe devant les éléments 100% automatiques dans l'algorithme de
+   placement, ce qui décalait .v2-dew-label (entièrement automatique) en
+   2e position au lieu de la 1re. */
+.v2-dew-date{display:flex;flex-direction:column;gap:3px;color:var(--v2-muted);font-size:14px;}
 .v2-dew-date span{color:var(--v2-violet-deep);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
 /* .dew-content h2 (prototype) : aucune graisse déclarée → gras 700 par
    défaut (même bug systémique que .related-articles h2/.archive-section h2/
@@ -2660,7 +2672,11 @@ footer.footer--dark{
 .v2-jesus-video-frame .play{position:absolute;inset:0;margin:auto;width:66px;height:66px;display:grid;place-items:center;border-radius:50%;color:var(--v2-ink);background:#fff;font-size:20px;}
 .v2-jesus-intro{padding:48px 40px;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(circle at 100% 0,rgba(133,64,244,.55),transparent 43%),linear-gradient(145deg,#20183d,#17142d);}
 .v2-jesus-intro .micro-label{margin:0 0 10px;color:#cdbbff;font-size:13px;font-weight:750;}
-.v2-jesus-intro h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:34px;font-weight:500;line-height:1.12;}
+/* .jesus-intro h3 (prototype) : 39px/1.09, valeur fixe (pas un clamp) —
+   approximée à 34px/1.12 ici (retour du 12/09, diff automatique confirmé
+   par Serge — écart vérifié à largeur de viewport strictement identique
+   des deux côtés, donc pas un effet de clamp/vw). */
+.v2-jesus-intro h3{margin:0;color:#fff;font-family:var(--v2-serif);font-size:39px;font-weight:500;line-height:1.09;}
 .v2-jesus-intro p:not(.micro-label){margin:18px 0 24px;color:rgba(255,255,255,.68);font-size:15px;line-height:1.6;}
 .v2-jesus-topics{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin-top:18px;border:1px solid var(--v2-line);background:#fff;}
 .v2-jesus-topics a{min-height:120px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:22px 18px;border-right:1px solid var(--v2-line);}
@@ -2678,9 +2694,15 @@ footer.footer--dark{
 .v2-category-card.dew{background:linear-gradient(145deg,#8b63db,#6d3cc5);}
 .v2-category-card.bible{background:linear-gradient(145deg,#5144dd,#3029a9);}
 .v2-category-card.life{background:linear-gradient(145deg,#2d2759,#17142d);}
-.v2-category-number{position:absolute;z-index:-1;top:15px;right:22px;color:rgba(255,255,255,.13);font-family:var(--v2-serif);font-size:clamp(88px,10vw,140px);line-height:.78;letter-spacing:-.08em;}
+/* .category-number (prototype) : clamp(96px,11vw,152px) — approximé à
+   clamp(88px,10vw,140px) (retour du 12/09, diff automatique confirmé par
+   Serge). */
+.v2-category-number{position:absolute;z-index:-1;top:15px;right:22px;color:rgba(255,255,255,.13);font-family:var(--v2-serif);font-size:clamp(96px,11vw,152px);line-height:.78;letter-spacing:-.08em;}
 .v2-category-copy{position:relative;z-index:1;margin:auto 0;}
-.v2-category-name{width:fit-content;margin:0 0 14px;padding:7px 12px;border-radius:999px;color:#fff;background:rgba(255,255,255,.12);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
+/* .category-name (prototype) : letter-spacing .12em — approximé à .1em
+   (retour du 12/09, diff automatique confirmé par Serge). Hérite du
+   sans-serif du body (Inter) dans les deux cas, jamais déclaré ici. */
+.v2-category-name{width:fit-content;margin:0 0 14px;padding:7px 12px;border-radius:999px;color:#fff;background:rgba(255,255,255,.12);font-family:var(--v2-sans);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.12em;}
 .v2-category-card.dew .v2-category-name{color:#4f238e;background:#eadcff;}
 .v2-category-card.bible .v2-category-name{color:#29299b;background:#dce0ff;}
 .v2-category-card.life .v2-category-name{color:#211b43;background:#d9d3ff;}
@@ -2747,6 +2769,9 @@ footer.footer--dark{
 @media (max-width:720px){
   .v2-jesus-topics{grid-template-columns:1fr;}
   .v2-jesus-topics a{border-right:0;border-bottom:1px solid var(--v2-line);}
+  /* .jesus-intro h3/.category-number (prototype, media 720px) */
+  .v2-jesus-intro h3{font-size:31px;}
+  .v2-category-number{top:18px;right:20px;font-size:104px;}
 }
 
 /* ============================================================
