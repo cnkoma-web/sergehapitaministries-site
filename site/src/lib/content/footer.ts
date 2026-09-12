@@ -20,6 +20,7 @@ export function getFooterColumns(): { title: string; links: FooterLink[] }[] {
     {
       title: "Ministère",
       links: [
+        { label: "Mission", href: "/mission" },
         { label: "Invitation", href: "/invitation" },
         { label: "Partenariat", href: "/partenariat" },
         { label: "Connaître Jésus", href: "/connaitre-jesus" },

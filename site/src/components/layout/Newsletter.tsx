@@ -36,7 +36,7 @@ export default function Newsletter() {
 
   return (
     <div className="newsletter" id="newsletter">
-      <div className="wrap newsletter-inner">
+      <div className="v2-wrap newsletter-inner">
         <div>
           <p className="v2-eyebrow light">
             <span /> Newsletter

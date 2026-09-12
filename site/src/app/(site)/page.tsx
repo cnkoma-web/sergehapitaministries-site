@@ -443,21 +443,21 @@ export default async function HomePage() {
           </div>
           <div className="v2-support-points">
             <div>
-              <b>I</b>
+              <b>01</b>
               <p>
                 <strong>Un ministère libre</strong>
                 <span>Entièrement soutenu par la générosité.</span>
               </p>
             </div>
             <div>
-              <b>II</b>
+              <b>02</b>
               <p>
                 <strong>Une Parole accessible</strong>
                 <span>Des enseignements diffusés au plus grand nombre.</span>
               </p>
             </div>
             <div>
-              <b>III</b>
+              <b>03</b>
               <p>
                 <strong>Une œuvre en mouvement</strong>
                 <span>Des livres, des missions et des actions concrètes.</span>
