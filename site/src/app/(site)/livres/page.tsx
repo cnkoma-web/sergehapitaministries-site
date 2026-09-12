@@ -121,7 +121,7 @@ export default async function LivresPage() {
           <p className="v2-eyebrow light" style={{ justifyContent: "center" }}>
             <span /> amDG Éditions
           </p>
-          <h2 style={{ color: "#fff", fontSize: 32, marginBottom: 16 }}>La maison d&apos;édition de Serge Hapita</h2>
+          <h2 style={{ color: "#fff", fontFamily: "var(--v2-serif)", fontWeight: 500, fontSize: 32, marginBottom: 16 }}>La maison d&apos;édition de Serge Hapita</h2>
           <p style={{ color: "rgba(255,255,255,.74)", marginBottom: 22 }}>
             Tous ces ouvrages sont publiés sous amDG Éditions, l&apos;une des activités portées par l&apos;association
             ActesDesFilsDeDieu.

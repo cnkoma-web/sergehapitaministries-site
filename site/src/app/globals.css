@@ -1390,15 +1390,40 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 /* ===== NEWSLETTER ===== */
 .newsletter{background:var(--ink);color:#fff;}
 .newsletter .wrap{padding-top:70px;padding-bottom:70px;text-align:center;max-width:640px;}
-.newsletter h2{color:#fff;font-size:30px;margin-bottom:12px;}
-.newsletter p{color:rgba(255,255,255,.6);font-size:15px;margin-bottom:30px;}
-.newsletter-form{display:flex;gap:10px;max-width:440px;margin:0 auto 14px;}
-.newsletter-form input{flex:1;padding:14px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-family:inherit;}
+/* Bloc Newsletter (audit du 12/09, tous titres h1-h4 du site relus contre
+   le CSS source du prototype) — jamais reconstruit en V2 depuis le début
+   du chantier, entièrement pré-V2 malgré sa présence sur 15 des 23 pages :
+   fond #1B1730 au lieu de #242038, disposition centrée sur une colonne
+   (max-width 640px) au lieu de la grille à 2 colonnes de la maquette,
+   h2 à 30px fixe Fraunces au lieu de Georgia clamp(38px,4.8vw,58px)/500,
+   aucun eyebrow, pas de label visible pour le champ e-mail (le texte
+   "Votre adresse e-mail" faisait à tort office de placeholder). Reproduit
+   maintenant fidèlement prototype-html/styles.css § .newsletter/
+   .newsletter-inner/.newsletter-form/.consent/.form-note — voir
+   Newsletter.tsx pour la structure (eyebrow + libellé de champ ajoutés,
+   fonctionnement réel MailerLite inchangé). */
+.newsletter{padding-block:90px;color:#fff;background:#242038;}
+.newsletter-inner{display:grid;grid-template-columns:1fr .85fr;gap:90px;align-items:end;text-align:left;max-width:none;}
+.newsletter h2{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(38px,4.8vw,58px);font-weight:500;line-height:1.06;letter-spacing:-.035em;}
+.newsletter-inner>div:first-child>p:not(.v2-eyebrow){margin:20px 0 0;max-width:620px;color:rgba(255,255,255,.62);font-family:var(--v2-sans);font-size:16px;line-height:1.6;}
+.newsletter-form label{display:block;margin-bottom:10px;color:rgba(255,255,255,.75);font-family:var(--v2-sans);font-size:13px;font-weight:700;}
+.newsletter-form>div{display:grid;grid-template-columns:1fr auto;padding:5px;border:1px solid rgba(255,255,255,.28);border-radius:9px;}
+.newsletter-form input{min-width:0;border:0;outline:0;padding:13px 15px;color:#fff;background:transparent;font-family:var(--v2-sans);font-size:15px;}
 .newsletter-form input::placeholder{color:rgba(255,255,255,.4);}
-.newsletter-form button{padding:14px 26px;border-radius:999px;background:var(--gradient);color:#fff;border:none;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;font-family:inherit;}
-.newsletter .fine{font-size:12px;color:rgba(255,255,255,.4);}
-.newsletter .consent{font-size:12px;color:rgba(255,255,255,.5);display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:14px;}
+.newsletter-form button{border:0;border-radius:6px;padding:12px 19px;color:#fff;background:var(--v2-violet);font-family:var(--v2-sans);font-size:14px;font-weight:750;cursor:pointer;white-space:nowrap;}
+.newsletter .consent,.newsletter-form .consent{margin:18px 0 0;display:flex;align-items:flex-start;justify-content:flex-start;gap:10px;color:rgba(255,255,255,.6);font-family:var(--v2-sans);font-size:13px;font-weight:400;text-align:left;}
+.newsletter .consent input{width:18px;height:18px;flex:0 0 auto;margin-top:2px;accent-color:var(--v2-violet);}
 .newsletter .consent span{display:inline;}
+.newsletter .form-note{margin:9px 0 0;color:rgba(255,255,255,.38);font-family:var(--v2-sans);font-size:12px;text-align:left;}
+@media (max-width:1100px){
+  .newsletter-inner{gap:55px;}
+}
+@media (max-width:720px){
+  .newsletter{padding-block:75px;}
+  .newsletter-inner{grid-template-columns:1fr;gap:48px;}
+  .newsletter-form>div{grid-template-columns:1fr;}
+  .newsletter-form button{min-height:46px;}
+}
 
 /* ===== FOOTER ===== */
 /* Variables par défaut = variante claire (pages avec newsletter juste au-dessus) */
@@ -1943,7 +1968,13 @@ footer.footer--dark{
 .v2-support-section{position:relative;overflow:hidden;padding-block:120px;color:#fff;background:linear-gradient(135deg,#2822d6 0%,#6a2cf0 62%,#8b35e8 100%);}
 .v2-support-orb{position:absolute;width:640px;height:640px;right:-230px;top:-280px;border:1px solid rgba(255,255,255,.18);border-radius:50%;box-shadow:0 0 0 110px rgba(255,255,255,.025),0 0 0 220px rgba(255,255,255,.02);}
 .v2-support-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:100px;align-items:center;}
-.v2-support-copy h2{color:#fff;max-width:650px;}
+/* .support-copy h2 (prototype) : Georgia, clamp(40px,5vw,64px), 500, 1.06,
+   -.035em (media 720px : 39px fixe) — n'avait AUCUNE règle de police ici,
+   retombait sur la taille par défaut du navigateur pour un h2 (24px, 1.5em)
+   — bug majeur trouvé le 12/09 en relisant tous les titres h1-h4 du site
+   contre le CSS source du prototype, un par un, avec vérification en
+   direct (getComputedStyle) plutôt qu'une supposition. */
+.v2-support-copy h2{color:#fff;max-width:650px;font-family:var(--v2-serif);font-size:clamp(40px,5vw,64px);font-weight:500;line-height:1.06;letter-spacing:-.035em;}
 .v2-support-copy>p:not(.v2-eyebrow){max-width:620px;margin:28px 0 34px;color:rgba(255,255,255,.74);font-size:17px;}
 .v2-support-points{border-top:1px solid rgba(255,255,255,.27);}
 .v2-support-points>div{display:grid;grid-template-columns:46px 1fr;gap:20px;padding:26px 0;border-bottom:1px solid rgba(255,255,255,.27);}
@@ -1953,7 +1984,12 @@ footer.footer--dark{
 .v2-support-points span{color:rgba(255,255,255,.67);font-size:14px;}
 
 .v2-community-section{padding-block:120px;display:grid;grid-template-columns:.8fr 1.2fr;gap:100px;align-items:start;}
-.v2-community-title h2{font-size:clamp(38px,4.3vw,58px);}
+/* .community-title h2 (prototype) : Georgia, clamp(38px,4.3vw,58px), 500,
+   1.06, -.035em — famille/graisse/interligne/espacement jamais déclarés
+   ici, rendait en Fraunces (500 correct par pure coïncidence avec la règle
+   globale pré-V2) — bug trouvé le 12/09, même relecture systématique que
+   .support-copy h2 ci-dessus. */
+.v2-community-title h2{font-family:var(--v2-serif);font-size:clamp(38px,4.3vw,58px);font-weight:500;line-height:1.06;letter-spacing:-.035em;}
 .v2-social-list{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--v2-line);}
 .v2-social-list a{min-height:122px;display:grid;grid-template-columns:48px 1fr auto;gap:15px;align-items:center;padding:24px;border-bottom:1px solid var(--v2-line);color:var(--v2-ink);}
 .v2-social-list a:nth-child(odd){border-right:1px solid var(--v2-line);}
@@ -2606,7 +2642,11 @@ footer.footer--dark{
 .v2-dew-label{align-self:stretch;display:grid;place-items:center;border-radius:12px;color:#fff;background:var(--v2-violet-deep);text-align:center;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
 .v2-dew-date{display:flex;flex-direction:column;gap:3px;color:var(--v2-muted);font-size:14px;grid-row:1;}
 .v2-dew-date span{color:var(--v2-violet-deep);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
-.v2-dew-content h2{margin:0 0 6px;font-family:var(--v2-serif);font-size:26px;font-weight:500;line-height:1.16;}
+/* .dew-content h2 (prototype) : aucune graisse déclarée → gras 700 par
+   défaut (même bug systémique que .related-articles h2/.archive-section h2/
+   .extra-card h2, trouvé en relisant TOUS les titres h1-h4 du site le
+   12/09 contre le CSS source des 4 fichiers du prototype). */
+.v2-dew-content h2{margin:0 0 6px;font-family:var(--v2-serif);font-size:26px;font-weight:700;line-height:1.16;}
 .v2-dew-content p{margin:0;color:var(--v2-muted);font-size:15px;line-height:1.5;}
 .v2-dew-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:13px;font-weight:800;}
 
@@ -2968,7 +3008,11 @@ footer.footer--dark{
 .v2-panier-page .cart-thumb{width:82px;aspect-ratio:2/3;overflow:hidden;border-radius:6px;background:#eeeaf8;}
 .v2-panier-page .cart-thumb.goodie{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;}
 .v2-panier-page .cart-item-info .type{color:var(--v2-violet-deep);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
-.v2-panier-page .cart-item-info h4{margin:4px 0 0;font-family:var(--v2-serif);font-size:20px;line-height:1.2;font-weight:600;}
+/* .cart-item h3 (prototype) : aucune graisse déclarée → gras 700 par
+   défaut, pas 600 (même bug systémique, trouvé le 12/09 en relisant tous
+   les titres h1-h4 du site). Le vrai DOM utilise un <h4>, pas un <h3> —
+   même défaut de graisse du navigateur pour les deux balises. */
+.v2-panier-page .cart-item-info h4{margin:4px 0 0;font-family:var(--v2-serif);font-size:20px;line-height:1.2;font-weight:700;}
 .v2-panier-page .cart-item-price{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
 .v2-panier-page .cart-item-price .price{color:var(--v2-ink);font-weight:750;}
 .v2-panier-page .qty-control{display:grid;grid-template-columns:30px 33px 30px;align-items:center;min-height:38px;border:1px solid var(--v2-line);border-radius:5px;}
@@ -2976,7 +3020,11 @@ footer.footer--dark{
 .v2-panier-page .qty-val{text-align:center;font-size:13px;font-weight:800;}
 .v2-panier-page .remove-item{border:0;padding:0;color:var(--v2-muted);background:transparent;font-size:11px;text-decoration:underline;cursor:pointer;}
 .v2-panier-page .cart-empty{padding:68px 26px;text-align:center;border:1px solid var(--v2-line);border-radius:12px;background:#fff;}
-.v2-panier-page .cart-empty h2{margin:18px 0 7px;font-family:var(--v2-serif);font-size:29px;color:var(--v2-ink);}
+/* .cart-empty h2 (prototype) : aucune graisse déclarée → gras 700 par
+   défaut — n'était jamais neutralisé ici, héritait à tort du 500 de la
+   règle globale pré-V2 h1,h2,h3,h4{font-weight:500} (même bug systémique,
+   trouvé le 12/09). */
+.v2-panier-page .cart-empty h2{margin:18px 0 7px;font-family:var(--v2-serif);font-size:29px;font-weight:700;color:var(--v2-ink);}
 .v2-panier-page .cart-empty p{margin:0 0 24px;color:var(--v2-muted);}
 .v2-panier-page .summary-card{position:sticky;top:24px;padding:25px;border:1px solid var(--v2-line);border-radius:12px;background:#fff;}
 .v2-panier-page .summary-card h3{margin:0;font-family:var(--v2-serif);font-size:24px;font-weight:600;}
@@ -3111,7 +3159,14 @@ footer.footer--dark{
 .v2-invitation-page form{margin-bottom:100px;overflow:hidden;border:1px solid var(--v2-line);border-radius:16px;background:#fff;box-shadow:0 20px 55px rgba(23,20,45,.08);}
 .inv-form-section{display:grid;grid-template-columns:190px minmax(0,1fr);gap:46px;margin:0;padding:42px 48px;border-bottom:1px solid var(--v2-line);}
 .inv-form-section:last-of-type{border-bottom:0;}
-.inv-form-section>h2{margin:0;padding:4px 0 0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.15;}
+/* .form-section-heading h2 (prototype) : Georgia, 23px, 600 — le sélecteur
+   ">h2" (enfant direct) ne matchait jamais le vrai h2, imbriqué un niveau
+   plus profond dans .form-section-heading (<span>01</span><h2>...</h2>) —
+   la règle pré-V2 .inv-form-section h2 (13px/700 majuscules violet, un
+   simple libellé, jamais neutralisée) s'appliquait donc à sa place. Bug
+   trouvé le 12/09 en relisant tous les titres h1-h4 du site — même classe
+   de bug que .category-article.featured>p sur les hubs QDLB/VS. */
+.v2-invitation-page .form-section-heading h2{margin:0;padding:4px 0 0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.15;text-transform:none;letter-spacing:normal;}
 .v2-invitation-page .field-label{display:block;margin-bottom:8px;color:var(--v2-ink-soft);font-size:13px;font-weight:750;}
 .v2-invitation-page .optional-tag{color:var(--v2-muted);font-size:11px;font-weight:500;}
 .v2-invitation-page input,.v2-invitation-page select,.v2-invitation-page textarea{width:100%;border:1px solid var(--v2-line);border-radius:7px;outline:0;color:var(--v2-ink);background:#fbfaff;font:500 16px var(--v2-sans);margin-bottom:14px;}
@@ -3142,7 +3197,11 @@ footer.footer--dark{
 .v2-donation-copy h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(39px,5vw,59px);font-weight:500;line-height:1.08;letter-spacing:-.035em;}
 .v2-donation-copy p{margin:25px 0 0;color:var(--v2-muted);font-size:16px;line-height:1.75;}
 .donate-card{padding:36px;border:1px solid rgba(79,37,216,.14);border-radius:16px;background:#fff;box-shadow:0 24px 65px rgba(36,24,82,.13);}
-.donate-card h2{margin:0 0 10px;font-family:var(--v2-serif);font-size:29px;font-weight:600;color:var(--v2-ink);}
+/* .donation-card h3 (prototype) : Georgia, 29px, 600 — la règle ciblait à
+   tort un h2, alors que le vrai DOM (DonateWidget.tsx) porte un <h3> ;
+   retombait donc sur le pré-V2 (Fraunces, 500, ~18.72px) — bug trouvé le
+   12/09 en relisant tous les titres h1-h4 du site. */
+.donate-card h3{margin:0 0 10px;font-family:var(--v2-serif);font-size:29px;font-weight:600;color:var(--v2-ink);}
 .donate-card>p{margin:0 0 25px;color:var(--v2-muted);font-size:13px;}
 .donate-card .v2-choice-label{display:block;margin:24px 0 10px;color:var(--v2-ink-soft);font-size:13px;font-weight:800;}
 .freq-toggle{display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:8px;background:#f0edf6;}
