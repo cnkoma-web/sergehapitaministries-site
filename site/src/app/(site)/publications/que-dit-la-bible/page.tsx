@@ -50,7 +50,10 @@ export default async function QueDitLaBiblePage({ searchParams }: { searchParams
           ) : (
             <CategoryHubFeed articles={articles} type="qdlb" showFeatured={page === 1} />
           )}
-          {total > 0 && (
+          {/* Même correction que La Vie Supérieure (audit Phase B, 13/09) :
+              pagination masquée s'il n'y a qu'une page, par cohérence — sans
+              effet visible ici tant qu'il y a plus de PER_PAGE articles. */}
+          {total > PER_PAGE && (
             <div className="v2-category-hub-pagination">
               <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/que-dit-la-bible" showPerPageSelector={false} />
             </div>

@@ -51,31 +51,35 @@ export default async function PublicationsPage({
     // Flux et pagination réels inchangés (getArticlesFeed, Pagination) —
     // voir globals.css § .v2-pub-page pour le détail de l'habillage.
     <div className="v2-pub-page">
+      {/* Audit Phase B (13/09) — reproduit fidèlement publications/index.html
+          § .pub-hero : pas d'eyebrow (absent de la maquette, supprimé),
+          grille 2 colonnes (h1 seul à gauche, tuiles de catégories PUIS
+          chapô à droite), micro-labels et libellé "Que dit la Bible ?"
+          repris mot pour mot de la maquette. */}
       <section className="v2-pub-hero">
         <div className="v2-wrap v2-pub-hero-inner">
-          <p className="v2-eyebrow light">
-            <span /> Enseignement &amp; encouragement
-          </p>
           <h1>Publications</h1>
-          <p>{description}</p>
-          <nav className="v2-pub-hero-links" aria-label="Catégories de publications">
-            <Link href="/publications/que-dit-la-bible">
-              <small>Enseignement</small>
-              <strong>Que dit la Bible ?</strong>
-            </Link>
-            <Link href="/publications/la-vie-superieure">
-              <small>Membres</small>
-              <strong>La Vie Supérieure</strong>
-            </Link>
-            <Link href="/rosee-matinale">
-              <small>Chaque jour</small>
-              <strong>Rosée Matinale</strong>
-            </Link>
-            <Link href="/publications/je-confesse-et-declare">
-              <small>Chaque jour</small>
-              <strong>Je Confesse</strong>
-            </Link>
-          </nav>
+          <div className="v2-pub-hero-side">
+            <nav className="v2-pub-hero-links" aria-label="Catégories de publications">
+              <Link href="/publications/que-dit-la-bible">
+                <small>Examiner</small>
+                <strong>Que dit la Bible ?</strong>
+              </Link>
+              <Link href="/publications/la-vie-superieure">
+                <small>Approfondir</small>
+                <strong>La Vie Supérieure</strong>
+              </Link>
+              <Link href="/rosee-matinale">
+                <small>Commencer le jour</small>
+                <strong>Rosée Matinale</strong>
+              </Link>
+              <Link href="/publications/je-confesse-et-declare">
+                <small>Proclamer</small>
+                <strong>Je Confesse</strong>
+              </Link>
+            </nav>
+            <p className="v2-pub-hero-copy">{description}</p>
+          </div>
         </div>
       </section>
 
@@ -93,7 +97,9 @@ export default async function PublicationsPage({
               ))}
             </div>
           )}
-          {qbVs.total > 0 && (
+          {/* Même correction que les hubs par catégorie (audit Phase B,
+              13/09) : pagination masquée s'il n'y a qu'une page. */}
+          {qbVs.total > PER_PAGE && (
             <Pagination page={page} perPage={PER_PAGE} total={qbVs.total} basePath="/publications" showPerPageSelector={false} />
           )}
         </div>

@@ -51,7 +51,13 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
           ) : (
             <CategoryHubFeed articles={articles} type="vs" showFeatured={page === 1} />
           )}
-          {total > 0 && (
+          {/* Bug réel corrigé (audit Phase B, 13/09) : la pagination
+              s'affichait même sur une seule page (2 articles < PER_PAGE),
+              alors que la maquette (2 articles ici) n'a AUCUNE pagination —
+              contrairement à Que dit la Bible (6 articles, 2 pages), qui
+              en a une. Condition alignée sur "plus d'une page nécessaire",
+              jamais sur la seule présence de contenu. */}
+          {total > PER_PAGE && (
             <div className="v2-category-hub-pagination">
               <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/la-vie-superieure" showPerPageSelector={false} />
             </div>
