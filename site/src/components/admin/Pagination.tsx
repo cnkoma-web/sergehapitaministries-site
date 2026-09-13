@@ -19,6 +19,13 @@ type Props = {
    * une règle fixe imposée par le cahier (ex. 7 publications/page sur les
    * hubs), pas un réglage laissé au visiteur. */
   showPerPageSelector?: boolean;
+  /** Masque le texte "Affichage X–Y sur Z" (retour de validation humaine,
+   * hubs Publications, 13/09) — la maquette des hubs (Publications/Que dit
+   * la Bible/La Vie Supérieure) n'affiche jamais ce compteur, seule la nav
+   * ‹ 1 2 › alignée à gauche. Par défaut à true (comportement inchangé
+   * partout ailleurs : admin, archive Rosée Matinale qui, elle, prévoit
+   * bien ce compteur à gauche). */
+  showCount?: boolean;
 };
 
 // Pagination réutilisable — admin ET partie publique (cahier Partie 5 §6.1 :
@@ -34,6 +41,7 @@ export default function Pagination({
   pageParam = "page",
   perPageParam = "perPage",
   showPerPageSelector = true,
+  showCount = true,
 }: Props) {
   const totalPages = Math.max(1, Math.ceil(total / perPage));
   const from = total === 0 ? 0 : (page - 1) * perPage + 1;
@@ -55,6 +63,7 @@ export default function Pagination({
 
   return (
     <div className="pagination">
+      {showCount && (
       <div>
         Affichage {from}–{to} sur {total}
         {showPerPageSelector && (
@@ -80,6 +89,7 @@ export default function Pagination({
           </>
         )}
       </div>
+      )}
       {/* scroll={false} sur les 3 liens (retour du 05/09) — changer de page
           ne doit pas ramener la position de lecture en haut de la page
           (comportement par défaut de next/link), constaté sur l'archive

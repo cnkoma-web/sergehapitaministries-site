@@ -90,10 +90,13 @@ export default function RoseeMatinaleContent({
         </section>
       )}
 
-      {/* Padding resserré (retour du 30/08) : le .section générique (88px)
-          créait un vide trop marqué avec le chapeau au-dessus et l'archive
-          en dessous. */}
-      <section className="section" style={{ paddingTop: 32, paddingBottom: 24 }}>
+      {/* Recontrôle validation humaine (13/09) : le padding resserré du
+          30/08 (32px) créait au contraire un déficit de respiration entre
+          le chapeau et le corps par rapport à la maquette — .entry-body-
+          section est bien padding:88px 0 34px (mesuré et confirmé), la
+          réduction précédente n'était pas une exception validée dans ce
+          chantier. Restauré à la valeur exacte de la maquette. */}
+      <section className="section" style={{ paddingTop: 88, paddingBottom: 34 }}>
         {/* Reprise Phase B renforcée (13/09) : var(--content-col) vaut
             695px, pensé pour la colonne de lecture des pages article — la
             maquette de CETTE page (.entry-body) est en réalité

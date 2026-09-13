@@ -55,7 +55,7 @@ export default async function QueDitLaBiblePage({ searchParams }: { searchParams
               effet visible ici tant qu'il y a plus de PER_PAGE articles. */}
           {total > PER_PAGE && (
             <div className="v2-category-hub-pagination">
-              <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/que-dit-la-bible" showPerPageSelector={false} />
+              <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/que-dit-la-bible" showPerPageSelector={false} showCount={false} />
             </div>
           )}
         </div>

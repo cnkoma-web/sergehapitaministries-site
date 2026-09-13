@@ -2379,7 +2379,11 @@ footer.footer--dark{
 /* .feed-entry h3 (base + cascade) : margin 18px 0 10px, clamp(28px,3vw,37px),
    letter-spacing -.018em — pas 26-34px/-.015em. */
 .v2-pub-page .feed-item h3{margin:18px 0 10px;font-size:clamp(28px,3vw,37px);font-weight:500;line-height:1.12;letter-spacing:-.018em;color:var(--v2-ink);font-family:var(--v2-serif);}
-.v2-pub-page .feed-item h3 a:hover,.v2-pub-page .feed-item h3 a:active{color:var(--v2-violet-deep);}
+/* Recontrôle validation humaine (13/09) : la maquette ne change PAS la
+   couleur du titre au survol sur les cartes du jour (.daily-reminder h2 a
+   — pas de règle CSS dédiée, contrairement à .feed-entry h3 a:hover du
+   flux principal) — exclu explicitement ici, jamais par analogie. */
+.v2-pub-page .feed-section .feed-item h3 a:hover,.v2-pub-page .feed-section .feed-item h3 a:active{color:var(--v2-violet-deep);}
 .v2-pub-page .excerpt{max-width:860px;color:var(--v2-muted);font-family:var(--v2-serif);font-size:17px;line-height:1.75;}
 .v2-pub-page .excerpt a:hover,.v2-pub-page .excerpt a:active{color:var(--v2-violet-deep);}
 /* .feed-entry p strong (maquette) : .78em, 800, nowrap — pas .8em sans
@@ -2588,9 +2592,18 @@ footer.footer--dark{
 /* .rm-hero-date (prototype) : hérite du sans-serif du body (Inter), 13px, graisse normale — la règle pré-V2 imposait à tort gras/majuscules/espacement */
 .v2-rm-page .rm-photo-hero .date{color:#e5dcff;font-family:var(--v2-sans);font-size:13px;font-weight:400;text-transform:none;letter-spacing:normal;}
 /* .rm-hero-meta (prototype) : hérite aussi du sans-serif du body (Inter), 12px, graisse normale — la police pré-V2 (Manrope, jamais explicitement corrigée ici) ne correspondait pas */
-.v2-rm-page .rm-photo-hero .article-meta{color:#d7c9ff;font-family:var(--v2-sans);font-size:12px;font-weight:400;}
-.v2-rm-page .rm-quote-zone{background:var(--v2-violet-pale);}
+.v2-rm-page .rm-photo-hero .article-meta{gap:12px 20px;flex-wrap:wrap;justify-content:center;color:#d7c9ff;font-family:var(--v2-sans);font-size:12px;font-weight:400;}
+.v2-jc-hero .article-meta{gap:12px 20px;flex-wrap:wrap;justify-content:center;}
+/* Recontrôle validation humaine (13/09) : .rm-chapeau (maquette) est
+   padding:54px 0 (haut ET bas identiques), pas 64px/32px (ancienne règle
+   .rm-quote-zone, jamais réécrite ici). */
+.v2-rm-page .rm-quote-zone{padding:54px 0;background:var(--v2-violet-pale);}
 /* .rm-chapeau blockquote::before (prototype) : hérite Georgia italique du blockquote parent, 72px, line-height .8 */
+/* Recontrôle validation humaine (13/09) : .rm-chapeau blockquote (maquette)
+   est width:min(880px,calc(100% - 48px)), pas 640px (ancienne règle
+   .rm-quote-wrap) — le chapeau était visiblement trop étroit, texte
+   comprimé sur davantage de lignes que la maquette. */
+.v2-rm-page .rm-quote-wrap{max-width:min(880px,calc(100% - 48px));}
 .v2-rm-page .rm-quote-mark{color:var(--v2-violet);opacity:1;font-family:var(--v2-serif);font-style:italic;font-weight:500;font-size:72px;line-height:.8;}
 /* .rm-chapeau blockquote (prototype) : Georgia, clamp(25px,3.3vw,39px), 500, italique, 1.4, centré (mobile 25px fixe) */
 .v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-weight:500;font-style:italic;line-height:1.4;text-align:center;}
@@ -2644,7 +2657,13 @@ footer.footer--dark{
    Serge : la maquette fait foi sur la structure autant que sur le style)
    contre prototype-html/publications.css § .archive-section/.archive-intro/
    .archive-list/.archive-row/.archive-pagination. */
-.v2-rm-page .rm-archive{background:var(--v2-violet-pale);padding:76px 0 96px;}
+/* Recontrôle validation humaine (13/09) : la maquette utilise EXACTEMENT
+   la même couleur de fond (#f4f1ff) pour .related-section ET
+   .archive-section — un seul fond continu visuellement — alors que la V2
+   utilisait var(--v2-violet-pale) (#eee8ff, un ton différent, hérité de
+   l'ancien design) pour l'archive seule. Couleur et padding exacts
+   restaurés (78px 0 100px, pas 76px 0 96px). */
+.v2-rm-page .rm-archive{background:#f4f1ff;padding:78px 0 100px;}
 /* Même bug que .related-articles ci-dessus : .wrap ancienne (padding
    0 28px) au lieu de la vraie maquette (aucun padding) — archiveList
    mesuré 1124px/x=78 au lieu de 1180px/x=50. */
@@ -2711,7 +2730,12 @@ footer.footer--dark{
    n'y était définie non plus). */
 .v2-article-page .related-articles h2,.v2-rm-page .related-articles h2{font-family:var(--v2-serif);font-size:39px;font-weight:700;letter-spacing:normal;text-align:left;color:var(--v2-ink);}
 .v2-article-page .related-grid,.v2-rm-page .related-grid{gap:18px;}
-.v2-article-page .related-card,.v2-rm-page .related-card{position:relative;padding:28px 26px;border:1px solid rgba(79,37,216,.14);border-radius:14px;background:#fff;box-shadow:0 13px 34px rgba(23,20,45,.07);}
+/* Décision validée (13/09) : hauteur identique pour les 3 cartes, chapeau
+   limité à 4 lignes visibles puis troncature, CTA toujours aligné au même
+   niveau — la maquette prévoit min-height:240px + flex-direction:column
+   (jamais ajoutés ici), la quantité de texte ne doit jamais changer la
+   hauteur d'une carte. */
+.v2-article-page .related-card,.v2-rm-page .related-card{position:relative;display:flex;flex-direction:column;min-height:240px;padding:28px 26px;border:1px solid rgba(79,37,216,.14);border-radius:14px;background:#fff;box-shadow:0 13px 34px rgba(23,20,45,.07);}
 .v2-article-page .related-card::before,.v2-rm-page .related-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(#6d31f2,#a985ff);}
 /* .related-card time (prototype) : hérite du sans-serif du body (Inter),
    letter-spacing .035em — héritait à tort du Manrope pré-V2, espacement
@@ -2731,10 +2755,10 @@ footer.footer--dark{
 .v2-article-page .related-card h3,.v2-rm-page .related-card h3{margin:16px 0 10px;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.25;letter-spacing:normal;color:var(--v2-ink);}
 .v2-article-page .related-card h3 a:hover,.v2-rm-page .related-card h3 a:hover{color:var(--v2-violet-deep);}
 /* .related-card p (prototype) : Georgia 17px/1.65 — écart trouvé (16px/1.6) */
-.v2-article-page .related-card-excerpt,.v2-rm-page .related-card-excerpt{color:var(--v2-muted);font-family:var(--v2-serif);font-size:17px;line-height:1.65;}
+.v2-article-page .related-card-excerpt,.v2-rm-page .related-card-excerpt{color:var(--v2-muted);font-family:var(--v2-serif);font-size:17px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
 .v2-article-page .related-card-excerpt a:hover,.v2-rm-page .related-card-excerpt a:hover{color:var(--v2-violet-deep);}
 /* .related-card-link (prototype) : hérite aussi de l'Inter du body */
-.v2-article-page .related-card-link,.v2-rm-page .related-card-link{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:800;}
+.v2-article-page .related-card-link,.v2-rm-page .related-card-link{margin-top:auto;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:800;}
 
 @media (max-width:720px){
   .v2-article-page .article-header{padding:64px 0 52px;}
@@ -3009,7 +3033,10 @@ footer.footer--dark{
    exactes données par Serge : fond violet permanent → image de la
    proclamation en filigrane (30%, cover, centrée) → dégradé violet →
    verset+référence permanents → séparateur → capsule/date/durée/vues. */
-.v2-jc-hero{position:relative;min-height:420px;display:flex;align-items:center;isolation:isolate;overflow:hidden;padding:70px 0;color:#fff;background:linear-gradient(135deg,#17122d 0%,#37205f 52%,#7452ad 100%);}
+/* Recontrôle validation humaine (13/09) : .rm-hero (base, maquette) est
+   min-height:560px/padding:80px 0, pas 420px/70px — hauteur du hero
+   visiblement trop faible. */
+.v2-jc-hero{position:relative;min-height:560px;display:flex;align-items:center;isolation:isolate;overflow:hidden;padding:80px 0;color:#fff;background:linear-gradient(135deg,#17122d 0%,#37205f 52%,#7452ad 100%);}
 .v2-jc-hero-image{position:absolute;z-index:-2;inset:0;background-size:cover;background-position:center;opacity:.3;}
 .v2-jc-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(20,14,40,.78),rgba(76,49,124,.28),rgba(23,15,44,.48));}
 .v2-jc-hero-copy{position:relative;max-width:860px;margin:0 auto;text-align:center;}
@@ -3018,13 +3045,21 @@ footer.footer--dark{
 .v2-jc-hero-context{width:min(600px,100%);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.34);}
 /* .rm-hero .category-badge (prototype, s'applique aussi à .confess-hero) :
    24px, pas 22px — écart trouvé (retour du 11/09, audit typographique). */
-.v2-jc-badge{display:block;margin:0 auto 13px;color:#fff;font-family:var(--v2-serif);font-size:24px;font-weight:600;letter-spacing:0;text-transform:none;}
+/* Bug réel corrigé (validation humaine, 13/09) : la vraie pastille de la
+   maquette (.feed-badge,.category-badge : inline-flex, padding 5px 10px,
+   border-radius 999px) manquait entièrement ici — rendu en texte nu
+   blanc/24px sans fond ni forme. .badge-confess{color:var(--violet-deep);
+   background:#ded3fa} restaure la couleur lavande/rose caractéristique de
+   Je Confesse (même principe que le badge de Rosée Matinale, déjà
+   corrigé, mais avec sa propre couleur — jamais par analogie). */
+.v2-jc-badge{display:inline-flex;align-items:center;width:fit-content;min-height:28px;padding:5px 10px;border-radius:999px;margin:0 auto 13px;color:var(--v2-violet-deep);background:#ded3fa;font-family:var(--v2-serif);font-size:24px;font-weight:600;letter-spacing:0;text-transform:none;}
 /* .rm-hero-date/.rm-hero-meta (prototype) : héritent du sans-serif du body
    (Inter) — jamais explicite ici, héritaient à tort du Manrope pré-V2. */
 .v2-jc-date{display:block;color:#e5dcff;font-size:13px;font-family:var(--v2-sans);font-weight:400;}
 .v2-jc-hero-context .article-meta{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:13px;color:#d7c9ff;font-size:12px;font-family:var(--v2-sans);font-weight:400;}
 .v2-jc-body-html{margin-bottom:20px;color:#343044;font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
-.v2-jc-chapeau{padding:54px 0;background:#f3edff;}
+/* .confess-signature (maquette) : bordures haut/bas manquantes ici. */
+.v2-jc-chapeau{padding:54px 0;background:#f3edff;border-top:1px solid rgba(79,37,216,.12);border-bottom:1px solid rgba(79,37,216,.12);}
 .v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
 .v2-jc-chapeau cite{display:block;margin-top:18px;color:#4f25d8;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
 

@@ -90,7 +90,26 @@ export default function PublicationFeedItem({
       : article.type === "jc"
         ? `/publications/je-confesse-et-declare/${article.article_date}`
         : `/publications/${article.slug}`;
-  const rawExcerpt = article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || "");
+  // Je Confesse (retour de validation humaine, 13/09) : article.title vaut
+  // toujours "Je Confesse — [date]" (voir admin/publications/actions.ts),
+  // une étiquette technique interne, jamais un vrai titre éditorial — la
+  // maquette (§ .confess-reminder) met la première phrase de la
+  // proclamation en tête (comme un titre), le reste du corps ensuite en
+  // chapeau. Reproduit ici dynamiquement à partir du vrai corps de
+  // l'article (jamais de contenu en dur) : aucun impact sur les autres
+  // types (rm/qdlb/vs), qui gardent leur vrai titre éditorial.
+  const isConfession = article.type === "jc";
+  function splitFirstSentence(text: string): { first: string; rest: string } {
+    const m = text.match(/^(.*?[.!?])(\s+|$)/);
+    if (!m) return { first: text, rest: "" };
+    return { first: m[1], rest: text.slice(m[0].length) };
+  }
+  const confessionBody = isConfession && article.body ? stripHtml(article.body) : "";
+  const { first: confessionHeadline, rest: confessionRest } = splitFirstSentence(confessionBody);
+  const displayTitle = isConfession ? confessionHeadline || article.title : article.title;
+  const rawExcerpt = isConfession
+    ? confessionRest
+    : article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || "");
   const dateLabel = new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const ctaLabel = variant === "home" ? HOME_CTA_LABEL[article.type] : CTA_LABEL[article.type];
   // 3 lignes minimum (retour du 05/09) — plancher appliqué ici, un seul
@@ -133,7 +152,7 @@ export default function PublicationFeedItem({
           </span>
         </div>
         <h3>
-          <Link href={href}>{article.title}</Link>
+          <Link href={href}>{displayTitle}</Link>
         </h3>
         <p className="excerpt">
           <Link href={href}>

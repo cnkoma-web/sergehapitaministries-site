@@ -106,7 +106,7 @@ export default async function PublicationsPage({
           {/* Même correction que les hubs par catégorie (audit Phase B,
               13/09) : pagination masquée s'il n'y a qu'une page. */}
           {qbVs.total > PER_PAGE && (
-            <Pagination page={page} perPage={PER_PAGE} total={qbVs.total} basePath="/publications" showPerPageSelector={false} />
+            <Pagination page={page} perPage={PER_PAGE} total={qbVs.total} basePath="/publications" showPerPageSelector={false} showCount={false} />
           )}
         </div>
       </section>

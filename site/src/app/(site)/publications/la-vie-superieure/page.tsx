@@ -59,7 +59,7 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
               jamais sur la seule présence de contenu. */}
           {total > PER_PAGE && (
             <div className="v2-category-hub-pagination">
-              <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/la-vie-superieure" showPerPageSelector={false} />
+              <Pagination page={page} perPage={PER_PAGE} total={total} basePath="/publications/la-vie-superieure" showPerPageSelector={false} showCount={false} />
             </div>
           )}
         </div>
