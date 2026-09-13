@@ -111,7 +111,16 @@ export default async function JeConfesseContent({
         </blockquote>
       </section>
 
-      <section className="section" style={{ paddingTop: 32, paddingBottom: 24 }}>
+      {/* padding (recontrôle validation humaine, 13/09) : la maquette
+          combine .entry-body-section (padding:88px 0 34px) ET
+          .confession-actions-section (padding-top:0) sur cette même
+          section — soit padding-top:0/padding-bottom:34px, pas 32/24
+          (valeurs approximatives jamais mesurées contre la maquette). Ce
+          padding-top:0 fait que le like-block touche exactement le bas du
+          chapeau, sans le moindre espace blanc entre les deux — voir
+          .v2-jc-page .like-block ci-dessous pour la suite de ce même
+          écart (bordure "flottante" dans l'espace blanc). */}
+      <section className="section" style={{ paddingTop: 0, paddingBottom: 34 }}>
         {/* Même correction que ci-dessus (largeur réelle .entry-body,
             sans le padding de .wrap). */}
         <div style={{ maxWidth: "min(790px, calc(100% - 48px))", margin: "0 auto" }}>

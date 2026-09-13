@@ -819,6 +819,13 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .share-icon{display:flex;align-items:center;justify-content:center;width:21px;height:21px;transition:transform .15s;}
 .share-icon:hover{transform:scale(1.15);}
 .share-icon svg{width:100%;height:100%;}
+/* Glyphes monochromes (recontrôle validation humaine, 13/09) : reproduit
+   prototype-html/publications.css § .share-icon svg/.share-icon .filled à
+   l'identique — les pictogrammes (ShareCartouche.tsx) ne portent plus de
+   couleur de marque en dur, seulement currentColor/.filled, universel
+   (comme dans la maquette, un seul jeu d'icônes pour toutes les pages). */
+.share-icon svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.share-icon .filled{fill:currentColor;stroke:none;}
 /* Feedback "Lien copié !" (retour du 05/09, 4e passage) — centré sous la
    rangée plutôt qu'un simple changement d'opacité, facile à manquer.
    D'abord tenté en bulle au-dessus de l'icône : invisible sur mobile,
@@ -839,15 +846,12 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    RoseeMatinaleContent.tsx) — cette zone ne contient plus que le bloc de
    partage lui-même. */
 .share-zone{background:var(--purple);padding:16px 0;}
-/* Icônes des réseaux sociaux en blanc sur ce fond plein (retour du 07/09)
-   — sinon, certaines (Facebook bleu, WhatsApp vert...) restent lisibles
-   mais l'icône "Copier le lien" (gris clair) et "E-mail" s'y fondent
-   visuellement. Cible les attributs fill/stroke directement (les couleurs
-   de marque sont posées en attributs de présentation SVG, pas en CSS) —
-   jamais fill="none" du cadre de l'icône "Copier", qui doit rester
-   transparent, seul son trait passe en blanc. */
-.share-zone .share-icon svg path[fill]{fill:#fff !important;}
-.share-zone .share-icon svg[stroke]{stroke:#fff !important;}
+/* Icônes en blanc sur ce fond plein (retour du 07/09, mécanisme corrigé le
+   13/09) : désormais via `color` + currentColor (voir .share-icon svg
+   ci-dessus), plus besoin de forcer fill/stroke en !important sur des
+   attributs de présentation qui n'existent plus depuis le retrait des
+   couleurs de marque en dur. */
+.share-zone .share-icon{color:#fff;}
 /* Zone tactile minimale 44×44 sur mobile (retour du 05/09) — norme
    d'accessibilité tactile reconnue par Apple et Google, en dessous de
    laquelle une icône est trop petite pour un doigt. Sur mobile, SMS
@@ -3070,6 +3074,24 @@ footer.footer--dark{
 .v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
 .v2-jc-chapeau cite{display:block;margin-top:18px;color:#4f25d8;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
 
+/* Bug réel corrigé (validation humaine, 13/09) : .like-block (composant
+   partagé LikeButton, base non-v2) porte margin:32px 0 + padding-top:24px
+   + border-top:1px solid var(--line) — var(--line) vaut ici #E2DCF3, une
+   teinte opaque bien visible, alors que la maquette (.like-row) utilise sa
+   propre var(--line): rgba(23,20,45,.13), quasi imperceptible. Pire :
+   avec le padding-top:32 de la section englobante (corrigé ci-dessus à 0)
+   ET le margin:32px de .like-block lui-même, la bordure flottait au
+   milieu d'un vide blanc de 64px sous le chapeau — parfaitement visible,
+   alors que dans la maquette .like-row n'a AUCUNE marge et son
+   border-top tombe exactement sur le bord inférieur du chapeau (0px
+   d'écart, mesuré via getBoundingClientRect() sur le rendu réel de la
+   maquette), s'y fondant visuellement au point de sembler absent — ce
+   qu'a signalé la validation humaine. Reproduit ici à l'identique
+   (padding:30px 0, sans marge, couleur exacte de la maquette), scopé à
+   Je Confesse uniquement — Rosée Matinale et les pages article, qui
+   réutilisent aussi .like-block, restent inchangées. */
+.v2-jc-page .like-block{margin:0;padding:30px 0;border-top-color:var(--v2-line);}
+
 /* Section "Version audio" (§ .confession-audio, restaurée le 13/09 après
    validation humaine) : omise à tort le 11/09 au motif que /podcast/
    n'existait pas encore (Lot 9) — la route existe désormais. L'habillage
@@ -3091,6 +3113,14 @@ footer.footer--dark{
   .v2-jc-audio-inner h2{font-size:20px;}
   .v2-jc-audio-inner>a{grid-column:2;justify-self:start;}
 }
+
+/* SMS visible sur desktop (recontrôle validation humaine, 13/09) : la
+   maquette Je Confesse affiche SMS comme un bouton normal parmi les 8,
+   sans condition d'appareil — @media(hover:hover) le masque ailleurs
+   (décision produit du 05/09, distincte de la conformité visuelle, non
+   remise en cause hors de cette page). Sélecteur de classe (0,2,0),
+   l'emporte sur la règle générale qu'il soit dans la media query ou non. */
+.v2-jc-page .share-icon-sms{display:flex;}
 
 /* --- Capsule d'accueil (§ .confession-wrap/.confession-card), même
    principe que .v2-dew-* (Lot 3) --- */
