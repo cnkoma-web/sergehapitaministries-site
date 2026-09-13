@@ -360,25 +360,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </div>
           )}
 
-          {/* Accessible à tout le monde, sans compte (Que Dit la Bible reste
-              public). */}
-          <LikeButton articleId={article.id} initialCount={article.like_count} mode="public" />
         </div>
       </section>
 
-      {/* Zone de partage --purple pleine, toujours juste après
-          .entry-body-section (prototype). */}
-      <section className="share-zone">
-        <div className="content-col">
-          <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
-        </div>
-      </section>
-
-      {/* "Prière & Déclaration" / "Aller plus loin" — grille à 2 colonnes
-          après le partage (prototype § .article-extras/.extra-card/
-          .prayer-card/.further-reading), corrigée le 11/09 : vivaient
-          jusqu'ici en blocs simples empilés dans la colonne de texte, avant
-          le partage — jamais conforme à la maquette. */}
+      {/* Ordre validé (recontrôle validation humaine, 13/09) : Prière &
+          Déclaration / Aller plus loin appartiennent à la publication et
+          suivent immédiatement le corps complet — plus jamais séparés de
+          lui par le partage. J'aime marque ensuite la réaction à
+          l'ensemble de la publication (corps + Prière/Aller plus loin),
+          suivi du partage puis des articles similaires. Habillage de
+          .article-extras inchangé (grille 2 colonnes déjà validée),
+          seule la position change. */}
       {(article.prayer || article.further_verses.length > 0) && (
         <section className="article-extras">
           <div className="wrap article-extras-grid">
@@ -402,6 +394,26 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       )}
+
+      {/* J'aime déplacé ici (ordre validé, 13/09) : réagit désormais à
+          l'ensemble de la publication (corps + Prière/Aller plus loin),
+          pas seulement au corps seul — accessible à tout le monde, sans
+          compte (Que Dit la Bible reste public). Même colonne/habillage
+          que dans son ancien emplacement (.content-col, 790px). */}
+      <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <div className="content-col">
+          <LikeButton articleId={article.id} initialCount={article.like_count} mode="public" />
+        </div>
+      </section>
+
+      {/* Zone de partage --purple pleine, déplacée après J'aime (ordre
+          validé, 13/09) — composant partagé ShareCartouche déjà certifié,
+          design inchangé, seul l'emplacement change. */}
+      <section className="share-zone">
+        <div className="content-col">
+          <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
+        </div>
+      </section>
 
       {/* Extrait dans un composant partagé (retour du 07/09) — réutilisé tel
           quel par Rosée Matinale, corrige au passage le chapeau manquant

@@ -762,6 +762,15 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
    un article publié perdait ce style, malgré un vrai <blockquote> bel et
    bien enregistré. Repris à l'identique côté public. */
 .article-body > .content-col > .body-html blockquote{border-left:3px solid var(--purple);padding-left:16px;color:var(--ink-soft);font-style:italic;margin:0 0 30px;font-size:18px;line-height:1.6;}
+/* Décision validée (recontrôle validation humaine, 13/09) : les passages
+   bibliques cités dans le corps (RichTextEditor, bouton "Citation" →
+   <blockquote>, aucun balisage admin supplémentaire nécessaire) doivent
+   apparaître en italique — déjà vrai (règle ci-dessus, 06/09), mais avec
+   des couleurs pré-V2 (--purple #7B3FE4, --ink-soft #4A4560) et sans
+   police déclarée (retombe sur le sans-serif ambiant, Manrope, alors que
+   le reste du corps est en Georgia) — jamais comparé au palette v2/QDLB.
+   Corrigé : couleurs v2, police serif cohérente avec .body-html>p. */
+.v2-article-page.qdlb .body-html blockquote{border-left-color:var(--v2-violet);color:var(--v2-ink-soft);font-family:var(--v2-serif);}
 /* Citation mise en exergue ("pull quote", retour du 06/09) — DUPLIQUE une
    phrase choisie dans un bloc à part (texte agrandi, centré, police
    distincte), sans toucher au texte d'origine qui reste dans son
