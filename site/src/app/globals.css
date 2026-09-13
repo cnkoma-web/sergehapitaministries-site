@@ -2498,9 +2498,48 @@ footer.footer--dark{
    (partagée par .v2-jc-page), sans toucher .v2-article-page, hors
    périmètre de ce chantier. */
 .v2-rm-page .content-col{max-width:790px;}
+/* Audit page article Que Dit la Bible (13/09) : même écart que RM/JC
+   ci-dessus, réellement mesuré ici (getBoundingClientRect()) — l'entête
+   (.entry-hero .wrap, maquette) est en réalité le .wrap pleine largeur du
+   site (1180px), PAS la colonne de lecture .content-col (790px, mesurée
+   sur .entry-body juste en dessous, différente de la largeur du héros) :
+   x=50 dans la maquette (wrap 1180px) contre x=260 en V2 (760px, aucune
+   des deux valeurs). Scopé à .qdlb uniquement (classe posée sur le même
+   conteneur que .v2-article-page) — La Vie Supérieure (même règle
+   .content-col partagée, non citée ce tour-ci) reste à 760px, inchangée. */
+.v2-article-page.qdlb .content-col{max-width:790px;}
+.v2-article-page.qdlb .article-header .content-col{max-width:1180px;}
 
 /* --- En-tête d'article --- */
 .v2-article-page .article-header{padding:84px 0 70px;color:#fff;background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.55),transparent 29%),var(--v2-ink);}
+/* padding (maquette, .entry-hero) : 86px 0 74px, pas 84px 0 70px — scopé à
+   .qdlb (La Vie Supérieure non citée ce tour-ci, reste inchangée). */
+.v2-article-page.qdlb .article-header{padding:86px 0 74px;}
+
+/* --- Zone de partage (audit page article Que Dit la Bible, 13/09) : cette
+   route utilisait encore l'habillage "icônes nues" (21×21, sans cadre,
+   pré-maquette) — jamais migrée vers le traitement .share-icon encadré
+   (46×46, bordure, fond translucide, hover blanc) déjà appliqué à Rosée
+   Matinale/Je Confesse/Connaître Jésus. Même règle, même valeurs exactes
+   que prototype-html/publications.css § .share-icon — scopée à .qdlb, La
+   Vie Supérieure (même maquette .share-icon mais non citée ce tour-ci)
+   reste inchangée. Ordre/pictogrammes déjà corrects (ShareCartouche,
+   composant partagé, corrigé lors du tour Je Confesse). */
+/* .share-zone (maquette) : padding 55px 0, pas 16px 0. */
+.v2-article-page.qdlb .share-zone{padding:55px 0;}
+/* .share-invite/.share-row (maquette) : 16px/800/italique (pas 14px/700),
+   filets translucides haut/bas encadrant la rangée, gap 8px (pas 24px). */
+.v2-article-page.qdlb .share-block{margin:0;padding:0;}
+.v2-article-page.qdlb .share-invite{margin:0 0 23px;font-size:16px;font-weight:800;font-style:italic;}
+.v2-article-page.qdlb .share-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:17px 0;border-top:1px solid rgba(255,255,255,.38);border-bottom:1px solid rgba(255,255,255,.38);}
+.v2-article-page.qdlb .share-icon{width:46px;height:46px;display:grid;place-items:center;padding:0;color:#fff;border:1px solid rgba(255,255,255,.42);border-radius:6px;background:rgba(255,255,255,.04);transition:color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease;}
+.v2-article-page.qdlb .share-icon:hover{color:var(--v2-violet);border-color:#fff;background:#fff;transform:translateY(-2px);}
+.v2-article-page.qdlb .share-icon svg{width:22px;height:22px;}
+.v2-article-page.qdlb .copy-feedback{min-height:22px;margin-top:10px;margin-left:0;color:#fff;font-size:12px;font-weight:400;}
+/* SMS visible sur desktop (même écart que Je Confesse, JC.27) : la
+   maquette de cette route affiche aussi SMS comme un bouton normal parmi
+   les 8, sans condition d'appareil. */
+.v2-article-page.qdlb .share-icon-sms{display:flex;}
 .v2-article-page.vs .article-header{background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.42),transparent 29%),linear-gradient(130deg,#17142d,#2d245b);}
 /* .entry-kicker (prototype) : regroupe le badge de catégorie + le libellé de
    type ("Enseignement", Que Dit la Bible uniquement — absent sur La Vie
@@ -2521,7 +2560,10 @@ footer.footer--dark{
 
 /* --- Corps --- */
 .v2-article-page .article-body{padding:70px 0 20px;}
-.v2-article-page .article-body h2{color:var(--v2-ink);font-family:var(--v2-serif);font-size:35px;font-weight:600;line-height:1.18;text-transform:none;letter-spacing:normal;}
+/* margin (maquette, .entry-body h2) : 62px 0 22px — la règle ne déclarait
+   aucune marge (audit 13/09), h2 retombait donc sur une marge héritée
+   d'ailleurs (48px 0 22px, mesuré), jamais la valeur maquette. */
+.v2-article-page .article-body h2{margin:62px 0 22px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:35px;font-weight:600;line-height:1.18;text-transform:none;letter-spacing:normal;}
 .v2-article-page .article-body>.content-col>p,
 .v2-article-page .article-body>.content-col>.body-html>p{color:var(--v2-ink);font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
 /* .pull-sentence (prototype) : bande pleine largeur encre, texte blanc,
@@ -2532,15 +2574,42 @@ footer.footer--dark{
    italique centré (Fraunces violet) hérité d'avant le chantier V2. */
 .v2-article-page .article-body>.content-col>.body-html figure,
 .v2-rm-page .rm-body-html figure{margin:45px -70px;padding:38px 70px;color:#fff;background:var(--v2-ink);font-family:var(--v2-serif);font-style:normal;font-weight:400;font-size:26px;line-height:1.5;text-align:left;}
-/* .article-blessing (prototype) : un <p> de .entry-body → Georgia/19px
-   hérités de .entry-body > p, + italique/gras propres à la classe, sur le
-   fond blanc du corps (jamais violet — la règle pré-V2 utilisait à tort la
-   couleur d'accent). */
-.v2-article-page .blessing{color:var(--v2-ink);font-family:var(--v2-serif);font-size:19px;font-weight:700;font-style:italic;letter-spacing:normal;}
-.v2-article-page .verse-box{background:var(--v2-violet-pale);border-left-color:var(--v2-violet);border-radius:0 12px 12px 0;}
-.v2-article-page .verse-box .ref{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;letter-spacing:.08em;}
-.v2-article-page .verse-box p{color:var(--v2-ink);font-family:var(--v2-serif);font-size:21px;line-height:1.72;}
-.v2-article-page .chip{background:var(--v2-violet-pale);color:var(--v2-violet-deep);}
+/* .article-blessing (prototype, re-mesuré 13/09) : color:var(--violet-deep)
+   !important — invalide la décision précédente ("jamais violet", ci-dessus)
+   qui avait inversé les deux couleurs sans remesurer le rendu réel de la
+   maquette. Hérite aussi à tort de la base .blessing (pré-V2, non scopée) :
+   text-align:center, padding-top:36px, border-top, margin-top:52px — la
+   maquette n'a AUCUN de ces quatre (juste un <p> aligné à gauche comme les
+   autres, margin-top:44px seul), d'où le besoin de tout réinitialiser ici. */
+.v2-article-page .blessing{margin:44px 0 25px;padding-top:0;border-top:0;text-align:left;color:var(--v2-violet-deep);font-family:var(--v2-serif);font-size:19px;font-weight:700;font-style:italic;letter-spacing:normal;}
+/* .article-topics (prototype) : absent auparavant — sépare les thématiques
+   du reste du corps (margin 26px 0 30px, padding-top 24px, filet ténu). */
+.v2-article-page .article-topics{margin:26px 0 30px;padding-top:24px;border-top:1px solid var(--v2-line);}
+/* .topic-list (prototype) : gap 8px, pas 6px. */
+.v2-article-page .article-topics .chip-row{gap:8px;}
+/* Renommé de .verse-box à .scripture-card (audit 13/09, voir page.tsx) —
+   #f1edff (littéral maquette, pas var(--v2-violet-pale)=#eee8ff), padding
+   34px 38px (pas 30px 34px), margin 15px 0 44px (pas 0 0 44px), radius 0
+   14 14 0 (pas 0 12 12 0). blockquote : margin:0 explicite (l'agent
+   utilisateur ajoute sinon une marge/indentation par défaut, absente de la
+   maquette). */
+.v2-article-page .scripture-card{background:#f1edff;padding:34px 38px;margin:15px 0 44px;border-left:4px solid var(--v2-violet);border-radius:0 14px 14px 0;}
+.v2-article-page .scripture-card strong{display:block;margin-bottom:12px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.v2-article-page .scripture-card blockquote{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:21px;font-style:italic;line-height:1.72;}
+/* .topic-list span (prototype) : pastille blanche à contour, pas la
+   pastille pleine lavande de .chip (composant partagé avec d'autres
+   usages du site — scopé ici plutôt que modifié globalement). */
+.v2-article-page .chip{padding:7px 10px;border:1px solid rgba(79,37,216,.2);border-radius:999px;background:#fff;color:var(--v2-violet-deep);font-family:var(--v2-sans);}
+.v2-article-page .chip button{color:var(--v2-violet-deep);}
+/* .like-row (prototype) : padding 30px 0 (pas 24px 0 0), sans marge (pas
+   32px 0), bordure quasi transparente rgba(23,20,45,.13) (pas #E2DCF3
+   opaque, var(--v2-line) déjà = cette teinte, voir Je Confesse JC.24 pour
+   le même bug sur .like-block). */
+.v2-article-page .like-block{margin:0;padding:30px 0;border-top-color:var(--v2-line);}
+/* .like-button (prototype) : gap 10px (pas 6px), padding 8px 0 (pas 0),
+   hérite du sans-serif du body à 16px/750 (pas 14.5px/700, valeurs
+   pré-V2 jamais comparées à la maquette pour ce gabarit). */
+.v2-article-page .like-button{gap:10px;padding:8px 0;font-family:var(--v2-sans);font-size:16px;font-weight:750;}
 .v2-article-page .chip button{color:var(--v2-violet-deep);}
 .v2-article-page .like-button{color:var(--v2-violet-deep);}
 .v2-article-page .like-button:hover:not(:disabled):not(.liked){color:var(--v2-violet);}
@@ -2560,6 +2629,18 @@ footer.footer--dark{
    la maquette). :only-child pour le cas réel où un seul des deux existe
    (l'exemple du prototype montre toujours les deux ensemble). --- */
 .v2-article-page .article-extras{padding:58px 0 82px;background:var(--v2-violet-pale);}
+/* Audit page article Que Dit la Bible (13/09) : #f4f1ff littéral (mesuré
+   rgb(244,241,255)), pas var(--v2-violet-pale)=#eee8ff — même teinte que
+   .related-articles/.rm-archive déjà corrigées ailleurs (RM.23). Scopé à
+   .qdlb (La Vie Supérieure utilise la même maquette .article-extras, mais
+   n'est pas citée ce tour-ci). */
+.v2-article-page.qdlb .article-extras{background:#f4f1ff;}
+/* Bug réel corrigé : .article-extras-grid réutilise la classe "wrap"
+   ANCIENNE (padding:0 28px, charte pré-maquette), pas .v2-wrap — même
+   écart déjà rencontré et corrigé sur Rosée Matinale/Je Confesse
+   (RelatedArticlesSection/archive). Grille mesurée à 550px/550px au lieu
+   de 578px/578px (1180px moins 2×28px de padding fantôme). */
+.v2-article-page.qdlb .article-extras>.wrap{padding:0;}
 .v2-article-page .article-extras-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .v2-article-page .extra-card{padding:34px;border:1px solid rgba(79,37,216,.14);border-radius:15px;background:#fff;}
 .v2-article-page .extra-card:only-child{grid-column:1/-1;max-width:600px;margin:0 auto;}
@@ -2574,6 +2655,13 @@ footer.footer--dark{
 .v2-article-page .extra-card>p:last-child{margin-bottom:0;}
 .v2-article-page .prayer-card{background:var(--v2-paper);}
 .v2-article-page .prayer-card p{color:var(--v2-ink-soft);font-family:var(--v2-serif);font-size:18px;font-style:italic;}
+/* .prayer-card/.prayer-card p (maquette) : #f2f2f4 littéral (pas
+   var(--v2-paper)=#fbfaff) et #514d5d littéral (pas var(--v2-ink-soft)=
+   #312d46) — variables du système v2 jamais calibrées pour ces deux
+   teintes précises, mesurées sur le rendu réel. Scopé à .qdlb (même
+   composant partagé sur La Vie Supérieure, non citée ce tour-ci). */
+.v2-article-page.qdlb .prayer-card{background:#f2f2f4;}
+.v2-article-page.qdlb .prayer-card p{color:#514d5d;}
 .v2-article-page .further-reading p{display:grid;grid-template-columns:150px 1fr;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--v2-line);}
 .v2-article-page .further-reading p:last-child{padding-bottom:0;border-bottom:0;}
 .v2-article-page .further-reading strong{color:var(--v2-violet-deep);}
@@ -2727,11 +2815,14 @@ footer.footer--dark{
    classe .wrap ANCIENNE (padding:0 28px, charte pré-maquette), pas
    .v2-wrap — la vraie maquette (.wrap{width:min(1180px,...);margin-inline:
    auto}, SANS padding) donne un related-grid à 1180px (x=50), contre
-   1124px (x=78) avant correction. Corrigé uniquement pour Rosée Matinale/
-   Je Confesse (.v2-rm-page), jamais sur .wrap globalement (utilisé tel
-   quel par de nombreuses pages non migrées) ni sur .v2-article-page (hors
-   périmètre de ce chantier). */
-.v2-rm-page .related-articles>.wrap{padding:0;}
+   1124px (x=78) avant correction. Corrigé pour Rosée Matinale/Je Confesse
+   (.v2-rm-page) ; jamais sur .wrap globalement (utilisé tel quel par de
+   nombreuses pages non migrées). Audit page article Que Dit la Bible
+   (13/09) : même écart réellement mesuré ici aussi (x=78/w=1124, pas
+   x=50/w=1180) — RelatedArticlesSection n'est utilisé par aucune page
+   La Vie Supérieure (vérifié : son gabarit ne l'appelle jamais), donc
+   .v2-article-page peut être corrigé sans risque pour elle. */
+.v2-rm-page .related-articles>.wrap,.v2-article-page .related-articles>.wrap{padding:0;}
 /* .related-section h2 (prototype) : Georgia 39px — écart trouvé (36px) */
 /* .related-section h2 (prototype) : aucune graisse déclarée → gras 700 par
    défaut, pas 500 (même bug que .extra-card h2, voir plus haut) */
@@ -2739,14 +2830,19 @@ footer.footer--dark{
    couleur propre (composant partagé avec les pages article individuelles,
    hors périmètre — fixé ici sans casser leur habillage, aucune couleur
    n'y était définie non plus). */
-.v2-article-page .related-articles h2,.v2-rm-page .related-articles h2{font-family:var(--v2-serif);font-size:39px;font-weight:700;letter-spacing:normal;text-align:left;color:var(--v2-ink);}
+/* margin-bottom (audit page article Que Dit la Bible, 13/09) : 30px exact,
+   pas 28px. */
+.v2-article-page .related-articles h2,.v2-rm-page .related-articles h2{margin:0 0 30px;font-family:var(--v2-serif);font-size:39px;font-weight:700;letter-spacing:normal;text-align:left;color:var(--v2-ink);}
 .v2-article-page .related-grid,.v2-rm-page .related-grid{gap:18px;}
 /* Décision validée (13/09) : hauteur identique pour les 3 cartes, chapeau
    limité à 4 lignes visibles puis troncature, CTA toujours aligné au même
    niveau — la maquette prévoit min-height:240px + flex-direction:column
    (jamais ajoutés ici), la quantité de texte ne doit jamais changer la
    hauteur d'une carte. */
-.v2-article-page .related-card,.v2-rm-page .related-card{position:relative;display:flex;flex-direction:column;min-height:240px;padding:28px 26px;border:1px solid rgba(79,37,216,.14);border-radius:14px;background:#fff;box-shadow:0 13px 34px rgba(23,20,45,.07);}
+/* padding (audit page article Que Dit la Bible, 13/09) : 31px 28px 28px
+   exact (mesuré sur le rendu réel), pas 28px 26px — valeur approximative
+   jamais comparée au pixel près depuis la correction Rosée Matinale. */
+.v2-article-page .related-card,.v2-rm-page .related-card{position:relative;display:flex;flex-direction:column;min-height:240px;padding:31px 28px 28px;border:1px solid rgba(79,37,216,.14);border-radius:14px;background:#fff;box-shadow:0 13px 34px rgba(23,20,45,.07);}
 .v2-article-page .related-card::before,.v2-rm-page .related-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(#6d31f2,#a985ff);}
 /* .related-card time (prototype) : hérite du sans-serif du body (Inter),
    letter-spacing .035em — héritait à tort du Manrope pré-V2, espacement
@@ -2763,10 +2859,13 @@ footer.footer--dark{
    indépendamment sur Je Confesse (même règle partagée, aucune divergence
    autorisée par simple analogie avec Rosée Matinale) : source CSS de la
    maquette elle-même ne déclare ni font-weight ni letter-spacing ici. */
-.v2-article-page .related-card h3,.v2-rm-page .related-card h3{margin:16px 0 10px;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.25;letter-spacing:normal;color:var(--v2-ink);}
+/* margin (audit page article Que Dit la Bible, 13/09) : 20px 0 12px exact,
+   pas 16px 0 10px — même type d'écart que le padding ci-dessus. */
+.v2-article-page .related-card h3,.v2-rm-page .related-card h3{margin:20px 0 12px;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.25;letter-spacing:normal;color:var(--v2-ink);}
 .v2-article-page .related-card h3 a:hover,.v2-rm-page .related-card h3 a:hover{color:var(--v2-violet-deep);}
-/* .related-card p (prototype) : Georgia 17px/1.65 — écart trouvé (16px/1.6) */
-.v2-article-page .related-card-excerpt,.v2-rm-page .related-card-excerpt{color:var(--v2-muted);font-family:var(--v2-serif);font-size:17px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+/* .related-card p (prototype) : Georgia 17px/1.65 — écart trouvé (16px/1.6).
+   margin-bottom 20px (audit 13/09) : absent auparavant. */
+.v2-article-page .related-card-excerpt,.v2-rm-page .related-card-excerpt{margin:0 0 20px;color:var(--v2-muted);font-family:var(--v2-serif);font-size:17px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
 .v2-article-page .related-card-excerpt a:hover,.v2-rm-page .related-card-excerpt a:hover{color:var(--v2-violet-deep);}
 /* .related-card-link (prototype) : hérite aussi de l'Inter du body */
 .v2-article-page .related-card-link,.v2-rm-page .related-card-link{margin-top:auto;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:800;}

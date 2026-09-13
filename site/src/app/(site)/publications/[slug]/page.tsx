@@ -21,6 +21,16 @@ import Footer from "@/components/layout/Footer";
 
 const SITE_URL = "https://sergehapitaministries.org";
 
+// Audit page article Que Dit la Bible (13/09) : toLocaleDateString("fr-FR",
+// {weekday:"long",...}) rend le jour de la semaine en minuscule ("lundi"),
+// alors que .entry-meta (maquette, prototype-html/publications/
+// nouvel-article-ozsqc) l'écrit avec une majuscule ("Lundi 7 septembre
+// 2026") — écart de contenu réel, corrigé ici localement (scopé à cette
+// route, jamais un helper partagé qui toucherait d'autres pages non citées).
+function capitalizeFirst(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlugAnyType(slug);
@@ -282,20 +292,30 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <span className="views">
               {article.view_count} vue{article.view_count > 1 ? "s" : ""}
             </span>
-            <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+            <span>{capitalizeFirst(new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}</span>
           </div>
         </div>
       </section>
 
       <section className="article-body">
         <div className="content-col">
+          {/* Renommé de "verse-box"/div+p à "scripture-card"/strong+blockquote
+              (audit page article Que Dit la Bible, 13/09) : la maquette
+              (§ .scripture-card) utilise ces deux éléments précis, jamais un
+              div générique — vérifié qu'aucune autre page ne réutilise
+              "verse-box" (classe propre à ce bloc, pas un composant
+              partagé). Écarts de composition/style réels également corrigés
+              (voir .v2-article-page .scripture-card, globals.css) : fond
+              #f1edff (pas #eee8ff), padding 34px 38px (pas 30px 34px),
+              margin 15px 0 44px (pas 0 0 44px), radius 0 14 14 0 (pas 0 12
+              12 0). */}
           {article.verse_reference && article.verse_text && (
-            <div className="verse-box">
-              <div className="ref">{article.verse_reference}</div>
+            <div className="scripture-card">
+              <strong>{article.verse_reference}</strong>
               {/* Espace insécable avant le guillemet fermant (retour du
                   06/09, règle typographique française) — ces guillemets sont
                   ajoutés par ce gabarit, pas tapés par Serge. */}
-              <p>« {article.verse_text}{" "}»</p>
+              <blockquote>« {article.verse_text}{" "}»</blockquote>
             </div>
           )}
 
@@ -322,13 +342,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               grille .article-extras après le partage plus bas). */}
           <p className="blessing">Que Dieu te bénisse.</p>
 
+          {/* Conteneur "article-topics" ajouté (audit 13/09) : la maquette
+              (§ .article-topics) sépare les thématiques du reste du corps
+              par un filet + une respiration propres (margin 26px 0 30px,
+              padding-top 24px, border-top) — absent auparavant, .chip-row
+              seul ne portait aucun séparateur. Voir .v2-article-page
+              .article-topics dans globals.css. */}
           {categories.length > 0 && (
-            <div className="chip-row">
-              {categories.map((c) => (
-                <span key={c.id} className="chip">
-                  {c.name}
-                </span>
-              ))}
+            <div className="article-topics">
+              <div className="chip-row">
+                {categories.map((c) => (
+                  <span key={c.id} className="chip">
+                    {c.name}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
@@ -374,14 +402,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       )}
-
-      <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
-        <div className="content-col">
-          <div className="back-cta">
-            <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
-          </div>
-        </div>
-      </section>
 
       {/* Extrait dans un composant partagé (retour du 07/09) — réutilisé tel
           quel par Rosée Matinale, corrige au passage le chapeau manquant
