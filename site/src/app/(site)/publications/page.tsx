@@ -8,7 +8,13 @@ import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
 const title = "Publications | Serge Hapita Ministries";
-const description = "Rosée Matinale, Que Dit la Bible ?, Je Confesse et La Vie Supérieure — quatre formats, un seul message.";
+// Reprise Phase B (13/09, validation humaine) : ce texte reprenait à tort
+// l'ancien chapô du site (pré-maquette) au lieu du chapô réel de
+// prototype-html/publications/index.html § .pub-hero-copy — jamais
+// recontrôlé mot pour mot depuis la reconstruction du 11/09. Corrigé,
+// repris à l'identique (contenu statique des deux côtés, rien de
+// dynamique à préserver ici).
+const description = "Des formats différents pour éclairer la pensée, approfondir la connaissance et donner une voix à la Parole.";
 const PER_PAGE = 4; // Règle fixe (retour du 05/09) — 4 par page partout où ce flux apparaît, y compris l'accueil.
 
 export const metadata: Metadata = {
@@ -113,7 +119,11 @@ export default async function PublicationsPage({
           la seule présente garde toute la largeur. */}
       {(todayRosee || todayConfession) && (
         <section className="rm-reminder">
-          <div className="content-col">
+          {/* Reprise Phase B (13/09) : la maquette place les 2 capsules du
+              jour dans le .wrap pleine largeur (1180px), pas dans la
+              colonne resserrée (.content-col, 695px) du flux principal
+              au-dessus — v2-wrap reproduit ce .wrap. */}
+          <div className="v2-wrap">
             <div className={todayRosee && todayConfession ? "daily-reminder-grid" : "feed-list"}>
               {todayRosee && <PublicationFeedItem article={todayRosee} excerptLines={excerptLines} />}
               {todayConfession && <PublicationFeedItem article={todayConfession} excerptLines={excerptLines} />}

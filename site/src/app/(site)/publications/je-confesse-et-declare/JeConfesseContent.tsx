@@ -88,7 +88,15 @@ export default async function JeConfesseContent({
       </section>
 
       <section className="section" style={{ paddingTop: 88, paddingBottom: 0 }}>
-        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+        {/* Reprise Phase B renforcée (13/09) : var(--content-col) vaut
+            695px, pensé pour la colonne de lecture des pages article — la
+            maquette de CETTE page (.entry-body) est en réalité
+            width:min(790px,calc(100% - 48px)), SANS le padding de .wrap
+            (0 28px) qui réduisait encore la largeur utile. Classe "wrap"
+            retirée ici (elle ajoutait un padding que .entry-body n'a pas
+            dans la maquette), largeur/centrage portés par le style inline
+            seul. */}
+        <div style={{ maxWidth: "min(790px, calc(100% - 48px))", margin: "0 auto" }}>
           {paragraphs.map((html, i) => (
             <div key={i} className="v2-jc-body-html" dangerouslySetInnerHTML={{ __html: html }} />
           ))}
@@ -105,7 +113,9 @@ export default async function JeConfesseContent({
       </section>
 
       <section className="section" style={{ paddingTop: 32, paddingBottom: 24 }}>
-        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+        {/* Même correction que ci-dessus (largeur réelle .entry-body,
+            sans le padding de .wrap). */}
+        <div style={{ maxWidth: "min(790px, calc(100% - 48px))", margin: "0 auto" }}>
           <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" />
           <div className="rm-nav-days">
             {previous ? <Link href={dayHref(previous.article_date)}>← Jour précédent</Link> : <span className="disabled">← Jour précédent</span>}
@@ -116,7 +126,11 @@ export default async function JeConfesseContent({
       </section>
 
       <section className="share-zone">
-        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+        {/* Reprise Phase B renforcée (13/09) : même correction que Rosée
+            Matinale — la vraie largeur maquette (.entry-body/.share-inner)
+            est 790px, pas 695px (var(--content-col), pensée pour les
+            pages article). */}
+        <div className="wrap" style={{ maxWidth: "min(790px, calc(100% - 48px))", margin: "0 auto" }}>
           <ShareCartouche
             title={current.title}
             url={pageUrl}

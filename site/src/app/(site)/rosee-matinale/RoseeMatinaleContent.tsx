@@ -94,7 +94,17 @@ export default function RoseeMatinaleContent({
           créait un vide trop marqué avec le chapeau au-dessus et l'archive
           en dessous. */}
       <section className="section" style={{ paddingTop: 32, paddingBottom: 24 }}>
-        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+        {/* Reprise Phase B renforcée (13/09) : var(--content-col) vaut
+            695px, pensé pour la colonne de lecture des pages article — la
+            maquette de CETTE page (.entry-body) est en réalité
+            width:min(790px,calc(100% - 48px)), SANS le padding de .wrap
+            (0 28px) qui réduisait encore la largeur utile à 734px —
+            écart de composition (largeur de colonne) trouvé par
+            getBoundingClientRect(), jamais par l'audit atomisé initial.
+            Classe "wrap" retirée ici (elle ajoutait un padding que
+            .entry-body n'a pas dans la maquette), la largeur/le centrage
+            restent portés par le style inline seul. */}
+        <div style={{ maxWidth: "min(790px, calc(100% - 48px))", margin: "0 auto" }}>
           {/* Classe "rm-body-html" (retour du 07/09) — sans elle, une
               "citation mise en exergue" insérée dans le corps ne recevait
               aucun style particulier ici (violet, italique, centrée,
@@ -143,7 +153,13 @@ export default function RoseeMatinaleContent({
       {/* Bande de partage --purple pleine (retour du 07/09, 2e passage) —
           couleur exacte demandée, plus --lavender-deep. */}
       <section className="share-zone">
-        <div className="wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
+        {/* Reprise Phase B renforcée (13/09) : var(--content-col) vaut
+            695px, pensé pour la colonne de lecture des pages article — la
+            maquette de CETTE page (.entry-body/.share-inner) est en
+            réalité width:min(790px,calc(100% - 48px)), jamais 695px,
+            écart de composition (largeur de colonne) trouvé par
+            getBoundingClientRect(), jamais par l'audit atomisé initial. */}
+        <div className="wrap" style={{ maxWidth: "min(790px, calc(100% - 48px))", margin: "0 auto" }}>
           {/* current.title (retour du 07/09, 3e passage) — remplace un titre
               reconstruit ici même depuis la date, en double-emploi maladroit
               avec le vrai champ "Titre" de l'entrée (voir l'écran d'édition

@@ -2355,6 +2355,12 @@ footer.footer--dark{
 
 /* padding réel après cascade (§ "Hubs éditoriaux", écrase 100px 0 112px de
    la règle de base) : 58px 0 72px. */
+/* Reprise Phase B (13/09, validation humaine) : .content-col ici héritait
+   la largeur générique 695px (var(--content-col), pensée pour une colonne
+   de lecture d'article) au lieu du vrai .content-feed-wrap{max-width:940px}
+   de la maquette — d'où un flux visiblement plus centré/étroit que prévu
+   (composition fausse malgré des éléments individuellement corrects). */
+.v2-pub-page .feed-section .content-col{max-width:940px;}
 .v2-pub-page .feed-section{padding:58px 0 72px;background:#fff;}
 .v2-pub-page .empty-state{color:var(--v2-muted);font-size:16px;}
 .v2-pub-page .feed-list{border-top:1px solid var(--v2-line);}
@@ -2416,6 +2422,18 @@ footer.footer--dark{
 .v2-pub-page .daily-reminder-grid .feed-item:has(.feed-badge.jc){color:var(--v2-ink);border:1px solid rgba(79,37,216,.16);background:#ded3fa;}
 .v2-pub-page .daily-reminder-grid .feed-item:has(.feed-badge.jc) .feed-badge.jc{background:#fff;}
 .v2-pub-page .daily-reminder-grid .feed-item:has(.feed-badge.jc) .excerpt{color:#514b62;}
+/* Reprise Phase B (13/09, validation humaine) : les cartes du jour
+   (.daily-reminder, maquette) sont de larges rectangles horizontaux
+   (581×361, ratio ~1.6) — une fois la largeur de colonne corrigée
+   (581px, voir plus haut), le contenu réel (texte admin, plus long que
+   l'exemple statique de la maquette) poussait encore la hauteur bien
+   au-delà (581×423, ratio 1.37) car .feed-item réutilise le même seuil
+   plancher "3 lignes minimum" que le flux principal (voir
+   PublicationFeedItem.tsx). Un chapô plus court est propre à ce format de
+   carte compact dans la maquette — tronqué ici en CSS (2 lignes), jamais
+   dans le composant partagé (qui reste inchangé pour ses autres usages :
+   accueil, flux principal, hubs catégorie). */
+.v2-pub-page .daily-reminder-grid .excerpt-desktop{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 
 .v2-pub-page .pagination{border-top:0;padding:8px 0 0;margin-top:8px;color:var(--v2-muted);}
 .v2-pub-page .pagination .pages a,.v2-pub-page .pagination .pages button{width:40px;height:40px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-ink);font-weight:750;}
@@ -2458,6 +2476,13 @@ footer.footer--dark{
 
 .v2-article-page,.v2-rm-page{background:#fff;}
 .v2-article-page .content-col,.v2-rm-page .content-col{max-width:760px;}
+/* Reprise Phase B renforcée (13/09) : .entry-body (maquette, Rosée
+   Matinale ET Je Confesse) est réellement width:min(790px,calc(100% -
+   48px)), pas 760px — écart de composition (largeur de colonne) jamais
+   détecté par l'audit atomisé initial. Règle propre à .v2-rm-page
+   (partagée par .v2-jc-page), sans toucher .v2-article-page, hors
+   périmètre de ce chantier. */
+.v2-rm-page .content-col{max-width:790px;}
 
 /* --- En-tête d'article --- */
 .v2-article-page .article-header{padding:84px 0 70px;color:#fff;background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.55),transparent 29%),var(--v2-ink);}
@@ -2577,12 +2602,20 @@ footer.footer--dark{
 /* Bug réel corrigé (audit Phase B, 13/09) : couleur var(--v2-ink) (encre
    pleine) au lieu de var(--v2-ink-soft) — re-mesuré : rgb(52,48,68) côté
    maquette, à un arrondi d'antialiasing près de --v2-ink-soft (#312d46). */
-.v2-rm-page .rm-body-html{color:var(--v2-ink-soft);font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
+/* Reprise Phase B renforcée : var(--v2-ink-soft) (#312d46) est proche mais
+   pas exact — la maquette utilise la valeur littérale #343044 (confirmée
+   dans publications.css § .entry-body > p, identique à .v2-jc-body-html
+   qui utilise déjà cette même valeur pour Je Confesse). */
+.v2-rm-page .rm-body-html{color:#343044;font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
 /* -webkit-font-smoothing hérité du body global (ancienne charte), jamais
    corrigé pour cette page — .v2-rm-page est déclaré ici séparément de
    .v2-article-page (règle groupée plus haut) pour ne rien changer aux
    pages article individuelles, hors périmètre de ce chantier. */
-.v2-rm-page{-webkit-font-smoothing:auto;line-height:1.6;}
+/* Reprise Phase B renforcée (13/09) : font-family manquant ici (seuls
+   smoothing/line-height avaient été ajoutés) — .share-invite (et tout
+   élément sans font-family propre) héritait donc encore Manrope du body
+   global au lieu d'Inter. */
+.v2-rm-page{font-family:var(--v2-sans);-webkit-font-smoothing:auto;line-height:1.6;}
 .v2-rm-page .like-button{color:var(--v2-violet-deep);}
 .v2-rm-page .like-button:hover:not(:disabled):not(.liked){color:var(--v2-violet);}
 .v2-rm-page .like-button.liked{color:var(--v2-violet-deep);}
@@ -2612,6 +2645,10 @@ footer.footer--dark{
    contre prototype-html/publications.css § .archive-section/.archive-intro/
    .archive-list/.archive-row/.archive-pagination. */
 .v2-rm-page .rm-archive{background:var(--v2-violet-pale);padding:76px 0 96px;}
+/* Même bug que .related-articles ci-dessus : .wrap ancienne (padding
+   0 28px) au lieu de la vraie maquette (aucun padding) — archiveList
+   mesuré 1124px/x=78 au lieu de 1180px/x=50. */
+.v2-rm-page .rm-archive>.wrap{padding:0;}
 /* .archive-section h2 (prototype) : 40px, gras par défaut (700, aucune
    graisse déclarée — même bug que .related-articles h2/.extra-card h2). */
 /* Bugs réels corrigés (audit Phase B, 13/09) : text-align:center hérité de
@@ -2656,6 +2693,15 @@ footer.footer--dark{
    Supérieure/Rosée Matinale. Reproduit prototype § .related-section/
    .related-card. --- */
 .v2-article-page .related-articles,.v2-rm-page .related-articles{background:#f4f1ff;padding:80px 0 96px;}
+/* Reprise Phase B renforcée (13/09) : RelatedArticlesSection utilise la
+   classe .wrap ANCIENNE (padding:0 28px, charte pré-maquette), pas
+   .v2-wrap — la vraie maquette (.wrap{width:min(1180px,...);margin-inline:
+   auto}, SANS padding) donne un related-grid à 1180px (x=50), contre
+   1124px (x=78) avant correction. Corrigé uniquement pour Rosée Matinale/
+   Je Confesse (.v2-rm-page), jamais sur .wrap globalement (utilisé tel
+   quel par de nombreuses pages non migrées) ni sur .v2-article-page (hors
+   périmètre de ce chantier). */
+.v2-rm-page .related-articles>.wrap{padding:0;}
 /* .related-section h2 (prototype) : Georgia 39px — écart trouvé (36px) */
 /* .related-section h2 (prototype) : aucune graisse déclarée → gras 700 par
    défaut, pas 500 (même bug que .extra-card h2, voir plus haut) */
@@ -3658,9 +3704,21 @@ footer.footer--dark{
    .v2-category-hub-hero-inner>div>p ci-dessus (2 sélecteurs de type,
    spécificité plus élevée qu'une simple classe) qui s'appliquait sinon à
    sa place, contrairement à l'intention. */
-.v2-category-hub-hero-inner>div>p.v2-category-hub-motto{margin-top:28px;max-width:780px;color:#d9ccff;font-family:var(--v2-serif);font-size:25px;font-weight:400;font-style:italic;line-height:1.4;}
+/* Reprise Phase B renforcée (13/09) : line-height 1.4 était une valeur
+   inventée — la maquette ne déclare aucun line-height propre à
+   .category-motto, qui hérite donc de la règle générale .category-hero p
+   {line-height:1.72} (spécificité plus faible mais seule à déclarer cette
+   propriété) — 43px mesuré côté maquette contre 35px en V2 avant
+   correction. */
+.v2-category-hub-hero-inner>div>p.v2-category-hub-motto{margin-top:28px;max-width:780px;color:#d9ccff;font-family:var(--v2-serif);font-size:25px;font-weight:400;font-style:italic;line-height:1.72;}
 
-.v2-category-hub-feed{padding:92px 0 110px;}
+/* Reprise Phase B renforcée (13/09) : 92px 0 110px est la valeur de BASE
+   de .category-feed, jamais celle après cascade — la maquette combine
+   .category-feed ET .direct-feed sur le même élément, et .direct-feed{
+   padding:58px 0 82px} (plus loin dans le fichier, même spécificité)
+   l'emporte réellement. Composition vérifiée par getBoundingClientRect
+   des deux côtés (hauteur totale, pas seulement le padding déclaré). */
+.v2-category-hub-feed{padding:58px 0 82px;}
 .v2-category-hub-feed .category-feed-grid{display:block;max-width:940px;margin-inline:auto;}
 
 .v2-category-hub-feed .category-article{padding:31px 0;border:0;border-bottom:1px solid var(--v2-line);border-radius:0;background:transparent;}
