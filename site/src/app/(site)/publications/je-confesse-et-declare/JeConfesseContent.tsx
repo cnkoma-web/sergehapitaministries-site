@@ -32,11 +32,10 @@ function dayHref(date: string): string {
 // l'image de couverture (affichée en filigrane à 30% d'opacité dans le
 // héros, jamais un portrait par défaut) et le corps de la déclaration.
 //
-// Section "Version audio" du prototype (§ .confession-audio, pointant vers
-// /podcast/#je-confesse) volontairement omise pour l'instant : la route
-// Podcast n'existe pas encore (Lot 9) — jamais un lien qui mènerait à une
-// page inexistante. Le champ podcast_episode_id est déjà préparé sur
-// l'article (voir articles.ts) pour ce lot futur.
+// Section "Version audio" (§ .confession-audio, restaurée le 13/09 après
+// validation humaine) : /podcast/ (Lot 9) existe désormais — voir le
+// commentaire détaillé dans globals.css § .v2-jc-audio. Lien réel vers le
+// filtre Podcast/Je Confesse, jamais un lecteur statique factice.
 export default async function JeConfesseContent({
   current,
   previous,
@@ -117,11 +116,33 @@ export default async function JeConfesseContent({
             sans le padding de .wrap). */}
         <div style={{ maxWidth: "min(790px, calc(100% - 48px))", margin: "0 auto" }}>
           <LikeButton articleId={current.id} initialCount={current.like_count} mode="public" />
+          {/* Libellés (recontrôle validation humaine, 13/09) :
+              prototype-html/publications/je-confesse-et-declare/index.html
+              § .rm-nav-days écrit littéralement "← Précédent" / "Voir les
+              archives" / "Suivant →" — pas "Jour précédent"/"Voir
+              l'archive ↓"/"Jour suivant →" (formulation reprise à tort de
+              Rosée Matinale par analogie lors de la construction Lot 4,
+              jamais comparée mot pour mot à la maquette propre à cette
+              page). Bloc JSX propre à Je Confesse (pas un composant
+              partagé) : aucun impact sur Rosée Matinale, qui reste
+              intouchable ce tour-ci. */}
           <div className="rm-nav-days">
-            {previous ? <Link href={dayHref(previous.article_date)}>← Jour précédent</Link> : <span className="disabled">← Jour précédent</span>}
-            <a href="#archive" className="archive-link">Voir l&apos;archive ↓</a>
-            {next ? <Link href={dayHref(next.article_date)}>Jour suivant →</Link> : <span className="disabled">Jour suivant →</span>}
+            {previous ? <Link href={dayHref(previous.article_date)}>← Précédent</Link> : <span className="disabled">← Précédent</span>}
+            <a href="#archive" className="archive-link">Voir les archives</a>
+            {next ? <Link href={dayHref(next.article_date)}>Suivant →</Link> : <span className="disabled">Suivant →</span>}
           </div>
+        </div>
+      </section>
+
+      <section className="v2-jc-audio" aria-label="Version audio de la proclamation">
+        <div className="v2-wrap v2-jc-audio-inner">
+          <span className="v2-jc-audio-icon" aria-hidden="true">▶</span>
+          <div>
+            <p>Version audio</p>
+            <h2>Écouter cette proclamation</h2>
+            <span>Retrouve cette proclamation dans la série Je Confesse.</span>
+          </div>
+          <Link href="/podcast?univers=jc">Découvrir la série →</Link>
         </div>
       </section>
 
@@ -146,7 +167,14 @@ export default async function JeConfesseContent({
       <section className="rm-archive" id="archive">
         <div className="wrap">
           <h2>Confessions précédentes</h2>
-          <p className="sub">Retrouve les proclamations des jours précédents.</p>
+          {/* "confessions", pas "proclamations" (recontrôle validation
+              humaine, 13/09) : § .confession-archive .archive-intro de la
+              maquette écrit littéralement "Retrouve les confessions des
+              jours précédents." — la maquette elle-même n'est pas
+              cohérente d'une section à l'autre (.confession-audio emploie
+              "proclamation"), mais reste la source de vérité section par
+              section, jamais harmonisée par nous-mêmes. */}
+          <p className="sub">Retrouve les confessions des jours précédents.</p>
           {archive.length === 0 ? (
             <p className="rm-empty">Ceci est la toute première proclamation publiée — l&apos;archive se remplira à partir de demain.</p>
           ) : (

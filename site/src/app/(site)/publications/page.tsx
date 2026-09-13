@@ -125,8 +125,15 @@ export default async function PublicationsPage({
               au-dessus — v2-wrap reproduit ce .wrap. */}
           <div className="v2-wrap">
             <div className={todayRosee && todayConfession ? "daily-reminder-grid" : "feed-list"}>
-              {todayRosee && <PublicationFeedItem article={todayRosee} excerptLines={excerptLines} />}
-              {todayConfession && <PublicationFeedItem article={todayConfession} excerptLines={excerptLines} />}
+              {/* minExcerptLines/charsPerLineDesktop (retour validation
+                  humaine, 13/09) : ces cartes sont limitées à 2 lignes
+                  visibles par CSS (.daily-reminder-grid .excerpt-desktop,
+                  -webkit-line-clamp:2) et bien plus étroites (581px mesuré)
+                  que le flux principal — sans ce recalibrage, le CTA
+                  "Lire la suite"/"Continuer la confession" tombait hors de
+                  la zone visible (mesuré via getBoundingClientRect()). */}
+              {todayRosee && <PublicationFeedItem article={todayRosee} excerptLines={excerptLines} minExcerptLines={2} charsPerLineDesktop={54} />}
+              {todayConfession && <PublicationFeedItem article={todayConfession} excerptLines={excerptLines} minExcerptLines={2} charsPerLineDesktop={54} />}
             </div>
           </div>
         </section>

@@ -53,8 +53,12 @@ export default function RoseeMatinaleContent({
     // V2 (retour du 11/09, Lot 3) — reproduit prototype-html/rosee-matinale/
     // index.html § .rm-hero/.rm-chapeau/.entry-body-section/.rm-nav-days/
     // .related-section/.archive-section (voir globals.css § .v2-rm-page).
-    // "Poursuivre la lecture" (.rm-explore) n'a pas d'équivalent dans le
-    // prototype (voir le commentaire détaillé dans globals.css).
+    // "Poursuivre la lecture" (.rm-explore, retiré le 13/09 après validation
+    // humaine) : bloc hérité de l'ancienne interface pré-maquette, sans
+    // équivalent dans prototype-html/rosee-matinale/index.html (qui se
+    // termine directement après .archive-section) — vérifié : purement
+    // statique (3 liens de navigation croisée déjà présents dans le menu
+    // principal), aucune fonction dynamique/indispensable perdue.
     <div className="v2-rm-page">
       <section
         className="rm-photo-hero"
@@ -216,32 +220,6 @@ export default function RoseeMatinaleContent({
               />
             </>
           )}
-        </div>
-      </section>
-
-      <section className="rm-explore">
-        <div className="wrap">
-          <h2>Poursuivre la lecture</h2>
-          <div className="explore-grid">
-            <div className="explore-card">
-              <div className="icon">QB</div>
-              <h3>Que Dit la Bible ?</h3>
-              <p>Un enseignement structuré, verset par verset.</p>
-              <Link href="/publications/que-dit-la-bible">Découvrir →</Link>
-            </div>
-            <div className="explore-card">
-              <div className="icon">VS</div>
-              <h3>La Vie Supérieure</h3>
-              <p>Un enseignement approfondi, pour aller plus loin.</p>
-              <Link href="/publications/la-vie-superieure">Découvrir →</Link>
-            </div>
-            <div className="explore-card">
-              <div className="icon">L</div>
-              <h3>Les livres</h3>
-              <p>Les ouvrages publiés sous amDG Éditions.</p>
-              <Link href="/livres">Découvrir →</Link>
-            </div>
-          </div>
         </div>
       </section>
 

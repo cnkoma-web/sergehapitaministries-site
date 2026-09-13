@@ -4,7 +4,13 @@ import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import { stripHtml } from "@/lib/richtext";
 
 // Libellé du bouton selon la catégorie, propre aux hubs (retour du 04/09).
-const CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire la suite", vs: "Découvrir", rm: "Lire la suite", jc: "Confesser" };
+// jc (retour validation humaine, 13/09, reprise ciblée) : "Continuer la
+// confession" — la maquette (.confess-reminder) écrit littéralement
+// "Lire et proclamer" en dur dans son HTML statique, mais cette formulation
+// a été explicitement remplacée ici (décision validée, pas un oubli) ;
+// seule cette carte (daily-reminder du hub Publications) utilise ce
+// libellé — à consigner comme exception validée au référentiel.
+const CTA_LABEL: Record<Article["type"], string> = { qdlb: "Lire la suite", vs: "Découvrir", rm: "Lire la suite", jc: "Continuer la confession" };
 // Libellés historiques de l'accueil (retour du 03/09), conservés tels quels
 // (retour du 05/09) : le passage de l'accueil à un flux unique change la
 // structure de la liste, pas ce texte de bouton déjà tranché séparément.
@@ -75,10 +81,33 @@ export default function PublicationFeedItem({
   article,
   excerptLines,
   variant = "hub",
+  minExcerptLines = 3,
+  charsPerLineDesktop = CHARS_PER_LINE_DESKTOP,
 }: {
   article: Article;
   excerptLines: number;
   variant?: "hub" | "home";
+  /** Plancher de lignes réservées par la troncature JS (retour validation
+   * humaine, 13/09) — par défaut 3, comme avant. Les cartes du jour
+   * (.daily-reminder-grid) sont visuellement limitées à 2 lignes par CSS
+   * (-webkit-line-clamp:2, voir globals.css) : sans ce plancher abaissé à 2
+   * pour cet usage précis, la troncature JS réservait de la place pour une
+   * 3e ligne que le clamp CSS masque ensuite — le lien CTA, toujours en fin
+   * de texte, se retrouvait physiquement hors de la zone visible (mesuré
+   * via getBoundingClientRect() : le CTA existait dans le DOM mais son
+   * rectangle tombait ~127px sous la zone visible du chapô, donc jamais
+   * affiché). Les autres usages (flux principal, home) gardent 3. */
+  minExcerptLines?: number;
+  /** Capacité réelle de caractères par ligne desktop (retour validation
+   * humaine, 13/09) — par défaut calibrée pour la colonne pleine largeur du
+   * flux principal (695-860px). Les cartes .daily-reminder-grid sont bien
+   * plus étroites (581px mesuré) : réutiliser 145 y sur-estimait largement
+   * la place réelle disponible (texte réellement rendu sur ~5 lignes à
+   * cette largeur pour un budget calculé pour 3), aggravant le
+   * débordement du CTA hors du clamp CSS ci-dessus. Mesuré en direct
+   * (clone sans clamp, hauteur réelle / line-height) : ~86 caractères/ligne
+   * à 581px, pas 145. */
+  charsPerLineDesktop?: number;
 }) {
   // Vraie URL par jour depuis le 05/09 (restructuration) — plus de "?date=".
   // Je Confesse (Lot 4) suit le même principe que Rosée Matinale — une
@@ -115,13 +144,13 @@ export default function PublicationFeedItem({
   // 3 lignes minimum (retour du 05/09) — plancher appliqué ici, un seul
   // endroit pour l'accueil ET les hubs, quelle que soit la valeur du
   // réglage admin (qui reste libre d'aller au-delà de 3, jamais en deçà).
-  const effectiveLines = Math.max(3, excerptLines);
+  const effectiveLines = Math.max(minExcerptLines, excerptLines);
   // Réserve la place du "… " + du lien sur la dernière ligne (retour du
   // 05/09) — sans cette marge, le total (chapeau + lien) dépassait souvent
   // d'une ligne complète la longueur voulue par excerptLines.
   const reserved = ctaLabel.length + 3;
   const trimmedExcerpt = rawExcerpt.trim();
-  const desktop = truncateExcerpt(trimmedExcerpt, CHARS_PER_LINE_DESKTOP * effectiveLines - reserved);
+  const desktop = truncateExcerpt(trimmedExcerpt, charsPerLineDesktop * effectiveLines - reserved);
   const mobile = truncateExcerpt(trimmedExcerpt, CHARS_PER_LINE_MOBILE * effectiveLines - reserved);
 
   return (

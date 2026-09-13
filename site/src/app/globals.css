@@ -2385,7 +2385,14 @@ footer.footer--dark{
    flux principal) — exclu explicitement ici, jamais par analogie. */
 .v2-pub-page .feed-section .feed-item h3 a:hover,.v2-pub-page .feed-section .feed-item h3 a:active{color:var(--v2-violet-deep);}
 .v2-pub-page .excerpt{max-width:860px;color:var(--v2-muted);font-family:var(--v2-serif);font-size:17px;line-height:1.75;}
-.v2-pub-page .excerpt a:hover,.v2-pub-page .excerpt a:active{color:var(--v2-violet-deep);}
+/* Bug réel corrigé (validation humaine, 13/09) : cette règle de survol
+   n'était pas scopée à .feed-section (contrairement à la règle h3 a:hover
+   juste au-dessus) et s'appliquait donc aussi dans .daily-reminder-grid —
+   or .v2-violet-deep (#4f25d8) sur le fond plein #5f3aaf de la carte Rosée
+   Matinale dégrade fortement le contraste (violet foncé sur violet), et la
+   maquette (.daily-reminder p) ne prévoit de toute façon aucune règle de
+   survol pour ce texte. Re-scopée à .feed-section, comme la règle du titre. */
+.v2-pub-page .feed-section .excerpt a:hover,.v2-pub-page .feed-section .excerpt a:active{color:var(--v2-violet-deep);}
 /* .feed-entry p strong (maquette) : .78em, 800, nowrap — pas .8em sans
    graisse/nowrap. */
 .v2-pub-page .feed-cta-inline{color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:.78em;font-weight:800;white-space:nowrap;}
@@ -3062,6 +3069,28 @@ footer.footer--dark{
 .v2-jc-chapeau{padding:54px 0;background:#f3edff;border-top:1px solid rgba(79,37,216,.12);border-bottom:1px solid rgba(79,37,216,.12);}
 .v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
 .v2-jc-chapeau cite{display:block;margin-top:18px;color:#4f25d8;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+
+/* Section "Version audio" (§ .confession-audio, restaurée le 13/09 après
+   validation humaine) : omise à tort le 11/09 au motif que /podcast/
+   n'existait pas encore (Lot 9) — la route existe désormais. L'habillage
+   reproduit fidèlement la maquette ; le lien reste réel (jamais un lecteur
+   statique factice) : /podcast?univers=jc pointe vers le vrai filtre de la
+   bibliothèque Podcast (l'ancre "#je-confesse" de la maquette n'a pas
+   d'équivalent DOM ici — /podcast n'a pas de sections ancrées par univers,
+   seulement un filtre par query param, la vraie fonction équivalente). */
+.v2-jc-audio{padding:25px 0;color:#fff;background:#1d1830;}
+.v2-jc-audio-inner{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:20px;align-items:center;}
+.v2-jc-audio-icon{width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.28);border-radius:50%;color:#fff;background:rgba(255,255,255,.07);font-size:17px;}
+.v2-jc-audio-inner p{margin:0 0 4px;color:#cdbdf3;font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;}
+.v2-jc-audio-inner h2{margin:0 0 5px;color:#fff;font-family:var(--v2-serif);font-size:24px;font-weight:600;}
+.v2-jc-audio-inner div>span{color:rgba(255,255,255,.62);font-size:13px;}
+.v2-jc-audio-inner>a{padding:12px 0 5px;border-bottom:1px solid rgba(255,255,255,.38);color:#fff;font-size:13px;font-weight:800;}
+@media (max-width:720px){
+  .v2-jc-audio-inner{grid-template-columns:46px minmax(0,1fr);gap:14px;}
+  .v2-jc-audio-icon{width:44px;height:44px;}
+  .v2-jc-audio-inner h2{font-size:20px;}
+  .v2-jc-audio-inner>a{grid-column:2;justify-self:start;}
+}
 
 /* --- Capsule d'accueil (§ .confession-wrap/.confession-card), même
    principe que .v2-dew-* (Lot 3) --- */

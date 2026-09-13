@@ -40,7 +40,13 @@ export const SHARE_BLOCK_INVITE: Record<ShareCategory, string> = {
   rm: "Bénis quelqu'un en partageant ce message.",
   qdlb: "Bénis quelqu'un en partageant cette réflexion.",
   vs: "Bénis quelqu'un en partageant cet enseignement.",
-  jc: "Bénis quelqu'un en partageant cette proclamation.",
+  // Recontrôle validation humaine (13/09, reprise ciblée Je Confesse) :
+  // prototype-html/publications/je-confesse-et-declare/index.html §
+  // .share-invite écrit littéralement "ce message" (identique à Rosée
+  // Matinale), pas "cette proclamation" — cette dernière formulation
+  // n'était pas une exception validée, un audit précédent l'avait à tort
+  // déclarée conforme sans comparaison littérale au HTML source.
+  jc: "Bénis quelqu'un en partageant ce message.",
 };
 
 // Tronque au dernier mot complet, jamais en plein milieu d'un mot — ne
