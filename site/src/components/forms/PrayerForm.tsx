@@ -18,23 +18,36 @@ export default function PrayerForm() {
         });
       }}
     >
-      <input type="text" name="nom" placeholder="Nom" />
-      <input type="text" name="ville" placeholder="Ville" />
-      {/* required ajouté ici : l'astérisque était déjà visible dans la maquette
-          statique (E-mail *) sans que le champ soit réellement obligatoire — cahier
-          §3.4bis (incohérences UI relevées à corriger). */}
-      <input type="email" name="email" placeholder="E-mail *" required />
-      <input type="tel" name="telephone" placeholder="Téléphone" />
+      {/* Retour de validation humaine (section "Je veux recevoir Jésus") :
+          la maquette place le libellé de chaque champ au-dessus de lui
+          (une seule balise <label>, texte + <input>), pas de placeholder
+          en guise de libellé — repris ici à l'identique, champs réels
+          inchangés. */}
       <label>
-        <input type="checkbox" name="accepte_contact" /> Oui, j&apos;accepte d&apos;être contacté(e) pour la prière du
-        salut afin de recevoir Jésus dans mon cœur.
+        Nom
+        <input type="text" name="nom" placeholder="Votre nom" />
       </label>
-      <button
-        className="btn btn-primary"
-        type="submit"
-        style={{ width: "100%", justifyContent: "center" }}
-        disabled={isPending}
-      >
+      <label>
+        Ville
+        <input type="text" name="ville" placeholder="Votre ville" />
+      </label>
+      {/* required conservé ici (fonctionnalité réelle, cahier §3.4bis) même si
+          la maquette statique ne rend pas ce champ obligatoire — l'astérisque
+          passe du placeholder au libellé pour ne pas altérer le placeholder
+          "vous@exemple.fr" prévu par la maquette. */}
+      <label>
+        E-mail *
+        <input type="email" name="email" placeholder="vous@exemple.fr" required />
+      </label>
+      <label>
+        Téléphone
+        <input type="tel" name="telephone" placeholder="Votre numéro" />
+      </label>
+      <label className="v2-salvation-consent">
+        <input type="checkbox" name="accepte_contact" />
+        <span>Oui, j&apos;accepte d&apos;être contacté(e) pour la prière du salut afin de recevoir Jésus dans mon cœur.</span>
+      </label>
+      <button className="btn btn-primary" type="submit" disabled={isPending}>
         {isPending ? "Envoi…" : "Envoyer →"}
       </button>
     </form>

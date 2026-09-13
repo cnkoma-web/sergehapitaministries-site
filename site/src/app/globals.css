@@ -1868,7 +1868,7 @@ footer.footer--dark{
 .v2-section-index p{margin:12px 0 0;padding-top:13px;border-top:1px solid var(--v2-line);color:var(--v2-muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;}
 
 /* ===== V2 — DE SERGE (Lot 2) ===== */
-.v2-ds-page{font-family:var(--v2-sans);}
+.v2-ds-page{font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);-webkit-font-smoothing:auto;}
 .v2-ds-hero{min-height:690px;position:relative;overflow:hidden;isolation:isolate;color:#fff;background:linear-gradient(125deg,#17142d 0%,#25164a 55%,#5220a3 100%);}
 .v2-ds-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(19,15,42,.98) 0%,rgba(23,16,50,.92) 44%,rgba(31,16,59,.32) 72%,rgba(23,15,45,.6) 100%);}
 .v2-ds-hero-photo{position:absolute;z-index:-2;inset:0;background:url("/v2/de-serge-hero-desktop.jpg") center/cover no-repeat;filter:saturate(.92) contrast(1.04);opacity:.94;}
@@ -1884,7 +1884,7 @@ footer.footer--dark{
    titre h1-h4 vit sur un fond sombre dans ce Lot 2, jamais spécifique à
    cette seule page. */
 .v2-ds-hero h1{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(50px,6.5vw,88px);font-weight:500;line-height:.98;letter-spacing:-.05em;}
-.v2-ds-hero h1 em{color:#cbb7ff;font-weight:500;font-style:normal;}
+.v2-ds-hero h1 em{color:#cbb7ff;font-weight:500;}
 .v2-ds-hero blockquote{max-width:650px;margin:38px 0 18px;padding-left:24px;border-left:2px solid #9b6bff;font-family:var(--v2-serif);font-size:clamp(21px,2.2vw,29px);font-style:italic;line-height:1.35;}
 /* Citation complète sur 2 niveaux de police (retour du 11/09, bug réel
    signalé par Serge) — une seule citation continue ("C'est bien de
@@ -1915,7 +1915,7 @@ footer.footer--dark{
 
 .v2-ds-story{padding-block:125px;background:#fff;}
 .v2-ds-story-heading{display:grid;grid-template-columns:220px 1fr;gap:90px;align-items:start;margin-bottom:75px;}
-.v2-ds-story-heading h2,.v2-ds-association h2,.v2-ds-book h2{margin:0;font-family:var(--v2-serif);font-size:clamp(43px,5.6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;}
+.v2-ds-story-heading h2,.v2-ds-association h2,.v2-ds-book h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(43px,5.6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;}
 .v2-ds-timeline{border-top:1px solid var(--v2-line);}
 .v2-ds-milestone{display:grid;grid-template-columns:240px 1fr;gap:70px;padding-block:48px;border-bottom:1px solid var(--v2-line);}
 .v2-ds-milestone>div:first-child{display:flex;flex-direction:column;}
@@ -2054,7 +2054,7 @@ footer.footer--dark{
 }
 
 /* ===== V2 — LA MISSION (Lot 2, nouvelle page) ===== */
-.v2-mission-page{font-family:var(--v2-sans);background:var(--v2-paper);}
+.v2-mission-page{font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);background:var(--v2-paper);-webkit-font-smoothing:auto;}
 .v2-mission-hero{min-height:720px;position:relative;overflow:hidden;display:flex;align-items:center;isolation:isolate;color:#fff;background:radial-gradient(circle at 78% 36%,rgba(139,61,244,.72),transparent 25%),linear-gradient(125deg,#17142d 0%,#2820a2 56%,#6d31f2 100%);}
 .v2-mission-hero::after{content:"MISSION";position:absolute;z-index:-1;right:-34px;bottom:-126px;color:rgba(255,255,255,.055);font-family:var(--v2-serif);font-size:clamp(180px,28vw,420px);line-height:1;letter-spacing:-.08em;}
 .v2-mission-orbit{position:absolute;z-index:-1;border:1px solid rgba(255,255,255,.15);border-radius:50%;}
@@ -2062,7 +2062,7 @@ footer.footer--dark{
 .v2-mission-orbit.two{width:320px;height:320px;right:28%;bottom:-245px;}
 .v2-mission-hero-inner{padding-block:105px;}
 .v2-mission-hero h1{color:#fff;max-width:900px;margin:0;font-family:var(--v2-serif);font-size:clamp(52px,7vw,90px);font-weight:500;line-height:1.01;letter-spacing:-.048em;}
-.v2-mission-hero h1 em{color:#d6c7ff;font-weight:500;font-style:normal;}
+.v2-mission-hero h1 em{color:#d6c7ff;font-weight:500;}
 
 .v2-mission-opening{padding-block:125px;background:#fff;}
 .v2-mission-opening-grid,.v2-mission-sonship-grid{display:grid;grid-template-columns:190px minmax(0,830px);justify-content:space-between;gap:90px;}
@@ -2149,21 +2149,29 @@ footer.footer--dark{
 
 /* ===== V2 — CONNAÎTRE JÉSUS (Lot 2) =====
    Reproduit prototype-html/connaitre-jesus/index.html + publications.css §
-   .cj-*. La zone de partage (ShareCartouche, .share-zone/.share-block...)
-   n'est PAS reprise ici : composant partagé par Rosée Matinale/QDLB/VS/
-   Livres, pas encore tous réhabillés — son propre passage viendra plus
-   tard, pour tous ses usages à la fois, jamais page par page. Le
-   formulaire de prière (PrayerForm, propre à cette page) est en revanche
+   .cj-*. Le formulaire de prière (PrayerForm, propre à cette page) est
    réhabillé ici (classe renommée .v2-salvation-form dans le composant). */
-.v2-cj-page{font-family:var(--v2-sans);background:var(--v2-paper);}
-/* Bug réel trouvé en vérifiant le résultat réel (retour du 11/09) : la
-   zone de partage (ShareCartouche, non réhabillée volontairement, voir
-   plus haut) héritait silencieusement de la nouvelle police Inter posée
-   sur .v2-cj-page ci-dessus, au lieu de Manrope — jamais l'intention
-   annoncée de la laisser identique aux autres pages pas encore migrées.
-   Restaurée explicitement ici. */
-.v2-cj-page .share-zone,
-.v2-cj-page .share-zone *{font-family:'Manrope',sans-serif;}
+.v2-cj-page{font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);background:var(--v2-paper);-webkit-font-smoothing:auto;}
+/* Retour de validation humaine (section "zone de partage", contrôle
+   ponctuel) : la maquette n'a en réalité JAMAIS laissé ce composant sur
+   l'ancien habillage — son fichier publications.css § .share-zone/
+   .share-invite/.share-row/.share-icon/.share-feedback (repris ci-dessous)
+   prévoit bel et bien un habillage propre, sur la même police Inter que le
+   reste de la page. La règle précédente qui forçait Manrope ici partait
+   d'une hypothèse erronée (« pas encore réhabillé ») contredite par un
+   examen direct de publications.css. Composant réel (ShareCartouche)
+   inchangé, uniquement son style et le texte d'invite alignés sur la
+   maquette — jamais sur .share-zone/.share-invite/... globaux (partagés
+   avec Rosée Matinale/QDLB/VS/Livres, pas encore audités). */
+.v2-cj-page .share-zone{padding:55px 0;color:#fff;background:var(--purple);}
+.v2-cj-page .share-zone .content-col{width:min(790px,calc(100% - 48px));max-width:none;margin-inline:auto;text-align:center;}
+.v2-cj-page .share-block{margin:0;padding:0;}
+.v2-cj-page .share-invite{margin:0 0 23px;font-size:16px;font-weight:800;font-style:italic;}
+.v2-cj-page .share-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:17px 0;border-top:1px solid rgba(255,255,255,.38);border-bottom:1px solid rgba(255,255,255,.38);}
+.v2-cj-page .share-icon{width:46px;height:46px;display:grid;place-items:center;padding:0;color:#fff;border:1px solid rgba(255,255,255,.42);border-radius:6px;background:rgba(255,255,255,.04);transition:color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease;}
+.v2-cj-page .share-icon:hover{color:var(--v2-violet);border-color:#fff;background:#fff;transform:translateY(-2px);}
+.v2-cj-page .share-icon svg{width:22px;height:22px;}
+.v2-cj-page .copy-feedback{min-height:22px;margin-top:10px;margin-left:0;color:#fff;font-size:12px;font-weight:400;}
 .v2-cj-hero{min-height:650px;position:relative;overflow:hidden;display:flex;align-items:center;color:#fff;background:radial-gradient(circle at 72% 40%,rgba(160,104,255,.85),transparent 24%),linear-gradient(130deg,#19142f 2%,#2820a2 53%,#752cf0 100%);isolation:isolate;}
 .v2-cj-hero::after{content:"JÉSUS";position:absolute;z-index:-1;right:-25px;bottom:-115px;color:rgba(255,255,255,.055);font-family:var(--v2-serif);font-size:clamp(190px,29vw,430px);line-height:1;letter-spacing:-.08em;}
 .v2-cj-orbit{position:absolute;z-index:-1;border:1px solid rgba(255,255,255,.16);border-radius:50%;}
@@ -2171,7 +2179,7 @@ footer.footer--dark{
 .v2-cj-orbit.two{width:340px;height:340px;right:27%;bottom:-230px;}
 .v2-cj-hero-inner{padding-block:100px;}
 .v2-cj-hero h1{color:#fff;margin:0;font-family:var(--v2-serif);font-size:clamp(78px,12vw,154px);font-weight:500;line-height:.77;letter-spacing:-.065em;}
-.v2-cj-hero h1 em{position:relative;left:clamp(55px,8vw,115px);color:#d4c4ff;font-weight:500;font-style:normal;}
+.v2-cj-hero h1 em{position:relative;left:clamp(55px,8vw,115px);color:#d4c4ff;font-weight:500;}
 .v2-cj-hero-inner>p:not(.v2-eyebrow){margin:55px 0 36px;color:rgba(255,255,255,.77);font-family:var(--v2-serif);font-size:25px;font-style:italic;}
 .v2-cj-scroll{display:inline-flex;align-items:center;gap:15px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.45);font-size:13px;font-weight:800;color:#fff;}
 .v2-cj-scroll span{font-size:18px;}
@@ -2189,7 +2197,7 @@ footer.footer--dark{
 
 .v2-cj-story{padding-block:125px;}
 .v2-cj-story-heading{display:grid;grid-template-columns:1fr 1fr;margin-bottom:48px;}
-.v2-cj-story-heading h2{margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;grid-column:2;}
+.v2-cj-story-heading h2{margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;color:var(--v2-ink);grid-column:2;}
 .v2-cj-story-heading .v2-eyebrow{grid-column:1;grid-row:1;align-self:start;}
 .v2-cj-story-body{display:grid;grid-template-columns:1.2fr .8fr;gap:0;align-items:stretch;background:#fff;box-shadow:var(--v2-shadow);}
 .v2-cj-story-body .v2-video-frame{min-height:470px;}
@@ -2203,7 +2211,7 @@ footer.footer--dark{
 .v2-cj-step-marker span{width:78px;height:78px;display:grid;place-items:center;margin:0 auto;border:9px solid #f8f6ff;border-radius:50%;color:#fff;background:linear-gradient(135deg,#4f25d8,#8b4df2);box-shadow:0 14px 35px rgba(79,37,216,.2);font-size:18px;font-weight:850;}
 .v2-cj-step-marker small{display:block;margin-top:9px;color:var(--v2-violet-deep);font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;}
 .v2-cj-step-copy{padding:42px clamp(28px,5vw,58px);border:1px solid var(--v2-line);border-radius:16px;background:#fff;box-shadow:0 20px 48px rgba(24,18,57,.07);}
-.v2-cj-step-copy h3{margin:0 0 22px;font-family:var(--v2-serif);font-size:clamp(29px,3.5vw,43px);font-weight:500;line-height:1.15;letter-spacing:-.025em;}
+.v2-cj-step-copy h3{margin:0 0 22px;font-family:var(--v2-serif);font-size:clamp(29px,3.5vw,43px);font-weight:500;line-height:1.15;letter-spacing:-.025em;color:var(--v2-ink);}
 .v2-cj-step-copy>p{margin:0 0 19px;color:#454052;font-family:var(--v2-serif);font-size:19px;line-height:1.82;}
 .v2-cj-step-copy>p:last-child{margin-bottom:0;}
 .v2-cj-step-copy blockquote{margin:28px 0 0;padding:25px 28px;border-left:3px solid var(--v2-violet);color:#342e48;background:#f4f1ff;font-family:var(--v2-serif);font-size:19px;font-style:italic;line-height:1.65;}
@@ -2215,16 +2223,21 @@ footer.footer--dark{
 .v2-cj-purpose-copy>p{margin:0 0 24px;color:rgba(255,255,255,.67);font-size:17px;line-height:1.8;}
 .v2-cj-purpose-copy blockquote{margin:45px 0 0;padding:30px 32px;border-left:3px solid #8d4dff;color:#fff;background:rgba(255,255,255,.045);font-family:var(--v2-serif);font-size:24px;font-style:italic;line-height:1.55;}
 .v2-cj-purpose-copy cite{display:block;margin-top:13px;color:#bfa7f2;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:750;}
-.v2-cj-grace-note{margin-top:40px;padding:27px 0 0;border-top:1px solid rgba(255,255,255,.18);color:#fff;font-family:var(--v2-serif);font-size:21px;font-style:italic;}
+/* Bug réel trouvé en vérifiant le résultat réel : .v2-cj-purpose-copy>p
+   (une classe + un tag, spécificité plus forte) écrasait silencieusement
+   .v2-cj-grace-note (une seule classe) alors même que ce paragraphe est
+   un enfant direct de .v2-cj-purpose-copy et matche donc les deux règles —
+   même piège que la maquette évite en ciblant .cj-purpose-copy > .cj-grace-note. */
+.v2-cj-purpose-copy>.v2-cj-grace-note{margin-top:40px;padding:27px 0 0;border-top:1px solid rgba(255,255,255,.18);color:#fff;font-family:var(--v2-serif);font-size:21px;font-style:italic;}
 
 .v2-cj-discover{padding-block:125px;}
-.v2-cj-discover h2{margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;}
+.v2-cj-discover h2{margin:0;font-family:var(--v2-serif);font-size:clamp(44px,6vw,72px);font-weight:500;line-height:1.04;letter-spacing:-.04em;color:var(--v2-ink);}
 .v2-cj-theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .v2-cj-theme{min-height:285px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto 1fr auto;gap:22px;padding:30px;border:1px solid var(--v2-line);border-radius:14px;background:#fff;}
 .v2-cj-theme.wide{grid-column:span 2;}
 .v2-cj-theme>span{width:45px;height:45px;display:grid;place-items:center;border-radius:50%;color:var(--v2-violet-deep);background:var(--v2-violet-pale);font-family:var(--v2-serif);}
 .v2-cj-theme>div{grid-column:1/-1;align-self:end;}
-.v2-cj-theme h3{margin:0 0 8px;font-family:var(--v2-serif);font-size:25px;font-weight:500;line-height:1.18;}
+.v2-cj-theme h3{margin:0 0 8px;font-family:var(--v2-serif);font-size:25px;font-weight:500;line-height:1.18;letter-spacing:normal;color:var(--v2-ink);}
 .v2-cj-theme p{margin:0;color:var(--v2-muted);font-size:14px;}
 .v2-cj-theme.dark{color:#fff;border-color:transparent;background:var(--v2-ink);}
 .v2-cj-theme.dark h3,.v2-cj-theme.accent h3{color:#fff;}
@@ -2245,11 +2258,17 @@ footer.footer--dark{
 /* Formulaire de prière du salut — propre à cette page (jamais partagé),
    réhabillé sans réserve, contrairement au partage (voir plus haut). */
 .v2-salvation-form{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:34px;border-radius:18px;color:var(--v2-ink);background:#fff;box-shadow:0 30px 65px rgba(24,14,76,.22);font-family:var(--v2-sans);}
-.v2-salvation-form input[type="text"],.v2-salvation-form input[type="email"],.v2-salvation-form input[type="tel"]{width:100%;padding:14px 15px;border:1px solid var(--v2-line);border-radius:7px;outline:none;color:var(--v2-ink);background:#fff;font-family:inherit;font-size:14px;}
+/* Retour de validation humaine : la maquette place le libellé de chaque
+   champ AU-DESSUS de lui (une seule balise <label>, texte direct + input,
+   voir prototype-html/connaitre-jesus/index.html § .salvation-form) —
+   jamais de placeholder en guise de libellé. Composant réel (PrayerForm)
+   inchangé, seul son habillage est repris à l'identique. */
+.v2-salvation-form label{display:flex;flex-direction:column;color:var(--v2-muted);font-size:12px;font-weight:750;}
+.v2-salvation-form label input[type="text"],.v2-salvation-form label input[type="email"],.v2-salvation-form label input[type="tel"]{width:100%;margin-top:7px;padding:14px 15px;border:1px solid var(--v2-line);border-radius:7px;outline:none;color:var(--v2-ink);background:#fff;font-family:inherit;font-size:inherit;}
 .v2-salvation-form input:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);}
-.v2-salvation-form label{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-weight:400;line-height:1.5;color:var(--v2-muted);font-size:13px;}
-.v2-salvation-form label input{margin-top:3px;flex-shrink:0;width:auto;}
-.v2-salvation-form button{grid-column:1/-1;min-height:54px;border:0;border-radius:8px;color:#fff;background:linear-gradient(135deg,#352cf4,#8136ed);font-weight:800;cursor:pointer;font-family:inherit;font-size:14px;}
+.v2-salvation-form label.v2-salvation-consent{grid-column:1/-1;flex-direction:row;gap:10px;align-items:flex-start;font-weight:400;line-height:1.5;color:var(--v2-muted);font-size:12px;}
+.v2-salvation-form label.v2-salvation-consent input{margin-top:2px;flex-shrink:0;width:auto;font-size:inherit;}
+.v2-salvation-form button{grid-column:1/-1;min-height:54px;border:0;border-radius:8px;color:#fff;background:linear-gradient(135deg,#352cf4,#8136ed);font-weight:800;cursor:pointer;font-family:inherit;font-size:inherit;}
 
 @media (max-width:980px){
   .v2-cj-purpose-grid,.v2-cj-receive-grid{gap:55px;}
@@ -2627,7 +2646,16 @@ footer.footer--dark{
    Repères statistiques (getActiveStats, fonctionnalité réelle sans
    emplacement dans la maquette) : réutilise .v2-ds-stats du Lot 2.
    ============================================================ */
-.v2-home{background:#fff;}
+/* Bug réel trouvé en comparant le rendu réel (pas seulement les valeurs
+   CSS calculées) : body{-webkit-font-smoothing:antialiased} (règle
+   globale héritée de l'ancienne charte, absente de la maquette qui reste
+   sur le "auto" natif du navigateur) rend le texte visiblement plus fin/
+   moins dense que la maquette sur tout le contenu migré, alors que
+   font-family/font-weight/line-height calculés sont rigoureusement
+   identiques des deux côtés. Restauré au niveau de chaque page migrée
+   plutôt que sur la règle globale body (encore utilisée par les pages non
+   migrées). */
+.v2-home{background:#fff;-webkit-font-smoothing:auto;}
 
 .v2-home-hero{position:relative;min-height:520px;isolation:isolate;overflow:hidden;color:#fff;background:radial-gradient(circle at 74% 30%,#5125aa 0,transparent 35%),linear-gradient(120deg,#17142d 10%,#25164a 56%,#351467 100%);font-family:var(--v2-sans);line-height:1.6;}
 .v2-home-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(17,13,37,.98) 0%,rgba(19,14,42,.9) 47%,rgba(22,14,41,.35) 72%,rgba(18,13,34,.67) 100%);}
@@ -2867,7 +2895,12 @@ footer.footer--dark{
    principe que .v2-dew-* (Lot 3) --- */
 .v2-confession-wrap{position:relative;z-index:2;margin-top:22px;font-family:var(--v2-sans);line-height:1.6;}
 .v2-confession-card{min-height:176px;display:grid;grid-template-columns:210px 170px 1fr auto;align-items:center;gap:34px;padding:31px 34px;border:1px solid rgba(109,49,242,.18);border-radius:18px;background:rgba(255,255,255,.97);box-shadow:var(--v2-shadow);}
-.v2-confession-meta{color:var(--v2-violet-deep);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.11em;}
+/* Date ajoutée (retour de validation humaine, 13/09) — .v2-confession-meta
+   devient le conteneur (libellé + date réelle), le libellé lui-même passe
+   sur son propre <span> ; mêmes styles que .v2-dew-date/.v2-dew-date span
+   juste au-dessus (Rosée Matinale), jamais une police inventée. */
+.v2-confession-meta{display:flex;flex-direction:column;gap:3px;color:var(--v2-muted);font-size:14px;}
+.v2-confession-meta span{color:var(--v2-violet-deep);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.11em;}
 .v2-confession-label{align-self:stretch;display:grid;place-items:center;padding:18px 12px;border:1px solid rgba(109,49,242,.16);border-radius:12px;color:var(--v2-violet-deep);background:#ded3fa;text-align:center;white-space:nowrap;font-family:var(--v2-serif);font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.04em;}
 .v2-confession-content blockquote{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.35;}
 .v2-confession-card>a{white-space:nowrap;color:var(--v2-violet-deep);font-size:14px;font-weight:800;}

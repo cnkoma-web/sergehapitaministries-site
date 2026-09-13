@@ -270,13 +270,19 @@ export default function ConnaitreJesusPage() {
         </div>
       </section>
 
-      {/* Zone de partage — composant partagé (ShareCartouche), pas encore
-          réhabillé visuellement : passage prévu pour tous ses usages à la
-          fois (Rosée Matinale/QDLB/VS/Livres compris), jamais page par
-          page. Garde son style actuel ici en attendant. */}
+      {/* Zone de partage — composant partagé (ShareCartouche), habillage
+          réaligné sur publications.css § .share-zone (retour de validation
+          humaine : la maquette prévoit bien un style propre ici, pas
+          l'ancien design de production). Fonctionnement du composant
+          inchangé, seule l'invite affichée est propre à cette page (pas de
+          catégorie ici). */}
       <section className="share-zone">
         <div className="content-col">
-          <ShareCartouche title="Connaître Jésus" url={PAGE_URL} />
+          <ShareCartouche
+            title="Connaître Jésus"
+            url={PAGE_URL}
+            invite="Partage ce message avec une personne qui désire connaître Jésus."
+          />
         </div>
       </section>
 

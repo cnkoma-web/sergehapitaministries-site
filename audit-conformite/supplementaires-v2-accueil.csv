@@ -1,0 +1,4 @@
+identifiant,section,element,nb_noeuds_v2,nature
+SUPP.01,01 - En-tête,Ticker déroulant remplaçant le lien hebdomadaire fixe,5 nœuds v2-only (ticker-track),"Déviation documentée et validée par Serge (session antérieure), remplace a.weekly-link"
+SUPP.02,Home (bloc autonome),Bloc statistiques (Ouvrages publiés / Publications / Personnes touchées / Nb abonnés RS),8 nœuds v2-only,"Bloc entier absent de la maquette statique, ajouté côté V2"
+SUPP.03,08 - Livres,Image de survol supplémentaire par couverture (CoverRollover),3 nœuds v2-only (img.cover-rollover),Amélioration fonctionnelle non présente dans la maquette statique (effet de survol)

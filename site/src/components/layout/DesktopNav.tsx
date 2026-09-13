@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { isDropdown, type NavItem } from "@/lib/content/navTypes";
 
 // V2 (retour du 11/09, bug réel signalé par Serge) — le trait violet sous
@@ -21,6 +22,25 @@ function isActive(pathname: string, href: string): boolean {
 
 export default function DesktopNav({ nav }: { nav: NavItem[] }) {
   const pathname = usePathname();
+
+  // Bug réel constaté en conditions réelles (retour de validation humaine,
+  // 13/09) : le menu déroulant reste ouvert après avoir cliqué un lien
+  // qu'il contient (ex. "De Serge"/"La mission" dans "À propos"), alors que
+  // la souris a quitté la zone. Cause démontrée : la navigation Next.js
+  // (<Link>) est une navigation client, pas un rechargement complet — le
+  // lien tout juste cliqué garde le focus du navigateur après le
+  // changement de route, et .v2-nav-dropdown-menu s'ouvre aussi sur
+  // :focus-within (nécessaire au clavier), qui reste donc vrai en
+  // permanence. Invisible sur l'accueil, qui n'est jamais atteint depuis un
+  // lien À l'intérieur d'un menu déroulant (lien de premier niveau).
+  // Rendre le focus au document dès que la route change referme le menu
+  // sans toucher au survol ni à la navigation clavier normale.
+  useEffect(() => {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && active.closest(".v2-nav-dropdown")) {
+      active.blur();
+    }
+  }, [pathname]);
 
   return (
     <nav className="v2-desktop-menu" aria-label="Navigation principale">

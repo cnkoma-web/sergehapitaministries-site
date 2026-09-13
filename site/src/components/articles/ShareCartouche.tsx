@@ -42,10 +42,17 @@ export default function ShareCartouche({
   articleDate,
   excerpt,
   bookDescription,
+  invite,
 }: {
   title: string;
   url: string;
   category?: ShareCategory;
+  // Phrase d'invitation propre à un appel précis, sans passer par une
+  // catégorie (retour de validation humaine, page Connaître Jésus, qui n'a
+  // ni catégorie ni livre) — prioritaire sur SHARE_BLOCK_INVITE[category]
+  // si les deux sont fournis. N'ajoute aucun comportement aux appels
+  // existants (QDLB/VS/RM/Livres) qui ne la passent pas.
+  invite?: string;
   // Date de publication (retour du 07/09) — "du jour" remplacé par la vraie
   // date dans le message de partage (buildShareMessage), jour + mois en
   // toutes lettres. Requis dès que `category` est fourni (QDLB/VS/RM), voir
@@ -83,7 +90,9 @@ export default function ShareCartouche({
     <div className="share-block">
       {/* Jamais sur les fiches livres (retour du 05/09, 4e passage) — le
           partage y garde uniquement les icônes, sans phrase d'invitation. */}
-      {category && <p className="share-invite">{SHARE_BLOCK_INVITE[category]}</p>}
+      {(invite ?? (category && SHARE_BLOCK_INVITE[category])) && (
+        <p className="share-invite">{invite ?? SHARE_BLOCK_INVITE[category!]}</p>
+      )}
       <div className="share-row">
         <a
           className="share-icon"
