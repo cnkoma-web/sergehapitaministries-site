@@ -2579,6 +2579,16 @@ footer.footer--dark{
    Supérieure) sur une même ligne. */
 .v2-article-page .article-kicker{display:flex;flex-wrap:wrap;align-items:center;gap:13px;margin-bottom:27px;}
 .v2-article-page .article-cat-badge{margin:0;padding:0;border-radius:0;background:none;color:#d8ccff;font-family:var(--v2-sans);font-size:13px;font-weight:750;letter-spacing:.08em;}
+/* BUG RÉEL CORRIGÉ (validation humaine, 14/09) : la maquette (§ .feed-badge,
+   .badge-life) affiche une véritable pastille colorée — display:
+   inline-flex, min-height 28px, padding 5px 10px, radius 999px, fond
+   #49369b, texte blanc 11px/800/uppercase — jamais un simple libellé texte
+   sans fond (la règle ci-dessus, partagée avec Que Dit la Bible, ne
+   produisait qu'un texte lavande nu, mesuré : bg transparent, aucun
+   padding/radius). Scopé à .vs : Que Dit la Bible reste inchangée dans
+   cette reprise (page déjà fermée), bien que la même règle partagée y
+   affiche vraisemblablement le même écart — signalé, non traité ici. */
+.v2-article-page.vs .article-cat-badge{display:inline-flex;align-items:center;width:fit-content;min-height:28px;margin:0;padding:5px 10px;border-radius:999px;color:#fff;background:#49369b;font-family:var(--v2-sans);font-size:11px;font-weight:800;letter-spacing:.065em;text-transform:uppercase;}
 .v2-article-page .article-type{color:#d8ccff;font-family:var(--v2-sans);font-size:13px;font-weight:750;letter-spacing:.08em;}
 .v2-article-page .article-title{max-width:930px;color:#fff;font-family:var(--v2-serif);font-size:clamp(46px,6.4vw,78px);font-weight:500;line-height:1.02;letter-spacing:-.04em;margin-bottom:0;}
 /* .entry-chapeau (prototype) : hérite du sans-serif du body (Inter), 18px/
