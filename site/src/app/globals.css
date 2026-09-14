@@ -2518,12 +2518,22 @@ footer.footer--dark{
    .content-col partagée, non citée ce tour-ci) reste à 760px, inchangée. */
 .v2-article-page.qdlb .content-col{max-width:790px;}
 .v2-article-page.qdlb .article-header .content-col{max-width:1180px;}
+/* Certification page article La Vie Supérieure (14/09) : même écart
+   réellement remesuré sur prototype-html/publications/nouvel-article-61cdg
+   (x=260/w=760 au lieu de x=50/w=1180 pour le héros ; .entry-body est bien
+   790px, identique à Que Dit la Bible — .entry-body est une règle unique
+   et universelle dans publications.css, aucune variante par rubrique). */
+.v2-article-page.vs .content-col{max-width:790px;}
+.v2-article-page.vs .article-header .content-col{max-width:1180px;}
 
 /* --- En-tête d'article --- */
 .v2-article-page .article-header{padding:84px 0 70px;color:#fff;background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.55),transparent 29%),var(--v2-ink);}
 /* padding (maquette, .entry-hero) : 86px 0 74px, pas 84px 0 70px — scopé à
    .qdlb (La Vie Supérieure non citée ce tour-ci, reste inchangée). */
 .v2-article-page.qdlb .article-header{padding:86px 0 74px;}
+/* Même écart réel sur La Vie Supérieure (.entry-hero.life hérite du même
+   padding de base que .entry-hero, seul le fond change). */
+.v2-article-page.vs .article-header{padding:86px 0 74px;}
 
 /* --- Zone de partage (audit page article Que Dit la Bible, 13/09) : cette
    route utilisait encore l'habillage "icônes nues" (21×21, sans cadre,
@@ -2549,6 +2559,20 @@ footer.footer--dark{
    maquette de cette route affiche aussi SMS comme un bouton normal parmi
    les 8, sans condition d'appareil. */
 .v2-article-page.qdlb .share-icon-sms{display:flex;}
+/* Certification page article La Vie Supérieure (14/09) : même écart
+   réellement remesuré sur prototype-html/publications/nouvel-article-61cdg
+   (icônes nues 21×21, SMS masqué, padding de zone 16px au lieu de 55px) —
+   valeurs identiques à Que Dit la Bible, confirmées indépendamment sur
+   cette route (pas par analogie). */
+.v2-article-page.vs .share-zone{padding:55px 0;}
+.v2-article-page.vs .share-block{margin:0;padding:0;}
+.v2-article-page.vs .share-invite{margin:0 0 23px;font-size:16px;font-weight:800;font-style:italic;}
+.v2-article-page.vs .share-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:17px 0;border-top:1px solid rgba(255,255,255,.38);border-bottom:1px solid rgba(255,255,255,.38);}
+.v2-article-page.vs .share-icon{width:46px;height:46px;display:grid;place-items:center;padding:0;color:#fff;border:1px solid rgba(255,255,255,.42);border-radius:6px;background:rgba(255,255,255,.04);transition:color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease;}
+.v2-article-page.vs .share-icon:hover{color:var(--v2-violet);border-color:#fff;background:#fff;transform:translateY(-2px);}
+.v2-article-page.vs .share-icon svg{width:22px;height:22px;}
+.v2-article-page.vs .copy-feedback{min-height:22px;margin-top:10px;margin-left:0;color:#fff;font-size:12px;font-weight:400;}
+.v2-article-page.vs .share-icon-sms{display:flex;}
 .v2-article-page.vs .article-header{background:radial-gradient(circle at 87% 12%,rgba(123,63,228,.42),transparent 29%),linear-gradient(130deg,#17142d,#2d245b);}
 /* .entry-kicker (prototype) : regroupe le badge de catégorie + le libellé de
    type ("Enseignement", Que Dit la Bible uniquement — absent sur La Vie
@@ -2573,6 +2597,25 @@ footer.footer--dark{
    aucune marge (audit 13/09), h2 retombait donc sur une marge héritée
    d'ailleurs (48px 0 22px, mesuré), jamais la valeur maquette. */
 .v2-article-page .article-body h2{margin:62px 0 22px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:35px;font-weight:600;line-height:1.18;text-transform:none;letter-spacing:normal;}
+/* Certification page article La Vie Supérieure (14/09) : .entry-body
+   .numbered-sections (prototype § .entry-body.numbered-sections) numérote
+   chaque h2 ("01", "02"…) via un compteur CSS — mécanisme entièrement
+   absent de la V2 avant ce tour. Le compteur se pose sur .content-col
+   (chaque paragraphe/h2 vit dans son propre <div class="body-html vs">
+   séparé pour le rendu HTML dangereux — un compteur CSS s'incrémente
+   normalement à travers des enfants intermédiaires, dans l'ordre du DOM,
+   aucune restructuration du gabarit nécessaire). Scopé à .vs uniquement :
+   Que Dit la Bible n'a jamais qu'un seul h2 "Parlons-en" dans son propre
+   exemple maquette, jamais numéroté. */
+.v2-article-page.vs .article-body .content-col{counter-reset:article-section;}
+.v2-article-page.vs .article-body h2{counter-increment:article-section;}
+.v2-article-page.vs .article-body h2::before{content:counter(article-section,decimal-leading-zero);display:block;margin-bottom:9px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:12px;font-weight:850;letter-spacing:.16em;}
+/* .topic-list (prototype, La Vie Supérieure) : bare — margin-top:24px,
+   gap:8px, PAS le conteneur .article-topics avec filet (propre à Que Dit
+   la Bible, absent de cette maquette) ; ordre déjà correct dans le code
+   (J'aime avant les thématiques, comme la maquette : jamais transposé
+   depuis QDLB). */
+.v2-article-page.vs .article-body .chip-row{gap:8px;margin-top:24px;}
 .v2-article-page .article-body>.content-col>p,
 .v2-article-page .article-body>.content-col>.body-html>p{color:var(--v2-ink);font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
 /* .pull-sentence (prototype) : bande pleine largeur encre, texte blanc,
@@ -2650,6 +2693,13 @@ footer.footer--dark{
    (RelatedArticlesSection/archive). Grille mesurée à 550px/550px au lieu
    de 578px/578px (1180px moins 2×28px de padding fantôme). */
 .v2-article-page.qdlb .article-extras>.wrap{padding:0;}
+/* Certification La Vie Supérieure (14/09) : même bug (fond + wrap fantôme)
+   sur le bloc Prière & Déclaration, quand il est présent — la position de
+   ce bloc reste signalée pour confirmation (absent de la maquette
+   statique La Vie Supérieure), mais son habillage suit la même règle
+   partagée que Que Dit la Bible. */
+.v2-article-page.vs .article-extras{background:#f4f1ff;}
+.v2-article-page.vs .article-extras>.wrap{padding:0;}
 .v2-article-page .article-extras-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .v2-article-page .extra-card{padding:34px;border:1px solid rgba(79,37,216,.14);border-radius:15px;background:#fff;}
 .v2-article-page .extra-card:only-child{grid-column:1/-1;max-width:600px;margin:0 auto;}
@@ -2671,6 +2721,8 @@ footer.footer--dark{
    composant partagé sur La Vie Supérieure, non citée ce tour-ci). */
 .v2-article-page.qdlb .prayer-card{background:#f2f2f4;}
 .v2-article-page.qdlb .prayer-card p{color:#514d5d;}
+.v2-article-page.vs .prayer-card{background:#f2f2f4;}
+.v2-article-page.vs .prayer-card p{color:#514d5d;}
 .v2-article-page .further-reading p{display:grid;grid-template-columns:150px 1fr;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--v2-line);}
 .v2-article-page .further-reading p:last-child{padding-bottom:0;border-bottom:0;}
 .v2-article-page .further-reading strong{color:var(--v2-violet-deep);}

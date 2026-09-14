@@ -129,7 +129,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <span className="views">
                 {article.view_count} vue{article.view_count > 1 ? "s" : ""}
               </span>
-              <span>{new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+              <span>{capitalizeFirst(new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}</span>
             </div>
           </div>
         </section>
@@ -228,12 +228,25 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
 
+        {/* "Autres articles similaires" (certification 14/09) : absente à
+            tort de cette branche — la maquette propre à La Vie Supérieure
+            (nouvel-article-61cdg) termine bien .entry-body-section →
+            .share-zone → .related-section, dans cet ordre exact, comme Que
+            Dit la Bible. Composant partagé déjà certifié, jamais reconstruit
+            ; affichée qu'elle soit verrouillée ou non (contenu promotionnel,
+            jamais le corps réservé lui-même — le composant se masque de
+            toute façon si `related` est vide). */}
+        <RelatedArticlesSection articles={related} />
+
         {/* "Prière & Déclaration" (retour du 07/09, champ étendu à La Vie
             Supérieure) — même grille .article-extras que Que Dit la Bible
             (prototype § .article-extras/.prayer-card), réservée aux comptes
             connectés comme le reste du corps. Jamais de "Aller plus loin"
             ici : further_verses reste propre à Que Dit la Bible (voir
-            actions.ts). */}
+            actions.ts). Absente de la maquette La Vie Supérieure (aucune
+            fiche statique n'en montre) — extension fonctionnelle assumée le
+            07/09, jamais remise en cause depuis : conservée, position
+            signalée pour confirmation plutôt que déplacée par supposition. */}
         {unlocked && article.prayer && (
           <section className="article-extras">
             <div className="wrap article-extras-grid">
@@ -244,14 +257,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </div>
           </section>
         )}
-
-        <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
-          <div className="content-col">
-            <div className="back-cta">
-              <Link href="/publications" className="btn btn-outline">← Toutes les publications</Link>
-            </div>
-          </div>
-        </section>
 
         <Newsletter />
         <Footer variant="light" />
