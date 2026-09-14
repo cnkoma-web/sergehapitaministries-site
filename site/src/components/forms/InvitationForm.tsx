@@ -14,22 +14,17 @@ export default function InvitationForm() {
         });
       }}
     >
-      {/* "form-fields" ajouté (certification 14/09) — sans ce conteneur, les
-          .inv-row (et champs isolés) devenaient chacun un enfant direct de
-          .inv-form-section, qui est lui-même la grille CSS à 2 colonnes
-          (190px | reste) : l'auto-placement de la grille répartissait alors
-          .form-section-heading + le premier .inv-row sur la 1re ligne, puis
-          renvoyait le second .inv-row tout seul dans la 1re colonne (190px)
-          d'une 2e ligne implicite — mesuré : champs E-mail/Téléphone
-          écrasés à 86px de large chacun au lieu de 344px. La maquette
-          (§ .form-fields{"{"}display:grid;gap:18px{"}"}) regroupe tous les
-          champs d'une section dans UN SEUL conteneur, seul occupant réel de
-          la 2e colonne de la grille. */}
+      {/* Reprise ciblée (14/09, validation humaine) : le système de repère
+          01/02/03 (pastille + colonne 190px, § .form-section-heading dans la
+          maquette) est abandonné — décision validée, plus une non-conformité
+          à corriger. Les titres d'étape restent des <h2> simples, sans
+          marqueur, avec la typographie déjà validée sur "Vous souhaitez
+          inviter Serge" (v2-invitation-intro h2). "form-fields" reste en
+          place : simple conteneur display:grid;gap:18px qui regroupe les
+          champs d'une section (aucun rôle dans un système de colonnes
+          maintenant qu'il n'y en a plus qu'une). */}
       <div className="inv-form-section">
-        <div className="form-section-heading">
-          <span>01</span>
-          <h2>Vos coordonnées</h2>
-        </div>
+        <h2>Vos coordonnées</h2>
         <div className="form-fields">
           <div className="inv-row">
             <div>
@@ -55,10 +50,7 @@ export default function InvitationForm() {
       </div>
 
       <div className="inv-form-section">
-        <div className="form-section-heading">
-          <span>02</span>
-          <h2>Votre structure</h2>
-        </div>
+        <h2>Votre structure</h2>
         <div className="form-fields">
           <div>
             <label className="field-label">Hôte (Église / Ministère qui invite) *</label>
@@ -78,10 +70,7 @@ export default function InvitationForm() {
       </div>
 
       <div className="inv-form-section">
-        <div className="form-section-heading">
-          <span>03</span>
-          <h2>L’événement</h2>
-        </div>
+        <h2>L’événement</h2>
         <div className="form-fields">
           <div className="inv-row">
             <div>
@@ -134,10 +123,7 @@ export default function InvitationForm() {
       </div>
 
       <div className="inv-form-section">
-        <div className="form-section-heading">
-          <span>04</span>
-          <h2>Informations complémentaires</h2>
-        </div>
+        <h2>Informations complémentaires</h2>
         <div className="form-fields">
           <div>
             <label className="field-label">Prévoyez-vous de couvrir les frais de voyage et d’hébergement ? *</label>
