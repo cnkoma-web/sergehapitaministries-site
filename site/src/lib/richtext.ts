@@ -34,12 +34,59 @@ export function stripHtml(html: string): string {
 // page publique). `<\/\1>` (référence arrière sur le nom de la balise
 // ouvrante) force la fermeture sur LA MÊME balise, quel que soit ce qu'elle
 // contient à l'intérieur.
+// 3e et 4e bugs corrigés (13/09, diagnostic CMS retours à la ligne / Titre
+// de section) :
+//
+// (a) La première alternative du regex suppose que TOUTE balise a une
+// fermeture correspondante — faux pour <br>, un élément vide (jamais de
+// </br>). Un <br> RÉELLEMENT produit par l'éditeur en dehors de tout <p>
+// (constaté avec le vrai composant RichTextEditor : Maj+Entrée comme tout
+// premier retour dans un éditeur encore vide laisse "Texte<br>Suite" sans
+// le moindre <p>, un artefact de contentEditable distinct de celui déjà
+// corrigé le 03/09 pour le texte nu) faisait échouer le match à ce "<"
+// précis ; le moteur regex passait alors au caractère suivant "b", et
+// "r>Suite" (le "<" du <br> perdu en route) se retrouvait capturé comme
+// texte brut, puis enveloppé dans un <p> — la balise apparaissait donc
+// littéralement, en clair, sur la page publique ("br>Suite"). Un <br>
+// correctement imbriqué dans un <p> (le cas normal) n'était lui jamais
+// affecté. Corrigé en reconnaissant explicitement <br> comme balise à
+// fermeture automatique, avant la tentative générique.
+//
+// (b) `[a-z]+` (nom de balise) ne capture QUE des lettres — pour <h2>, le
+// groupe ne capturait donc que "h", et la référence arrière cherchait
+// ensuite "</h>" (jamais présent, le vrai fermant étant "</h2>") : le match
+// échouait entièrement, et la balise entière se retrouvait démembrée en
+// texte visible ("h2>Titre…" puis "/h2>"), EXACTEMENT le même mécanisme
+// que (a) mais déclenché par un chiffre dans le nom de balise plutôt qu'un
+// élément vide — trouvé en testant la nouvelle fonction "Titre de section"
+// (RichTextEditor) de bout en bout avec un vrai <h2> capturé depuis le
+// navigateur, jamais par hypothèse. `[a-z][a-z0-9]*` accepte les noms de
+// balise alphanumériques (h2, h3…) sans rien changer pour les balises déjà
+// gérées (p, blockquote, figure, ul, ol, li — aucun chiffre) : vérifié
+// identique sur tous les formats existants (voir tests de non-régression
+// du 13/09).
+//
+// 5e bug corrigé (13/09) : reproduit en direct sur une entrée Rosée
+// Matinale déjà publiée ("Tout le monde ne peut pas entrer dans votre
+// vie") — le corps réel contient une balise fermante orpheline (</p> sans
+// <p> correspondant, probablement un reliquat d'une modification passée,
+// antérieure aux corrections (a)/(b) ci-dessus). Une fermante orpheline
+// commence par "</", que ni l'alternative <br> ni l'alternative généraliste
+// (qui exige une lettre juste après "<") ne reconnaissent : elle finissait
+// donc démembrée exactement comme (a)/(b) — "/p&gt;" affiché littéralement
+// en toutes lettres sur la page publique. Reconnue désormais explicitement
+// et retirée silencieusement (elle ne porte par définition aucun contenu :
+// une fermante correctement appariée est déjà consommée par l'alternative
+// généraliste ci-dessus ; toute fermante encore isolée dans le flux est
+// nécessairement orpheline) — jamais rendue en texte, jamais un bloc vide
+// ajouté à la place.
 export function extractParagraphs(html: string): string[] {
   if (!html) return [];
-  const matches = html.match(/<([a-z]+)[^>]*>[\s\S]*?<\/\1>|[^<]+/gi) ?? [];
+  const matches = html.match(/<br\s*\/?>|<\/[a-z][a-z0-9]*\s*>|<([a-z][a-z0-9]*)[^>]*>[\s\S]*?<\/\1>|[^<]+/gi) ?? [];
   return matches
     .map((m) => m.trim())
     .filter(Boolean)
+    .filter((m) => !/^<\/[a-z][a-z0-9]*\s*>$/i.test(m))
     .map((m) => (m.startsWith("<") ? m : `<p>${m}</p>`));
 }
 

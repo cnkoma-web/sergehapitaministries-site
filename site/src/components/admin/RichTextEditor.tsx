@@ -18,7 +18,13 @@ type Props = {
   category?: "qdlb" | "vs";
 };
 
-const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "LI", "BLOCKQUOTE", "FIGURE", "A", "BR", "DIV"]);
+// "H2" ajouté (13/09) — uniquement pour la nouvelle fonction "Titre de
+// section" ci-dessous (Que Dit la Bible/La Vie Supérieure, barre complète
+// seulement). Ajout strictement additif : aucune fonction existante ne
+// produit ni ne dépend de H2, son ajout à cette liste blanche ne change le
+// comportement d'aucun format déjà en place (vérifié par les tests de
+// non-régression du 13/09 — voir le commentaire au-dessus de sanitize()).
+const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "LI", "BLOCKQUOTE", "FIGURE", "A", "BR", "DIV", "H2"]);
 
 // Nettoie le HTML produit par contentEditable : retire les styles/polices
 // ramenés par un copier-coller depuis une autre source (Word, un site...) et
@@ -152,6 +158,9 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
       if (anchorEl?.closest("ul")) next.add("ul");
       if (anchorEl?.closest("ol")) next.add("ol");
       if (anchorEl?.closest("blockquote")) next.add("blockquote");
+      // Surligne le bouton "Titre de section" quand le curseur est dans un
+      // <h2> (13/09) — même principe que blockquote ci-dessus.
+      if (anchorEl?.closest("h2")) next.add("h2");
       setActive(next);
     }
     document.addEventListener("selectionchange", updateActiveStates);
@@ -493,6 +502,28 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
             }}
           >
             {ICONS.link}
+          </button>
+        )}
+        {/* "Titre de section" (13/09, ajout strictement additif) — Que Dit
+            la Bible/La Vie Supérieure uniquement (seule cette page utilise
+            la barre complète, !compact, pour le champ body ; Je Confesse/
+            Rosée Matinale/Livres/Boutique restent tous en mode compact,
+            donc jamais affectés). Même mécanisme exact que "Citation"
+            juste en dessous (formatBlock), seule la balise cible change :
+            transforme le bloc courant en <h2>, jamais un nouveau type de
+            comportement d'édition. Sur La Vie Supérieure, chaque <h2>
+            direct du corps déclenche automatiquement la numérotation 01/02
+            du gabarit (.v2-article-page.vs .article-body h2, compteur
+            CSS) — aucune saisie manuelle du numéro n'est nécessaire. */}
+        {!compact && (
+          <button
+            type="button"
+            className={toolbarBtnClass}
+            data-active={active.has("h2")}
+            onClick={() => exec("formatBlock", "h2")}
+            title="Titre de section"
+          >
+            H2
           </button>
         )}
         <button
