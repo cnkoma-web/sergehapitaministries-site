@@ -7,6 +7,7 @@ import {
   getArticlesByIds,
   hasUserLikedArticle,
   ARTICLE_TYPE_LABEL,
+  ARTICLE_TYPE_KICKER,
 } from "@/lib/content/articles";
 import { getCategoriesForArticle } from "@/lib/content/categories";
 import { extractParagraphs, stripHtml, nbspBeforeClosingGuillemet } from "@/lib/richtext";
@@ -270,13 +271,18 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <ViewTracker articleId={article.id} />
       <section className="article-header">
         <div className="content-col">
-          {/* .entry-kicker (prototype) : badge + libellé de type fixe
-              ("Enseignement", propre à toute la rubrique — jamais un champ
-              par article, comme "Rosée Matinale"/"Je Confesse" ailleurs sur
-              le site). */}
+          {/* .entry-kicker (prototype) : badge + libellé de type fixe,
+              propre à toute la rubrique — jamais un champ par article,
+              comme "Rosée Matinale"/"Je Confesse" ailleurs sur le site.
+              Décision éditoriale validée (13/09) : "Enseignement"
+              appartenait à tort à Que Dit la Bible (terme propre à La Vie
+              Supérieure) — remplacé par "Examen des Écritures", tiré de
+              ARTICLE_TYPE_KICKER (même mécanisme qu'ARTICLE_TYPE_LABEL,
+              constante dérivée du type, jamais un texte en dur ici ni un
+              champ par article). */}
           <div className="article-kicker">
             <div className="article-cat-badge">{ARTICLE_TYPE_LABEL.qdlb}</div>
-            <span className="article-type">Enseignement</span>
+            <span className="article-type">{ARTICLE_TYPE_KICKER.qdlb}</span>
           </div>
           <h1 className="article-title">{nbspBeforeClosingGuillemet(article.title)}</h1>
           {/* .entry-chapeau (prototype) : dans le héros, entre le titre et

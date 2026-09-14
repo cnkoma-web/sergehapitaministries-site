@@ -52,6 +52,16 @@ export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
 };
 export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", vs: "VS", rm: "RM", jc: "JC" };
 
+// Libellé de type affiché à côté du badge dans le héros d'article
+// (.entry-type, prototype § .entry-kicker) — décision éditoriale validée
+// (13/09) : "Enseignement" appartenait à tort à la rubrique Que Dit la
+// Bible, ce terme est propre à La Vie Supérieure. Même principe que
+// ARTICLE_TYPE_LABEL ci-dessus (constante dérivée du type, pas un champ
+// par article ni un texte en dur dans le gabarit) — seul qdlb l'utilise
+// aujourd'hui (le héros de La Vie Supérieure n'affiche aucun libellé de
+// type à côté du badge, voir publications/[slug]/page.tsx).
+export const ARTICLE_TYPE_KICKER: Partial<Record<ArticleType, string>> = { qdlb: "Examen des Écritures" };
+
 const COLUMNS =
   "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at, podcast_episode_id";
 const ADMIN_COLUMNS =
