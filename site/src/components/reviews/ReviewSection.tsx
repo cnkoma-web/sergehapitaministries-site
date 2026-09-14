@@ -23,7 +23,20 @@ export default async function ReviewSection({ bookId, goodieId }: Props) {
     // mesuré 695px de large au lieu de 930px avant correction.
     <section className="v2-commerce-narrow v2-reviews-section" id="avis">
       <div className="v2-reviews-heading">
-        <h2>Vous avez déjà découvert ce produit&nbsp;?</h2>
+        {/* <p> AJOUTÉ (recertification atomique, 14/09) : présent dans la
+            maquette (§ .reviews-heading p, commerce.css l.219 — style déjà
+            porté côté V2 par .v2-reviews-heading p, jamais utilisé faute de
+            markup) et absent du rendu V2 jusqu'ici — trou de couverture
+            détecté par le balayage exhaustif (élément à texte statique
+            simple, sans logique ni donnée dynamique associée). Regroupé
+            avec le h2 dans un même bloc pour ne pas perturber la grille à
+            2 colonnes (maquette : h2+p ; V2 y ajoute .v2-reviews-summary,
+            un résumé note/étoiles absent de la maquette pour cette page —
+            fonctionnalité V2 conservée, documentée SUPPLÉMENTAIRE V2). */}
+        <div>
+          <h2>Vous avez déjà découvert ce produit&nbsp;?</h2>
+          <p>Votre avis aide d&apos;autres visiteurs — quelques secondes suffisent.</p>
+        </div>
         <div className="v2-reviews-summary">
           <div className="big-score">{summary.average ?? "—"}</div>
           <div>

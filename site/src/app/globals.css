@@ -3563,7 +3563,13 @@ footer.footer--dark{
 .v2-product-page .v2-quantity-control button{height:100%;border:0;color:var(--v2-violet-deep);background:transparent;font-size:16px;cursor:pointer;font-family:inherit;}
 .v2-product-page .v2-quantity-control button:disabled{color:var(--v2-line);cursor:not-allowed;}
 .v2-product-page .v2-quantity-control output{text-align:center;color:var(--v2-ink);font-weight:750;}
-.v2-product-page .v2-add-to-cart-primary{min-height:54px;border:0;border-radius:7px;color:#fff;background:linear-gradient(135deg,#4e2cff,#8b35ee);box-shadow:0 13px 28px rgba(79,37,216,.24);font-weight:800;cursor:pointer;font-family:inherit;font-size:14px;}
+/* font-size 14px -> 16px (recertification atomique, 14/09) : la maquette
+   (.add-to-cart-primary, commerce.css l.187) ne fixe aucun font-size et
+   hérite donc de 16px via son reset global "button{font:inherit}" — la
+   même règle du bouton quantité voisin (.v2-quantity-control button, ligne
+   ci-dessus) applique déjà correctement 16px ; seul ce bouton avait un
+   16px explicitement remplacé par 14px, incohérence corrigée. */
+.v2-product-page .v2-add-to-cart-primary{min-height:54px;border:0;border-radius:7px;color:#fff;background:linear-gradient(135deg,#4e2cff,#8b35ee);box-shadow:0 13px 28px rgba(79,37,216,.24);font-weight:800;cursor:pointer;font-family:inherit;font-size:16px;}
 /* ABSENT V2 corrigé : mention "Paiement sécurisé par Stripe · Livraison
    calculée selon la destination" (.purchase-note, maquette) absente. */
 .v2-product-page .v2-purchase-note{display:flex;align-items:center;gap:8px;margin:14px 0 0;color:var(--v2-muted);font-size:12px;}
@@ -3606,7 +3612,16 @@ footer.footer--dark{
    livre" contraint sur 4 lignes au lieu de 2. Neutralisé explicitement. */
 .v2-product-page .product-desc{padding-block:92px;max-width:none;margin:0;background:var(--v2-ink);color:#fff;}
 .v2-product-page .product-desc .v2-commerce-wrap{display:grid;grid-template-columns:.55fr 1.45fr;gap:80px;}
-.v2-product-page .product-desc h2{position:sticky;top:28px;align-self:start;margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(40px,5vw,61px);font-weight:500;line-height:1.05;letter-spacing:-.04em;}
+/* align-self:start RETIRÉ (recertification atomique, 14/09) : la maquette
+   (.book-description h2, commerce.css l.201) ne pose aucun align-self —
+   le h2 hérite du stretch par défaut de la grille et remplit toute la
+   hauteur de la ligne (mesuré 836px sur cette page), ce qui permet à son
+   position:sticky de rester épinglé pendant tout le défilement de la
+   longue colonne de texte. En le forçant à align-self:start, le h2 se
+   réduisait à sa hauteur de contenu (128px) et perdait cet effet sticky
+   presque immédiatement — écart de gabarit réel détecté par le balayage
+   exhaustif, invisible à une simple lecture de couleur/police. */
+.v2-product-page .product-desc h2{position:sticky;top:28px;margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(40px,5vw,61px);font-weight:500;line-height:1.05;letter-spacing:-.04em;}
 .v2-product-page .product-desc>.v2-commerce-wrap>div:last-child{max-width:730px;}
 .v2-product-page .product-desc p{margin:0 0 22px;color:rgba(255,255,255,.72);font-family:var(--v2-serif);font-size:19px;line-height:1.78;}
 /* BUG RÉEL CORRIGÉ (reprise après validation humaine, 14/09) : le premier
@@ -3687,9 +3702,25 @@ footer.footer--dark{
 .review-form{display:grid;gap:14px;padding:42px;max-width:none;margin:0;border-radius:0;}
 .review-form h3{margin:0;font-family:var(--v2-serif);font-size:22px;font-weight:600;}
 .review-form label{color:var(--v2-ink-soft);font-size:12px;font-weight:800;line-height:1.6;}
-.review-form input,.review-form textarea{width:100%;padding:13px 14px;border:1px solid var(--v2-line);border-radius:6px;outline:0;background:#fbfaff;font-family:inherit;}
+.review-form input,.review-form textarea{width:100%;padding:13px 14px;border:1px solid var(--v2-line);border-radius:6px;outline:0;background:#fbfaff;font-family:inherit;color:var(--v2-ink);}
 .review-form textarea{min-height:122px;resize:vertical;}
 .review-form input:focus,.review-form textarea:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);}
+/* BUG RÉEL CORRIGÉ (recertification atomique, 14/09) : une règle pré-V2
+   plus spécifique (.review-form input[type="text"]{...}, sélecteur
+   d'attribut, plus haut dans ce fichier — même mécanisme que ci-dessus)
+   fuyait sur border/border-radius/padding/font-size, quelle que soit sa
+   position dans le fichier — l'input "Votre nom" mesurait 44px de haut
+   avec un radius de 10px et 14px de police au lieu de 54px/6px/16px sur
+   la maquette. Neutralisé en ciblant le même niveau de spécificité,
+   déclaré après : gagne par ordre de source. */
+.review-form input[type="text"]{border:1px solid var(--v2-line);border-radius:6px;padding:13px 14px;font-size:16px;line-height:1.6;margin-bottom:0;}
+/* Même fuite pré-V2 que ci-dessus, sur .review-form textarea (padding:14px;
+   border:1.5px;border-radius:10px;font-size:14px;margin-bottom:16px) —
+   non détectée par le balayage exhaustif (un textarea vide n'a pas de
+   texte, donc n'est pas capturé par extract_full.js des deux côtés),
+   mais démontrée par lecture directe du même mécanisme de spécificité
+   déjà corrigé sur le champ Nom. Neutralisée à l'identique. */
+.review-form textarea{border:1px solid var(--v2-line);border-radius:6px;padding:13px 14px;font-size:16px;line-height:1.6;margin-bottom:0;}
 /* BUG RÉEL CORRIGÉ (reprise fiche Livre, 14/09) : une règle pré-V2 plus
    spécifique (.review-form button[type="submit"]{display:flex;margin:0
    auto;}, attribut = spécificité supérieure) forçait le bouton à
@@ -3700,8 +3731,19 @@ footer.footer--dark{
    large au lieu de 473px (pleine largeur de la colonne, comportement par
    défaut d'un enfant de grille sur la maquette, qui ne déclare aucune
    largeur ni marge). Neutralisé explicitement. */
-.review-form button{min-height:49px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-weight:800;cursor:pointer;line-height:1.6;}
+/* font-family/font-size AJOUTÉS (recertification atomique, 14/09) : la
+   maquette pose un reset global "button, input{font:inherit}" (styles.css
+   l.23), absent de ce projet V2 — ce bouton retombait donc sur la police
+   par défaut du navigateur (Arial 13.33px) au lieu d'hériter d'Inter/16px
+   comme sur la maquette. Corrigé localement sur ce composant partagé
+   (fiche Livre + fiche Goodie), sans toucher au reset global du site
+   (hors périmètre de ce chantier). */
+.review-form button{min-height:49px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;line-height:1.6;}
 .review-form button[type="submit"]{display:block;width:100%;margin:0;}
+/* AJOUTÉ (recertification atomique, 14/09) : style maquette (commerce.css
+   .review-note{margin:0;color:var(--muted);font-size:11px;}) jamais porté
+   côté V2 faute de markup — ajouté avec l'équivalent V2 de --muted. */
+.review-form .review-note{margin:0;color:var(--v2-muted);font-size:11px;}
 .star-input{display:flex;gap:5px;}
 .star-input span{color:#cfcbd8;font-size:27px;line-height:1;cursor:pointer;}
 /* BUG RÉEL CORRIGÉ (reprise fiche Livre, 14/09) : une règle pré-V2 plus

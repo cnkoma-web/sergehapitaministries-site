@@ -89,6 +89,14 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
       <button type="submit" disabled={loading}>
         {loading ? "Envoi…" : "Envoyer mon avis →"}
       </button>
+      {/* AJOUTÉ (recertification atomique, 14/09) : présent dans la maquette
+          (<p class="review-note" data-review-note aria-live="polite">) et
+          absent du rendu V2 — trou de couverture détecté par le balayage
+          exhaustif (texte statique, sans logique associée). aria-live
+          conservé : pertinent ici puisque ce même paragraphe pourrait à
+          l'avenir porter un message d'état (déjà le rôle de data-review-note
+          côté maquette), même si aujourd'hui son contenu est fixe. */}
+      <p className="review-note" aria-live="polite">Votre avis sera publié après modération.</p>
     </form>
   );
 }
