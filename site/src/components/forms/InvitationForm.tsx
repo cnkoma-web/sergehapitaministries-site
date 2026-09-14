@@ -14,29 +14,42 @@ export default function InvitationForm() {
         });
       }}
     >
+      {/* "form-fields" ajouté (certification 14/09) — sans ce conteneur, les
+          .inv-row (et champs isolés) devenaient chacun un enfant direct de
+          .inv-form-section, qui est lui-même la grille CSS à 2 colonnes
+          (190px | reste) : l'auto-placement de la grille répartissait alors
+          .form-section-heading + le premier .inv-row sur la 1re ligne, puis
+          renvoyait le second .inv-row tout seul dans la 1re colonne (190px)
+          d'une 2e ligne implicite — mesuré : champs E-mail/Téléphone
+          écrasés à 86px de large chacun au lieu de 344px. La maquette
+          (§ .form-fields{"{"}display:grid;gap:18px{"}"}) regroupe tous les
+          champs d'une section dans UN SEUL conteneur, seul occupant réel de
+          la 2e colonne de la grille. */}
       <div className="inv-form-section">
         <div className="form-section-heading">
           <span>01</span>
           <h2>Vos coordonnées</h2>
         </div>
-        <div className="inv-row">
-          <div>
-            <label className="field-label">Prénom *</label>
-            <input type="text" name="prenom" required />
+        <div className="form-fields">
+          <div className="inv-row">
+            <div>
+              <label className="field-label">Prénom *</label>
+              <input type="text" name="prenom" required />
+            </div>
+            <div>
+              <label className="field-label">Nom *</label>
+              <input type="text" name="nom" required />
+            </div>
           </div>
-          <div>
-            <label className="field-label">Nom *</label>
-            <input type="text" name="nom" required />
-          </div>
-        </div>
-        <div className="inv-row">
-          <div>
-            <label className="field-label">E-mail *</label>
-            <input type="email" name="email" required />
-          </div>
-          <div>
-            <label className="field-label">Téléphone *</label>
-            <input type="tel" name="telephone" required />
+          <div className="inv-row">
+            <div>
+              <label className="field-label">E-mail *</label>
+              <input type="email" name="email" required />
+            </div>
+            <div>
+              <label className="field-label">Téléphone *</label>
+              <input type="tel" name="telephone" required />
+            </div>
           </div>
         </div>
       </div>
@@ -46,18 +59,20 @@ export default function InvitationForm() {
           <span>02</span>
           <h2>Votre structure</h2>
         </div>
-        <div style={{ marginBottom: 14 }}>
-          <label className="field-label">Hôte (Église / Ministère qui invite) *</label>
-          <input type="text" name="hote" required />
-        </div>
-        <div className="inv-row">
+        <div className="form-fields">
           <div>
-            <label className="field-label">Pays *</label>
-            <input type="text" name="pays" required />
+            <label className="field-label">Hôte (Église / Ministère qui invite) *</label>
+            <input type="text" name="hote" required />
           </div>
-          <div>
-            <label className="field-label">Ville *</label>
-            <input type="text" name="ville" required />
+          <div className="inv-row">
+            <div>
+              <label className="field-label">Pays *</label>
+              <input type="text" name="pays" required />
+            </div>
+            <div>
+              <label className="field-label">Ville *</label>
+              <input type="text" name="ville" required />
+            </div>
           </div>
         </div>
       </div>
@@ -65,54 +80,56 @@ export default function InvitationForm() {
       <div className="inv-form-section">
         <div className="form-section-heading">
           <span>03</span>
-          <h2>L&apos;événement</h2>
+          <h2>L’événement</h2>
         </div>
-        <div className="inv-row">
-          <div>
-            <label className="field-label">Type d&apos;invitation *</label>
-            <select name="type_invitation" required defaultValue="">
-              <option value="" disabled>
-                Sélectionnez un type
-              </option>
-              <option>Conférence</option>
-              <option>Séminaire</option>
-              <option>Culte / Prédication</option>
-              <option>Formation</option>
-              <option>Autre</option>
-            </select>
+        <div className="form-fields">
+          <div className="inv-row">
+            <div>
+              <label className="field-label">Type d’invitation *</label>
+              <select name="type_invitation" required defaultValue="">
+                <option value="" disabled>
+                  Sélectionnez un type
+                </option>
+                <option>Conférence</option>
+                <option>Séminaire</option>
+                <option>Culte / Prédication</option>
+                <option>Formation</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div>
+              <label className="field-label">Ministère désiré *</label>
+              <select name="ministere_desire" required defaultValue="">
+                <option value="" disabled>
+                  Sélectionnez un ministère
+                </option>
+                <option>Enseignement de la Parole</option>
+                <option>Message prophétique</option>
+                <option>Guérison / Délivrance</option>
+                <option>Autre</option>
+              </select>
+            </div>
           </div>
           <div>
-            <label className="field-label">Ministère désiré *</label>
-            <select name="ministere_desire" required defaultValue="">
-              <option value="" disabled>
-                Sélectionnez un ministère
-              </option>
-              <option>Enseignement de la Parole</option>
-              <option>Message prophétique</option>
-              <option>Guérison / Délivrance</option>
-              <option>Autre</option>
-            </select>
+            <label className="field-label">Thème de l’événement *</label>
+            <input type="text" name="theme" required />
           </div>
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <label className="field-label">Thème de l&apos;événement *</label>
-          <input type="text" name="theme" required />
-        </div>
-        <div className="inv-row">
-          <div>
-            <label className="field-label">Date de début *</label>
-            <input type="date" name="date_debut" required />
+          <div className="inv-row">
+            <div>
+              <label className="field-label">Date de début *</label>
+              <input type="date" name="date_debut" required />
+            </div>
+            <div>
+              <label className="field-label">Date de fin *</label>
+              <input type="date" name="date_fin" required />
+            </div>
           </div>
           <div>
-            <label className="field-label">Date de fin *</label>
-            <input type="date" name="date_fin" required />
+            <label className="field-label">
+              Personne de contact sur place <span className="optional-tag">(si différente de vous)</span>
+            </label>
+            <input type="text" name="contact_sur_place" placeholder="Nom, prénom et téléphone" />
           </div>
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <label className="field-label">
-            Personne de contact sur place <span className="optional-tag">(si différente de vous)</span>
-          </label>
-          <input type="text" name="contact_sur_place" placeholder="Nom, prénom et téléphone" />
         </div>
       </div>
 
@@ -121,35 +138,43 @@ export default function InvitationForm() {
           <span>04</span>
           <h2>Informations complémentaires</h2>
         </div>
-        <div style={{ marginBottom: 14 }}>
-          <label className="field-label">Prévoyez-vous de couvrir les frais de voyage et d&apos;hébergement ? *</label>
-          <div className="radio-row">
-            <label>
-              <input type="radio" name="frais_couverts" value="Oui" required /> Oui
-            </label>
-            <label>
-              <input type="radio" name="frais_couverts" value="Non" required /> Non
-            </label>
-            <label>
-              <input type="radio" name="frais_couverts" value="À discuter" required /> À discuter
-            </label>
+        <div className="form-fields">
+          <div>
+            <label className="field-label">Prévoyez-vous de couvrir les frais de voyage et d’hébergement ? *</label>
+            <div className="radio-row">
+              <label>
+                <input type="radio" name="frais_couverts" value="Oui" required /> Oui
+              </label>
+              <label>
+                <input type="radio" name="frais_couverts" value="Non" /> Non
+              </label>
+              <label>
+                <input type="radio" name="frais_couverts" value="À discuter" /> À discuter
+              </label>
+            </div>
           </div>
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <label className="field-label">
-            Comment avez-vous connu Serge Hapita Ministries ? <span className="optional-tag">(facultatif)</span>
-          </label>
-          <input type="text" name="comment_connu" />
-        </div>
-        <div>
-          <label className="field-label">
-            Message à ajouter <span className="optional-tag">(facultatif)</span>
-          </label>
-          <textarea name="message" />
+          <div>
+            <label className="field-label">
+              Comment avez-vous connu Serge Hapita Ministries ? <span className="optional-tag">(facultatif)</span>
+            </label>
+            <input type="text" name="comment_connu" />
+          </div>
+          <div>
+            <label className="field-label">
+              Message à ajouter <span className="optional-tag">(facultatif)</span>
+            </label>
+            <textarea name="message" />
+          </div>
         </div>
       </div>
 
-      <div style={{ padding: "0 48px 42px" }}>
+      {/* "inv-submit-row" (certification 14/09) : la maquette (§
+          .form-submit-row) porte un padding asymétrique 30px 48px 38px
+          284px (aligné sur les colonnes de champs, 190+46+48), un filet
+          supérieur et un fond #fbfaff distinct du reste du formulaire —
+          le style inline précédent (padding:"0 48px 42px") n'avait ni
+          l'alignement, ni le filet, ni le fond. */}
+      <div className="inv-submit-row">
         <label className="consent-label">
           <input type="checkbox" required />
           <span>
