@@ -32,7 +32,14 @@ export default async function LivresPage() {
     <div className="v2-commerce-page">
       <section className="v2-store-hero livres">
         <div className="v2-commerce-wrap v2-store-hero-inner">
-          <p className="v2-eyebrow light">
+          {/* v2-brand-case (audit Hub Livres, 14/09) : classe déjà présente
+              dans globals.css (§ .v2-brand-case, text-transform:none) mais
+              jamais appliquée ici — l'eyebrow "amDG Éditions du Royaume"
+              héritait donc du text-transform:uppercase de .v2-eyebrow et
+              s'affichait "AMDG ÉDITIONS DU ROYAUME", perdant la graphie de
+              marque figée (a/m minuscules) que la maquette (.brand-case)
+              préserve explicitement. */}
+          <p className="v2-eyebrow light v2-brand-case">
             <span /> amDG Éditions du Royaume
           </p>
           <h1>Livres</h1>

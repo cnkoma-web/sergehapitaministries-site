@@ -3336,12 +3336,26 @@ footer.footer--dark{
 .v2-store-hero h1{margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(54px,8vw,94px);font-weight:500;line-height:.95;letter-spacing:-.045em;}
 .v2-store-hero-inner>p:not(.v2-eyebrow){max-width:610px;margin:22px 0 0;color:rgba(255,255,255,.7);font-size:17px;line-height:1.7;}
 .v2-store-hero.livres::after{content:"LIVRES";position:absolute;z-index:-1;right:4vw;bottom:-58px;color:rgba(255,255,255,.045);font-family:var(--v2-serif);font-size:clamp(110px,19vw,230px);line-height:1;letter-spacing:-.07em;}
+/* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : même mécanisme déjà trouvé et
+   corrigé sur le Hero Partenariat — body{line-height:1.6} (maquette,
+   styles.css) donne à l'eyebrow (13px, sans line-height propre) une
+   hauteur héritée de 13×1.6=20.8px ; le body{} du globals.css V2 ne
+   déclare aucun line-height ("normal" du navigateur s'applique, mesuré
+   16px au lieu de 20.8px). Racine toujours globale (body), toujours
+   SIGNALÉE SANS CORRECTION sur le Hero Boutique (même .v2-eyebrow, hors
+   périmètre de cette PAGE) — corrigée ici uniquement pour le Hero Livres. */
+.v2-store-hero.livres .v2-eyebrow{line-height:1.6;}
 .v2-store-hero.boutique::after{content:"BOUTIQUE";position:absolute;z-index:-1;right:4vw;bottom:-58px;color:rgba(255,255,255,.045);font-family:var(--v2-serif);font-size:clamp(90px,15vw,190px);line-height:1;letter-spacing:-.07em;}
 
 /* --- Introduction catalogue --- */
 .v2-catalog-intro{max-width:850px;padding-block:66px 42px;}
 .v2-catalog-intro h2{max-width:720px;margin:0;font-family:var(--v2-serif);font-size:clamp(35px,5vw,57px);font-weight:500;line-height:1.09;letter-spacing:-.035em;}
-.v2-catalog-intro h2 em{color:var(--v2-violet-deep);font-weight:500;font-style:normal;}
+/* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : "font-style:normal" ici
+   annulait à tort l'italique par défaut du <em> — la règle maquette
+   (.catalog-intro h2 em) ne déclare AUCUN font-style, laissant l'italique
+   natif du navigateur s'appliquer ; vérifié réellement italique sur la
+   maquette (fontStyle="italic"), contre "normal" en V2. */
+.v2-catalog-intro h2 em{color:var(--v2-violet-deep);font-weight:500;}
 .v2-catalog-facts{display:grid;grid-template-columns:1fr 1fr;border-left:1px solid var(--v2-line);}
 .v2-catalog-facts div{padding-left:28px;}
 .v2-catalog-facts strong{display:block;color:var(--v2-violet-deep);font-family:var(--v2-serif);font-size:36px;font-weight:500;line-height:1;}
@@ -3353,12 +3367,33 @@ footer.footer--dark{
 .v2-catalog-cover-link{display:block;padding:20px 20px 0;background:linear-gradient(145deg,#f3f0fb,#fbfaff);}
 .v2-catalog-cover{display:block;position:relative;aspect-ratio:2/3;overflow:hidden;background:#17142d;box-shadow:0 17px 32px rgba(23,20,45,.18);}
 .v2-catalog-cover img{width:100%;height:100%;object-fit:cover;}
+/* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : ".v2-catalog-cover img"
+   ci-dessus ne s'applique jamais en pratique quand CoverRollover est utilisé
+   (cas réel majoritaire) — l'image est alors un descendant de
+   .cover-rollover, dont la règle par défaut (.cover-rollover .cr-front/
+   .cr-back, plus haut dans ce fichier) déclare object-fit:contain avec une
+   spécificité supérieure (2 classes contre 1 classe + 1 type). Un override
+   existait déjà pour ce même piège sur la fiche vedette de l'accueil
+   (.v2-book-cover .cover-rollover ...), jamais répliqué ici — mesuré
+   object-fit:"contain" au lieu de "cover" sur les cartes du catalogue. */
+.v2-catalog-cover .cover-rollover .cr-front,
+.v2-catalog-cover .cover-rollover .cr-back{object-fit:cover;}
 .v2-catalog-card-body{flex:1;display:flex;flex-direction:column;align-items:flex-start;padding:23px 20px 21px;}
-.v2-catalog-badge{width:fit-content;margin-bottom:13px;padding:5px 9px;border-radius:999px;color:var(--v2-violet-deep);background:var(--v2-violet-pale);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
+/* line-height:1.6 ajouté (audit Hub Livres, 14/09) : même mécanisme que
+   .v2-catalog-price ci-dessus — mesuré 16px (10×1.6) sur la maquette contre
+   ~12px en V2, badge 26px de haut au lieu de 24px. */
+.v2-catalog-badge{width:fit-content;margin-bottom:13px;padding:5px 9px;border-radius:999px;color:var(--v2-violet-deep);background:var(--v2-violet-pale);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;line-height:1.6;}
 .v2-catalog-card-body h2{margin:0;font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.17;}
 .v2-catalog-author{margin:10px 0 0;color:var(--v2-muted);font-size:12px;}
 .v2-catalog-author a{color:var(--v2-violet-deep);font-weight:750;}
-.v2-catalog-price{margin:auto 0 0;padding-top:20px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:23px;font-weight:600;}
+/* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : même mécanisme que le Hero
+   (body{line-height:1.6} manquant en V2) — le prix (23px, sans line-height
+   propre) mesure 36.8px de hauteur de ligne sur la maquette (23×1.6) contre
+   ~26px en V2 ("normal" du navigateur), soit 46px de hauteur totale (avec
+   padding-top:20px) au lieu de 57px. Carte entière mesurée 600px au lieu
+   de 613px avant correction. Corrigé localement (classe exclusive à cette
+   page, aucun autre usage). */
+.v2-catalog-price{margin:auto 0 0;padding-top:20px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.6;}
 .v2-catalog-actions{width:100%;display:grid;grid-template-columns:1fr 46px;gap:8px;margin-top:16px;}
 .v2-catalog-detail,.v2-catalog-add{min-height:45px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--v2-ink);border-radius:6px;cursor:pointer;transition:color .2s ease,background .2s ease,border-color .2s ease;}
 .v2-catalog-detail{padding-inline:10px;color:#fff;background:var(--v2-ink);font-size:12px;font-weight:800;}
@@ -3366,7 +3401,16 @@ footer.footer--dark{
 .v2-catalog-add{color:var(--v2-violet-deep);background:#fff;font-size:21px;font-family:inherit;}
 .v2-catalog-add:hover{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
 .v2-catalog-add svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.v2-catalog-conclusion{margin-bottom:92px;padding:30px 0;border-block:1px solid var(--v2-line);}
+/* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : .v2-catalog-conclusion
+   reprenait bien le filet haut/bas (border-block) et l'indentation du 2e
+   bloc (div+div), mais oubliait les 2 annulations de la maquette
+   (.catalog-conclusion{border-left:0} et .catalog-conclusion div{padding-
+   left:0}) qui neutralisent le filet/padding gauche hérités de
+   .catalog-facts — le 1er bloc ("7 livres au catalogue") démarrait donc
+   à x=109 avec un filet gauche parasite, au lieu de x=80 sans filet comme
+   sur la maquette (mesuré : strong à 532px de large au lieu de 560px). */
+.v2-catalog-conclusion{margin-bottom:92px;padding:30px 0;border-block:1px solid var(--v2-line);border-left:0;}
+.v2-catalog-conclusion div{padding-left:0;}
 .v2-catalog-conclusion div+div{padding-left:28px;border-left:1px solid var(--v2-line);}
 
 /* --- Boutique : intro + grille de goodies (§ .shop-intro/.goodies-grid) --- */
