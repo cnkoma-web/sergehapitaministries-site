@@ -76,17 +76,29 @@ export default function DonateWidget() {
           </button>
         ))}
       </div>
+      {/* Bouton "Autre montant" (audit Partenariat, 14/09) — réutilisait à
+          tort la classe "amount-opt" (pastille 10€/30€/…, Georgia 20px,
+          fond violet-deep plein une fois actif) au lieu de la classe dédiée
+          de la maquette (.custom-amount-button : bordure fine, texte
+          violet-deep, fond lavande clair une fois actif, jamais construite
+          en V2). Classe et marges corrigées ; aucun changement de
+          fonctionnement (même onClick, même bascule sur amount==="custom"). */}
       <button
         type="button"
-        className={amount === "custom" ? "amount-opt active" : "amount-opt"}
-        style={{ width: "100%", marginBottom: 20 }}
+        className={amount === "custom" ? "custom-amount-button active" : "custom-amount-button"}
         onClick={() => setAmount("custom")}
       >
         Autre montant
       </button>
 
       {amount === "custom" && (
-        <div className="custom-amount show">
+        // "€" en suffixe (audit Partenariat, 14/09) — absent du JSX alors que
+        // la maquette (.custom-amount-field span) l'affiche en permanence à
+        // droite du champ ; en V2 seul un placeholder "Montant en €"
+        // jouait ce rôle, qui disparaît dès que l'utilisateur tape un
+        // montant. Ajouté sans toucher au type="text"/inputMode="numeric"
+        // (retour du 05/09, comportement fonctionnel conservé).
+        <div className="custom-amount">
           {/* type="text" + inputMode="numeric" (retour du 05/09) — plus de
               champ type="number" avec ses flèches d'incrémentation.
               inputMode garde le clavier numérique sur mobile ; le filtrage
@@ -96,9 +108,11 @@ export default function DonateWidget() {
             inputMode="numeric"
             pattern="[0-9]*"
             placeholder="Montant en €"
+            aria-label="Autre montant"
             value={customAmount}
             onChange={(e) => setCustomAmount(e.target.value.replace(/[^0-9]/g, ""))}
           />
+          <span>€</span>
         </div>
       )}
 
@@ -128,6 +142,18 @@ export default function DonateWidget() {
           ? "Redirection…"
           : `Faire un don${FREQUENCY_BUTTON_WORD[frequency]} de ${amountValid ? effectiveAmount : 0} €`}
       </button>
+      {/* ABSENT V2 corrigé (audit Partenariat, 14/09) : la mention "Paiement
+          sécurisé par Stripe" (.secure-payment, icône cadenas) était
+          totalement absente du JSX — vérifiée réellement absente du DOM
+          rendu, pas seulement du code lu. Contenu et icône repris à
+          l'identique de prototype-html/partenariat/index.html. */}
+      <p className="secure-payment">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="11" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+        </svg>
+        Paiement sécurisé par Stripe
+      </p>
     </div>
   );
 }

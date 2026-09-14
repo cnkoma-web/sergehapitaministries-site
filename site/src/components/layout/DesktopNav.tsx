@@ -60,8 +60,19 @@ export default function DesktopNav({ nav }: { nav: NavItem[] }) {
               </button>
             )}
             <div className="v2-nav-dropdown-menu">
+              {/* className "active" (audit Partenariat, 14/09) : absent —
+                  seul le déclencheur du menu déroulant (.v2-nav-dropdown,
+                  ci-dessus) recevait "active", jamais le lien correspondant
+                  À L'INTÉRIEUR du menu. La maquette (.nav-dropdown-menu
+                  a.active — violet + fond pâle) le surligne pourtant ;
+                  vérifié réellement absent sur "Partenariat" dans "À propos"
+                  en visitant /partenariat. Concerne les 7 sous-liens de "À
+                  propos" (De Serge/La mission/Livres/Vidéos/Podcast/
+                  Invitation/Partenariat) — strictement additif, aucun ne
+                  portait cette classe avant, donc aucune régression
+                  possible sur les autres pages du même menu. */}
               {item.links.map((link) => (
-                <Link key={link.href} href={link.href}>
+                <Link key={link.href} href={link.href} className={isActive(pathname, link.href) ? "active" : undefined}>
                   {link.label}
                 </Link>
               ))}

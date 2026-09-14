@@ -3652,6 +3652,17 @@ footer.footer--dark{
 .v2-engagement-hero.partnership{min-height:400px;background:radial-gradient(circle at 84% 18%,rgba(143,91,255,.62),transparent 28%),linear-gradient(125deg,#17142d 6%,#25203f 58%,#49238a 100%);}
 .v2-engagement-hero.partnership::after{content:"SEMER";}
 .v2-engagement-hero.partnership h1{max-width:870px;font-size:clamp(50px,7vw,82px);}
+/* BUG RÉEL CORRIGÉ (audit Partenariat, 14/09) : la maquette (body{line-height:
+   1.6}, styles.css) donne à .eyebrow (13px, sans line-height propre) une
+   hauteur de ligne héritée de 13×1.6=20.8px — mesuré 20.8px de haut, contre
+   15.5px en V2 (body{} du globals.css V2 ne déclare aucun line-height,
+   "normal" du navigateur s'applique à la place). Racine : absence globale
+   de line-height sur body en V2, un écart qui affecte vraisemblablement
+   aussi les héros Invitation/Contact (même .v2-eyebrow, jamais comparé
+   précisément) — SIGNALÉ SANS CORRECTION ailleurs (hors périmètre de cet
+   audit, nécessiterait une revérification de chaque page déjà certifiée).
+   Corrigé ici, localement, pour l'eyebrow du Hero Partenariat seulement. */
+.v2-engagement-hero.partnership .v2-eyebrow{line-height:1.6;}
 
 /* --- Contact --- */
 .v2-contact-section{display:grid;grid-template-columns:.68fr 1.32fr;gap:68px;padding:68px 0 88px;align-items:start;}
@@ -3739,13 +3750,39 @@ footer.footer--dark{
 .v2-donation-copy{position:sticky;top:30px;}
 .v2-donation-copy h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(39px,5vw,59px);font-weight:500;line-height:1.08;letter-spacing:-.035em;}
 .v2-donation-copy p{margin:25px 0 0;color:var(--v2-muted);font-size:16px;line-height:1.75;}
-.donate-card{padding:36px;border:1px solid rgba(79,37,216,.14);border-radius:16px;background:#fff;box-shadow:0 24px 65px rgba(36,24,82,.13);}
+/* BUG RÉEL CORRIGÉ (audit Partenariat, 14/09) : .v2-donation-copy p
+   (ci-dessus) s'applique aussi à l'eyebrow "Soutenir l'œuvre" (un <p
+   className="v2-eyebrow">), car même dans la maquette .donation-copy p
+   l'emporte sur .eyebrow à spécificité égale pour tout ce que .eyebrow ne
+   fixe pas explicitement — vérifié : la maquette elle-même rend cet
+   eyebrow en 16px/muted/line-height 28px, PAS en 13px/violet comme le
+   Hero. Seule différence réelle mesurée entre maquette et V2 : la
+   maquette ajoute .donation-copy .eyebrow{margin-bottom:18px} par-dessus
+   (margin mesurée "25px 0 18px"), absent en V2 (margin mesurée
+   "25px 0 0"). Reproduit ici à l'identique — pas "corrigé" au sens de
+   rendre l'eyebrow violet/13px, ce qui s'écarterait de la maquette. */
+.v2-donation-copy .v2-eyebrow{margin-bottom:18px;}
+/* BUG RÉEL CORRIGÉ (audit Partenariat, 14/09) : une règle pré-V2 non
+   scopée (.donate-card{max-width:520px;margin:0 auto;...}, plus haut dans
+   ce fichier) n'était jamais neutralisée ici. Sans effet dans une mise en
+   page en flux normal, mais DÉTERMINANT dans la grille CSS
+   .v2-donation-layout (colonne de 582px) : une marge "auto" sur un enfant
+   de grille sans largeur explicite le fait rétrécir à son contenu
+   (shrink-to-fit) au lieu de remplir sa piste — mesuré 403.6px de large
+   au lieu des 582px de la maquette (.donation-card, sans max-width ni
+   margin, remplit toute sa colonne). Neutralisé explicitement ici. */
+.donate-card{max-width:none;margin:0;padding:36px;border:1px solid rgba(79,37,216,.14);border-radius:16px;background:#fff;box-shadow:0 24px 65px rgba(36,24,82,.13);}
 /* .donation-card h3 (prototype) : Georgia, 29px, 600 — la règle ciblait à
    tort un h2, alors que le vrai DOM (DonateWidget.tsx) porte un <h3> ;
    retombait donc sur le pré-V2 (Fraunces, 500, ~18.72px) — bug trouvé le
    12/09 en relisant tous les titres h1-h4 du site. */
 .donate-card h3{margin:0 0 10px;font-family:var(--v2-serif);font-size:29px;font-weight:600;color:var(--v2-ink);}
-.donate-card>p{margin:0 0 25px;color:var(--v2-muted);font-size:13px;}
+/* BUG RÉEL CORRIGÉ (audit Partenariat, 14/09) : text-align:center d'une
+   règle pré-V2 non scopée (.donate-card > p, plus haut dans ce fichier)
+   n'était jamais neutralisé — mesuré "center" en V2 contre "start"
+   (gauche, valeur par défaut) sur la maquette pour ce même paragraphe
+   ("Choisissez la fréquence et le montant de votre soutien."). */
+.donate-card>p{margin:0 0 25px;color:var(--v2-muted);font-size:13px;text-align:start;}
 .donate-card .v2-choice-label{display:block;margin:24px 0 10px;color:var(--v2-ink-soft);font-size:13px;font-weight:800;}
 .freq-toggle{display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:8px;background:#f0edf6;}
 .freq-toggle button{min-height:43px;border:0;border-radius:6px;color:var(--v2-muted);background:transparent;font-weight:800;cursor:pointer;font-family:inherit;}
@@ -3753,13 +3790,37 @@ footer.footer--dark{
 .amount-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:24px;}
 .amount-opt{min-height:50px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-ink);background:#fbfaff;font-family:var(--v2-serif);font-size:20px;font-weight:600;cursor:pointer;}
 .amount-opt.active{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
+/* .custom-amount-button (audit Partenariat, 14/09) : classe de la maquette
+   jamais construite en V2 — le bouton "Autre montant" réutilisait à tort
+   .amount-opt (voir DonateWidget.tsx). Ajoutée ici, valeurs reprises telles
+   quelles de engagement.css (bordure fine, texte violet-deep, fond lavande
+   clair une fois actif — pas de remplissage plein comme .amount-opt.active). */
+.custom-amount-button{width:100%;min-height:46px;margin-top:9px;border:1px solid var(--v2-line);border-radius:7px;color:var(--v2-violet-deep);background:#fff;font-weight:800;cursor:pointer;font-family:inherit;}
+.custom-amount-button.active{border-color:var(--v2-violet-deep);background:#f1edff;}
 .donate-card .custom-amount{position:relative;margin-top:10px;}
-.donate-card .custom-amount input{width:100%;height:51px;padding:0 14px;border:1px solid var(--v2-line);border-radius:7px;outline:0;color:var(--v2-ink);background:#fbfaff;font:500 16px var(--v2-sans);}
+.donate-card .custom-amount input{width:100%;height:51px;padding:0 42px 0 14px;border:1px solid var(--v2-line);border-radius:7px;outline:0;color:var(--v2-ink);background:#fbfaff;font:500 16px var(--v2-sans);}
 .donate-card .custom-amount input:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);background:#fff;}
+/* Suffixe "€" (audit Partenariat, 14/09) : absent du JSX (voir
+   DonateWidget.tsx) — position reprise telle quelle de .custom-amount-field
+   span dans la maquette. */
+.donate-card .custom-amount span{position:absolute;right:15px;top:13px;color:var(--v2-muted);font-weight:800;}
 .donate-card textarea{width:100%;min-height:105px;margin-top:24px;padding:13px;border:1px solid var(--v2-line);border-radius:7px;outline:0;resize:vertical;color:var(--v2-ink);background:#fbfaff;font:500 15px var(--v2-sans);}
 .donate-card textarea:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);background:#fff;}
 .donate-card .char-count{margin:6px 0 0;color:var(--v2-muted);font-size:11px;text-align:right;}
 .donate-card .btn.btn-primary{width:100%;min-height:54px;margin-top:24px;border:0;border-radius:7px;color:#fff;background:linear-gradient(135deg,#4e2cff,#8b35ee);box-shadow:0 13px 28px rgba(79,37,216,.22);font-weight:800;}
+/* ABSENT V2 corrigé (audit Partenariat, 14/09) : la classe .secure-payment
+   (mention "Paiement sécurisé par Stripe" sous le bouton) n'existait pas du
+   tout en V2 — reprise à l'identique de engagement.css. ATTENTION : la
+   maquette elle-même laisse ".donation-card > p" (plus haut, même
+   spécificité de classe + un sélecteur de type) l'emporter sur cette règle
+   pour margin/font-size/color — vérifié en direct sur la maquette réelle :
+   13px, gris muted, "0 0 25px" de marge, PAS le 11px/"14px 0 0" déclaré
+   ci-dessous. Volontairement NON scopé pour reproduire ce même
+   comportement à l'identique (maquette fait foi, y compris ses propres
+   collisions de cascade) — seuls display/gap/justify-content (non
+   disputés par .donation-card>p) proviennent réellement de cette règle. */
+.secure-payment{display:flex;justify-content:center;align-items:center;gap:8px;margin:14px 0 0;color:var(--v2-muted);font-size:11px;}
+.secure-payment svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;}
 
 @media (max-width:980px){
   .v2-contact-section{grid-template-columns:1fr;gap:32px;}
