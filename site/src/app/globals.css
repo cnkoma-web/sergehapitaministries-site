@@ -106,6 +106,16 @@ img{max-width:100%;display:block;}
   .cover-rollover:hover .cr-front{opacity:0;}
   .cover-rollover:hover .cr-back{opacity:1;}
 }
+/* :focus-within (inspection + correction fiche Livre, 14/09) — accessibilité
+   clavier, § .cover-switch:focus-within de la maquette. Toujours actif
+   (pas limité au hover fin) : ne se déclenche que si l'élément reçoit
+   effectivement le focus, ce qui exige le nouveau tabindex="0" (prop
+   `focusable`, opt-in) — sans incidence sur les usages existants qui ne
+   passent pas cette prop (jamais de tabindex, jamais focusable, donc
+   jamais de :focus-within possible). */
+.cover-rollover:focus-within .cr-front{opacity:0;}
+.cover-rollover:focus-within .cr-back{opacity:1;}
+.cover-rollover:focus-within{outline:2px solid var(--v2-violet,#6d31f2);outline-offset:2px;}
 .eyebrow{
   text-transform:uppercase;font-size:12.5px;letter-spacing:0.14em;font-weight:700;
   color:var(--purple);margin-bottom:14px;display:flex;align-items:center;gap:8px;
@@ -3477,7 +3487,28 @@ footer.footer--dark{
    (.product-section/.product-grid/.product-cover/.product-badge/
    .product-title/.product-author/.rating-row/.specs-table), partagées par
    les deux pages : un seul jeu de règles pour les deux. --- */
-.v2-product-page{background:#fbfaff;}
+/* BUG RÉEL MAJEUR CORRIGÉ (inspection factuelle + correction, 14/09) :
+   .v2-product-page n'avait jamais reçu le correctif déjà appliqué à TOUTE
+   autre page-wrapper du site (.v2-ds-page/.v2-mission-page/.v2-cj-page/
+   .v2-pub-page/.v2-rm-page/.v2-home/.v2-category-hub-page, etc.) —
+   font-family:var(--v2-sans) [Inter] + -webkit-font-smoothing:auto +
+   line-height:1.6, pour annuler body{font-family:'Manrope';-webkit-font-
+   smoothing:antialiased} (pas de line-height du tout). Racine exacte de
+   plusieurs écarts mesurés lors de l'inspection factuelle (fil d'Ariane,
+   navigation précédent/suivant : Manrope au lieu d'Inter, antialiased au
+   lieu d'auto) : chaque élément individuel héritait silencieusement du
+   mauvais body au lieu du bon token de police. Un seul correctif au niveau
+   de la page, cohérent avec la convention déjà établie ailleurs, au lieu
+   d'un correctif par élément. NON-RÉGRESSION : .v2-product-page est
+   PARTAGÉ avec la fiche Goodie (boutique/[slug]) — vérifié que ce même
+   token Inter/line-height 1.6/smoothing auto y est également correct
+   (aucune règle de cette page ne dépend du Manrope/antialiased hérité).
+   .v2-commerce-page/.v2-panier-page/.v2-engagement-page présentent
+   vraisemblablement le même écart (même absence de ce correctif) — hors
+   périmètre de ce chantier (Hub Livres/Boutique/Panier/Contact/Invitation/
+   Partenariat ne sont pas concernés par cette reprise), SIGNALÉ SANS
+   CORRECTION. */
+.v2-product-page{background:#fbfaff;font-family:var(--v2-sans);line-height:1.6;-webkit-font-smoothing:auto;}
 .v2-product-page .v2-breadcrumbs{padding-block:35px;border-bottom:1px solid var(--v2-line);background:#f3f0fb;display:flex;flex-wrap:wrap;gap:8px;color:var(--v2-muted);font-size:12px;line-height:1.6;}
 .v2-product-page .v2-breadcrumbs a:hover{color:var(--v2-violet-deep);}
 .v2-product-page .product-section{padding-block:0;}
@@ -3547,7 +3578,14 @@ footer.footer--dark{
 .v2-product-page .btn-compact-primary{border:0;color:#fff;background:linear-gradient(135deg,#4e2cff,#8b35ee);box-shadow:0 13px 28px rgba(79,37,216,.24);}
 .v2-dashboard-page .btn-compact{min-height:43px;display:inline-flex;align-items:center;justify-content:center;padding-inline:16px;border-radius:7px;font-weight:800;font-size:12px;cursor:pointer;text-decoration:none;}
 .v2-dashboard-page .btn-compact-outline{border:1px solid var(--v2-line);color:var(--v2-ink);background:#fff;}
-.v2-product-page .specs-table{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;border:1px solid var(--v2-line);border-radius:8px;overflow:hidden;}
+/* BUG RÉEL CORRIGÉ (inspection factuelle + correction, 14/09) : une règle
+   pré-V2 non scopée (.specs-table{border-top:1px solid var(--line);
+   padding-top:20px}, ligne 514) n'était jamais neutralisée sur ces 2
+   propriétés précises (ni border-top ni padding-top ne sont redéclarés
+   ci-dessous) — mesuré 186px de haut au lieu des 166px attendus (2×82px
+   de lignes + 2px de bordure), un padding-top de 20px en trop. Neutralisé
+   explicitement. */
+.v2-product-page .specs-table{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;padding-top:0;border:1px solid var(--v2-line);border-top:1px solid var(--v2-line);border-radius:8px;overflow:hidden;}
 .v2-product-page .specs-row{min-height:82px;padding:15px 14px;border-right:1px solid var(--v2-line);border-bottom:1px solid var(--v2-line);background:#fff;display:flex;flex-direction:column;gap:6px;}
 .v2-product-page .specs-row:nth-child(3n){border-right:0;}
 .v2-product-page .specs-row:nth-last-child(-n+3){border-bottom:0;}

@@ -82,7 +82,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
             <div className="product-cover-col">
               <div className={galleryImages.length > 0 ? "product-cover" : "product-cover placeholder"}>
                 {galleryImages.length > 0 ? (
-                  <CoverRollover src={galleryImages[0].url} hoverSrc={galleryImages[1]?.url} alt={book.title} />
+                  <CoverRollover src={galleryImages[0].url} hoverSrc={galleryImages[1]?.url} alt={book.title} focusable />
                 ) : (
                   <div>
                     <div className="ph-collection">{book.publisher}</div>

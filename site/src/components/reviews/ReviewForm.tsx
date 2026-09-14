@@ -55,12 +55,16 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
   return (
     // STRUCTURE corrigée (reprise fiche Livre, 14/09) : l'ordre des champs
     // était Note → Nom → Avis, alors que la maquette (§ .review-form) va
-    // Nom → Note → Avis — remis dans cet ordre. Le <h3>"Laisser un avis"
-    // n'existe pas dans la maquette (son formulaire enchaîne directement
-    // sur les champs) : SUPPLÉMENTAIRE V2, signalé et conservé (aide à la
-    // lisibilité, ne fabrique aucune donnée, ne modifie aucune fonction).
+    // Nom → Note → Avis — remis dans cet ordre.
+    // <h3>"Laisser un avis" retiré (inspection factuelle + correction,
+    // 14/09) : n'existe dans aucune version de la maquette (le formulaire
+    // enchaîne directement sur les champs) — mesuré responsable de 39px
+    // d'écart de hauteur (25px de h3 + 14px de gap). Vérifié qu'il ne
+    // portait aucune fonction indispensable (texte statique seul, aucun
+    // état ni accessibilité qui en dépende) avant retrait. Formulaire/
+    // labels/étoiles/données/validation/soumission/résumé dynamique tous
+    // inchangés.
     <form className="review-form" onSubmit={handleSubmit}>
-      <h3>Laisser un avis</h3>
       {error && <div className="admin-error">{error}</div>}
       <label htmlFor="review-name">Votre nom</label>
       <input id="review-name" type="text" name="author_name" />
