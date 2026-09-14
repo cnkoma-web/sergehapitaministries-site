@@ -3401,6 +3401,21 @@ footer.footer--dark{
 .v2-catalog-add{color:var(--v2-violet-deep);background:#fff;font-size:21px;font-family:inherit;}
 .v2-catalog-add:hover{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
 .v2-catalog-add svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+/* Pagination du catalogue (reprise ciblée, décision validée 14/09) :
+   sélecteur 4/8 livres par page à GAUCHE + pagination à DROITE — composition
+   volontairement différente de la maquette (§ .pagination, centrée seule,
+   sans sélecteur). Style des boutons de pagination repris à l'identique du
+   langage visuel de la maquette (43×43, bordure fine, page active pleine
+   violet-deep) ; le sélecteur est une création sobre cohérente avec cette
+   même interface (tokens --v2-line/--v2-ink/--v2-violet), sans rien
+   reprendre de l'ancien site. */
+.v2-catalog-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:4px 0 48px;}
+.v2-catalog-perpage{display:flex;align-items:center;gap:9px;color:var(--v2-ink-soft);font-size:13px;}
+.v2-catalog-perpage select{height:38px;padding:0 30px 0 12px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);background:#fff;font:600 13px var(--v2-sans);cursor:pointer;}
+.v2-catalog-perpage select:focus{outline:0;border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);}
+.v2-pagination{display:flex;align-items:center;gap:8px;}
+.v2-pagination button{width:43px;height:43px;display:grid;place-items:center;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);background:#fff;font:600 14px var(--v2-sans);cursor:pointer;}
+.v2-pagination button[aria-current="page"]{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
 /* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : .v2-catalog-conclusion
    reprenait bien le filet haut/bas (border-block) et l'indentation du 2e
    bloc (div+div), mais oubliait les 2 annulations de la maquette
