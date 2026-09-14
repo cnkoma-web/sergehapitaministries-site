@@ -93,9 +93,17 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
         </div>
       </section>
 
+      {/* COMPOSITION corrigée (non-régression, reprise fiche Livre 14/09) :
+          .content-col (695px, classe partagée avec les articles) a été
+          remplacé par .v2-commerce-wrap sur la fiche Livre lors de la
+          correction d'un bug de largeur — ce bloc .product-desc est
+          PARTAGÉ entre les 2 pages (voir le commentaire d'origine dans
+          globals.css), donc reporté ici à l'identique pour ne pas laisser
+          cette fiche avec une grille interne cassée (plus de
+          grid-template-columns appliqué depuis le renommage). */}
       {goodie.description && (
         <section className="section product-desc">
-          <div className="content-col">
+          <div className="v2-commerce-wrap">
             <h2>À propos de ce produit</h2>
             {/* Seul un admin (is_admin() en base) peut écrire ce HTML — voir RichTextEditor. */}
             <div dangerouslySetInnerHTML={{ __html: goodie.description }} />

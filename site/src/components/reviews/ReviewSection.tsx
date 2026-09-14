@@ -16,41 +16,44 @@ export default async function ReviewSection({ bookId, goodieId }: Props) {
   // grille à 2 colonnes (avis existants ou message vide à gauche,
   // formulaire à droite), plutôt que l'ancien empilement vertical.
   return (
-    <section className="v2-reviews-section" id="avis">
-      <div className="v2-wrap" style={{ maxWidth: "var(--content-col)", margin: "0 auto" }}>
-        <div className="v2-reviews-heading">
-          <h2>Vous avez déjà découvert ce produit&nbsp;?</h2>
-          <div className="v2-reviews-summary">
-            <div className="big-score">{summary.average ?? "—"}</div>
-            <div>
-              <Stars rating={summary.average} />
-              <p style={{ fontSize: 13, color: "var(--v2-muted)", margin: "4px 0 0" }}>{summary.count} avis</p>
-            </div>
+    // COMPOSITION corrigée (reprise fiche Livre, 14/09) : la maquette porte
+    // "commerce-narrow reviews-section" sur LA MÊME balise (930px), pas une
+    // section pleine largeur enveloppant un <div> à 695px (var(--content-col),
+    // classe partagée avec les articles, jamais la bonne largeur ici) —
+    // mesuré 695px de large au lieu de 930px avant correction.
+    <section className="v2-commerce-narrow v2-reviews-section" id="avis">
+      <div className="v2-reviews-heading">
+        <h2>Vous avez déjà découvert ce produit&nbsp;?</h2>
+        <div className="v2-reviews-summary">
+          <div className="big-score">{summary.average ?? "—"}</div>
+          <div>
+            <Stars rating={summary.average} />
+            <p style={{ fontSize: 13, color: "var(--v2-muted)", margin: "4px 0 0" }}>{summary.count} avis</p>
           </div>
         </div>
+      </div>
 
-        <div className="v2-reviews-layout">
-          {reviews.length === 0 ? (
-            <div className="v2-reviews-empty">
-              <strong>Aucun avis pour le moment.</strong>
-              <p>Soyez le premier à partager votre expérience.</p>
-            </div>
-          ) : (
-            <div className="v2-reviews-list">
-              {reviews.map((r) => (
-                <div className="v2-review-card" key={r.id}>
-                  <div className="v2-review-card-head">
-                    <strong style={{ fontSize: 14 }}>{r.author_name || "Anonyme"}</strong>
-                    <Stars rating={r.rating} />
-                  </div>
-                  {r.body && <p style={{ fontSize: 14, color: "var(--v2-muted)", margin: 0 }}>{r.body}</p>}
+      <div className="v2-reviews-layout">
+        {reviews.length === 0 ? (
+          <div className="v2-reviews-empty">
+            <strong>Aucun avis pour le moment.</strong>
+            <p>Soyez le premier à partager votre expérience.</p>
+          </div>
+        ) : (
+          <div className="v2-reviews-list">
+            {reviews.map((r) => (
+              <div className="v2-review-card" key={r.id}>
+                <div className="v2-review-card-head">
+                  <strong style={{ fontSize: 14 }}>{r.author_name || "Anonyme"}</strong>
+                  <Stars rating={r.rating} />
                 </div>
-              ))}
-            </div>
-          )}
+                {r.body && <p style={{ fontSize: 14, color: "var(--v2-muted)", margin: 0 }}>{r.body}</p>}
+              </div>
+            ))}
+          </div>
+        )}
 
-          <ReviewForm bookId={bookId} goodieId={goodieId} />
-        </div>
+        <ReviewForm bookId={bookId} goodieId={goodieId} />
       </div>
     </section>
   );

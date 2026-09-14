@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBookBySlug, getAdjacentBooks, getBookImages } from "@/lib/content/books";
@@ -91,15 +90,14 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
                   </div>
                 )}
               </div>
-              {galleryImages.length > 1 && (
-                <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-                  {galleryImages.map((img, i) => (
-                    <div key={img.id} style={{ width: 56, aspectRatio: "2/3", borderRadius: 6, overflow: "hidden", border: "1px solid var(--line)" }}>
-                      <Image src={img.url} alt={`${book.title} — vue ${i + 1}`} width={56} height={84} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* SUPPLÉMENTAIRE V2 retiré (reprise après validation humaine,
+                  14/09) : cette bande de vignettes appartenait à l'ancien
+                  système de galerie — la maquette actuelle (§ .book-gallery)
+                  ne montre qu'une grande couverture avec rollover vers le
+                  dos, jamais de vignettes sous la couverture. Aucune donnée
+                  supprimée : book_images continue d'alimenter CoverRollover
+                  via galleryImages[0]/[1] (couverture + dos), seul l'AFFICHAGE
+                  de la liste complète en vignettes est retiré de cette page. */}
               {/* ABSENT V2 corrigé (reconstruction Phase B2) : indication de
                   survol totalement absente jusqu'ici — restaurée à
                   l'identique de la maquette. N'a de sens que lorsqu'un vrai
