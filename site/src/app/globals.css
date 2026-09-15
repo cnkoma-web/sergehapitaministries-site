@@ -3943,7 +3943,7 @@ footer.footer--dark{
    total ne changeant QUE le font-size) — la V2 ajoutait 12px de marge
    entre les lignes et remplaçait le filet du Total par une bordure
    supérieure, un rythme vertical différent de la maquette. Corrigé. */
-.v2-panier-page .summary-row{display:flex;justify-content:space-between;gap:20px;padding-block:14px;border-bottom:1px solid var(--v2-line);color:var(--v2-muted);font-size:13px;}
+.v2-panier-page .summary-row{display:flex;justify-content:space-between;gap:20px;padding-block:14px;border-bottom:1px solid var(--v2-line);color:var(--v2-muted);font-size:13px;margin-bottom:0;}
 /* ÉCART DE STYLE CORRIGÉ (correction ciblée 02) : la maquette ne colore/
    graisse QUE la valeur (<strong>{color:ink}, gras natif de la balise) —
    le libellé (<span>) reste muted sur les 3 lignes, y compris "Total".
@@ -3951,7 +3951,18 @@ footer.footer--dark{
    ni la graisse du libellé — .summary-row.total appliquait à tort ink/750
    à la ligne entière (libellé "Total" inclus). */
 .v2-panier-page .summary-row strong{color:var(--v2-ink);font-weight:700;}
-.v2-panier-page .summary-row.total{font-size:17px;}
+/* CORRECTION CHIRURGICALE — ÉCART 02/04 : la règle globale pré-V2
+   .summary-row.total (plus haut dans ce fichier) continuait de fuiter
+   font-weight:700, border-top, padding-top et margin-top sur cette même
+   classe .total — la comparaison directe getComputedStyle() confirmait
+   un libellé "Total" en gras (700) et un filet+marge supplémentaires
+   absents de la maquette (qui ne change QUE font-size:17px, § .summary-
+   total). Neutralisé explicitement ici (spécificité .v2-panier-page
+   .summary-row.total = 3 classes, gagne systématiquement). margin-bottom:0
+   ajouté ci-dessus pour la même raison : la règle globale .summary-row
+   ajoutait 12px entre chaque ligne, absents de la maquette (§ .summary-
+   line, séparées uniquement par leur propre border-bottom). */
+.v2-panier-page .summary-row.total{font-size:17px;font-weight:400;border-top:0;padding-top:14px;margin-top:0;}
 /* .promo-field/.promo-field label/.promo-note AJOUTÉS (reprise 15/09) :
    la maquette (§ .promo-field) porte un <label> "Code promotionnel" et
    une note "Codes promo bientôt disponibles." — absents jusqu'ici, seul
@@ -3960,9 +3971,21 @@ footer.footer--dark{
    field (extérieur), comme la maquette. */
 .v2-panier-page .promo-field{margin-top:22px;}
 .v2-panier-page .promo-field label{display:block;margin-bottom:7px;color:var(--v2-ink-soft);font-size:11px;font-weight:800;}
-.v2-panier-page .promo-row{display:grid;grid-template-columns:1fr auto;}
+/* CORRECTION CHIRURGICALE — ÉCART 03 : la règle globale pré-V2 .promo-row
+   (plus haut dans ce fichier, display:flex) fuitait encore gap:8px et
+   margin:18px 0 sur cette grille (aucune propriété concurrente ne les
+   remplaçait) — la maquette (§ .promo-field div, non classé) ne déclare
+   ni gap ni margin : champ et bouton doivent être parfaitement accolés.
+   Neutralisé explicitement. */
+.v2-panier-page .promo-row{display:grid;grid-template-columns:1fr auto;gap:0;margin:0;}
 .v2-panier-page .promo-row input{min-width:0;height:43px;padding-inline:12px;border:1px solid var(--v2-line);border-radius:5px 0 0 5px;background:#f5f3f9;}
-.v2-panier-page .promo-row button{border:0;border-radius:0 5px 5px 0;color:#918d9d;background:#e8e5ed;font-size:11px;font-weight:800;padding-inline:14px;}
+/* padding corrigé (ÉCART 03) : la maquette (§ .promo-field button) ne
+   déclare aucun padding — le bouton réel garde le padding par défaut du
+   navigateur (mesuré : 1px 6px). padding-inline:14px (hérité d'une valeur
+   arbitraire) l'élargissait de 16px par rapport à l'original. Remplacé
+   par la valeur réellement rendue par la maquette, en dur pour rester
+   fiable sur tous les navigateurs. */
+.v2-panier-page .promo-row button{border:0;border-radius:0 5px 5px 0;color:#918d9d;background:#e8e5ed;font-size:11px;font-weight:800;padding:1px 6px;}
 .v2-panier-page .promo-note{margin:6px 0 0;color:var(--v2-muted);font-size:10px;}
 .v2-panier-page .v2-continue-shopping{display:block;margin-top:15px;color:var(--v2-violet-deep);text-align:center;font-size:12px;font-weight:800;}
 .v2-panier-page .v2-secure-note{display:flex;gap:8px;margin:19px 0 0;padding-top:18px;border-top:1px solid var(--v2-line);color:var(--v2-muted);font-size:11px;line-height:1.5;}
