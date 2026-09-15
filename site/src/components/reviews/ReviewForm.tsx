@@ -68,21 +68,28 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
       {error && <div className="admin-error">{error}</div>}
       <label htmlFor="review-name">Votre nom</label>
       <input id="review-name" type="text" name="author_name" />
-      <div>
-        <label>Votre note</label>
-        <div className="star-input">
-          {[1, 2, 3, 4, 5].map((v) => (
-            <span
-              key={v}
-              className={v <= (hoverRating || rating) ? "active" : undefined}
-              onClick={() => setRating(v)}
-              onMouseEnter={() => setHoverRating(v)}
-              onMouseLeave={() => setHoverRating(0)}
-            >
-              ★
-            </span>
-          ))}
-        </div>
+      {/* STRUCTURE corrigée (SECTION 08, lot dédié 15/09) : le <div>
+          enveloppant précédemment ce label + .star-input n'existe pas dans
+          la maquette (tous les champs sont des enfants DIRECTS et à plat
+          de <form class="review-form">, un grid) — cette div supplémentaire
+          empêchait le label "Votre note" d'être "blockifié" par le grid
+          parent (blockification réservée aux enfants directs d'un
+          conteneur grid), le laissant en display:inline (62px de large,
+          15px de haut) au lieu de block pleine largeur (473px, 19px)
+          comme les labels "Votre nom"/"Votre avis". Retirée. */}
+      <label>Votre note</label>
+      <div className="star-input">
+        {[1, 2, 3, 4, 5].map((v) => (
+          <span
+            key={v}
+            className={v <= (hoverRating || rating) ? "active" : undefined}
+            onClick={() => setRating(v)}
+            onMouseEnter={() => setHoverRating(v)}
+            onMouseLeave={() => setHoverRating(0)}
+          >
+            ★
+          </span>
+        ))}
       </div>
       <label htmlFor="review-body">Votre avis</label>
       <textarea id="review-body" name="body" />

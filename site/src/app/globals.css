@@ -3778,6 +3778,10 @@ footer.footer--dark{
 .v2-reviews-heading{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:end;margin-bottom:36px;}
 .v2-reviews-heading h2{margin:0;font-family:var(--v2-serif);font-size:clamp(36px,4.8vw,54px);font-weight:500;line-height:1.08;}
 .v2-reviews-heading p{margin:0;color:var(--v2-muted);}
+/* AJOUTÉ (SECTION 08, lot dédié 15/09) : conteneur de la 2e colonne
+   (texte d'invite + résumé note/étoiles, ce dernier absent de la
+   maquette pour cette page — SUPPLÉMENTAIRE V2 conservé). */
+.v2-reviews-heading-col2{display:flex;flex-direction:column;gap:12px;}
 .v2-reviews-summary{display:flex;align-items:center;gap:16px;}
 .v2-reviews-summary .big-score{font-family:var(--v2-serif);font-size:52px;font-weight:600;color:var(--v2-ink);line-height:1;}
 .v2-reviews-layout{display:grid;grid-template-columns:.8fr 1.2fr;border:1px solid var(--v2-line);border-radius:12px;overflow:hidden;background:#fff;}

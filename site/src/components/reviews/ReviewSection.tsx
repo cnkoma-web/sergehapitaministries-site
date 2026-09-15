@@ -23,25 +23,25 @@ export default async function ReviewSection({ bookId, goodieId }: Props) {
     // mesuré 695px de large au lieu de 930px avant correction.
     <section className="v2-commerce-narrow v2-reviews-section" id="avis">
       <div className="v2-reviews-heading">
-        {/* <p> AJOUTÉ (recertification atomique, 14/09) : présent dans la
-            maquette (§ .reviews-heading p, commerce.css l.219 — style déjà
-            porté côté V2 par .v2-reviews-heading p, jamais utilisé faute de
-            markup) et absent du rendu V2 jusqu'ici — trou de couverture
-            détecté par le balayage exhaustif (élément à texte statique
-            simple, sans logique ni donnée dynamique associée). Regroupé
-            avec le h2 dans un même bloc pour ne pas perturber la grille à
-            2 colonnes (maquette : h2+p ; V2 y ajoute .v2-reviews-summary,
-            un résumé note/étoiles absent de la maquette pour cette page —
-            fonctionnalité V2 conservée, documentée SUPPLÉMENTAIRE V2). */}
-        <div>
-          <h2>Vous avez déjà découvert ce produit&nbsp;?</h2>
+        <h2>Vous avez déjà découvert ce produit&nbsp;?</h2>
+        {/* STRUCTURE corrigée (SECTION 08, lot dédié 15/09) : la maquette
+            porte h2 en 1re colonne et <p> en 2e colonne de la grille 2
+            colonnes (§ .reviews-heading, grid-template-columns:1fr 1fr) —
+            regrouper h2+p dans la même colonne (fait lors d'une passe
+            précédente pour loger .v2-reviews-summary, un résumé note/
+            étoiles absent de la maquette pour cette page) plaçait le <p>
+            dans la mauvaise colonne (mesuré x=175 au lieu de x=665).
+            Corrigé : h2 seul en colonne 1 ; <p> + résumé désormais
+            empilés en colonne 2, résumé conservé comme fonctionnalité V2
+            réelle (SUPPLÉMENTAIRE V2, non retiré). */}
+        <div className="v2-reviews-heading-col2">
           <p>Votre avis aide d&apos;autres visiteurs — quelques secondes suffisent.</p>
-        </div>
-        <div className="v2-reviews-summary">
-          <div className="big-score">{summary.average ?? "—"}</div>
-          <div>
-            <Stars rating={summary.average} />
-            <p style={{ fontSize: 13, color: "var(--v2-muted)", margin: "4px 0 0" }}>{summary.count} avis</p>
+          <div className="v2-reviews-summary">
+            <div className="big-score">{summary.average ?? "—"}</div>
+            <div>
+              <Stars rating={summary.average} />
+              <p style={{ fontSize: 13, color: "var(--v2-muted)", margin: "4px 0 0" }}>{summary.count} avis</p>
+            </div>
           </div>
         </div>
       </div>
