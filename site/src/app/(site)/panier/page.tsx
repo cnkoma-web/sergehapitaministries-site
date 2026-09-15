@@ -144,9 +144,14 @@ export default async function PanierPage() {
                     <span>Sous-total</span>
                     <strong>{formatPrice(subtotal)}</strong>
                   </div>
+                  {/* Texte corrigé (correction ciblée 03) : la maquette
+                      originale affiche "Étape suivante" — un rapport
+                      précédent avait déclaré à tort ce contenu identique,
+                      alors que la V2 affichait "Calculée à l'étape
+                      suivante". Aucune logique de calcul touchée. */}
                   <div className="summary-row">
                     <span>Livraison</span>
-                    <strong>Calculée à l&apos;étape suivante</strong>
+                    <strong>Étape suivante</strong>
                   </div>
                   <div className="summary-row total">
                     <span>Total</span>
