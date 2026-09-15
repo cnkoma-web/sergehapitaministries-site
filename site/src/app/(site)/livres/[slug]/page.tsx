@@ -163,22 +163,14 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
                 </span>
               </div>
 
-              {/* ABSENT DONNÉE CMS (reconstruction Phase B2, SECTION 04.B) :
-                  la maquette porte un court chapeau (.book-promise, ex.
-                  "Toute vie se construit depuis une sagesse. Laquelle
-                  gouverne réellement la tienne ?") juste sous l'auteur.
-                  Aucun champ de la table `books` (title/author/publisher/
-                  badge/price_cents/cover_url/format/pages/language/isbn/
-                  description/status/position) ne porte légitimement cette
-                  donnée : ce n'est ni un sous-titre, ni un résumé, ni une
-                  citation d'ouvrage — `description` est le corps long de la
-                  fiche ("À propos de ce livre"), la détourner pour en
-                  extraire une phrase d'accroche fabriquerait un contenu
-                  jamais saisi par l'admin. SIGNALÉ, NON CORRIGÉ ici :
-                  ajouter ce champ suppose une évolution du schéma
-                  `books` + de l'admin (nouveau champ éditorial), hors
-                  périmètre d'une correction de code — décision à valider
-                  par Serge avant toute évolution. */}
+              {/* DONNÉE CMS AJOUTÉE (SECTION 04, décision validée 15/09) :
+                  champ facultatif `books.promise` ("Promesse du livre"),
+                  strictement additif — aucun champ existant modifié. Rendu
+                  exactement à l'emplacement et avec le traitement de la
+                  maquette (§ .book-promise) uniquement si renseigné ; vide/
+                  null -> aucun bloc, aucun espace réservé, jamais de repli
+                  sur `description`. */}
+              {book.promise && <p className="book-promise">{book.promise}</p>}
 
               <div className="price-actions-row">
                 <div className="product-price">{formatPrice(book.price_cents)}</div>

@@ -3570,6 +3570,11 @@ footer.footer--dark{
 .v2-product-page .product-author{display:flex;flex-wrap:wrap;gap:8px 20px;margin:19px 0 0;color:var(--v2-muted);font-size:13px;line-height:1.6;}
 .v2-product-page .product-author a{color:var(--v2-violet-deep);font-weight:750;}
 .v2-product-page .rating-row{display:flex;align-items:center;gap:10px;margin-top:20px;}
+/* AJOUTÉ (SECTION 04, décision validée 15/09) : § .book-promise de la
+   maquette (commerce.css l.181), jamais porté côté V2 faute de donnée CMS
+   — le champ facultatif books.promise existe désormais (migration
+   20260915000000_books_promise_field.sql). */
+.v2-product-page .book-promise{margin:29px 0 0;padding:23px 0;border-block:1px solid var(--v2-line);color:var(--v2-ink-soft);font-family:var(--v2-serif);font-size:20px;line-height:1.55;}
 .v2-product-page .rating-row .count{color:var(--v2-muted);font-size:13px;}
 .v2-product-page .selector-label{display:block;margin:20px 0 8px;color:var(--v2-ink-soft);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
 .v2-product-page .size-options{display:flex;flex-wrap:wrap;gap:8px;}
@@ -3904,6 +3909,7 @@ footer.footer--dark{
   .v2-product-page .product-cover-col{width:min(74vw,390px);margin-inline:auto;}
   .v2-product-page .product-cover{position:static;width:min(74vw,390px);}
   .v2-product-page .product-title{font-size:47px;}
+  .v2-product-page .book-promise{font-size:19px;}
   .v2-product-page .product-desc .v2-commerce-wrap{grid-template-columns:1fr;gap:32px;}
   .v2-product-page .product-desc h2{position:static;font-size:43px;}
   .v2-compte-page .account-aside{padding:28px 26px 25px;}

@@ -74,6 +74,9 @@ export async function updateBook(formData: FormData) {
       isbn: String(formData.get("isbn") ?? "").trim() || null,
       language: String(formData.get("language") ?? "").trim() || null,
       description: String(formData.get("description") ?? "").trim() || null,
+      // Promesse du livre (SECTION 04, décision validée 15/09) : facultatif,
+      // jamais de valeur fabriquée — chaîne vide -> null, bloc non rendu.
+      promise: String(formData.get("promise") ?? "").trim() || null,
       status: ["active", "precommande", "hidden"].includes(status) ? status : "active",
       active: status !== "hidden",
       position: Number(formData.get("position") ?? 0),

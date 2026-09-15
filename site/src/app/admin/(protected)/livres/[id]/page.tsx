@@ -83,6 +83,19 @@ export default async function AdminLivreDetailPage({ params }: { params: Promise
           </div>
 
           <div className="editor-card">
+            <h3>Promesse du livre</h3>
+            <p style={{ margin: "0 0 12px", fontSize: 13, color: "var(--muted)" }}>
+              Court texte éditorial facultatif affiché sous l&apos;auteur sur la fiche produit (ex. « Toute vie se
+              construit depuis une sagesse. Laquelle gouverne réellement la tienne ? »). Laissez vide pour ne rien
+              afficher — jamais de repli automatique sur la description.
+            </p>
+            <div className="editor-field" style={{ marginBottom: 0 }}>
+              <label htmlFor="book-promise">Promesse du livre</label>
+              <textarea id="book-promise" name="promise" defaultValue={book.promise ?? ""} rows={2} placeholder="—" />
+            </div>
+          </div>
+
+          <div className="editor-card">
             <h3>Description</h3>
             <RichTextEditor key={book.id} name="description" defaultValue={book.description} placeholder="Description du livre…" compact minHeight={110} />
           </div>

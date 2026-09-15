@@ -16,6 +16,10 @@ export type Book = {
   language: string | null;
   isbn: string | null;
   description: string | null;
+  // Promesse du livre (SECTION 04, décision validée 15/09) : court texte
+  // éditorial facultatif affiché sous la byline (§ .book-promise de la
+  // maquette). Null = bloc non rendu, jamais de repli sur `description`.
+  promise: string | null;
   status: BookStatus;
   position: number;
   // Deuxième image de la galerie (dos de couverture, position 2) — sert à
@@ -28,9 +32,9 @@ export type Book = {
 export type BookImage = { id: string; url: string; position: number };
 
 const COLUMNS =
-  "id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, status, position";
+  "id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, promise, status, position";
 const ADMIN_COLUMNS =
-  "id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, status, position, active";
+  "id, slug, title, author, publisher, badge, price_cents, cover_url, format, pages, language, isbn, description, promise, status, position, active";
 
 // Une seule requête groupée pour la 2e image (position 1 = dos de couverture)
 // de chaque livre donné, plutôt qu'une requête par livre.
