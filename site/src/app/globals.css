@@ -3627,18 +3627,40 @@ footer.footer--dark{
    20260915000000_books_promise_field.sql). */
 .v2-product-page .book-promise{margin:29px 0 0;padding:23px 0;border-block:1px solid var(--v2-line);color:var(--v2-ink-soft);font-family:var(--v2-serif);font-size:20px;line-height:1.55;}
 .v2-product-page .rating-row .count{color:var(--v2-muted);font-size:13px;}
-.v2-product-page .selector-label{display:block;margin:20px 0 8px;color:var(--v2-ink-soft);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
-.v2-product-page .size-options{display:flex;flex-wrap:wrap;gap:8px;}
-.v2-product-page .size-opt{min-width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;padding-inline:12px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);cursor:pointer;font-size:13px;font-weight:700;}
-.v2-product-page .size-opt.active{color:#fff;border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
-.v2-product-page .color-options{display:flex;flex-wrap:wrap;gap:10px;}
-.v2-product-page .color-opt{width:32px;height:32px;border-radius:50%;border:2px solid var(--v2-line);cursor:pointer;}
-.v2-product-page .color-opt.active{border-color:var(--v2-violet-deep);box-shadow:0 0 0 2px #fff inset,0 0 0 3px var(--v2-violet-deep);}
+/* RETIRÉS (chantier Boutique — fiche Goodie, reprise) : .selector-label/
+   .size-options/.size-opt/.color-options/.color-opt n'avaient AUCUNE base
+   dans la maquette (recherché dans tout le prototype : aucune occurrence)
+   — un sélecteur à vignettes construit par analogie, alors que la vraie
+   fiche Goodie (§ .product-choice) utilise deux <select> classiques.
+   Remplacés par les règles .product-visual/.product-unavailable/
+   .product-choice/.product-disabled/.product-cta ci-dessous. */
+.v2-product-page .product-visual{position:sticky;top:24px;display:grid;place-items:center;min-height:500px;color:#fff;background:linear-gradient(145deg,#17142d,#5630ad);box-shadow:0 28px 60px rgba(23,20,45,.18);}
+.v2-product-page .product-visual span{position:relative;max-width:260px;font-family:var(--v2-serif);font-size:42px;line-height:1.03;text-align:center;}
+.v2-product-page .product-visual small{position:absolute;right:20px;bottom:18px;color:rgba(255,255,255,.7);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;}
+.v2-product-page .product-visual img{position:relative;width:100%;height:100%;object-fit:cover;}
+.v2-product-page .product-unavailable{margin:28px 0 22px;padding:17px 19px;border-left:3px solid var(--v2-violet-deep);color:var(--v2-ink-soft);background:var(--v2-violet-pale);font-size:14px;line-height:1.6;}
+.v2-product-page .product-choice{display:grid;gap:8px;margin-top:20px;}
+.v2-product-page .product-choice label{color:var(--v2-ink-soft);font-size:11px;font-weight:800;}
+.v2-product-page .product-choice select{min-height:49px;padding-inline:13px;border:1px solid var(--v2-line);border-radius:6px;background:#fff;font-family:inherit;font-size:16px;}
+.v2-product-page .product-disabled{width:100%;min-height:53px;margin-top:18px;border:0;border-radius:7px;color:rgba(255,255,255,.75);background:#8c879b;font-weight:800;cursor:not-allowed;}
+/* .product-cta : aucun exemple "disponible" dans la maquette (le seul
+   produit construit reste "à venir") — reprise de la même géométrie que
+   .product-disabled (largeur/hauteur/radius/marge), avec le traitement
+   violet dégradé déjà établi ailleurs pour un CTA d'achat actif (§
+   .v2-add-to-cart-primary/.checkout-button), faute de direction graphique
+   propre à un état "disponible" sur cette fiche. */
+.v2-product-page .product-cta{width:100%;min-height:53px;margin-top:18px;border:0;border-radius:7px;color:#fff;background:linear-gradient(135deg,#4e2cff,#8b35ee);font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;}
 .v2-product-page .price-actions-row{margin:28px 0 22px;}
 /* line-height:1.6 (reconstruction Phase B2) : même mécanisme déjà trouvé
    sur Partenariat/Livres (body{line-height:1.6} manquant en V2) — mesuré
    42px de haut au lieu de 59px (37×1.6) sur la maquette. */
 .v2-product-page .product-price{font-family:var(--v2-serif);font-size:37px;font-weight:600;color:var(--v2-ink);line-height:1.6;}
+/* Espacement propre à la fiche Goodie : le prix y suit directement un
+   .product-choice ou le rating-row (jamais .price-actions-row, propre à
+   Livres) — sans quoi il collerait au dernier élément qui précède. Ciblé
+   par sélecteur de fratrie pour ne jamais affecter Livres. */
+.v2-product-page .product-choice ~ .product-price,
+.v2-product-page .rating-row + .product-price{margin-top:20px;}
 /* FONCTION RÉELLE AJOUTÉE (reconstruction fiche Livre, Phase B2) : la
    maquette (§ .purchase-row/.quantity-control/.add-to-cart-primary)
    prévoit un sélecteur de quantité avant ajout — la V2 ajoutait jusqu'ici
@@ -3756,10 +3778,6 @@ footer.footer--dark{
    dernier paragraphe conservait 22px de marge basse superflue. */
 .v2-product-page .product-desc p:last-child{margin-bottom:0;}
 
-/* --- Goodie (T-shirts et accessoires) : couverture carrée + panneau de
-   sélection, cible les classes réelles GoodiePurchasePanel — voir plus
-   bas pour le formulaire de sélection taille/couleur. --- */
-.v2-product-page .product-cover[style*="1/1"]{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#17142d,#5630ad);}
 
 /* --- Partage (§ .book-sharing), reconstruction Phase B2 : ligne simple
    h2 + icônes ShareCartouche, fond clair, filet inférieur — remplace le

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 
 type Props = {
@@ -12,60 +11,59 @@ type Props = {
   priceLabel: string;
 };
 
-// Regroupe la sélection taille/couleur, le prix et le bouton d'ajout au panier
-// dans un seul composant client, pour que le panier connaisse la variante
-// choisie au moment du clic (état partagé, impossible à séparer proprement
-// entre plusieurs composants sans lever l'état plus haut).
+// RECONSTRUCTION (chantier Boutique — fiche Goodie, reprise) : la maquette
+// réelle de la fiche produit (prototype-html/boutique/t-shirt-voix-
+// prophetique/index.html § .product-choice/.product-disabled) ne connaît
+// AUCUN sélecteur à vignettes (pas de couleurs/tailles cliquables) — elle
+// utilise deux <select> classiques (Taille/Couleur), désactivés avec une
+// seule option "À définir" tant que le produit n'est pas disponible, et un
+// bouton pleine largeur unique. La version précédente (.selector-label/
+// .size-options/.size-opt/.color-options/.color-opt/.price-actions-row)
+// n'avait AUCUNE base dans la maquette (recherchée dans tout le prototype :
+// aucune occurrence) — construite par analogie avec un patron de vignettes
+// qui n'existe nulle part pour la Boutique. Reconstruit à l'identique de
+// .product-choice/.product-disabled ; la fonction réelle (sélection
+// effective, ajout au panier) est préservée, seule l'interface change.
 export default function GoodiePurchasePanel({ goodieId, sizes, colors, available, priceLabel }: Props) {
-  const [size, setSize] = useState(sizes[0]);
-  const [color, setColor] = useState(colors[0]);
+  const [size, setSize] = useState(sizes[0] ?? "");
+  const [color, setColor] = useState(colors[0] ?? "");
 
   return (
     <>
       {sizes.length > 0 && (
-        <div>
-          <span className="selector-label">Taille</span>
-          <div className="size-options">
-            {sizes.map((s) => (
-              <div key={s} className={`size-opt${s === size ? " active" : ""}`} onClick={() => setSize(s)}>
-                {s}
-              </div>
-            ))}
-          </div>
+        <div className="product-choice">
+          <label htmlFor="product-size">Taille</label>
+          <select id="product-size" value={size} onChange={(e) => setSize(e.target.value)} disabled={!available}>
+            {available ? sizes.map((s) => <option key={s} value={s}>{s}</option>) : <option>À définir</option>}
+          </select>
         </div>
       )}
       {colors.length > 0 && (
-        <div>
-          <span className="selector-label">Couleur</span>
-          <div className="color-options">
-            {colors.map((c) => (
-              <div key={c} className={`color-opt${c === color ? " active" : ""}`} style={{ background: c }} onClick={() => setColor(c)} />
-            ))}
-          </div>
+        <div className="product-choice">
+          <label htmlFor="product-color">Couleur</label>
+          <select id="product-color" value={color} onChange={(e) => setColor(e.target.value)} disabled={!available}>
+            {available ? colors.map((c) => <option key={c} value={c}>{c}</option>) : <option>À définir</option>}
+          </select>
         </div>
       )}
 
-      <div className="price-actions-row">
+      {available ? (
         <div className="product-price">{priceLabel}</div>
-        <div className="product-actions">
-          <Link href="/boutique" className="btn-compact btn-compact-outline" title="Retour à la boutique" aria-label="Retour à la boutique">
-            ←
-          </Link>
-          {available ? (
-            <AddToCartButton
-              goodieId={goodieId}
-              variantSize={size}
-              variantColor={color}
-              className="btn-compact btn-compact-primary"
-              label="Ajouter au panier"
-            />
-          ) : (
-            <button className="btn-compact btn-compact-primary" disabled title="Bientôt disponible">
-              Bientôt disponible
-            </button>
-          )}
-        </div>
-      </div>
+      ) : null}
+
+      {available ? (
+        <AddToCartButton
+          goodieId={goodieId}
+          variantSize={size}
+          variantColor={color}
+          className="product-cta"
+          label="Ajouter au panier"
+        />
+      ) : (
+        <button className="product-disabled" type="button" disabled>
+          Produit à venir
+        </button>
+      )}
     </>
   );
 }
