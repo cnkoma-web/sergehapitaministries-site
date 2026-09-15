@@ -94,8 +94,20 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
                 260px sous 980px, alignée sur .product-cover). */}
             <div className="product-cover-col">
               <div className={galleryImages.length > 0 ? "product-cover" : "product-cover placeholder"}>
+                {/* CONTENU corrigé (SECTION 03, lot dédié 15/09) : la maquette
+                    donne un texte alternatif descriptif à chaque image
+                    (alt="Couverture de {titre}" / "Quatrième de couverture
+                    de {titre}", § .cover-front/.cover-back) — la V2 ne
+                    passait que le titre nu en façade et masquait le dos
+                    (alt="" aria-hidden) comme purement décoratif. */}
                 {galleryImages.length > 0 ? (
-                  <CoverRollover src={galleryImages[0].url} hoverSrc={galleryImages[1]?.url} alt={book.title} focusable />
+                  <CoverRollover
+                    src={galleryImages[0].url}
+                    hoverSrc={galleryImages[1]?.url}
+                    alt={`Couverture de ${book.title}`}
+                    hoverAlt={galleryImages[1] ? `Quatrième de couverture de ${book.title}` : undefined}
+                    focusable
+                  />
                 ) : (
                   <div>
                     <div className="ph-collection">{book.publisher}</div>

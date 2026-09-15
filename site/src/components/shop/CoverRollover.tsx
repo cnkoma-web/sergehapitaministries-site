@@ -21,12 +21,21 @@ export default function CoverRollover({
   // uniquement sur cette page précise). Passé explicitement à true
   // seulement depuis livres/[slug]/page.tsx.
   focusable = false,
+  // hoverAlt (inspection + correction SECTION 03 fiche Livre, 15/09) :
+  // optionnel, undefined par défaut — AUCUN changement pour les usages
+  // existants (Hub Livres/accueil/fiche Goodie), qui ne le passent pas et
+  // conservent alt="" aria-hidden sur le dos (décoratif). La maquette de la
+  // fiche Livre (.cover-back, alt="Quatrième de couverture de {titre}")
+  // donne au contraire un texte alternatif réel au dos — passé
+  // explicitement depuis livres/[slug]/page.tsx uniquement.
+  hoverAlt,
 }: {
   src: string;
   hoverSrc?: string | null;
   alt: string;
   className?: string;
   focusable?: boolean;
+  hoverAlt?: string;
 }) {
   if (!hoverSrc) {
     // eslint-disable-next-line @next/next/no-img-element
@@ -36,8 +45,13 @@ export default function CoverRollover({
     <div className={`cover-rollover ${className ?? ""}`} tabIndex={focusable ? 0 : undefined}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={alt} className="cr-front" />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={hoverSrc} alt="" aria-hidden="true" className="cr-back" />
+      {hoverAlt ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={hoverSrc} alt={hoverAlt} className="cr-back" />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={hoverSrc} alt="" aria-hidden="true" className="cr-back" />
+      )}
     </div>
   );
 }

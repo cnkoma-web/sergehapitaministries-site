@@ -116,6 +116,21 @@ img{max-width:100%;display:block;}
 .cover-rollover:focus-within .cr-front{opacity:0;}
 .cover-rollover:focus-within .cr-back{opacity:1;}
 .cover-rollover:focus-within{outline:2px solid var(--v2-violet,#6d31f2);outline-offset:2px;}
+/* STYLE AJOUTÉ (SECTION 03, lot dédié 15/09) : léger zoom au survol/focus
+   (.cover-switch:hover/.focus-within{transform:scale(1.015)}, commerce.css
+   l.145-146) absent de la règle générique .cover-rollover, qui ne fait
+   transitionner que l'opacité. Ajouté en scope étroit à cette page (et à
+   la fiche Goodie, qui partage .v2-product-page) plutôt que sur la règle
+   partagée .cover-rollover, pour ne pas modifier le Hub Livres ni
+   l'accueil sans nécessité démontrée par cette SECTION. */
+.v2-product-page .cover-rollover .cr-front,
+.v2-product-page .cover-rollover .cr-back{transition:opacity .4s ease,transform .36s ease;}
+@media (hover: hover) and (pointer: fine) {
+  .v2-product-page .cover-rollover:hover .cr-front,
+  .v2-product-page .cover-rollover:hover .cr-back{transform:scale(1.015);}
+}
+.v2-product-page .cover-rollover:focus-within .cr-front,
+.v2-product-page .cover-rollover:focus-within .cr-back{transform:scale(1.015);}
 .eyebrow{
   text-transform:uppercase;font-size:12.5px;letter-spacing:0.14em;font-weight:700;
   color:var(--purple);margin-bottom:14px;display:flex;align-items:center;gap:8px;
@@ -3525,7 +3540,20 @@ footer.footer--dark{
    min(100%,430px) dans sa colonne de grille réelle (407px, § .book-gallery-
    main de la maquette) : mesuré 340×510 au lieu de 407×611. */
 .v2-product-page .product-cover-col{width:auto;margin:0;}
-.v2-product-page .product-cover{position:sticky;top:24px;width:min(100%,430px);max-width:none;margin-inline:auto;aspect-ratio:2/3;position:relative;overflow:hidden;box-shadow:0 28px 60px rgba(23,20,45,.22);background:#17142d;}
+/* VESTIGE LEGACY NEUTRALISÉ (SECTION 03, lot dédié 15/09) : "position:
+   sticky;top:24px" était immédiatement écrasé par "position:relative"
+   plus loin dans la même règle (la dernière déclaration d'une propriété
+   l'emporte) — mort depuis l'origine, jamais appliqué. Vérifié par ailleurs
+   que la maquette elle-même (.book-gallery{position:sticky}) ne colle pas
+   non plus à l'écran : son ancêtre <main class="commerce-main"> porte
+   overflow:hidden, ce qui neutralise tout sticky descendant (mesuré par
+   défilement réel des deux côtés : aucun effet stick observable ni sur la
+   maquette ni sur la V2). Comportement rendu déjà identique (aucun des
+   deux ne colle) ; le style mort est retiré pour ne plus induire en erreur.
+   border-radius:0 ajouté (absent de .cover-switch sur la maquette — coins
+   vifs, alors qu'une règle générique .product-cover{border-radius:6px,
+   ligne 496} arrondissait ceux de la V2 sans être neutralisée ici). */
+.v2-product-page .product-cover{position:relative;width:min(100%,430px);max-width:none;margin-inline:auto;aspect-ratio:2/3;border-radius:0;overflow:hidden;box-shadow:0 28px 60px rgba(23,20,45,.22);background:#17142d;}
 .v2-product-page .product-cover img{width:100%;height:100%;object-fit:cover;}
 .v2-product-page .product-cover.placeholder{display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;background:linear-gradient(135deg,var(--v2-violet),var(--v2-violet-deep));}
 .v2-product-page .product-cover.placeholder .ph-title{font-family:var(--v2-serif);color:#fff;font-size:19px;line-height:1.3;font-weight:600;}
