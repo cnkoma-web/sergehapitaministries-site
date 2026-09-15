@@ -267,7 +267,19 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
           courir bord à bord. */}
       <section className="v2-commerce-narrow v2-book-sharing">
         <h2>Partager ce livre</h2>
-        <ShareCartouche title={book.title} url={pageUrl} bookDescription={shareDescription} />
+        {/* platformOrder (SECTION 07, lot dédié 15/09) : ordre réel de la
+            maquette de CETTE page (vérifié dans son HTML source, data-
+            share-platform) — whatsapp, x, facebook, telegram, linkedin,
+            email, copy, sms — distinct de l'ordre déjà validé sur les
+            autres pages (Connaître Jésus/Je Confesse/publications/Rosée
+            Matinale), qui ne passent pas ce prop et gardent leur ordre
+            inchangé. */}
+        <ShareCartouche
+          title={book.title}
+          url={pageUrl}
+          bookDescription={shareDescription}
+          platformOrder={["whatsapp", "x", "facebook", "telegram", "linkedin", "email", "copy", "sms"]}
+        />
       </section>
 
       {/* ORDRE corrigé (reconstruction Phase B2, SECTION 09) : la maquette
