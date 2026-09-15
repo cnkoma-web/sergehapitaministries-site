@@ -3944,7 +3944,14 @@ footer.footer--dark{
    entre les lignes et remplaçait le filet du Total par une bordure
    supérieure, un rythme vertical différent de la maquette. Corrigé. */
 .v2-panier-page .summary-row{display:flex;justify-content:space-between;gap:20px;padding-block:14px;border-bottom:1px solid var(--v2-line);color:var(--v2-muted);font-size:13px;}
-.v2-panier-page .summary-row.total{font-size:17px;color:var(--v2-ink);font-weight:750;}
+/* ÉCART DE STYLE CORRIGÉ (correction ciblée 02) : la maquette ne colore/
+   graisse QUE la valeur (<strong>{color:ink}, gras natif de la balise) —
+   le libellé (<span>) reste muted sur les 3 lignes, y compris "Total".
+   .summary-total (maquette) ne change QUE le font-size, jamais la couleur
+   ni la graisse du libellé — .summary-row.total appliquait à tort ink/750
+   à la ligne entière (libellé "Total" inclus). */
+.v2-panier-page .summary-row strong{color:var(--v2-ink);font-weight:700;}
+.v2-panier-page .summary-row.total{font-size:17px;}
 /* .promo-field/.promo-field label/.promo-note AJOUTÉS (reprise 15/09) :
    la maquette (§ .promo-field) porte un <label> "Code promotionnel" et
    une note "Codes promo bientôt disponibles." — absents jusqu'ici, seul

@@ -132,18 +132,25 @@ export default async function PanierPage() {
                     UN bloc .summary-lines, puis SEULEMENT ENSUITE le champ
                     promo — la V2 insérait le champ promo entre "Livraison"
                     et "Total", un ordre différent de la maquette. */}
+                {/* <strong> pour la valeur (correction ciblée 02) : la
+                    maquette utilise <span>libellé</span><strong>valeur</strong>
+                    dans chaque .summary-line — la valeur est colorée en
+                    "ink" (foncé) ET en gras, y compris sur la ligne Total,
+                    où SEULE la valeur change (le libellé "Total" reste
+                    muted comme les autres) ; la V2 utilisait deux <span>
+                    identiques, avec toute la ligne Total recolorée. */}
                 <div className="summary-lines">
                   <div className="summary-row">
                     <span>Sous-total</span>
-                    <span>{formatPrice(subtotal)}</span>
+                    <strong>{formatPrice(subtotal)}</strong>
                   </div>
                   <div className="summary-row">
                     <span>Livraison</span>
-                    <span>Calculée à l&apos;étape suivante</span>
+                    <strong>Calculée à l&apos;étape suivante</strong>
                   </div>
                   <div className="summary-row total">
                     <span>Total</span>
-                    <span>{formatPrice(subtotal)}</span>
+                    <strong>{formatPrice(subtotal)}</strong>
                   </div>
                 </div>
                 {/* STRUCTURE corrigée (reprise 15/09) : la maquette (§
