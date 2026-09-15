@@ -3484,6 +3484,9 @@ footer.footer--dark{
 }
 @media (max-width:520px){
   .v2-goodies-grid{grid-template-columns:1fr;}
+  /* AJOUTÉ (SECTION 05, lot dédié 15/09) : § .book-meta div{min-height:76px;
+     padding:13px 11px} de la maquette sous 520px, jamais porté côté V2. */
+  .v2-product-page .specs-row{min-height:76px;padding:13px 11px;}
 }
 
 @media (max-width:1080px){
@@ -3640,7 +3643,12 @@ footer.footer--dark{
    ci-dessous) — mesuré 186px de haut au lieu des 166px attendus (2×82px
    de lignes + 2px de bordure), un padding-top de 20px en trop. Neutralisé
    explicitement. */
-.v2-product-page .specs-table{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;padding-top:0;border:1px solid var(--v2-line);border-top:1px solid var(--v2-line);border-radius:8px;overflow:hidden;}
+/* margin-bottom:16px ajouté (SECTION 05, lot dédié 15/09) : la maquette
+   (dl.book-meta) hérite du margin-block par défaut du navigateur pour un
+   <dl> (1em ≈ 16px), jamais neutralisé — mesuré "34px 0px 16px" contre
+   "34px 0px 0px" en V2 (un <div>, sans marge par défaut). Écart de
+   composition réel et démontré, reproduit à l'identique. */
+.v2-product-page .specs-table{display:grid;grid-template-columns:repeat(3,1fr);margin:34px 0 16px;padding-top:0;border:1px solid var(--v2-line);border-top:1px solid var(--v2-line);border-radius:8px;overflow:hidden;}
 .v2-product-page .specs-row{min-height:82px;padding:15px 14px;border-right:1px solid var(--v2-line);border-bottom:1px solid var(--v2-line);background:#fff;display:flex;flex-direction:column;gap:6px;}
 .v2-product-page .specs-row:nth-child(3n){border-right:0;}
 .v2-product-page .specs-row:nth-last-child(-n+3){border-bottom:0;}
