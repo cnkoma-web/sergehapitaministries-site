@@ -3923,6 +3923,26 @@ footer.footer--dark{
    input:checked ~ label). Sur-scopé explicitement pour gagner. */
 .v2-reviews-layout .review-form .star-input span.active{color:var(--commerce-gold,#c69b50);}
 
+/* --- Avis, fiche Goodie (ReviewSection variant="goodie") : enveloppe
+   dédiée, plus compacte — la maquette Goodie ne montre aucune section
+   avis, jamais recopiée par analogie depuis .v2-reviews-section (fiche
+   Livre). Chaîne fonctionnelle strictement identique (résumé/liste/
+   formulaire/modération) ; seule cette enveloppe change. Scopée sous
+   .v2-product-page pour ne jamais affecter la fiche Livre. */
+.v2-product-page .v2-goodie-reviews{padding-block:64px 90px;background:#fff;}
+.v2-product-page .v2-goodie-reviews-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--v2-line);margin-bottom:32px;}
+.v2-product-page .v2-goodie-reviews-head h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(32px,4vw,44px);font-weight:500;line-height:1.08;letter-spacing:-.02em;}
+.v2-product-page .v2-goodie-reviews-summary{display:flex;align-items:center;gap:10px;color:var(--v2-muted);font-size:14px;}
+.v2-product-page .v2-goodie-reviews-layout{display:grid;grid-template-columns:2fr 3fr;gap:40px;align-items:start;}
+.v2-product-page .v2-goodie-reviews-empty{padding:32px;border:1px solid var(--v2-line);border-radius:12px;background:#f8f6ff;color:var(--v2-muted);}
+.v2-product-page .v2-goodie-reviews-empty strong{display:block;margin-bottom:8px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:20px;font-weight:600;}
+.v2-product-page .v2-goodie-reviews-empty p{margin:0;line-height:1.6;}
+.v2-product-page .v2-goodie-reviews-layout .review-form{border:1px solid var(--v2-line);border-radius:12px;}
+.v2-product-page .v2-goodie-reviews-layout .review-form .star-input span.active{color:var(--commerce-gold,#c69b50);}
+@media (max-width:900px){
+  .v2-product-page .v2-goodie-reviews-layout{grid-template-columns:1fr;}
+}
+
 /* --- Panier — cible les classes réelles de panier/page.tsx et
    CartItemRow.tsx. --- */
 .v2-utility-hero{padding-block:54px;color:#fff;background:var(--v2-ink);}

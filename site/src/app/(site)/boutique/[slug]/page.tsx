@@ -128,17 +128,29 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
           globals.css), donc reporté ici à l'identique pour ne pas laisser
           cette fiche avec une grille interne cassée (plus de
           grid-template-columns appliqué depuis le renommage). */}
+      {/* SECTION 04 — finalisation du gabarit : titre en 2 lignes ("À
+          propos" / "du produit"), parenté graphique avec "À propos de ce
+          livre" (mêmes proportions/hiérarchie serif, § .product-desc,
+          déjà certifié et légitimement partagé) — jamais une copie
+          structurelle, juste ce même langage visuel pour cette fiche.
+          Aucune SECTION ni espace réservé si goodie.description est vide. */}
       {goodie.description && (
         <section className="section product-desc">
           <div className="v2-commerce-wrap">
-            <h2>À propos du produit</h2>
+            <h2>
+              À propos
+              <br />
+              du produit
+            </h2>
             {/* Seul un admin (is_admin() en base) peut écrire ce HTML — voir RichTextEditor. */}
             <div dangerouslySetInnerHTML={{ __html: goodie.description }} />
           </div>
         </section>
       )}
 
-      <ReviewSection goodieId={goodie.id} />
+      {/* SECTION 05 — enveloppe graphique dédiée (variant="goodie"), chaîne
+          fonctionnelle ReviewSection/ReviewForm strictement inchangée. */}
+      <ReviewSection goodieId={goodie.id} variant="goodie" />
       <Newsletter />
       <Footer variant="light" />
     </div>
