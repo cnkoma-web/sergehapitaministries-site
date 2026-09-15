@@ -3771,6 +3771,14 @@ footer.footer--dark{
 .v2-book-sequence a:hover{color:var(--v2-violet-deep);}
 .v2-book-sequence .v2-book-sequence-mid{min-height:43px;display:inline-flex;align-items:center;padding-inline:16px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-violet-deep);background:#fff;}
 .v2-book-sequence a:last-child{text-align:right;}
+@media (max-width:520px){
+  /* AJOUTÉ (SECTION 09, lot dédié 15/09) : § .book-sequence sous 520px de
+     la maquette, jamais porté côté V2 (aucune règle responsive n'existait
+     pour cette nav) — passe à 2 colonnes, le lien central prend sa propre
+     ligne pleine largeur, centré. */
+  .v2-book-sequence{grid-template-columns:1fr 1fr;padding-bottom:70px;}
+  .v2-book-sequence .v2-book-sequence-mid{grid-column:1 / -1;grid-row:2;justify-content:center;}
+}
 
 /* --- Avis (ReviewSection/ReviewForm), partagé Livres/Boutique — cible
    les classes réelles déjà exposées par ces composants. --- */
