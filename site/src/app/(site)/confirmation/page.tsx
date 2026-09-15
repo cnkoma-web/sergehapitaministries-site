@@ -31,56 +31,81 @@ export default async function ConfirmationPage({
   const { type, order: orderId } = await searchParams;
   const [title, text] = (type && MESSAGES[type]) || MESSAGES.contact;
 
-  let orderSummary: { total_cents: number; shipping_cents: number; items: { title_snapshot: string; quantity: number }[] } | null = null;
+  // unit_price_cents AJOUTÉ (chantier /confirmation, source : maquettes-
+  // complementaires-shm/confirmation-paiement.html § .item strong) : la
+  // donnée existe réellement en base (déjà utilisée par le webhook Stripe
+  // et par /mon-compte) mais n'était pas sélectionnée ici — le prix par
+  // article était donc absent à tort, jamais une donnée manquante.
+  let orderSummary: {
+    total_cents: number;
+    shipping_cents: number;
+    items: { title_snapshot: string; quantity: number; unit_price_cents: number }[];
+  } | null = null;
   if (type === "paiement" && orderId) {
     const supabase = await createClient();
     const { data: order } = await supabase.from("orders").select("total_cents, shipping_cents, status").eq("id", orderId).maybeSingle();
     if (order) {
-      const { data: items } = await supabase.from("order_items").select("title_snapshot, quantity").eq("order_id", orderId);
+      const { data: items } = await supabase.from("order_items").select("title_snapshot, quantity, unit_price_cents").eq("order_id", orderId);
       orderSummary = { total_cents: order.total_cents, shipping_cents: order.shipping_cents, items: items ?? [] };
     }
   }
 
   return (
-    <>
-      <section className="confirm-section">
-        <div className="wrap">
-          <div className="confirm-icon">✓</div>
-          <h1>{title}</h1>
-          <p>{text}</p>
+    // RECONSTRUCTION (chantier /confirmation, 15/09) : nouvelles sources de
+    // vérité pour l'INTERFACE — maquettes-complementaires-shm/confirmation-
+    // standard.html (7 états texte) et confirmation-paiement.html (+
+    // récapitulatif réel), remplaçant l'ancienne coquille vide du prototype
+    // d'origine. Fonctions/données inchangées (MESSAGES, lecture orders/
+    // order_items). Header/Footer réels du site conservés tels quels (déjà
+    // injectés par (site)/layout.tsx) — jamais reconstruits depuis les
+    // Header/Footer illustratifs des maquettes (consigne explicite).
+    <div className="v2-confirmation-page">
+      <main className="v2-confirm">
+        <div className="v2-commerce-wrap">
+          <div className="v2-confirm-card">
+            <p className="v2-confirm-eyebrow">Confirmation</p>
+            <div className="v2-confirm-check">✓</div>
+            <h1>{title}</h1>
+            <p className="v2-confirm-lead">{text}</p>
 
-          {orderSummary && (
-            <div className="admin-card" style={{ maxWidth: 420, margin: "0 auto 32px", textAlign: "left" }}>
-              {orderSummary.items.map((item, i) => (
-                <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 14, marginBottom: 6 }}>
-                  <span>
-                    {item.title_snapshot} × {item.quantity}
-                  </span>
+            {orderSummary && (
+              <section className="v2-confirm-order">
+                <h2>Votre commande</h2>
+                {orderSummary.items.map((item, i) => (
+                  <div className="v2-confirm-order-item" key={i}>
+                    <div>
+                      <b>{item.title_snapshot}</b>
+                      <small>Quantité {item.quantity}</small>
+                    </div>
+                    <strong>{formatPrice(item.unit_price_cents * item.quantity)}</strong>
+                  </div>
+                ))}
+                <div className="v2-confirm-order-totals">
+                  <div className="v2-confirm-sum">
+                    <span>Livraison</span>
+                    <strong>{orderSummary.shipping_cents === 0 ? "Offerte" : formatPrice(orderSummary.shipping_cents)}</strong>
+                  </div>
+                  <div className="v2-confirm-sum total">
+                    <span>Total</span>
+                    <strong>{formatPrice(orderSummary.total_cents)}</strong>
+                  </div>
                 </div>
-              ))}
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, marginBottom: 6, color: "var(--ink-soft)" }}>
-                <span>Livraison</span>
-                <span>{orderSummary.shipping_cents === 0 ? "Offerte" : formatPrice(orderSummary.shipping_cents)}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--line)" }}>
-                <span>Total</span>
-                <span>{formatPrice(orderSummary.total_cents)}</span>
-              </div>
-            </div>
-          )}
+              </section>
+            )}
 
-          <div className="confirm-actions">
-            <Link href="/" className="btn btn-primary">
-              Retour à l&apos;accueil →
-            </Link>
-            <Link href="/publications" className="btn btn-outline">
-              Découvrir les publications
-            </Link>
+            <div className="v2-confirm-cta">
+              <Link href="/" className="v2-btn v2-btn-primary">
+                Retour à l&apos;accueil →
+              </Link>
+              <Link href="/publications" className="v2-btn v2-btn-secondary">
+                Découvrir les publications
+              </Link>
+            </div>
           </div>
         </div>
-      </section>
+      </main>
 
-      <Footer variant="dark" />
-    </>
+      <Footer variant="light" />
+    </div>
   );
 }
