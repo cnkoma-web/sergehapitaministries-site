@@ -3978,7 +3978,15 @@ footer.footer--dark{
    ni gap ni margin : champ et bouton doivent être parfaitement accolés.
    Neutralisé explicitement. */
 .v2-panier-page .promo-row{display:grid;grid-template-columns:1fr auto;gap:0;margin:0;}
-.v2-panier-page .promo-row input{min-width:0;height:43px;padding-inline:12px;border:1px solid var(--v2-line);border-radius:5px 0 0 5px;background:#f5f3f9;}
+/* font-family/font-size/line-height AJOUTÉS (correction chirurgicale 04.1) :
+   la maquette (§ .promo-field input) ne fixe aucune typographie et hérite
+   donc du reset global "button, input{font:inherit}" (styles.css l.23),
+   absent de ce projet V2 (même mécanisme déjà rencontré et documenté sur
+   .v2-add-to-cart-primary et .review-form button) — mesuré 16px/Inter/
+   line-height 25,6px (1.6) sur la maquette réelle, contre 13px hérité
+   d'une règle globale pré-V2 (.promo-row input) qui gagnait faute de
+   concurrent sur cette propriété. Corrigé localement. */
+.v2-panier-page .promo-row input{min-width:0;height:43px;padding-inline:12px;border:1px solid var(--v2-line);border-radius:5px 0 0 5px;background:#f5f3f9;font-family:inherit;font-size:16px;line-height:1.6;}
 /* padding corrigé (ÉCART 03) : la maquette (§ .promo-field button) ne
    déclare aucun padding — le bouton réel garde le padding par défaut du
    navigateur (mesuré : 1px 6px). padding-inline:14px (hérité d'une valeur
