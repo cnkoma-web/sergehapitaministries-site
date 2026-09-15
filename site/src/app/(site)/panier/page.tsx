@@ -50,63 +50,88 @@ export default async function PanierPage() {
             </div>
           ) : (
             <div className="cart-layout">
-              <div>
-                {items.map((item) => {
-                  const title = item.book?.title ?? item.goodie?.title ?? "Produit";
-                  const price = item.book?.price_cents ?? item.goodie?.price_cents ?? null;
-                  const variantLabel = [item.variant_size, item.variant_color].filter(Boolean).join(" · ");
-                  return (
-                    <div className="cart-item" key={item.id}>
-                      {item.book ? (
-                        <div className="cart-thumb">
-                          {item.book.cover_url && (
-                            <Image src={item.book.cover_url} alt={title} width={80} height={120} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6 }} />
-                          )}
+              {/* STRUCTURE corrigée (chantier Panier, 15/09) : la maquette
+                  enveloppe tous les articles dans UN panneau unique
+                  (.cart-panel), avec un en-tête partagé "Votre commande" +
+                  compteur d'articles (§ .cart-panel-head), les articles
+                  n'étant que des LIGNES à l'intérieur (séparées par un
+                  filet, § .cart-item border-bottom, dernier sans filet) —
+                  jamais des cartes individuelles bordées avec leur propre
+                  fond/radius/marge, comme c'était le cas ici (écart de
+                  structure réel : le panneau + son en-tête étaient
+                  intégralement absents). */}
+              <div className="cart-panel">
+                <div className="cart-panel-head">
+                  <h2>Votre commande</h2>
+                  <span>
+                    {items.reduce((n, i) => n + i.quantity, 0)} article{items.reduce((n, i) => n + i.quantity, 0) > 1 ? "s" : ""}
+                  </span>
+                </div>
+                <div className="cart-items">
+                  {items.map((item) => {
+                    const title = item.book?.title ?? item.goodie?.title ?? "Produit";
+                    const price = item.book?.price_cents ?? item.goodie?.price_cents ?? null;
+                    const variantLabel = [item.variant_size, item.variant_color].filter(Boolean).join(" · ");
+                    return (
+                      <div className="cart-item" key={item.id}>
+                        {item.book ? (
+                          <div className="cart-thumb">
+                            {item.book.cover_url && (
+                              <Image src={item.book.cover_url} alt={title} width={80} height={120} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6 }} />
+                            )}
+                          </div>
+                        ) : (
+                          <div className="cart-thumb goodie">
+                            {item.goodie?.image_url ? (
+                              <Image src={item.goodie.image_url} alt={title} width={80} height={80} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6 }} />
+                            ) : (
+                              <GoodieIcon slug={item.goodie?.slug ?? ""} />
+                            )}
+                          </div>
+                        )}
+                        <div className="cart-item-info">
+                          <div className="type">{item.book ? "Livre" : "Goodie"}</div>
+                          <h3>
+                            {title}
+                            {variantLabel ? ` (${variantLabel})` : ""}
+                          </h3>
                         </div>
-                      ) : (
-                        <div className="cart-thumb goodie">
-                          {item.goodie?.image_url ? (
-                            <Image src={item.goodie.image_url} alt={title} width={80} height={80} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6 }} />
-                          ) : (
-                            <GoodieIcon slug={item.goodie?.slug ?? ""} />
-                          )}
+                        <div className="cart-item-price">
+                          <div className="price">{formatPrice(price)}</div>
+                          <CartItemRow id={item.id} quantity={item.quantity} />
                         </div>
-                      )}
-                      <div className="cart-item-info">
-                        <div className="type">{item.book ? "Livre" : "Goodie"}</div>
-                        <h4>
-                          {title}
-                          {variantLabel ? ` (${variantLabel})` : ""}
-                        </h4>
                       </div>
-                      <div className="cart-item-price">
-                        <div className="price">{formatPrice(price)}</div>
-                        <CartItemRow id={item.id} quantity={item.quantity} />
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="summary-card">
                 <h3>Récapitulatif</h3>
-                <div className="summary-row">
-                  <span>Sous-total</span>
-                  <span>{formatPrice(subtotal)}</span>
-                </div>
-                <div className="summary-row">
-                  <span>Livraison</span>
-                  <span>Calculée à l&apos;étape suivante</span>
+                {/* ORDRE corrigé (chantier Panier, 15/09) : la maquette
+                    regroupe les 3 lignes (sous-total/livraison/total) dans
+                    UN bloc .summary-lines, puis SEULEMENT ENSUITE le champ
+                    promo — la V2 insérait le champ promo entre "Livraison"
+                    et "Total", un ordre différent de la maquette. */}
+                <div className="summary-lines">
+                  <div className="summary-row">
+                    <span>Sous-total</span>
+                    <span>{formatPrice(subtotal)}</span>
+                  </div>
+                  <div className="summary-row">
+                    <span>Livraison</span>
+                    <span>Calculée à l&apos;étape suivante</span>
+                  </div>
+                  <div className="summary-row total">
+                    <span>Total</span>
+                    <span>{formatPrice(subtotal)}</span>
+                  </div>
                 </div>
                 <div className="promo-row">
                   <input type="text" placeholder="Code promo" disabled title="Codes promo bientôt disponibles" />
                   <button type="button" disabled title="Codes promo bientôt disponibles">
                     Appliquer
                   </button>
-                </div>
-                <div className="summary-row total">
-                  <span>Total</span>
-                  <span>{formatPrice(subtotal)}</span>
                 </div>
 
                 {hasMissingPrice && (

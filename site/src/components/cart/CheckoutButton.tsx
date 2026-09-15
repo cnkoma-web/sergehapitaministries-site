@@ -31,9 +31,17 @@ export default function CheckoutButton({ disabled }: { disabled?: boolean }) {
           {error}
         </div>
       )}
+      {/* className "checkout-button" ajoutée (chantier Panier, 15/09) : le
+          bouton retombait sur le style générique .btn.btn-primary (pilule,
+          radius 999px, padding 14px 26px) au lieu de l'interface réelle de
+          la maquette (§ .checkout-button — pleine largeur, radius 7px,
+          min-height 53px, dégradé spécifique) ; "btn btn-primary" conservée
+          pour ne rien casser ailleurs si ce composant était un jour
+          réutilisé, la règle scopée .v2-panier-page .checkout-button
+          l'emporte ici. */}
       <button
-        className="btn btn-primary"
-        style={{ width: "100%", justifyContent: "center", marginTop: 20 }}
+        className="btn btn-primary checkout-button"
+        style={{ width: "100%", justifyContent: "center", marginTop: 22 }}
         onClick={handleClick}
         disabled={disabled || isPending}
       >
