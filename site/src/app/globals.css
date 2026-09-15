@@ -3370,7 +3370,32 @@ footer.footer--dark{
    SIGNALÉE SANS CORRECTION sur le Hero Boutique (même .v2-eyebrow, hors
    périmètre de cette PAGE) — corrigée ici uniquement pour le Hero Livres. */
 .v2-store-hero.livres .v2-eyebrow{line-height:1.6;}
-.v2-store-hero.boutique::after{content:"BOUTIQUE";position:absolute;z-index:-1;right:4vw;bottom:-58px;color:rgba(255,255,255,.045);font-family:var(--v2-serif);font-size:clamp(90px,15vw,190px);line-height:1;letter-spacing:-.07em;}
+/* min-height/bottom/padding-block/h1 AJOUTÉS (chantier Boutique, 15/09) :
+   la maquette déclare une variante .shop-hero propre au Hub Boutique
+   (commerce.css § "Boutique — hub des produits hors livres"), plus petite
+   que le hero générique .store-hero utilisé tel quel par Livres —
+   min-height 230px (vs 300), filigrane remonté à -42px (vs -58px),
+   padding interne 46px 50px (vs 62px 68px) et H1 clamp(48px,7vw,76px)
+   (vs clamp(54px,8vw,94px)).
+   ANOMALIE MAQUETTE CONSTATÉE (signalée, non reproduite) : dans le
+   fichier source, .shop-hero et .store-hero (base, utilisée telle quelle
+   par Livres) sont deux sélecteurs à une seule classe de même
+   spécificité — .store-hero étant déclaré PLUS BAS dans commerce.css, il
+   gagne en cascade sur presque toutes les propriétés de .shop-hero
+   (min-height, ::after content/bottom/font-size, h1 font-size), sauf
+   .store-hero-inner (2 classes, seule à survivre). Mesuré en direct : le
+   Hub Boutique de la maquette statique affiche RÉELLEMENT un hero de
+   300px avec le filigrane "LIVRES" (et non "BOUTIQUE"), un bug d'auteur
+   dans ce fichier CSS plat, sans rapport avec l'architecture de ce
+   projet (chaque variante V2 est déjà scopée séparément, .v2-store-hero.
+   livres / .boutique, sans collision possible). Reproduire ce bug
+   littéralement afficherait "LIVRES" sur la page Boutique en production :
+   l'intention de conception du bloc .shop-hero (dédié, entièrement
+   rédigé) est reprise ici, pas son rendu accidentel. */
+.v2-store-hero.boutique{min-height:230px;}
+.v2-store-hero.boutique::after{content:"BOUTIQUE";position:absolute;z-index:-1;right:4vw;bottom:-42px;color:rgba(255,255,255,.045);font-family:var(--v2-serif);font-size:clamp(90px,15vw,190px);line-height:1;letter-spacing:-.07em;}
+.v2-store-hero.boutique .v2-store-hero-inner{padding-block:46px 50px;}
+.v2-store-hero.boutique h1{font-size:clamp(48px,7vw,76px);}
 
 /* --- Introduction catalogue --- */
 .v2-catalog-intro{max-width:850px;padding-block:66px 42px;}
@@ -3457,7 +3482,11 @@ footer.footer--dark{
 .v2-shop-intro{display:grid;grid-template-columns:1.2fr .8fr;gap:55px;align-items:end;padding-block:54px 34px;}
 .v2-shop-intro h2{max-width:650px;margin:0;font-family:var(--v2-serif);font-size:clamp(34px,4.8vw,52px);font-weight:500;line-height:1.08;letter-spacing:-.03em;}
 .v2-shop-intro p{margin:0;color:var(--v2-muted);font-size:15px;line-height:1.7;}
-.v2-shop-intro a{color:var(--v2-violet-deep);font-weight:750;}
+/* .account-link AJOUTÉ (chantier Boutique, 15/09) : la maquette applique au
+   lien inline « Livres » la classe dédiée .account-link (12px/800,
+   commerce.css), jamais le style de paragraphe hérité (15px/750) que la
+   règle générique .v2-shop-intro a appliquait à tort. */
+.v2-shop-intro .account-link{color:var(--v2-violet-deep);font-size:12px;font-weight:800;}
 .v2-goodies-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;padding-bottom:42px;}
 .v2-goodie-card{min-width:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--v2-line);border-radius:11px;background:#fff;box-shadow:0 12px 28px rgba(23,20,45,.05);}
 .v2-goodie-visual{position:relative;display:grid;place-items:center;aspect-ratio:1/1;overflow:hidden;padding:18px;color:#fff;background:linear-gradient(145deg,#17142d,#42238f);}
@@ -3467,6 +3496,10 @@ footer.footer--dark{
 .v2-goodie-visual::before{content:"";position:absolute;width:170px;height:170px;border:1px solid rgba(255,255,255,.18);border-radius:50%;box-shadow:0 0 0 34px rgba(255,255,255,.045);}
 .v2-goodie-visual img{position:relative;width:100%;height:100%;object-fit:cover;}
 .v2-goodie-visual span{position:relative;max-width:155px;font-family:var(--v2-serif);font-size:23px;line-height:1.05;text-align:center;}
+/* AJOUTÉ (chantier Boutique, 15/09) : la maquette porte une mention
+   <small>Visuel à venir</small> en coin bas-droit du placeholder — élément
+   entièrement absent de la structure ET du CSS V2 (seul le <span> existait). */
+.v2-goodie-visual small{position:absolute;right:12px;bottom:10px;color:rgba(255,255,255,.7);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;}
 .v2-goodie-body{flex:1;display:flex;flex-direction:column;align-items:flex-start;padding:19px 17px 18px;}
 .v2-goodie-body h3{margin:0;font-family:var(--v2-serif);font-size:20px;font-weight:600;line-height:1.2;}
 .v2-goodie-status{margin:9px 0 18px;color:var(--v2-muted);font-size:12px;}

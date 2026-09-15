@@ -45,7 +45,11 @@ export default async function BoutiquePage() {
           <h2>T-shirts et accessoires du ministère.</h2>
           <p>
             La Boutique est réservée aux articles dérivés. Les ouvrages de Serge restent disponibles dans la
-            rubrique <Link href="/livres">Livres</Link>.
+            rubrique{" "}
+            <Link href="/livres" className="account-link">
+              Livres
+            </Link>
+            .
           </p>
         </div>
 
@@ -61,7 +65,18 @@ export default async function BoutiquePage() {
                     {goodie.image_url ? (
                       <Image src={goodie.image_url} alt={goodie.title} fill style={{ objectFit: "cover" }} />
                     ) : (
-                      <span>{goodie.title}</span>
+                      <>
+                        {/* AJOUTÉ (chantier Boutique, 15/09) : la maquette porte une
+                            accroche éditoriale propre à chaque produit (§ .goodie-
+                            visual span) — absente du modèle goodies (DONNÉE CMS
+                            MANQUANTE, signalée dans le référentiel), remplacée par
+                            le titre réel du produit plutôt qu'une phrase codée en
+                            dur. La mention "Visuel à venir" (§ .goodie-visual
+                            small), elle, est un texte générique d'interface, pas
+                            une donnée éditoriale — reproduite à l'identique. */}
+                        <span>{goodie.title}</span>
+                        <small>Visuel à venir</small>
+                      </>
                     )}
                   </div>
                   <div className="v2-goodie-body">
@@ -69,15 +84,17 @@ export default async function BoutiquePage() {
                     <p className="v2-goodie-status">
                       {available ? formatPrice(goodie.price_cents) : "Bientôt disponible"}
                     </p>
-                    {available ? (
-                      <Link href={`/boutique/${goodie.slug}`} className="v2-goodie-action">
-                        Voir le produit
-                      </Link>
-                    ) : (
-                      <Link href={`/boutique/${goodie.slug}`} className="v2-goodie-action">
-                        Découvrir
-                      </Link>
-                    )}
+                    {/* Libellé uniformisé (chantier Boutique, 15/09) : la maquette
+                        ne connaît qu'un seul libellé de lien réel, "Voir le
+                        produit" (§ .goodie-action) — "Découvrir" n'avait aucune
+                        base dans la maquette. Une fiche produit réelle et
+                        fonctionnelle existe pour chaque goodie (getGoodieBySlug),
+                        contrairement à la maquette statique qui n'avait construit
+                        qu'un seul exemple de fiche : l'état <span aria-disabled>
+                        de la maquette n'a donc plus lieu d'être reproduit ici. */}
+                    <Link href={`/boutique/${goodie.slug}`} className="v2-goodie-action">
+                      Voir le produit
+                    </Link>
                   </div>
                 </article>
               );
@@ -88,7 +105,7 @@ export default async function BoutiquePage() {
         <div className="v2-shop-opening" id="ouverture">
           <div>
             <strong>Ouverture prochaine</strong>
-            <p>Les visuels, variantes et prix définitifs seront ajoutés au fur et à mesure.</p>
+            <p>Les visuels, variantes et prix définitifs seront ajoutés dès la mise en service.</p>
           </div>
           <a href="#newsletter">Être informé de l&apos;ouverture →</a>
         </div>
