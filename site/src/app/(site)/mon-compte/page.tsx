@@ -5,6 +5,7 @@ import { isRealUser } from "@/lib/supabase/realUser";
 import { getPublishedArticles } from "@/lib/content/articles";
 import DashTabs from "@/components/account/DashTabs";
 import SignOutLink from "@/components/account/SignOutLink";
+import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "Mon compte | Serge Hapita Ministries",
@@ -88,6 +89,13 @@ export default async function MonComptePage() {
           orders={myOrders}
         />
       </div>
+
+      {/* CORRECTION CIBLÉE (Footer manquant) : Footer.tsx n'était ni importé
+          ici ni injecté globalement par (site)/layout.tsx (qui ne pose que
+          le Header) — absent du rendu réel, à tort déclaré conforme sans
+          vérification du DOM. Composant partagé existant, non reconstruit,
+          comme sur les autres pages déjà validées (ex. /confirmation). */}
+      <Footer variant="light" />
     </div>
   );
 }
