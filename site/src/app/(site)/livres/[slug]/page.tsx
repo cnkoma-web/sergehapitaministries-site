@@ -139,7 +139,12 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
               )}
             </div>
 
-            <div>
+            {/* className ajoutée (SECTION 04, lot dédié 15/09) : ce <div>
+                (2e colonne de la grille) était totalement anonyme — aucune
+                règle CSS ne pouvait donc cibler le padding-top:10px de la
+                maquette (§ .book-detail-copy) : mesuré 0px, décalant tout
+                le contenu de la colonne de 10px vers le haut. */}
+            <div className="product-info-col">
               {book.status === "precommande" && (
                 <div className="status-badge precommande" style={{ marginBottom: 8 }}>
                   Précommande

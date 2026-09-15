@@ -3565,7 +3565,17 @@ footer.footer--dark{
    BookGallery.tsx en admin. */
 .v2-product-page .gallery-hint{display:flex;justify-content:center;gap:8px;margin:17px 0 0;color:var(--v2-muted);font-size:11px;}
 .v2-product-page .gallery-hint svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;}
-.v2-product-page .status-badge,.v2-product-page .product-badge{display:inline-block;width:fit-content;margin-bottom:13px;padding:5px 9px;border-radius:999px;color:var(--v2-violet-deep);background:var(--v2-violet-pale);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
+/* display:inline (SECTION 04, lot dédié 15/09) : la maquette (.catalog-badge,
+   un <span>) reste en display:inline par défaut (jamais inline-block) —
+   mesuré 22px de haut contre 26px en V2 (inline-block ajoute le padding
+   vertical à la hauteur de ligne différemment), écart qui se répercutait
+   de 3-4px sur tout le reste de la colonne (titre, byline, promesse...).
+   width:fit-content retiré (sans effet sur un élément inline). */
+.v2-product-page .status-badge,.v2-product-page .product-badge{display:inline;margin-bottom:13px;padding:5px 9px;border-radius:999px;color:var(--v2-violet-deep);background:var(--v2-violet-pale);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
+/* AJOUTÉ (SECTION 04, lot dédié 15/09) : § .book-detail-copy{padding-top:
+   10px} de la maquette, jamais porté faute de classe sur ce <div> (voir
+   page.tsx) — toute la colonne d'infos démarrait 10px trop haut. */
+.v2-product-page .product-info-col{padding-top:10px;}
 .v2-product-page .product-title{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(45px,5.4vw,67px);font-weight:500;line-height:1.01;letter-spacing:-.045em;}
 .v2-product-page .product-author{display:flex;flex-wrap:wrap;gap:8px 20px;margin:19px 0 0;color:var(--v2-muted);font-size:13px;line-height:1.6;}
 .v2-product-page .product-author a{color:var(--v2-violet-deep);font-weight:750;}
@@ -3908,6 +3918,7 @@ footer.footer--dark{
   .v2-product-page .product-grid{grid-template-columns:1fr;padding-block:48px 65px;}
   .v2-product-page .product-cover-col{width:min(74vw,390px);margin-inline:auto;}
   .v2-product-page .product-cover{position:static;width:min(74vw,390px);}
+  .v2-product-page .product-info-col{padding-top:0;}
   .v2-product-page .product-title{font-size:47px;}
   .v2-product-page .book-promise{font-size:19px;}
   .v2-product-page .product-desc .v2-commerce-wrap{grid-template-columns:1fr;gap:32px;}
