@@ -63,12 +63,25 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
           et la grille produit utilisaient .v2-wrap/.wrap (1180px) au lieu
           de .v2-commerce-wrap (1120px, § .commerce-wrap de la maquette) —
           largeur erronée depuis l'origine, jamais mesurée précisément. */}
-      <div className="v2-commerce-wrap v2-breadcrumbs">
-        <Link href="/">Accueil</Link>
-        <span>›</span>
-        <Link href="/livres">Livres</Link>
-        <span>›</span>
-        <span>{book.title}</span>
+      {/* STRUCTURE corrigée (SECTION 02, lot dédié 15/09) : la maquette
+          porte DEUX éléments imbriqués — un conteneur extérieur pleine
+          largeur (.book-detail-hero : fond #f3f0fb + filet inférieur +
+          padding-block, sans contrainte de largeur) et un conteneur
+          intérieur centré à 1120px (.commerce-wrap.book-breadcrumbs : la
+          rangée de liens). Ces deux éléments étaient fusionnés en un seul
+          <div className="v2-commerce-wrap v2-breadcrumbs"> : le fond et le
+          filet héritaient alors de la largeur contrainte (1120px, centrée)
+          au lieu de courir bord à bord (1280px) comme sur la maquette —
+          écart de composition réel, mesuré et démontré (balayage exhaustif
+          SECTION 02). Séparé en deux conteneurs distincts. */}
+      <div className="v2-breadcrumbs-hero">
+        <div className="v2-commerce-wrap v2-breadcrumbs">
+          <Link href="/">Accueil</Link>
+          <span>›</span>
+          <Link href="/livres">Livres</Link>
+          <span>›</span>
+          <span>{book.title}</span>
+        </div>
       </div>
 
       <section className="product-section">

@@ -3509,7 +3509,13 @@ footer.footer--dark{
    Partenariat ne sont pas concernés par cette reprise), SIGNALÉ SANS
    CORRECTION. */
 .v2-product-page{background:#fbfaff;font-family:var(--v2-sans);line-height:1.6;-webkit-font-smoothing:auto;}
-.v2-product-page .v2-breadcrumbs{padding-block:35px;border-bottom:1px solid var(--v2-line);background:#f3f0fb;display:flex;flex-wrap:wrap;gap:8px;color:var(--v2-muted);font-size:12px;line-height:1.6;}
+/* STRUCTURE corrigée (SECTION 02, lot dédié 15/09) : fond/filet/padding-
+   block déplacés sur .v2-breadcrumbs-hero (conteneur extérieur, pleine
+   largeur, équivalent .book-detail-hero de la maquette) — voir page.tsx.
+   .v2-breadcrumbs reste le conteneur intérieur centré à 1120px (rangée de
+   liens), équivalent .commerce-wrap.book-breadcrumbs. */
+.v2-product-page .v2-breadcrumbs-hero{padding-block:35px;border-bottom:1px solid var(--v2-line);background:#f3f0fb;}
+.v2-product-page .v2-breadcrumbs{display:flex;flex-wrap:wrap;gap:8px;color:var(--v2-muted);font-size:12px;line-height:1.6;}
 .v2-product-page .v2-breadcrumbs a:hover{color:var(--v2-violet-deep);}
 .v2-product-page .product-section{padding-block:0;}
 .v2-product-page .product-grid{display:grid;grid-template-columns:minmax(300px,.78fr) minmax(0,1.22fr);gap:clamp(42px,6vw,76px);align-items:start;padding-block:72px 88px;}
@@ -3865,6 +3871,7 @@ footer.footer--dark{
   .v2-dashboard-page .dash-nav{position:static;grid-auto-flow:column;overflow-x:auto;}
 }
 @media (max-width:720px){
+  .v2-product-page .v2-breadcrumbs-hero{padding-block:26px;}
   .v2-product-page .product-grid{grid-template-columns:1fr;padding-block:48px 65px;}
   .v2-product-page .product-cover-col{width:min(74vw,390px);margin-inline:auto;}
   .v2-product-page .product-cover{position:static;width:min(74vw,390px);}
