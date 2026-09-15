@@ -3505,7 +3505,12 @@ footer.footer--dark{
 .v2-goodie-status{margin:9px 0 18px;color:var(--v2-muted);font-size:12px;}
 .v2-goodie-action{width:100%;min-height:43px;display:inline-flex;align-items:center;justify-content:center;margin-top:auto;border:1px solid var(--v2-ink);border-radius:6px;color:var(--v2-ink);background:#fff;font-size:12px;font-weight:800;}
 .v2-goodie-action:hover{color:#fff;background:var(--v2-ink);}
-.v2-goodie-action[aria-disabled="true"]{opacity:.5;cursor:not-allowed;}
+/* [aria-disabled] SUPPRIMÉ (correction ciblée CTA cartes produits) : la
+   maquette (§ .goodie-action) ne porte aucune règle dédiée à l'état
+   désactivé — mesuré en direct sur le <span aria-disabled="true"> réel :
+   opacity:1, cursor:auto, strictement identique au bouton actif. opacity:
+   .5/cursor:not-allowed était une invention V2 sans base dans la
+   maquette. */
 .v2-shop-opening{display:flex;align-items:center;justify-content:space-between;gap:32px;margin-bottom:86px;padding:28px 31px;border:1px solid rgba(109,49,242,.18);border-radius:11px;background:var(--v2-violet-pale);}
 .v2-shop-opening strong{display:block;margin-bottom:5px;font-family:var(--v2-serif);font-size:22px;}
 .v2-shop-opening p{margin:0;color:var(--v2-muted);font-size:13px;}

@@ -84,17 +84,26 @@ export default async function BoutiquePage() {
                     <p className="v2-goodie-status">
                       {available ? formatPrice(goodie.price_cents) : "Bientôt disponible"}
                     </p>
-                    {/* Libellé uniformisé (chantier Boutique, 15/09) : la maquette
-                        ne connaît qu'un seul libellé de lien réel, "Voir le
-                        produit" (§ .goodie-action) — "Découvrir" n'avait aucune
-                        base dans la maquette. Une fiche produit réelle et
-                        fonctionnelle existe pour chaque goodie (getGoodieBySlug),
-                        contrairement à la maquette statique qui n'avait construit
-                        qu'un seul exemple de fiche : l'état <span aria-disabled>
-                        de la maquette n'a donc plus lieu d'être reproduit ici. */}
-                    <Link href={`/boutique/${goodie.slug}`} className="v2-goodie-action">
-                      Voir le produit
-                    </Link>
+                    {/* CORRECTION CIBLÉE (chantier Boutique, reprise) : le CTA se
+                        raccorde à l'état RÉEL du produit (goodie.status, seule
+                        donnée du modèle qui distingue disponible/coming_soon),
+                        jamais à la simple existence de la route /boutique/[slug]
+                        (qui existe pour tous, disponibles ou non). La maquette
+                        (§ .goodie-action) ne connaît que ces deux états : un vrai
+                        lien "Voir le produit" pour un produit disponible, un
+                        <span aria-disabled="true"> "À venir" (non cliquable) pour
+                        les autres — jamais de lien pour un produit coming_soon,
+                        quelle que soit l'existence de sa fiche. La route reste
+                        intacte, seul le CTA du Hub change de comportement. */}
+                    {available ? (
+                      <Link href={`/boutique/${goodie.slug}`} className="v2-goodie-action">
+                        Voir le produit
+                      </Link>
+                    ) : (
+                      <span className="v2-goodie-action" aria-disabled="true">
+                        À venir
+                      </span>
+                    )}
                   </div>
                 </article>
               );
