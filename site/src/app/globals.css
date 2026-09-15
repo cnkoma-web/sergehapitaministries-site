@@ -3693,8 +3693,17 @@ footer.footer--dark{
    (`books.description` intact, RichTextEditor non touché) : le sélecteur
    est simplement étendu pour couvrir ce cas réel, sans rien inventer côté
    contenu — b:first-child reçoit le même traitement que p:first-child. */
+/* font-family ajouté (SECTION 06, lot dédié 15/09) : ce sélecteur ne
+   redéclare pas font-family — pour un <p>, il hérite sans problème de
+   `.product-desc p{font-family:var(--v2-serif)}` (même sélecteur, même
+   spécificité, cascade sur la même balise), mais un <b> ne correspond à
+   AUCUNE règle `.product-desc p{...}` (sélecteur de balise différent) :
+   il retombait sur le sans-serif hérité de la page (Inter) au lieu de
+   Georgia comme la maquette (§ .book-description-copy p, dont hérite
+   implicitement son premier <p><strong>). Écart réel démontré (police
+   réellement chargée vérifiée, pas seulement la valeur CSS). */
 .v2-product-page .product-desc p:first-child,
-.v2-product-page .product-desc b:first-child{display:block;margin:0 0 22px;color:#fff;font-size:24px;line-height:1.58;}
+.v2-product-page .product-desc b:first-child{display:block;margin:0 0 22px;color:#fff;font-family:var(--v2-serif);font-size:24px;line-height:1.58;}
 /* Contenu riche (RichTextEditor, admin) injecté ici — mêmes garde-fous que
    partout ailleurs sur fond sombre (h1-h4 globaux + liens explicitement
    recolorés, jamais laissés hériter). */
@@ -3704,6 +3713,10 @@ footer.footer--dark{
 .v2-product-page .product-desc a{color:#cdbbff;}
 .v2-product-page .product-desc strong,
 .v2-product-page .product-desc em{color:inherit;}
+/* AJOUTÉ (SECTION 06, lot dédié 15/09) : § .book-description-copy
+   p:last-child{margin-bottom:0} de la maquette, jamais porté côté V2 — le
+   dernier paragraphe conservait 22px de marge basse superflue. */
+.v2-product-page .product-desc p:last-child{margin-bottom:0;}
 
 /* --- Goodie (T-shirts et accessoires) : couverture carrée + panneau de
    sélection, cible les classes réelles GoodiePurchasePanel — voir plus
@@ -3930,6 +3943,7 @@ footer.footer--dark{
   .v2-product-page .product-title{font-size:47px;}
   .v2-product-page .book-promise{font-size:19px;}
   .v2-product-page .product-desc .v2-commerce-wrap{grid-template-columns:1fr;gap:32px;}
+  .v2-product-page .product-desc p{font-size:18px;}
   .v2-product-page .product-desc h2{position:static;font-size:43px;}
   .v2-compte-page .account-aside{padding:28px 26px 25px;}
   .v2-compte-page .account-aside h1{max-width:430px;font-size:31px;}
