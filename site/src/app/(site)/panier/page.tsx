@@ -72,28 +72,36 @@ export default async function PanierPage() {
                     const title = item.book?.title ?? item.goodie?.title ?? "Produit";
                     const price = item.book?.price_cents ?? item.goodie?.price_cents ?? null;
                     const variantLabel = [item.variant_size, item.variant_color].filter(Boolean).join(" · ");
+                    // href réel (SECTION Panneau commande, reprise 15/09) : la
+                    // maquette (§ commerce.js renderCart) enveloppe la vignette
+                    // ET le titre dans un vrai lien <a href> vers la fiche
+                    // produit — absent jusqu'ici (V2 n'avait ni l'un ni
+                    // l'autre). Ajouté avec la vraie route de chaque produit.
+                    const href = item.book ? `/livres/${item.book.slug}` : item.goodie ? `/boutique/${item.goodie.slug}` : "#";
                     return (
                       <div className="cart-item" key={item.id}>
                         {item.book ? (
-                          <div className="cart-thumb">
+                          <Link href={href} className="cart-thumb">
                             {item.book.cover_url && (
                               <Image src={item.book.cover_url} alt={title} width={80} height={120} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6 }} />
                             )}
-                          </div>
+                          </Link>
                         ) : (
-                          <div className="cart-thumb goodie">
+                          <Link href={href} className="cart-thumb goodie">
                             {item.goodie?.image_url ? (
                               <Image src={item.goodie.image_url} alt={title} width={80} height={80} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 6 }} />
                             ) : (
                               <GoodieIcon slug={item.goodie?.slug ?? ""} />
                             )}
-                          </div>
+                          </Link>
                         )}
                         <div className="cart-item-info">
                           <div className="type">{item.book ? "Livre" : "Goodie"}</div>
                           <h3>
-                            {title}
-                            {variantLabel ? ` (${variantLabel})` : ""}
+                            <Link href={href}>
+                              {title}
+                              {variantLabel ? ` (${variantLabel})` : ""}
+                            </Link>
                           </h3>
                         </div>
                         <div className="cart-item-price">
@@ -127,11 +135,20 @@ export default async function PanierPage() {
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                 </div>
-                <div className="promo-row">
-                  <input type="text" placeholder="Code promo" disabled title="Codes promo bientôt disponibles" />
-                  <button type="button" disabled title="Codes promo bientôt disponibles">
-                    Appliquer
-                  </button>
+                {/* STRUCTURE corrigée (reprise 15/09) : la maquette (§
+                    .promo-field) porte un <label> "Code promotionnel" et
+                    une note "Codes promo bientôt disponibles." — les deux
+                    étaient intégralement absents, seuls le champ et le
+                    bouton existaient. Ajoutés à l'identique. */}
+                <div className="promo-field">
+                  <label htmlFor="promo-code">Code promotionnel</label>
+                  <div className="promo-row">
+                    <input id="promo-code" type="text" placeholder="Votre code" disabled title="Codes promo bientôt disponibles" />
+                    <button type="button" disabled title="Codes promo bientôt disponibles">
+                      Appliquer
+                    </button>
+                  </div>
+                  <p className="promo-note">Codes promo bientôt disponibles.</p>
                 </div>
 
                 {hasMissingPrice && (

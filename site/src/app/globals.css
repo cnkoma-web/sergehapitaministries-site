@@ -3900,7 +3900,7 @@ footer.footer--dark{
 .v2-panier-page .cart-items{padding:0 25px;}
 .v2-panier-page .cart-item{display:grid;grid-template-columns:82px 1fr auto;gap:18px;align-items:center;padding-block:23px;border-bottom:1px solid var(--v2-line);}
 .v2-panier-page .cart-item:last-child{border-bottom:0;}
-.v2-panier-page .cart-thumb{width:82px;aspect-ratio:2/3;overflow:hidden;border-radius:6px;background:#eeeaf8;}
+.v2-panier-page .cart-thumb{display:block;width:82px;aspect-ratio:2/3;overflow:hidden;border-radius:6px;background:#eeeaf8;}
 .v2-panier-page .cart-thumb.goodie{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;}
 .v2-panier-page .cart-item-info .type{color:var(--v2-violet-deep);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
 /* .cart-item h3 (prototype) : aucune graisse déclarée → gras 700 par
@@ -3933,9 +3933,18 @@ footer.footer--dark{
    supérieure, un rythme vertical différent de la maquette. Corrigé. */
 .v2-panier-page .summary-row{display:flex;justify-content:space-between;gap:20px;padding-block:14px;border-bottom:1px solid var(--v2-line);color:var(--v2-muted);font-size:13px;}
 .v2-panier-page .summary-row.total{font-size:17px;color:var(--v2-ink);font-weight:750;}
-.v2-panier-page .promo-row{display:grid;grid-template-columns:1fr auto;margin-top:22px;}
+/* .promo-field/.promo-field label/.promo-note AJOUTÉS (reprise 15/09) :
+   la maquette (§ .promo-field) porte un <label> "Code promotionnel" et
+   une note "Codes promo bientôt disponibles." — absents jusqu'ici, seul
+   le champ+bouton (.promo-row, imbriqué désormais dans .promo-field)
+   existait. margin-top déplacée du .promo-row (intérieur) au .promo-
+   field (extérieur), comme la maquette. */
+.v2-panier-page .promo-field{margin-top:22px;}
+.v2-panier-page .promo-field label{display:block;margin-bottom:7px;color:var(--v2-ink-soft);font-size:11px;font-weight:800;}
+.v2-panier-page .promo-row{display:grid;grid-template-columns:1fr auto;}
 .v2-panier-page .promo-row input{min-width:0;height:43px;padding-inline:12px;border:1px solid var(--v2-line);border-radius:5px 0 0 5px;background:#f5f3f9;}
 .v2-panier-page .promo-row button{border:0;border-radius:0 5px 5px 0;color:#918d9d;background:#e8e5ed;font-size:11px;font-weight:800;padding-inline:14px;}
+.v2-panier-page .promo-note{margin:6px 0 0;color:var(--v2-muted);font-size:10px;}
 .v2-panier-page .v2-continue-shopping{display:block;margin-top:15px;color:var(--v2-violet-deep);text-align:center;font-size:12px;font-weight:800;}
 .v2-panier-page .v2-secure-note{display:flex;gap:8px;margin:19px 0 0;padding-top:18px;border-top:1px solid var(--v2-line);color:var(--v2-muted);font-size:11px;line-height:1.5;}
 .v2-panier-page .v2-secure-note svg{flex:0 0 auto;}
