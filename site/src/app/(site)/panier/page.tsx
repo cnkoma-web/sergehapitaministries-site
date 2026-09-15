@@ -95,6 +95,17 @@ export default async function PanierPage() {
                             )}
                           </Link>
                         )}
+                        {/* POSITION DU PRIX corrigée (correction ciblée 01) :
+                            la maquette (§ commerce.js renderCart) place le
+                            prix (<p>) DANS le bloc d'infos, juste après le
+                            titre — 2e colonne de la grille — jamais dans la
+                            colonne actions avec la quantité/le retrait. Le
+                            <div className="price"> était égaré dans
+                            .cart-item-price (3e colonne), à côté de
+                            CartItemRow. Déplacé ici ; .cart-item-price
+                            renommé .cart-item-actions pour correspondre au
+                            vrai nom de classe de la maquette (ne contient
+                            plus que quantité + retrait, comme elle). */}
                         <div className="cart-item-info">
                           <div className="type">{item.book ? "Livre" : "Goodie"}</div>
                           <h3>
@@ -103,9 +114,9 @@ export default async function PanierPage() {
                               {variantLabel ? ` (${variantLabel})` : ""}
                             </Link>
                           </h3>
-                        </div>
-                        <div className="cart-item-price">
                           <div className="price">{formatPrice(price)}</div>
+                        </div>
+                        <div className="cart-item-actions">
                           <CartItemRow id={item.id} quantity={item.quantity} />
                         </div>
                       </div>

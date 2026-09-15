@@ -3908,9 +3908,21 @@ footer.footer--dark{
    les titres h1-h4 du site). Balise réalignée sur la maquette (h3, pas
    h4 — chantier Panier, 15/09), même défaut de graisse du navigateur
    reproduit à l'identique. */
-.v2-panier-page .cart-item-info h3{margin:4px 0 0;font-family:var(--v2-serif);font-size:20px;line-height:1.2;font-weight:700;}
-.v2-panier-page .cart-item-price{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
-.v2-panier-page .cart-item-price .price{color:var(--v2-ink);font-weight:750;}
+/* margin-bottom rétabli à 8px (correction ciblée 01) : la maquette
+   (.cart-item h3{margin:4px 0 8px}) réserve cet espace pour le prix
+   (<p>), qui suit immédiatement le titre dans le MÊME bloc d'infos —
+   remis à 0 par erreur quand le prix avait été égaré dans la colonne
+   actions. */
+.v2-panier-page .cart-item-info h3{margin:4px 0 8px;font-family:var(--v2-serif);font-size:20px;line-height:1.2;font-weight:700;}
+/* POSITION DU PRIX corrigée (correction ciblée 01) : la maquette place le
+   prix (<p>{margin:0;color:ink;font-weight:750}) dans le bloc d'infos,
+   juste après le titre — jamais dans la colonne actions avec la
+   quantité/le retrait. Style déplacé en conséquence. */
+.v2-panier-page .cart-item-info .price{margin:0;color:var(--v2-ink);font-weight:750;}
+/* .cart-item-price renommé .cart-item-actions (correction ciblée 01) :
+   vrai nom de classe de la maquette pour cette 3e colonne, qui ne
+   contient que la quantité + le retrait, jamais le prix. */
+.v2-panier-page .cart-item-actions{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
 .v2-panier-page .qty-control{display:grid;grid-template-columns:30px 33px 30px;align-items:center;min-height:38px;border:1px solid var(--v2-line);border-radius:5px;}
 .v2-panier-page .qty-btn{height:100%;border:0;color:var(--v2-violet-deep);background:transparent;cursor:pointer;font-size:15px;}
 .v2-panier-page .qty-val{text-align:center;font-size:13px;font-weight:800;}
@@ -4029,7 +4041,7 @@ footer.footer--dark{
   .v2-panier-page .cart-items{padding:0 18px;}
   .v2-panier-page .cart-item{grid-template-columns:64px 1fr;gap:13px;}
   .v2-panier-page .cart-thumb{width:64px;}
-  .v2-panier-page .cart-item-price{grid-column:2;flex-direction:row;align-items:center;justify-content:space-between;}
+  .v2-panier-page .cart-item-actions{grid-column:2;flex-direction:row;align-items:center;justify-content:space-between;}
   .v2-reviews-heading,.v2-reviews-layout{grid-template-columns:1fr;}
   .v2-compte-page .account-card{grid-template-columns:1fr;}
   .v2-dashboard-page .dash-layout{grid-template-columns:1fr;}
