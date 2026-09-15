@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import { getPublishedArticles } from "@/lib/content/articles";
 import DashTabs from "@/components/account/DashTabs";
+import SignOutLink from "@/components/account/SignOutLink";
 
 export const metadata: Metadata = {
   title: "Mon compte | Serge Hapita Ministries",
@@ -18,7 +19,7 @@ export default async function MonComptePage() {
   if (!isRealUser(user)) redirect("/compte?tab=login");
 
   const [{ data: profile }, vsArticles, { data: reviews }, { data: orders }] = await Promise.all([
-    supabase.from("profiles").select("first_name").eq("id", user.id).single(),
+    supabase.from("profiles").select("first_name, last_name").eq("id", user.id).single(),
     getPublishedArticles("vs"),
     supabase
       .from("reviews")
@@ -72,10 +73,15 @@ export default async function MonComptePage() {
             <h1 style={{ margin: 0, fontFamily: "var(--v2-serif)", fontSize: "clamp(45px,6vw,68px)", fontWeight: 500, lineHeight: 1 }}>Mon compte</h1>
             <p style={{ margin: "12px 0 0", color: "var(--v2-muted)" }}>Retrouvez ici vos informations et votre activité.</p>
           </div>
+          {/* Position corrigée (chantier /mon-compte, reprise) : § .dashboard-
+              head a de la maquette place "Se déconnecter →" ici, jamais dans
+              la barre d'onglets latérale (voir SignOutLink.tsx). */}
+          <SignOutLink />
         </div>
         <DashTabs
           userId={user.id}
           firstName={profile?.first_name ?? ""}
+          lastName={profile?.last_name ?? ""}
           email={user.email ?? ""}
           vsArticles={vsArticles.map((a) => ({ slug: a.slug, title: a.title }))}
           reviews={myReviews}

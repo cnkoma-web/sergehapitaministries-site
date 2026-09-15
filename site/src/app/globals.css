@@ -1188,16 +1188,14 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
   .account-section{padding-top:40px;padding-bottom:56px;}
 }
 
-/* ===== TABLEAU DE BORD (mon-compte) ===== */
-.dash-layout{display:grid;grid-template-columns:220px 1fr;gap:40px;padding-top:48px;padding-bottom:72px;align-items:start;}
-.dash-nav{position:sticky;top:90px;display:flex;flex-direction:column;}
-.dash-nav a, .dash-nav button{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;font-size:14px;font-weight:600;color:var(--ink-soft);margin-bottom:4px;background:none;border:none;font-family:inherit;text-align:left;cursor:pointer;}
-.dash-nav a.active{background:var(--lavender);color:var(--purple);}
-.dash-nav a:hover, .dash-nav button:hover{color:var(--purple);}
-.dash-section h2{font-size:20px;margin-bottom:24px;}
-.dash-welcome{background:var(--lavender);border-radius:16px;padding:24px 28px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.dash-welcome p{font-size:15px;color:var(--ink);margin:0;}
-.dash-welcome strong{color:var(--purple);}
+/* ===== TABLEAU DE BORD (mon-compte) =====
+   RECONSTRUCTION (chantier /mon-compte, 15/09) : .dash-layout/.dash-nav/
+   .dash-section/.dash-welcome/.access-card/.vs-library-item (ci-dessus)
+   étaient exclusives à DashTabs.tsx (aucun autre appelant, vérifié) —
+   retirées et remplacées par les classes réelles de la maquette
+   (.dashboard-grid/.dashboard-tabs/.dashboard-panel/.dashboard-empty,
+   prototype-html/mon-compte/index.html). .order-row/.order-status restent
+   (réutilisées telles quelles dans le nouveau DashTabs). */
 .order-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px;}
 .order-row:first-child{padding-top:0;}
 .order-row .num{font-weight:700;font-size:14px;}
@@ -1205,20 +1203,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .order-status{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:5px 12px;border-radius:100px;background:var(--lavender);color:var(--purple);}
 .profile-form input{width:100%;max-width:420px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;margin-bottom:16px;}
 .profile-form label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
-.access-card{background:var(--ink);border-radius:16px;padding:28px;color:#fff;max-width:460px;}
-.access-card h3{color:#fff;font-size:16px;margin-bottom:10px;}
-.access-card p{color:rgba(255,255,255,.65);font-size:13.5px;line-height:1.6;margin-bottom:0;}
-.vs-library-item{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
-.vs-library-item:first-child{padding-top:0;}
-.vs-library-item h4{font-size:15px;margin-bottom:4px;max-width:340px;}
-.vs-library-date{font-size:12px;color:var(--ink-soft);}
-.vs-library-actions{display:flex;gap:8px;flex-shrink:0;}
 .empty-state{color:var(--ink-soft);font-size:14px;font-style:italic;padding:20px 0;}
-@media (max-width:900px){
-  .dash-layout{grid-template-columns:1fr;}
-  .dash-nav{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:8px;}
-  .dash-nav a, .dash-nav button{white-space:nowrap;margin-bottom:0;}
-}
 
 /* ===== ADMIN (outil interne — même charte graphique, mise en page utilitaire) ===== */
 /* Refonte Partie 5 §6.1 : sidebar verticale + zone de contenu, remplace l'ancienne
@@ -4141,24 +4126,56 @@ footer.footer--dark{
 .v2-dashboard-page{background:#fbfaff;}
 .v2-dashboard-shell{padding-block:65px 100px;}
 .v2-dashboard-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:34px;}
-.v2-dashboard-page .dash-layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:22px;align-items:start;}
-.v2-dashboard-page .dash-nav{position:sticky;top:24px;display:grid;gap:4px;padding:10px;border:1px solid var(--v2-line);border-radius:10px;background:#fff;}
-.v2-dashboard-page .dash-nav a{min-height:47px;display:flex;align-items:center;padding-inline:13px;border-radius:5px;color:var(--v2-muted);font-weight:750;cursor:pointer;}
-.v2-dashboard-page .dash-nav a.active{color:#fff;background:var(--v2-violet-deep);}
-.v2-dashboard-page .dash-nav button{min-height:47px;margin-top:6px;padding-inline:13px;border:0;border-top:1px solid var(--v2-line);border-radius:0;color:var(--v2-muted);background:transparent;text-align:left;font-weight:750;cursor:pointer;}
-.v2-dashboard-page .dash-section{min-height:460px;padding:clamp(28px,5vw,50px);border:1px solid var(--v2-line);border-radius:10px;background:#fff;}
-.v2-dashboard-page .dash-welcome{margin-bottom:6px;color:var(--v2-muted);font-size:14px;}
-.v2-dashboard-page .dash-welcome strong{color:var(--v2-ink);}
-.v2-dashboard-page .dash-section h2{margin:0 0 8px;font-family:var(--v2-serif);font-size:34px;font-weight:600;}
-.v2-dashboard-page .order-row{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0;border-bottom:1px solid var(--v2-line);}
+/* Bouton de déconnexion (chantier /mon-compte, reprise) : § .dashboard-head
+   a de la maquette — un <button> ici (fonction réelle), pas un <a>, reset
+   pour reprendre exactement le même style texte que la maquette. */
+.v2-dashboard-page .v2-dashboard-signout{border:0;padding:0;background:transparent;color:var(--v2-violet-deep);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+/* RECONSTRUCTION (chantier /mon-compte, 15/09) : classes réelles de la
+   maquette (.dashboard-grid/.dashboard-tabs/.dashboard-panel/
+   .dashboard-empty), remplaçant .dash-layout/.dash-nav/.dash-section
+   (jamais alignées sur la maquette — voir DashTabs.tsx). */
+.v2-dashboard-page .dashboard-grid{display:grid;grid-template-columns:235px minmax(0,1fr);gap:22px;align-items:start;}
+.v2-dashboard-page .dashboard-tabs{position:sticky;top:24px;display:grid;padding:10px;border:1px solid var(--v2-line);border-radius:10px;background:#fff;}
+.v2-dashboard-page .dashboard-tabs button{min-height:47px;padding-inline:13px;border:0;border-radius:5px;color:var(--v2-muted);background:transparent;text-align:left;font-family:inherit;font-size:14px;font-weight:750;cursor:pointer;}
+.v2-dashboard-page .dashboard-tabs button[aria-selected="true"]{color:#fff;background:var(--v2-violet-deep);}
+.v2-dashboard-page .dashboard-panel{min-height:460px;padding:clamp(28px,5vw,50px);border:1px solid var(--v2-line);border-radius:10px;background:#fff;}
+.v2-dashboard-page .dashboard-panel h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:34px;font-weight:600;}
+.v2-dashboard-page .dashboard-panel>p{margin:8px 0 0;color:var(--v2-muted);}
+.v2-dashboard-page .dashboard-empty{display:grid;place-items:center;min-height:270px;margin-top:28px;padding:30px;border:1px dashed rgba(109,49,242,.25);border-radius:9px;background:#f8f6ff;text-align:center;}
+.v2-dashboard-page .dashboard-empty svg{width:38px;height:38px;fill:none;stroke:var(--v2-violet-deep);stroke-width:1.5;}
+.v2-dashboard-page .dashboard-empty strong{display:block;margin-top:15px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:23px;}
+.v2-dashboard-page .dashboard-empty p{max-width:430px;margin:7px 0 18px;color:var(--v2-muted);font-size:13px;}
+.v2-dashboard-page .dashboard-empty a{color:var(--v2-violet-deep);font-size:12px;font-weight:800;}
+.v2-dashboard-page .order-row{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0;border-bottom:1px solid var(--v2-line);margin-top:28px;}
+.v2-dashboard-page .order-row:first-child{margin-top:28px;}
 .v2-dashboard-page .order-row .num{font-weight:700;color:var(--v2-ink);}
 .v2-dashboard-page .order-row .date{margin-top:4px;color:var(--v2-muted);font-size:13px;}
 .v2-dashboard-page .order-status{color:var(--v2-violet-deep);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
+/* Liste des commandes réelles (état avec données) : aucun exemple dans la
+   maquette (qui ne montre que l'état vide) — style cohérent avec .order-row
+   déjà établi ci-dessus. */
+.v2-dashboard-page .order-list{margin-top:28px;}
+.v2-dashboard-page .order-entry{padding:16px 0;border-bottom:1px solid var(--v2-line);}
+.v2-dashboard-page .order-entry:last-child{border-bottom:0;}
+.v2-dashboard-page .order-entry .order-row{margin-top:0;padding:0;border-bottom:0;}
+.v2-dashboard-page .order-entry-items{margin-top:10px;}
+.v2-dashboard-page .order-entry-line{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;}
+.v2-dashboard-page .order-entry-line.muted{font-size:13px;color:var(--v2-muted);}
+.v2-dashboard-page .order-entry-line.total{margin-top:2px;padding-top:6px;border-top:1px solid var(--v2-line);font-weight:700;}
+.v2-dashboard-page .order-entry-note{margin-top:4px;color:var(--v2-muted);font-size:12px;font-style:italic;}
 .v2-dashboard-page .access-card{padding:24px;border:1px solid var(--v2-line);border-radius:10px;background:var(--v2-violet-pale);}
 .v2-dashboard-page .access-card h3{margin:0 0 8px;font-family:var(--v2-serif);font-size:19px;}
-.v2-dashboard-page .vs-library{display:grid;gap:10px;}
+.v2-dashboard-page .vs-library{display:grid;gap:10px;margin-top:28px;}
 .v2-dashboard-page .vs-library-item{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--v2-line);}
 .v2-dashboard-page .vs-library-item h4{margin:0;font-family:var(--v2-serif);font-size:16px;font-weight:600;}
+/* profile-form : grille 2 colonnes réelle de la maquette, jamais appliquée
+   (le CSS pré-V2 de .profile-form, plus haut dans ce fichier, ne pose
+   qu'un style d'input/label en colonne unique). */
+.v2-dashboard-page .profile-form{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px;}
+.v2-dashboard-page .profile-form label{margin:0;color:var(--v2-ink-soft);font-size:12px;font-weight:800;}
+.v2-dashboard-page .profile-form input{width:100%;max-width:none;height:48px;margin:6px 0 0;padding-inline:13px;border:1px solid var(--v2-line);border-radius:6px;font-family:inherit;font-size:16px;}
+.v2-dashboard-page .profile-form .v2-profile-form-full{grid-column:1/-1;}
+.v2-dashboard-page .profile-form button{width:fit-content;min-height:46px;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;}
 
 @media (max-width:980px){
   .v2-product-page .product-grid{grid-template-columns:minmax(250px,.7fr) minmax(0,1.3fr);gap:40px;}
@@ -4180,8 +4197,8 @@ footer.footer--dark{
   .v2-panier-page .cart-item-actions{grid-column:2;flex-direction:row;align-items:center;justify-content:space-between;}
   .v2-reviews-heading,.v2-reviews-layout{grid-template-columns:1fr;}
   .v2-compte-page .account-card{grid-template-columns:1fr;}
-  .v2-dashboard-page .dash-layout{grid-template-columns:1fr;}
-  .v2-dashboard-page .dash-nav{position:static;grid-auto-flow:column;overflow-x:auto;}
+  .v2-dashboard-page .dashboard-grid{grid-template-columns:1fr;}
+  .v2-dashboard-page .dashboard-tabs{position:static;grid-auto-flow:column;overflow-x:auto;}
 }
 @media (max-width:720px){
   .v2-product-page .v2-breadcrumbs-hero{padding-block:26px;}

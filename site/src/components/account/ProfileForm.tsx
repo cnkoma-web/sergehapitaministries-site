@@ -6,10 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 type Props = {
   userId: string;
   initialFirstName: string;
+  initialLastName: string;
   initialEmail: string;
 };
 
-export default function ProfileForm({ userId, initialFirstName, initialEmail }: Props) {
+export default function ProfileForm({ userId, initialFirstName, initialLastName, initialEmail }: Props) {
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -23,18 +24,23 @@ export default function ProfileForm({ userId, initialFirstName, initialEmail }: 
 
     const formData = new FormData(e.currentTarget);
     const firstName = String(formData.get("first_name") ?? "").trim();
+    const lastName = String(formData.get("last_name") ?? "").trim();
     const email = String(formData.get("email") ?? "").trim();
     const newPassword = String(formData.get("password") ?? "").trim();
 
     const supabase = createClient();
 
-    if (firstName) {
+    // last_name AJOUTÉ (chantier /mon-compte, reprise) : § .profile-form
+    // "Nom" de la maquette — donnée réelle déjà en base (profiles.last_name,
+    // migration 20260824030000) avec le GRANT UPDATE déjà accordé à
+    // authenticated, jamais exposée par ce formulaire jusqu'ici.
+    if (firstName || lastName) {
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({ first_name: firstName })
+        .update({ first_name: firstName, last_name: lastName })
         .eq("id", userId);
       if (profileError) {
-        setError("Impossible de mettre à jour le prénom.");
+        setError("Impossible de mettre à jour vos informations.");
         setLoading(false);
         return;
       }
@@ -70,15 +76,33 @@ export default function ProfileForm({ userId, initialFirstName, initialEmail }: 
       <label htmlFor="profile-first-name">Prénom</label>
       <input id="profile-first-name" name="first_name" type="text" defaultValue={initialFirstName} />
 
-      <label htmlFor="profile-email">E-mail</label>
-      <input id="profile-email" name="email" type="email" defaultValue={initialEmail} />
+      <label htmlFor="profile-last-name">Nom</label>
+      <input id="profile-last-name" name="last_name" type="text" defaultValue={initialLastName} />
 
-      <label htmlFor="profile-password">
-        Nouveau mot de passe <span style={{ fontWeight: 400, color: "var(--ink-soft)" }}>(laisser vide pour ne pas changer)</span>
+      {/* Pleine largeur (chantier /mon-compte, reprise) : § .profile-form
+          label:last-of-type de la maquette ne vise que le DERNIER label
+          (Email, dans une grille à 3 champs) — avec le champ mot de passe
+          ajouté ici (fonction réelle dépassant la maquette), Email et mot
+          de passe portent désormais explicitement cette même règle. */}
+      <label htmlFor="profile-email" className="v2-profile-form-full">
+        E-mail
       </label>
-      <input id="profile-password" name="password" type="password" minLength={8} autoComplete="new-password" ref={passwordRef} />
+      <input id="profile-email" name="email" type="email" defaultValue={initialEmail} className="v2-profile-form-full" />
 
-      <button type="submit" className="btn btn-primary" disabled={loading}>
+      <label htmlFor="profile-password" className="v2-profile-form-full">
+        Nouveau mot de passe <span style={{ fontWeight: 400, color: "var(--v2-muted)" }}>(laisser vide pour ne pas changer)</span>
+      </label>
+      <input
+        id="profile-password"
+        name="password"
+        type="password"
+        minLength={8}
+        autoComplete="new-password"
+        ref={passwordRef}
+        className="v2-profile-form-full"
+      />
+
+      <button type="submit" disabled={loading}>
         {loading ? "Enregistrement…" : "Enregistrer →"}
       </button>
     </form>
