@@ -3321,6 +3321,41 @@ footer.footer--dark{
   /* .jesus-intro h3/.category-number (prototype, media 720px) */
   .v2-jesus-intro h3{font-size:31px;}
   .v2-category-number{top:18px;right:20px;font-size:104px;}
+
+  /* Écarts réels corrigés (Accueil, Section 02 — Hero, protocole atomique
+     mobile) : sous 720px, le prototype (styles.css) transforme entièrement
+     la composition du Hero — photo en bande haute (48% de hauteur, au lieu
+     de 54% de largeur à droite), contenu ancré en bas (align-items:end),
+     dégradé de recouvrement vertical (au lieu du dégradé horizontal
+     desktop, qui donnait un rendu trop sombre une fois la photo réduite à
+     une bande). Seule .v2-home-hero-copy{width:100%}/.v2-home-hero-photo
+     {width:100%} existait (règle à 960px) — mesuré : absence quasi totale
+     du reste du traitement mobile (hauteur, alignement, dégradé, position
+     de la photo à sa vraie opacité .84 au lieu de .3, taille du H1 restée
+     au clamp desktop, résumé tronqué à 4 lignes au lieu de 5, boutons
+     restés côte à côte en flex au lieu de la grille 2 colonnes puis 1
+     colonne du prototype). */
+  .v2-home-hero{min-height:740px;}
+  .v2-home-hero::after{background:linear-gradient(180deg,rgba(18,13,38,.4) 0%,rgba(18,13,38,.92) 47%,#17142d 100%);}
+  .v2-home-hero-photo{inset:0 0 auto;width:100%;height:48%;opacity:.84;background-position:center 52%;}
+  .v2-home-hero-glow{right:-330px;bottom:-260px;}
+  /* Même écart de marge qu'au Header (Section 01) : le prototype réduit
+     .wrap à 16px de chaque côté sous 720px — sélecteur combiné, strictement
+     scopé à cette section, .v2-wrap seul reste inchangé. */
+  .v2-home-hero-inner.v2-wrap{width:min(1180px,calc(100% - 32px));}
+  .v2-home-hero-inner{min-height:740px;align-items:end;padding-block:185px 108px;}
+  .v2-home-hero h1{font-size:clamp(38px,11vw,54px);}
+  .v2-home-hero-text{margin-top:22px;font-size:15px;line-height:1.65;}
+  .v2-home-hero-summary{-webkit-line-clamp:5;}
+  .v2-home-hero-actions{display:grid;grid-template-columns:1fr 1fr;margin-top:25px;}
+}
+@media (max-width:410px){
+  /* Écart réel corrigé : le prototype pousse le Hero et son alignement du
+     contenu (align-items:end sur .hero-inner ci-dessus) à 805px de hauteur
+     sous 410px, et empile les 2 boutons en 1 colonne (au lieu de 2 côte à
+     côte) — jamais reproduit ici. */
+  .v2-home-hero,.v2-home-hero-inner{min-height:805px;}
+  .v2-home-hero-actions{grid-template-columns:1fr;}
 }
 
 /* ============================================================
