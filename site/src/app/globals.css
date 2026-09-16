@@ -3322,6 +3322,29 @@ footer.footer--dark{
   .v2-jesus-intro h3{font-size:31px;}
   .v2-category-number{top:18px;right:20px;font-size:104px;}
 
+  /* Écarts réels corrigés (Accueil, Section 03 — Rosée Matinale du jour,
+     protocole atomique mobile) : le prototype passe .dew-card en
+     display:block sous 720px (jamais une grille centrée) — le petit badge
+     .dew-label redevient une pastille (width:fit-content, 11px) au lieu de
+     la grande étiquette pleine largeur, et .dew-date reste masqué (déjà
+     caché dès 1100px dans le prototype, jamais reproduit ici). Mesuré :
+     .v2-dew-card restait en grid 1 colonne centrée (257px de contenu dans
+     un conteneur de 327px, texte centré), .v2-dew-date restait visible. */
+  /* Même écart de marge qu'au Header/Hero (Sections 01/02) : le prototype
+     réduit .wrap à 16px de chaque côté sous 720px. .v2-dew-wrap n'est pas
+     combiné à .v2-wrap dans le JSX (contrairement à la maquette, où
+     .wrap et .dew-wrap sont sur le même <section>) — sélecteur par
+     aria-label, strictement scopé à cette section, .v2-wrap seul reste
+     inchangé partout ailleurs. */
+  section.v2-wrap[aria-label="Rosée matinale du jour"]{width:min(1180px,calc(100% - 32px));}
+  .v2-dew-wrap{margin-top:-60px;}
+  .v2-dew-date{display:none;}
+  .v2-dew-card{display:block;grid-template-columns:none;text-align:left;padding:22px;border-radius:14px;}
+  .v2-dew-label{width:fit-content;min-height:auto;padding:7px 13px;margin-bottom:18px;border-radius:7px;font-family:var(--v2-sans);font-size:11px;}
+  .v2-dew-content h2{font-size:25px;}
+  .v2-dew-content p{margin-bottom:17px;font-size:14px;}
+  .v2-dew-card>a{display:inline-flex;}
+
   /* Écarts réels corrigés (Accueil, Section 02 — Hero, protocole atomique
      mobile) : sous 720px, le prototype (styles.css) transforme entièrement
      la composition du Hero — photo en bande haute (48% de hauteur, au lieu
@@ -3475,6 +3498,23 @@ footer.footer--dark{
   .v2-jc-body-html{font-size:18px;line-height:1.82;}
   /* .rm-hero .category-badge (prototype, media 720px) : 20px */
   .v2-jc-badge{font-size:20px;}
+
+  /* Écart réel corrigé (Accueil, Section 04 — Je Confesse du jour,
+     protocole atomique mobile) : même écart et même correction que
+     .v2-dew-card (Section 03, ci-dessus) — le prototype passe
+     .confession-card en display:block sous 720px, la pastille
+     .confession-label redevient petite (width:fit-content, 11px) et
+     .confession-meta reste masqué (déjà caché dès 1100px dans le
+     prototype). Mesuré : .v2-confession-card restait en grid 1 colonne
+     centrée, .v2-confession-meta restait visible. */
+  /* Même écart de marge, même correction que .v2-dew-wrap ci-dessus. */
+  section.v2-wrap[aria-label="Proclamation du jour — Je Confesse"]{width:min(1180px,calc(100% - 32px));}
+  .v2-confession-wrap{margin-top:16px;}
+  .v2-confession-meta{display:none;}
+  .v2-confession-card{display:block;grid-template-columns:none;text-align:left;padding:22px;border-radius:14px;}
+  .v2-confession-label{width:fit-content;min-height:auto;padding:8px 13px;margin-bottom:18px;border-radius:7px;font-family:var(--v2-sans);font-size:11px;}
+  .v2-confession-content blockquote{margin-bottom:20px;font-size:22px;line-height:1.4;}
+  .v2-confession-card>a{display:inline-flex;}
 }
 
 /* ============================================================
