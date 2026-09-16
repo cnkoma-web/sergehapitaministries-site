@@ -3309,6 +3309,13 @@ footer.footer--dark{
   .v2-dew-card{grid-template-columns:1fr;text-align:center;}
   .v2-dew-date{align-items:center;}
   .v2-jesus-stage{grid-template-columns:1fr;}
+  /* Écart réel corrigé (Accueil, Section 05 — Connaître Jésus, vidéo) :
+     .v2-jesus-video-frame gardait sa hauteur minimale desktop (475px)
+     alors que la largeur passait à 100% de la colonne empilée — mesuré
+     327×475 (bloc quasi carré/portrait) contre 343×205 dans le prototype,
+     qui réduit explicitement min-height à 390px à ce palier. Cause exacte
+     du rendu "trop vertical" signalé. */
+  .v2-jesus-video-frame{min-height:390px;}
   .v2-jesus-topics{grid-template-columns:1fr 1fr;}
   .v2-category-grid{grid-template-columns:1fr;}
   .v2-events-grid{grid-template-columns:1fr;}
@@ -3317,9 +3324,25 @@ footer.footer--dark{
 }
 @media (max-width:720px){
   .v2-jesus-topics{grid-template-columns:1fr;}
-  .v2-jesus-topics a{border-right:0;border-bottom:1px solid var(--v2-line);}
+  /* Écart réel corrigé (Accueil, Section 06 — Connaître Jésus, 4 vignettes
+     numérotées) : .v2-jesus-topics a gardait min-height:130px (valeur
+     desktop) alors que la colonne de titre se resserre (empilement 1
+     colonne) — mesuré 325×130 avec le titre replié sur 2 lignes (216px de
+     large) contre 341×92 dans le prototype, qui réduit explicitement
+     min-height à 92px à ce palier. Cause exacte du décalage/déséquilibre
+     signalé entre les 4 lignes. */
+  .v2-jesus-topics a{min-height:92px;border-right:0;border-bottom:1px solid var(--v2-line);}
   /* .jesus-intro h3/.category-number (prototype, media 720px) */
   .v2-jesus-intro h3{font-size:31px;}
+  .v2-jesus-intro{padding:32px 24px;}
+  .v2-jesus-gateway{padding-block:95px;}
+  .v2-jesus-stage{border-radius:15px;}
+  .v2-jesus-video-frame{min-height:205px;}
+  /* Même écart de marge qu'aux autres sections (16px de chaque côté sous
+     720px dans le prototype) — .v2-jesus-gateway > .v2-wrap n'est pas
+     combiné à une classe propre, sélecteur descendant strictement scopé
+     à cette section, .v2-wrap seul reste inchangé partout ailleurs. */
+  .v2-jesus-gateway .v2-wrap{width:min(1180px,calc(100% - 32px));}
   .v2-category-number{top:18px;right:20px;font-size:104px;}
 
   /* Écarts réels corrigés (Accueil, Section 03 — Rosée Matinale du jour,
