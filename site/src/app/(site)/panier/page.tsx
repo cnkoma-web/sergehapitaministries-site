@@ -6,6 +6,7 @@ import { formatPrice } from "@/lib/format";
 import { GoodieIcon } from "@/lib/content/goodieIcons";
 import CartItemRow from "@/components/cart/CartItemRow";
 import CheckoutButton from "@/components/cart/CheckoutButton";
+import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "Mon panier | Serge Hapita Ministries",
@@ -198,6 +199,7 @@ export default async function PanierPage() {
           )}
         </div>
       </section>
+      <Footer variant="light" />
     </div>
   );
 }
