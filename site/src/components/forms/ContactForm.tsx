@@ -3,44 +3,47 @@
 import { useTransition } from "react";
 import { submitContactForm } from "@/lib/forms/actions";
 
+// STRUCTURE corrigée (lot de finition, 16/09) : § .contact-form/.field de
+// la maquette (prototype-html/contact/index.html + engagement.css) —
+// conteneur .contact-form (grille/carte blanche) et chaque paire label+
+// champ enveloppée dans .field, jamais des labels/inputs à plat comme
+// avant (aucune de ces deux classes n'était posée). Champ "Sujet" ramené
+// à un <input type="text"> réel comme la maquette — le <select> à options
+// prédéfinies n'avait aucune base dans la maquette et submitContactForm
+// ne traite le sujet que comme un texte libre, sans logique différenciée
+// par valeur (aucune fonction perdue, purement une correction d'interface).
 export default function ContactForm() {
   const [isPending, startTransition] = useTransition();
 
   return (
     <form
+      className="contact-form"
       action={(formData) => {
         startTransition(() => {
           submitContactForm(formData);
         });
       }}
     >
-      <label htmlFor="contact-nom">Nom *</label>
-      <input id="contact-nom" name="nom" type="text" required />
+      <div className="field">
+        <label htmlFor="contact-nom">Nom *</label>
+        <input id="contact-nom" name="nom" type="text" autoComplete="name" required />
+      </div>
 
-      <label htmlFor="contact-email">E-mail *</label>
-      <input id="contact-email" name="email" type="email" required />
+      <div className="field">
+        <label htmlFor="contact-email">E-mail *</label>
+        <input id="contact-email" name="email" type="email" autoComplete="email" required />
+      </div>
 
-      <label htmlFor="contact-sujet">Sujet *</label>
-      <select id="contact-sujet" name="sujet" required defaultValue="">
-        <option value="" disabled>
-          Sélectionnez un sujet
-        </option>
-        <option>Question générale</option>
-        <option>Livres et publications</option>
-        <option>Invitation</option>
-        <option>Partenariat</option>
-        <option>Presse / Médias</option>
-        <option>Autre</option>
-      </select>
+      <div className="field">
+        <label htmlFor="contact-sujet">Sujet *</label>
+        <input id="contact-sujet" name="sujet" type="text" required />
+      </div>
 
-      <label htmlFor="contact-message">Message *</label>
-      <textarea id="contact-message" name="message" required />
+      <div className="field">
+        <label htmlFor="contact-message">Message *</label>
+        <textarea id="contact-message" name="message" required />
+      </div>
 
-      {/* Case RGPD (retour du 11/09, Lot 6) — ajoutée pour reproduire la
-          maquette : purement une validation côté formulaire avant envoi,
-          jamais stockée (aucune colonne dédiée sur contact_submissions),
-          même principe que le consentement déjà réel du formulaire
-          Invitation. */}
       <label className="v2-form-consent">
         <input type="checkbox" required />
         <span>
