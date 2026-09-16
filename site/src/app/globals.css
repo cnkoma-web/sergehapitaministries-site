@@ -4281,7 +4281,15 @@ footer.footer--dark{
   .v2-product-page .v2-breadcrumbs-hero{padding-block:26px;}
   .v2-product-page .product-grid{grid-template-columns:1fr;padding-block:48px 65px;}
   .v2-product-page .product-cover-col{width:min(74vw,390px);margin-inline:auto;}
-  .v2-product-page .product-cover{position:static;width:min(74vw,390px);}
+  /* Écart responsive réel corrigé (chantier responsive, reprise) : position:static
+     retirait .product-cover de son rôle de bloc de positionnement pour
+     .cover-rollover{position:absolute;inset:0} (règle de base, non scopée à ce
+     gabarit) — la couverture s'échappait alors jusqu'au viewport (rendue à
+     0,0/375×812 au lieu de rester dans sa carte 2:3), couverture affichée en
+     plein écran derrière tout le contenu, texte de la jaquette tronqué aux deux
+     bords. position:relative (déjà la valeur de base, ligne "V2 — FICHE PRODUIT")
+     doit être conservée ; seule la largeur change sur ce palier. */
+  .v2-product-page .product-cover{width:min(74vw,390px);}
   .v2-product-page .product-info-col{padding-top:0;}
   .v2-product-page .product-title{font-size:47px;}
   .v2-product-page .book-promise{font-size:19px;}
