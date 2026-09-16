@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPodcastEpisodeByIdAdmin } from "@/lib/content/podcast";
 import { updatePodcastEpisode, publishPodcastEpisode, unpublishPodcastEpisode, deletePodcastEpisode } from "../actions";
-import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
+import { ARTICLE_TYPE_LABEL, getArticleByIdAdmin, getArticleOptionsForPodcastLink } from "@/lib/content/articles";
 import PodcastCoverField from "@/components/admin/PodcastCoverField";
 import SavedToast from "@/components/admin/SavedToast";
 
@@ -20,6 +20,15 @@ export default async function AdminPodcastEpisodePage({ params }: { params: Prom
   if (!episode) notFound();
 
   const wasPublished = episode.status === "published";
+  const articleOptions = await getArticleOptionsForPodcastLink();
+  // Garde-fou (chantier Podcast, reprise) : si l'article déjà lié n'est
+  // plus publié (retiré/dépublié depuis), il n'apparaît pas dans la liste
+  // ci-dessus — sans ce repli, le <select> retomberait silencieusement sur
+  // "Aucun contenu associé" au premier enregistrement et effacerait à tort
+  // une relation réelle jamais touchée par l'admin. Ajouté en tête de
+  // liste dans ce seul cas, jamais autrement.
+  const linkedArticleMissing = episode.linked_article_id && !articleOptions.some((a) => a.id === episode.linked_article_id);
+  const currentlyLinkedArticle = linkedArticleMissing ? await getArticleByIdAdmin(episode.linked_article_id!) : null;
 
   return (
     <>
@@ -105,14 +114,29 @@ export default async function AdminPodcastEpisodePage({ params }: { params: Prom
             <PodcastCoverField currentUrl={episode.cover_url} />
           </div>
 
+          {/* CORRECTION CIBLÉE (chantier Podcast, reprise) : saisie libre
+              d'UUID remplacée par un sélecteur alimenté par les vrais
+              articles publiés (id/titre/type déjà en base — aucune
+              migration nécessaire, la relation linked_article_id ->
+              articles.id existe déjà). "Univers — Titre" affiché, jamais
+              l'UUID ; "Aucun contenu associé" en première option ->
+              enregistré comme chaîne vide, déjà traduit en null par
+              saveEpisode() (actions.ts, inchangé). */}
           <div className="editor-field" style={{ marginBottom: 0 }}>
-            <label>Contenu écrit associé (identifiant d&apos;article, facultatif)</label>
-            <input
-              type="text"
-              name="linked_article_id"
-              defaultValue={episode.linked_article_id ?? ""}
-              placeholder="UUID de l'article lié"
-            />
+            <label>Contenu écrit associé (facultatif)</label>
+            <select name="linked_article_id" defaultValue={episode.linked_article_id ?? ""}>
+              <option value="">Aucun contenu associé</option>
+              {currentlyLinkedArticle && (
+                <option value={currentlyLinkedArticle.id}>
+                  {ARTICLE_TYPE_LABEL[currentlyLinkedArticle.type]} — {currentlyLinkedArticle.title} (non publié)
+                </option>
+              )}
+              {articleOptions.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {ARTICLE_TYPE_LABEL[a.type]} — {a.title}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </form>

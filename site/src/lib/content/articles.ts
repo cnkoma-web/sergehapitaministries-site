@@ -257,3 +257,21 @@ export async function getArticleOptionsForLinking(excludeId?: string): Promise<{
   if (error || !data) return [];
   return data;
 }
+
+/** Pour le sélecteur "Contenu écrit associé" d'un épisode Podcast (admin) —
+ * tous les articles publiés, tous types confondus, avec leur type pour
+ * afficher "Univers — Titre" (jamais l'UUID à saisir/lire par l'admin).
+ * Fonction dédiée plutôt que d'étendre getArticleOptionsForLinking
+ * ci-dessus, déjà utilisée ailleurs (Articles similaires) avec une forme
+ * de retour différente ({id, title} sans type) — aucun risque de
+ * régression sur son propre appelant. */
+export async function getArticleOptionsForPodcastLink(): Promise<{ id: string; title: string; type: ArticleType }[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("articles")
+    .select("id, title, type")
+    .eq("status", "published")
+    .order("article_date", { ascending: false });
+  if (error || !data) return [];
+  return data;
+}
