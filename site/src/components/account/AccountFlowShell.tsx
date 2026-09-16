@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Footer from "@/components/layout/Footer";
 
 // V2 (Lot 7, 11/09) — coquille visuelle partagée par les 4 écrans réels du
 // parcours de connexion (vérification e-mail, e-mail envoyé, mot de passe
@@ -19,6 +20,12 @@ export default function AccountFlowShell({ label, title, children }: { label: st
           <div className="v2-account-flow-body">{children}</div>
         </section>
       </div>
+
+      {/* CORRECTION CIBLÉE (chantier Compte, 16/09) : Footer.tsx n'était
+          importé nulle part sur les 6 écrans du parcours (vérifié dans le
+          DOM et le code) — même défaut déjà rencontré et corrigé sur
+          /mon-compte. Ajouté ici, au point commun aux 6 écrans. */}
+      <Footer variant="light" />
     </div>
   );
 }

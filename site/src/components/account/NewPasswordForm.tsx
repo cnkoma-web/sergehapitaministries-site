@@ -84,18 +84,22 @@ export default function NewPasswordForm() {
   }
 
   return (
-    <form className="account-form" onSubmit={handleSubmit}>
+    // .v2-account-flow-form (même correction que ForgotPasswordForm.tsx) +
+    // liste des règles AJOUTÉE (§ <ul class="password-rules"> de la
+    // maquette, entièrement absente jusqu'ici) + libellés/bouton alignés
+    // sur le texte réel du gabarit.
+    <form id="new-password-form" className="v2-account-flow-form" onSubmit={handleSubmit}>
       {error && <div className="admin-error">{error}</div>}
-      <label className="field-label" htmlFor="new-password">
-        Nouveau mot de passe *
-      </label>
+      <label htmlFor="new-password">Nouveau mot de passe</label>
       <input id="new-password" name="password" type="password" required minLength={8} autoComplete="new-password" />
-      <label className="field-label" htmlFor="new-password-confirm">
-        Confirmer le mot de passe *
-      </label>
+      <label htmlFor="new-password-confirm">Confirmation du mot de passe</label>
       <input id="new-password-confirm" name="password_confirm" type="password" required minLength={8} autoComplete="new-password" />
-      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
-        {loading ? "Enregistrement…" : "Enregistrer le nouveau mot de passe →"}
+      <ul className="v2-password-rules">
+        <li>Au moins 8 caractères</li>
+        <li>Les deux saisies doivent être identiques</li>
+      </ul>
+      <button type="submit" disabled={loading}>
+        {loading ? "Enregistrement…" : "Enregistrer le mot de passe →"}
       </button>
     </form>
   );

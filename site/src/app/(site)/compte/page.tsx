@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isRealUser } from "@/lib/supabase/realUser";
 import AuthTabs from "@/components/account/AuthTabs";
+import Footer from "@/components/layout/Footer";
 
 const title = "Mon compte | Serge Hapita Ministries";
 const description = "Connectez-vous ou créez un compte Serge Hapita Ministries.";
@@ -64,6 +65,10 @@ export default async function ComptePage({
           </div>
         </div>
       </section>
+
+      {/* CORRECTION CIBLÉE (chantier Compte, 16/09) : Footer.tsx absent,
+          même défaut déjà corrigé sur /mon-compte. */}
+      <Footer variant="light" />
     </div>
   );
 }

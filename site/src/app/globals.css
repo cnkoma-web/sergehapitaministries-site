@@ -1193,7 +1193,14 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .v2-video-filters button.active{border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);color:#fff;}
 .v2-video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
 .v2-video-card{border:1px solid var(--v2-line);border-radius:10px;overflow:hidden;background:#fff;cursor:pointer;}
-.v2-video-thumb{aspect-ratio:16/9;display:grid;place-items:center;color:#fff;font-size:35px;background:linear-gradient(135deg,#2a1857,#6d31f2);}
+.v2-video-thumb{position:relative;aspect-ratio:16/9;display:grid;place-items:center;color:#fff;font-size:35px;background:linear-gradient(135deg,#2a1857,#6d31f2);background-size:cover;background-position:center;}
+/* Assombrissement (test visuel du gabarit, 16/09) : quand une miniature
+   réelle remplace le dégradé décoratif, le glyphe ▶ doit rester lisible
+   sur une image quelconque — voile sombre semi-transparent, uniquement
+   quand une image de fond est posée (sélecteur d'attribut, jamais sur le
+   dégradé seul). */
+.v2-video-thumb[style*="background-image"]::before{content:"";position:absolute;inset:0;background:rgba(23,20,45,.35);}
+.v2-video-thumb span{position:relative;}
 .v2-video-body{padding:18px;}
 .v2-video-body .v2-eyebrow{margin:0;}
 .v2-video-body h3{margin:4px 0 8px;font-family:var(--v2-serif);font-size:22px;font-weight:500;}
@@ -4158,11 +4165,19 @@ footer.footer--dark{
 .v2-compte-page .account-form .consent a{color:var(--v2-violet-deep);}
 .v2-compte-page .account-form button.btn{min-height:50px;margin-top:4px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-weight:800;cursor:pointer;font-family:inherit;}
 .v2-compte-page .admin-error{margin:0;padding:12px 14px;border-radius:6px;background:#fdeceb;color:#b3261e;font-size:13px;}
-.v2-compte-page .account-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:2px 0;color:var(--v2-muted);font-size:12px;}
-.v2-compte-page .account-divider::before,.v2-compte-page .account-divider::after{content:"";flex:1;height:1px;background:var(--v2-line);}
-.v2-compte-page .social-auth{display:grid;gap:9px;margin-bottom:6px;}
+/* .oauth-choice/.oauth-buttons (chantier Compte, reprise) : § réels de la
+   maquette — un seul conteneur pour les boutons ET le séparateur (jamais
+   .social-auth + .account-divider éclatés), boutons CÔTE À CÔTE (2
+   colonnes, jamais empilés). */
+.v2-compte-page .oauth-choice{margin-bottom:28px;}
+.v2-compte-page .oauth-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .v2-compte-page .social-btn{min-height:47px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);background:#fff;font-size:12px;font-weight:800;cursor:not-allowed;opacity:.6;}
-.v2-compte-page .account-soon{margin-top:-2px;color:var(--v2-muted);font-size:11px;text-align:center;}
+.v2-compte-page .account-soon{margin-top:10px;color:var(--v2-muted);font-size:11px;text-align:center;}
+.v2-compte-page .account-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0 0;color:var(--v2-muted);font-size:12px;}
+.v2-compte-page .account-divider::before,.v2-compte-page .account-divider::after{content:"";flex:1;height:1px;background:var(--v2-line);}
+@media (max-width:640px){
+  .v2-compte-page .oauth-buttons{grid-template-columns:1fr;}
+}
 
 /* --- Mon espace (tableau de bord) — cible les classes réelles
    DashTabs.tsx. --- */
@@ -4483,6 +4498,22 @@ footer.footer--dark{
 .v2-account-flow-links a{color:var(--v2-violet-deep);font-size:12px;font-weight:800;}
 .v2-account-flow-links a.v2-account-flow-primary,
 .v2-account-flow-primary{min-height:50px;display:inline-flex;align-items:center;justify-content:center;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-size:13px;font-weight:800;text-decoration:none;}
+/* .account-link (bouton "Renvoyer l'e-mail") : § .account-flow-links a,
+   .account-link de la maquette — même traitement que les liens de sortie,
+   mais un vrai <button> (fonction réelle), jamais un <a>. */
+.v2-account-flow-page .account-link{border:0;padding:0;background:transparent;color:var(--v2-violet-deep);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;text-align:left;}
+/* .v2-account-flow-form (chantier Compte, reprise) : gabarit réel du
+   parcours (§ account-flow.js .account-flow-form) — gap 10px, input
+   min-height 50px, DISTINCT de .account-form (gap 14px, height 49px, page
+   /compte) que ForgotPasswordForm/NewPasswordForm empruntaient à tort. */
+.v2-account-flow-form{display:grid;gap:10px;}
+.v2-account-flow-form label{color:var(--v2-ink-soft);font-size:12px;font-weight:800;}
+.v2-account-flow-form input{width:100%;min-height:50px;padding-inline:14px;border:1px solid var(--v2-line);border-radius:6px;outline:0;font-family:inherit;}
+.v2-account-flow-form input:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);}
+.v2-account-flow-form button{min-height:50px;display:inline-flex;align-items:center;justify-content:center;margin-top:7px;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;}
+/* .v2-password-rules (chantier Compte, reprise) : § <ul class="password-
+   rules"> de la maquette, entièrement absente jusqu'ici. */
+.v2-password-rules{margin:12px 0 0;padding-left:18px;color:var(--v2-muted);font-size:11px;line-height:1.6;}
 
 @media (max-width:720px){
   .v2-account-flow-shell{padding-block:38px 65px;}

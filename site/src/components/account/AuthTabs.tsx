@@ -32,11 +32,30 @@ export default function AuthTabs({ initialTab }: { initialTab: Tab }) {
 
   return (
     <>
-      <div className="account-tabs" id="account-tabs">
-        <button className={tab === "login" ? "active" : undefined} onClick={() => setTab("login")}>
+      {/* role="tablist"/"tab"/aria-selected/aria-controls AJOUTÉS (chantier
+          Compte, reprise) : § .account-tabs button[role="tab"][aria-
+          selected] de la maquette — style déjà identique (grid 2 colonnes,
+          filet violet), mais la sémantique ARIA du vrai panneau d'onglets
+          manquait entièrement. */}
+      <div className="account-tabs" id="account-tabs" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "login"}
+          aria-controls="login-pane"
+          className={tab === "login" ? "active" : undefined}
+          onClick={() => setTab("login")}
+        >
           Se connecter
         </button>
-        <button className={tab === "signup" ? "active" : undefined} onClick={() => setTab("signup")}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "signup"}
+          aria-controls="signup-pane"
+          className={tab === "signup" ? "active" : undefined}
+          onClick={() => setTab("signup")}
+        >
           Créer un compte
         </button>
       </div>
@@ -84,9 +103,18 @@ function LoginForm() {
   }
 
   return (
-    <form className="account-form" onSubmit={handleSubmit}>
-      <SocialAuthButtons />
-      <div className="account-divider">ou par e-mail</div>
+    <form id="login-pane" role="tabpanel" aria-label="Se connecter" className="account-form" onSubmit={handleSubmit}>
+      {/* .oauth-choice AJOUTÉ (chantier Compte, reprise) : § de la maquette,
+          un seul conteneur pour les boutons ET le séparateur — éclaté
+          jusqu'ici en 2 blocs distincts (.social-auth + .account-divider
+          sibling). Texte du séparateur corrigé ("ou avec votre adresse
+          e-mail", jamais "ou par e-mail"). */}
+      <div className="oauth-choice">
+        <SocialAuthButtons />
+        <div className="account-divider">
+          <span>ou avec votre adresse e-mail</span>
+        </div>
+      </div>
 
       {error && <div className="admin-error">{error}</div>}
 
@@ -169,13 +197,22 @@ function SignupForm() {
     // V2 (Lot 7, 11/09) — vraie page dédiée (/compte/verification-email),
     // comme la maquette, plutôt qu'un message affiché en ligne sous le
     // formulaire (décision prise avec Serge le 11/09).
-    router.push("/compte/verification-email");
+    router.push(`/compte/verification-email?email=${encodeURIComponent(email)}`);
   }
 
   return (
-    <form className="account-form" onSubmit={handleSubmit}>
-      <SocialAuthButtons />
-      <div className="account-divider">ou par e-mail</div>
+    <form id="signup-pane" role="tabpanel" aria-label="Créer un compte" className="account-form" onSubmit={handleSubmit}>
+      {/* .oauth-choice AJOUTÉ (chantier Compte, reprise) : § de la maquette,
+          un seul conteneur pour les boutons ET le séparateur — éclaté
+          jusqu'ici en 2 blocs distincts (.social-auth + .account-divider
+          sibling). Texte du séparateur corrigé ("ou avec votre adresse
+          e-mail", jamais "ou par e-mail"). */}
+      <div className="oauth-choice">
+        <SocialAuthButtons />
+        <div className="account-divider">
+          <span>ou avec votre adresse e-mail</span>
+        </div>
+      </div>
 
       {error && <div className="admin-error">{error}</div>}
 

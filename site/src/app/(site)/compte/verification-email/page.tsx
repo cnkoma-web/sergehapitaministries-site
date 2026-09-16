@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AccountFlowShell from "@/components/account/AccountFlowShell";
+import ResendVerificationButton from "@/components/account/ResendVerificationButton";
 
 export const metadata: Metadata = {
   title: "Vérifiez votre messagerie | Serge Hapita Ministries",
@@ -11,7 +12,15 @@ export const metadata: Metadata = {
 // confirmation par e-mail (voir SignupForm dans AuthTabs.tsx). Remplace
 // l'ancien message affiché en ligne sous le formulaire — vraie page, comme
 // dans la maquette (décision prise avec Serge le 11/09).
-export default function VerificationEmailPage() {
+//
+// Bouton "Renvoyer l'e-mail" AJOUTÉ (chantier Compte, reprise) : § account-
+// flow.js, entièrement absent jusqu'ici. Fonction réelle (supabase.auth.
+// resend), nécessite l'adresse e-mail — transmise en paramètre par
+// AuthTabs.tsx lors de la redirection ; un accès direct à cette page sans
+// paramètre (lien externe, favori) masque simplement le bouton plutôt que
+// de fabriquer une fonction qui ne peut pas s'exécuter sans destinataire.
+export default async function VerificationEmailPage({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
+  const { email } = await searchParams;
   return (
     <AccountFlowShell label="Création du compte" title="Vérifiez votre messagerie.">
       <div className="v2-account-flow-status">
@@ -25,6 +34,7 @@ export default function VerificationEmailPage() {
         </div>
       </div>
       <div className="v2-account-flow-links">
+        <ResendVerificationButton email={email ?? null} />
         <Link href="/compte">Revenir à la connexion</Link>
       </div>
     </AccountFlowShell>

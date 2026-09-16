@@ -40,14 +40,17 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <form className="account-form" onSubmit={handleSubmit}>
+    // .v2-account-flow-form (chantier Compte, reprise) : le formulaire
+    // empruntait à tort le style de la page /compte (.account-form, gap
+    // 14px, input 49px) — la maquette réelle de ce gabarit (§ account-
+    // flow.js .account-flow-form) déclare gap 10px / input min-height
+    // 50px, une classe distincte jamais reprise jusqu'ici.
+    <form id="forgot-password-form" className="v2-account-flow-form" onSubmit={handleSubmit}>
       {error && <div className="admin-error">{error}</div>}
-      <label className="field-label" htmlFor="forgot-email">
-        E-mail *
-      </label>
+      <label htmlFor="forgot-email">Adresse e-mail</label>
       <input id="forgot-email" name="email" type="email" required autoComplete="username" />
-      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
-        {loading ? "Envoi…" : "Envoyer le lien de réinitialisation →"}
+      <button type="submit" disabled={loading}>
+        {loading ? "Envoi…" : "Recevoir le lien →"}
       </button>
     </form>
   );
