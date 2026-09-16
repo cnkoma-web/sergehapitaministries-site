@@ -4,73 +4,62 @@ import { useState } from "react";
 import { VIDEO_CATEGORY_LABEL, extractYoutubeId, type Video, type VideoCategory } from "@/lib/content/videoTypes";
 
 const CATEGORIES: VideoCategory[] = ["predications", "enseignements", "temoignages"];
-const GRADIENTS: Record<VideoCategory, string> = {
-  predications: "linear-gradient(135deg,#7B3FE4,#1B1730)",
-  enseignements: "linear-gradient(135deg,#2E2FE0,#1B1730)",
-  temoignages: "linear-gradient(135deg,#3D6E86,#1B1730)",
-};
-// Complète visuellement chaque catégorie à 2 emplacements minimum tant qu'il n'y
-// a pas assez de vraies vidéos — reprend le choix déjà validé de la maquette
-// statique (§Partie 2 du cahier), sans stocker de fausses données en base.
-const MIN_SLOTS_PER_CATEGORY = 2;
 
 type Filter = "all" | VideoCategory;
 
+// RECONSTRUCTION (chantier Vidéos, mise en conformité) : source de vérité
+// maquettes-complementaires-shm/videos.html § .thumb — UN SEUL dégradé pour
+// toutes les vignettes (jamais une couleur par catégorie) et un simple
+// glyphe ▶ centré, sans cercle. La distinction de catégorie reste portée
+// par l'étiquette texte (déjà réelle), pas par la couleur.
+//
+// Remplissage par cartes fictives RETIRÉ : la table videos est actuellement
+// VIDE en production — remplir chaque catégorie à 2 emplacements minimum
+// avec des cartes "Titre à venir" afficherait alors des données fabriquées
+// comme SEUL contenu réel de la page. Filtres et modale YouTube (fonctions
+// réelles dépassant la maquette statique, qui ne montre qu'une grille figée
+// à 3 cartes) sont préservés, seule l'interface change.
 export default function VideoGrid({ videos }: { videos: Video[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [openVideo, setOpenVideo] = useState<Video | null>(null);
 
-  const slots: Array<{ video: Video | null; category: VideoCategory }> = [];
-  for (const category of CATEGORIES) {
-    const real = videos.filter((v) => v.category === category);
-    real.forEach((v) => slots.push({ video: v, category }));
-    for (let i = real.length; i < MIN_SLOTS_PER_CATEGORY; i++) {
-      slots.push({ video: null, category });
-    }
-  }
-
-  const visibleSlots = filter === "all" ? slots : slots.filter((s) => s.category === filter);
+  const visibleVideos = filter === "all" ? videos : videos.filter((v) => v.category === filter);
 
   return (
     <>
-      <div className="vid-filters">
-        <button className={filter === "all" ? "vid-filter active" : "vid-filter"} onClick={() => setFilter("all")}>
-          Toutes
-        </button>
-        {CATEGORIES.map((c) => (
-          <button key={c} className={filter === c ? "vid-filter active" : "vid-filter"} onClick={() => setFilter(c)}>
-            {VIDEO_CATEGORY_LABEL[c]}
+      {videos.length > 0 && (
+        <div className="v2-video-filters">
+          <button type="button" className={filter === "all" ? "active" : undefined} onClick={() => setFilter("all")}>
+            Toutes
           </button>
-        ))}
-      </div>
+          {CATEGORIES.map((c) => (
+            <button key={c} type="button" className={filter === c ? "active" : undefined} onClick={() => setFilter(c)}>
+              {VIDEO_CATEGORY_LABEL[c]}
+            </button>
+          ))}
+        </div>
+      )}
 
-      <div className="vid-grid">
-        {visibleSlots.map((slot, i) =>
-          slot.video ? (
-            <div className="vid-card" key={slot.video.id} onClick={() => slot.video!.youtube_url && setOpenVideo(slot.video)}>
-              <div className="vid-thumb" style={{ background: GRADIENTS[slot.category] }}>
-                <span className="vid-cat-tag">{VIDEO_CATEGORY_LABEL[slot.category]}</span>
-                <div className="play">▶</div>
+      {visibleVideos.length === 0 ? (
+        <p className="empty-state">
+          {videos.length === 0 ? "Aucune vidéo pour le moment. Revenez bientôt." : "Aucune vidéo dans cette catégorie pour le moment."}
+        </p>
+      ) : (
+        <div className="v2-video-grid">
+          {visibleVideos.map((video) => (
+            <article className="v2-video-card" key={video.id} onClick={() => video.youtube_url && setOpenVideo(video)}>
+              <div className="v2-video-thumb">
+                <span aria-hidden="true">▶</span>
               </div>
-              <div className="vid-body">
-                <h3>{slot.video.title}</h3>
-                {slot.video.description && <p>{slot.video.description}</p>}
+              <div className="v2-video-body">
+                <div className="v2-eyebrow">{VIDEO_CATEGORY_LABEL[video.category]}</div>
+                <h3>{video.title}</h3>
+                {video.description && <p>{video.description}</p>}
               </div>
-            </div>
-          ) : (
-            <div className="vid-card" key={`placeholder-${slot.category}-${i}`} style={{ cursor: "default" }}>
-              <div className="vid-thumb" style={{ background: GRADIENTS[slot.category] }}>
-                <span className="vid-cat-tag">{VIDEO_CATEGORY_LABEL[slot.category]}</span>
-                <div className="play">▶</div>
-              </div>
-              <div className="vid-body">
-                <h3>Titre à venir</h3>
-                <p>Description à venir</p>
-              </div>
-            </div>
-          )
-        )}
-      </div>
+            </article>
+          ))}
+        </div>
+      )}
 
       {openVideo?.youtube_url && (
         <div className="vid-modal open" onClick={() => setOpenVideo(null)}>

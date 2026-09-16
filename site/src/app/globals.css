@@ -1169,6 +1169,55 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .v2-confirm-sum strong{color:var(--v2-ink);}
 .v2-confirm-sum.total{border-top:1px solid var(--v2-line);margin-top:5px;padding-top:17px;font-family:var(--v2-serif);font-size:23px;color:var(--v2-ink);}
 
+/* Conteneur partagé par la famille de maquettes complémentaires
+   (maquettes-complementaires-shm/*.html § .wrap) — 1180px, jamais 1120px
+   (.v2-commerce-wrap, valeur du prototype principal). Générique, réutilisé
+   par Vidéos et Recherche ci-dessous. */
+.v2-complementary-wrap{width:min(1180px,calc(100% - 64px));margin-inline:auto;}
+
+/* ===== VIDÉOS (chantier mise en conformité, 16/09) — source de vérité :
+   maquettes-complementaires-shm/videos.html ===== */
+.v2-videos-page{background:#fff;font-family:var(--v2-sans);line-height:1.6;-webkit-font-smoothing:auto;}
+.v2-video-hero{padding:72px 0 48px;background:#21134b;color:#fff;}
+.v2-video-hero .v2-eyebrow{color:#c9baff;}
+.v2-video-hero h1{margin:4px 0 12px;color:#fff;font-family:var(--v2-serif);font-size:62px;font-weight:500;letter-spacing:-.035em;}
+.v2-video-hero>div>p{max-width:680px;margin:0;color:#ddd5f2;}
+.v2-video-section{padding:62px 0 82px;}
+.v2-video-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px;}
+.v2-video-head h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:40px;font-weight:500;letter-spacing:-.035em;}
+/* Filtres réels (VideoGrid) : fonction dépassant la maquette statique
+   (aucun filtre dans le gabarit, qui ne montre qu'une grille figée) —
+   pilules dans le langage déjà établi du site. */
+.v2-video-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
+.v2-video-filters button{padding:9px 18px;border:1px solid var(--v2-line);border-radius:999px;background:#fff;color:var(--v2-ink-soft);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+.v2-video-filters button.active{border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);color:#fff;}
+.v2-video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.v2-video-card{border:1px solid var(--v2-line);border-radius:10px;overflow:hidden;background:#fff;cursor:pointer;}
+.v2-video-thumb{aspect-ratio:16/9;display:grid;place-items:center;color:#fff;font-size:35px;background:linear-gradient(135deg,#2a1857,#6d31f2);}
+.v2-video-body{padding:18px;}
+.v2-video-body .v2-eyebrow{margin:0;}
+.v2-video-body h3{margin:4px 0 8px;font-family:var(--v2-serif);font-size:22px;font-weight:500;}
+.v2-video-body p{margin:0;color:var(--v2-muted);font-size:13px;}
+@media (max-width:760px){
+  .v2-video-grid{grid-template-columns:1fr;}
+}
+
+/* ===== RECHERCHE (chantier mise en conformité, 16/09) — source de vérité :
+   maquettes-complementaires-shm/recherche.html ===== */
+.v2-search-page{background:#fff;font-family:var(--v2-sans);line-height:1.6;-webkit-font-smoothing:auto;}
+.v2-search-hero{padding:70px 0 42px;background:#f5f2ff;}
+.v2-search-hero h1{margin:6px 0 12px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:58px;font-weight:500;letter-spacing:-.035em;}
+.v2-search-hero>div>p{max-width:700px;margin:0;color:var(--v2-muted);}
+.v2-search-box{display:flex;gap:0;max-width:760px;margin-top:28px;}
+.v2-search-box input{flex:1;min-width:0;height:52px;border:1px solid #cfc7dd;border-right:0;border-radius:7px 0 0 7px;padding:0 16px;font-family:inherit;font-size:16px;}
+.v2-search-box .v2-btn{border-radius:0 7px 7px 0;}
+.v2-search-results{padding:58px 0 78px;}
+.v2-search-results-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--v2-line);padding-bottom:18px;margin-bottom:8px;color:var(--v2-ink);}
+.v2-search-result{display:block;padding:24px 0;border-bottom:1px solid #eeeaf3;}
+.v2-search-result-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#49369b;}
+.v2-search-result h2{margin:5px 0 8px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:27px;font-weight:500;letter-spacing:-.035em;}
+.v2-search-result p{margin:0;max-width:800px;color:var(--v2-muted);}
+
 /* ===== COMPTE (connexion / inscription) ===== */
 .account-section{padding-top:56px;padding-bottom:72px;}
 .account-tabs{display:flex;max-width:420px;margin:0 auto 32px;background:var(--lavender);border-radius:100px;padding:5px;}
