@@ -1205,12 +1205,6 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 /* ===== RECHERCHE (chantier mise en conformité, 16/09) — source de vérité :
    maquettes-complementaires-shm/recherche.html ===== */
 .v2-search-page{background:#fff;font-family:var(--v2-sans);line-height:1.6;-webkit-font-smoothing:auto;}
-.v2-search-hero{padding:70px 0 42px;background:#f5f2ff;}
-.v2-search-hero h1{margin:6px 0 12px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:58px;font-weight:500;letter-spacing:-.035em;}
-.v2-search-hero>div>p{max-width:700px;margin:0;color:var(--v2-muted);}
-.v2-search-box{display:flex;gap:0;max-width:760px;margin-top:28px;}
-.v2-search-box input{flex:1;min-width:0;height:52px;border:1px solid #cfc7dd;border-right:0;border-radius:7px 0 0 7px;padding:0 16px;font-family:inherit;font-size:16px;}
-.v2-search-box .v2-btn{border-radius:0 7px 7px 0;}
 .v2-search-results{padding:58px 0 78px;}
 .v2-search-results-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--v2-line);padding-bottom:18px;margin-bottom:8px;color:var(--v2-ink);}
 .v2-search-result{display:block;padding:24px 0;border-bottom:1px solid #eeeaf3;}
