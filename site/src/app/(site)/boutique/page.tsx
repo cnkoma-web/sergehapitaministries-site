@@ -63,7 +63,13 @@ export default async function BoutiquePage() {
                 <article className="v2-goodie-card" key={goodie.id}>
                   <div className="v2-goodie-visual">
                     {goodie.image_url ? (
-                      <Image src={goodie.image_url} alt={goodie.title} fill style={{ objectFit: "cover" }} />
+                      <Image
+                        src={goodie.image_url}
+                        alt={goodie.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 25vw"
+                        style={{ objectFit: "cover" }}
+                      />
                     ) : (
                       <>
                         {/* AJOUTÉ (chantier Boutique, 15/09) : la maquette porte une

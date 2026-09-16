@@ -58,7 +58,13 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
       <section className="v2-commerce-wrap product-grid">
         <div className="product-visual">
           {goodie.image_url ? (
-            <Image src={goodie.image_url} alt={goodie.title} fill style={{ objectFit: "cover" }} />
+            <Image
+              src={goodie.image_url}
+              alt={goodie.title}
+              fill
+              sizes="(max-width: 720px) 100vw, 45vw"
+              style={{ objectFit: "cover" }}
+            />
           ) : (
             <>
               {/* Accroche éditoriale du visuel (§ .product-visual span, maquette) :
