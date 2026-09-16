@@ -1,0 +1,35 @@
+route,375px,390px,768px,1024px,1440px_desktop,note
+/,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/livres,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/livres/[slug],CORRIGE,CORRIGE,CONFORME,CONFORME,NON-REGRESSION,"Couverture échappée du cadre sous 720px (position:static cassait le bloc de positionnement de .cover-rollover) — corrigée, vérifiée sur 2 livres"
+/boutique,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"sizes ajouté sur l'image de la grille (performance, pas un correctif visuel)"
+/boutique/[slug],CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"sizes ajouté sur le visuel produit (performance, pas un correctif visuel)"
+/panier,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"Footer absent à TOUS les viewports (y compris desktop) — défaut structurel préexistant, non responsive, non corrigé (hors périmètre de ce chantier)"
+/compte,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/compte/mot-de-passe-oublie,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/compte/nouveau-mot-de-passe,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/compte/verification-email,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/compte/email-envoye,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/compte/compte-active,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/compte/mot-de-passe-modifie,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/mon-compte (5 onglets),BLOQUE,BLOQUE,BLOQUE,BLOQUE,BLOQUE,"Aucune session client authentifiée disponible dans cet environnement (cookie Supabase présent = utilisateur anonyme, is_anonymous:true, jamais un vrai compte) — non contourné, non fabriqué. Contrôle à faire par Serge ou en lui fournissant un accès."
+/publications,CORRIGE,CORRIGE,CONFORME,CONFORME,NON-REGRESSION,"Hero .v2-pub-hero-inner (.62fr/1.38fr) sans repli — texte et tuiles chevauchés à 390px. Corrigé (stack sous 720px)."
+/publications/[slug],CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/publications/que-dit-la-bible,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/publications/la-vie-superieure,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/rosee-matinale,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"Réintégrée au périmètre après levée de contradiction — architecture legacy-scopée-par-V2 déjà responsive"
+/rosee-matinale/[date],CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/publications/je-confesse-et-declare,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"Réintégrée au périmètre après levée de contradiction"
+/publications/je-confesse-et-declare/[date],CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/podcast,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/podcast/[slug],CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"Lecteur audio natif vérifié (rendu plein cadre, contrôles utilisables)"
+/videos,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/de-serge,CORRIGE,CORRIGE,CONFORME,CONFORME,NON-REGRESSION,"Seule grille de la page sans repli 1 colonne — texte réellement tronqué (masqué par overflow:hidden) à 390px. Corrigée."
+/mission,CONFORME,CONFORME,CORRIGE,CONFORME,NON-REGRESSION,"Débordement horizontal réel mesuré à 768px (94px, minmax(330px)/minmax(460px) sans repli à ce palier). Corrigé."
+/connaitre-jesus,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/recherche,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/confirmation,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"Testé sur l'état réellement atteignable sans paiement Stripe réel (état de repli)"
+/contact,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"Formulaire vérifié (champs empilés, lisibles)"
+/invitation,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/partenariat,CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,
+/mentions-legales (+3 pages légales, composant partagé),CONFORME,CONFORME,CONFORME,CONFORME,NON-REGRESSION,"Navigation légale vérifiée (empilement propre)"
