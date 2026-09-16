@@ -351,6 +351,20 @@ header{
   .v2-menu-button{display:inline-grid;place-items:center;}
 }
 @media (max-width:720px){
+  /* Écart réel corrigé (Accueil, Section 01 — Header/nav, protocole
+     atomique mobile) : le prototype (styles.css) réduit .wrap à
+     min(100% - 32px,1180px) sous 720px — mesuré ici 343px à 375px de
+     large (16px de marge de chaque côté), contre 327px pour .v2-wrap qui
+     ne varie jamais (24px de chaque côté à toutes les largeurs). Sélecteur
+     combiné (jamais .v2-wrap seul, qui reste inchangé pour tout le reste
+     du site) pour rester strictement scopé au Header. */
+  .v2-main-nav.v2-wrap,.v2-search-panel-inner.v2-wrap{width:min(1180px,calc(100% - 32px));}
+  /* Écart réel corrigé : .network-inner du prototype passe explicitement à
+     width:100% sous 720px (bande sombre pleine largeur, plus de marge),
+     seul .main-nav garde la marge réduite ci-dessus — mesuré 375px de
+     large (0 marge) contre 327px pour .v2-network-inner (qui héritait de
+     .v2-wrap sans repli propre). */
+  .v2-network-inner.v2-wrap{width:100%;}
   .v2-network-inner{justify-content:center;min-height:34px;}
   .v2-partner-nav{display:none;}
   .v2-ticker{max-width:calc(100% - 28px);}
@@ -365,6 +379,13 @@ header{
   .v2-search-panel-inner{grid-template-columns:1fr;gap:10px;padding-block:18px;min-height:0;}
   .v2-search-panel label{font-size:17px;}
   .v2-search-panel input,.v2-search-panel button{height:47px;}
+}
+@media (max-width:410px){
+  /* Écart réel corrigé : le prototype fait remonter le logo à 152px sous
+     410px (styles.css, règle qui suit celle à 720px et la surpasse dans
+     cette plage) — jamais reproduit ici, .v2-brand img restait figé à
+     132px jusqu'en dessous de 375px. Mesuré à l'identique sur 375 et 390. */
+  .v2-brand img{width:152px;}
 }
 
 /* Pied de page */
