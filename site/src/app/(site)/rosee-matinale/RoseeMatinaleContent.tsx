@@ -143,15 +143,15 @@ export default function RoseeMatinaleContent({
               dans la bande de partage colorée juste en dessous. */}
           <div className="rm-nav-days">
             {previous ? (
-              <Link href={dayHref(previous.article_date)}>← Jour précédent</Link>
+              <Link href={dayHref(previous.article_date)}>← Précédent</Link>
             ) : (
-              <span className="disabled">← Jour précédent</span>
+              <span className="disabled">← Précédent</span>
             )}
-            <a href="#archive" className="archive-link">Voir l&apos;archive ↓</a>
+            <a href="#archive" className="archive-link">Voir les archives</a>
             {next ? (
-              <Link href={dayHref(next.article_date)}>Jour suivant →</Link>
+              <Link href={dayHref(next.article_date)}>Suivant →</Link>
             ) : (
-              <span className="disabled">Jour suivant →</span>
+              <span className="disabled">Suivant →</span>
             )}
           </div>
         </div>

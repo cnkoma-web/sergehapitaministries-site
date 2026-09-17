@@ -2872,19 +2872,20 @@ footer.footer--dark{
    explicitement, comparées valeur par valeur à prototype-html/
    publications.css § .rm-hero/.rm-hero .category-badge/.rm-hero-date/
    .rm-hero-meta/.rm-chapeau blockquote/.entry-body > p/.rm-nav-days. */
-.v2-rm-page .rm-photo-hero{min-height:460px;}
-.v2-rm-page .rm-photo-hero::after{background:linear-gradient(0deg,rgba(23,15,44,.88) 0%,rgba(23,15,44,.4) 55%,rgba(23,15,44,.12) 100%);}
+.v2-rm-page .rm-photo-hero{min-height:560px;align-items:center;isolation:isolate;overflow:hidden;padding:80px 0;color:#fff;background-color:#221940;background-position:center;background-size:cover;}
+.v2-rm-page .rm-photo-hero::after{z-index:-1;background:linear-gradient(90deg,rgba(18,13,38,.9),rgba(24,15,48,.72) 50%,rgba(23,15,44,.55));}
+.v2-rm-page .rm-photo-hero>.wrap{width:min(860px,calc(100% - 48px));max-width:860px;margin-inline:auto;padding:0;text-align:center;}
 /* .rm-hero h1 (prototype) : Georgia, 36.5px, 600, 1.12, -.025em (mobile 24.5px) */
-.v2-rm-page .rm-photo-hero .entry-title{font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
+.v2-rm-page .rm-photo-hero .entry-title{margin:0 auto 25px;font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
 /* Bug réel corrigé (audit Phase B, 13/09) : .category-badge (prototype)
    n'est pas un texte nu mais une vraie pastille — fond #7b3fe4, inline-flex,
    padding 5px 10px, border-radius 999px — seule la typographie (Georgia,
    24px, 600) avait été vérifiée lors d'un audit précédent, jamais la forme. */
-.v2-rm-page .rm-photo-hero .cat{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;background:#7b3fe4;font-family:var(--v2-serif);font-size:24px;font-weight:600;letter-spacing:0;text-transform:none;color:#fff;}
+.v2-rm-page .rm-photo-hero .cat{display:inline-flex;align-items:center;margin:0 auto 13px;padding:5px 10px;border-radius:999px;background:#7b3fe4;font-family:var(--v2-serif);font-size:24px;font-weight:600;letter-spacing:0;text-transform:none;color:#fff;}
 /* .rm-hero-date (prototype) : hérite du sans-serif du body (Inter), 13px, graisse normale — la règle pré-V2 imposait à tort gras/majuscules/espacement */
-.v2-rm-page .rm-photo-hero .date{color:#e5dcff;font-family:var(--v2-sans);font-size:13px;font-weight:400;text-transform:none;letter-spacing:normal;}
+.v2-rm-page .rm-photo-hero .date{display:block;color:#e5dcff;font-family:var(--v2-sans);font-size:13px;font-weight:400;text-transform:none;letter-spacing:normal;}
 /* .rm-hero-meta (prototype) : hérite aussi du sans-serif du body (Inter), 12px, graisse normale — la police pré-V2 (Manrope, jamais explicitement corrigée ici) ne correspondait pas */
-.v2-rm-page .rm-photo-hero .article-meta{gap:12px 20px;flex-wrap:wrap;justify-content:center;color:#d7c9ff;font-family:var(--v2-sans);font-size:12px;font-weight:400;}
+.v2-rm-page .rm-photo-hero .article-meta{gap:12px 20px;flex-wrap:wrap;justify-content:center;margin-top:13px;color:#d7c9ff;font-family:var(--v2-sans);font-size:12px;font-weight:400;}
 .v2-jc-hero .article-meta{gap:12px 20px;flex-wrap:wrap;justify-content:center;}
 /* Recontrôle validation humaine (13/09) : .rm-chapeau (maquette) est
    padding:54px 0 (haut ET bas identiques), pas 64px/32px (ancienne règle

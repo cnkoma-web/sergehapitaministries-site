@@ -34,6 +34,8 @@
 
 /* Accueil — sections 05 à 08. */
 @media (max-width:1100px){
+  .v2-home .v2-dew-card{grid-template-columns:150px 1fr auto;text-align:left;}
+  .v2-home .v2-dew-date{display:none;}
   .v2-home .v2-jesus-stage{grid-template-columns:1fr;}
   .v2-home .v2-jesus-video-frame{min-height:390px;}
   .v2-home .v2-jesus-topics{grid-template-columns:1fr 1fr;}
@@ -224,6 +226,7 @@
   .v2-rm-page .related-grid{grid-template-columns:1fr;}
 
   .v2-rm-page .rm-photo-hero{min-height:540px;padding:60px 0;background-position:62% center;}
+  .v2-rm-page .rm-photo-hero>.wrap{width:min(860px,calc(100% - 32px));}
   .v2-rm-page .rm-photo-hero .entry-title{font-size:24.5px;}
   .v2-rm-page .rm-photo-hero .cat{font-size:20px;}
   .v2-rm-page .rm-quote-text{font-size:25px;}
