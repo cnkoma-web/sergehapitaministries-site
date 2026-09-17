@@ -8,6 +8,7 @@ export default function InvitationForm() {
 
   return (
     <form
+      className="invitation-form"
       action={(formData) => {
         startTransition(() => {
           submitInvitationForm(formData);
@@ -137,14 +138,14 @@ export default function InvitationForm() {
         <div className="form-fields">
           <div>
             <label className="field-label">Prévoyez-vous de couvrir les frais de voyage et d’hébergement ? *</label>
-            <div className="radio-row">
-              <label>
+            <div className="radio-group">
+              <label className="radio-option">
                 <input type="radio" name="frais_couverts" value="Oui" required /> Oui
               </label>
-              <label>
+              <label className="radio-option">
                 <input type="radio" name="frais_couverts" value="Non" /> Non
               </label>
-              <label>
+              <label className="radio-option">
                 <input type="radio" name="frais_couverts" value="À discuter" /> À discuter
               </label>
             </div>
