@@ -44,6 +44,9 @@
   .v2-home .v2-book-card.main{grid-column:span 2;grid-template-columns:1.08fr .92fr;}
 }
 @media (max-width:720px){
+  .v2-home .v2-jesus-video-frame{min-height:205px;}
+  .v2-home .v2-jesus-topics{grid-template-columns:1fr;}
+  .v2-home .v2-jesus-topics a{min-height:92px;border-right:0;border-bottom:1px solid var(--v2-line);}
   .v2-home .v2-section-heading{grid-template-columns:1fr;gap:15px;margin-bottom:32px;}
   .v2-home .v2-section-heading h2,
   .v2-home .v2-dark-heading h2{font-size:39px;}
@@ -392,7 +395,7 @@
   .v2-engagement-page .v2-engagement-hero.partnership h1{font-size:48px;line-height:1.02;}
   .v2-invitation-page .v2-invitation-intro{padding:40px 0 25px;text-align:left;}
   .v2-invitation-page .v2-invitation-intro h2{font-size:34px;}
-  .v2-invitation-page form{margin-bottom:72px;border-radius:11px;}
+  .v2-invitation-page .invitation-form{margin-bottom:72px;border-radius:11px;}
   .v2-invitation-page .inv-form-section{gap:27px;padding:32px 24px;}
   .v2-invitation-page .form-section-heading{padding-bottom:2px;}
   .v2-invitation-page .inv-row{grid-template-columns:1fr;}
