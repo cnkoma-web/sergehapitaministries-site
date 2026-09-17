@@ -443,3 +443,71 @@
   .v2-videos-page .v2-video-grid{grid-template-columns:1fr;gap:17px;}
   .v2-videos-page .v2-video-body{min-height:0;}
 }
+
+/* ============================================================
+   ALIGNEMENT FINAL SUR LA MAQUETTE RESPONSIVE VALIDÉE
+
+   Ces règles reprennent les paliers communs du prototype original.
+   Elles corrigent les anciens replis à 960/640 px qui provenaient de
+   l'interface précédente et non de la maquette de référence.
+   ============================================================ */
+
+/* Tablette : la maquette conserve encore la composition desktop du hero
+   et allège seulement la navigation et les cartes du jour. */
+@media (min-width:721px) and (max-width:1100px){
+  .v2-main-nav{grid-template-columns:220px 1fr auto;}
+  .v2-home-hero-copy{width:78%;}
+  .v2-dew-card{grid-template-columns:150px 1fr auto;text-align:left;}
+  .v2-dew-date{display:none;}
+  .v2-confession-card{grid-template-columns:210px 1fr auto;text-align:left;}
+  .v2-confession-meta{display:none;}
+}
+
+/* Entre 721 et 960 px, l'ancienne conversion transformait déjà le hero en
+   version pleine largeur. Le prototype ne le fait qu'à 720 px. */
+@media (min-width:721px) and (max-width:960px){
+  .v2-home-hero-photo{inset:0 0 0 auto;width:54%;height:auto;opacity:.78;background-position:center 48%;}
+}
+
+/* Mobile : le conteneur commun retrouve partout les 16 px de marge de la
+   maquette, au lieu d'un mélange de 16 et 24 px selon les sections. */
+@media (max-width:720px){
+  .v2-wrap{width:min(1180px,calc(100% - 32px));}
+  .v2-network-inner.v2-wrap{width:100%;}
+
+  .v2-eyebrow{margin-bottom:14px;font-size:11px;}
+  .v2-button{min-height:49px;padding-inline:13px;font-size:12px;text-align:center;}
+  .v2-jesus-video-frame .play{width:56px;height:56px;box-shadow:0 0 0 9px rgba(255,255,255,.12);}
+
+  .v2-home .v2-jesus-gateway,
+  .v2-home .v2-books-section{padding-block:95px;}
+  .v2-home .v2-section-heading{grid-template-columns:1fr;gap:15px;margin-bottom:32px;}
+  .v2-home .v2-section-heading h2,
+  .v2-home .v2-dark-heading h2,
+  .v2-home .v2-support-copy h2,
+  .v2-home .v2-community-title h2,
+  .v2-home .newsletter h2{font-size:39px;}
+  .v2-home .v2-section-heading>p{font-size:16px;}
+
+  .v2-home .v2-category-number{top:18px;right:20px;font-size:104px;}
+  .v2-home .v2-support-section,
+  .v2-home .v2-community-section{padding-block:90px;}
+  .v2-home .v2-support-grid,
+  .v2-home .v2-community-section,
+  .v2-home .newsletter-inner{grid-template-columns:1fr;gap:48px;}
+  .v2-home .v2-support-copy>p:not(.v2-eyebrow){font-size:16px;}
+  .v2-home .v2-social-list{grid-template-columns:1fr;}
+  .v2-home .v2-social-list a:nth-child(odd){border-right:0;}
+  .v2-home .v2-social-list a{min-height:94px;padding:17px 8px;}
+  .newsletter{padding-block:75px;}
+  .newsletter-form>div{grid-template-columns:1fr;}
+  .newsletter-form button{min-height:46px;}
+}
+
+/* Dans la maquette, les colonnes du pied de page ne passent à deux qu'à
+   520 px. L'ancienne conversion le faisait trop tôt, dès 720 px. */
+@media (min-width:521px) and (max-width:720px){
+  .v2-footer-links{grid-template-columns:repeat(3,1fr);row-gap:normal;}
+  .v2-footer-links div:last-child{grid-column:auto;display:flex;grid-template-columns:none;}
+  .v2-footer-links div:last-child strong{grid-column:auto;}
+}
