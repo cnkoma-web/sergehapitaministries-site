@@ -4524,9 +4524,9 @@ footer.footer--dark{
 .v2-invitation-page .invitation-form input:not([type="radio"]):not([type="checkbox"]):focus,.v2-invitation-page .invitation-form select:focus,.v2-invitation-page .invitation-form textarea:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);background:#fff;}
 .inv-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 .v2-invitation-page .radio-group{display:flex;flex-wrap:wrap;align-items:center;gap:13px 26px;padding-top:4px;}
-.v2-invitation-page .radio-option{display:inline-flex;align-items:center;gap:9px;color:var(--v2-ink-soft);background:transparent;font-size:14px;cursor:pointer;}
+.v2-invitation-page .radio-option{display:block;margin-bottom:8px;color:var(--v2-ink-soft);background:transparent;font-size:13px;font-weight:750;line-height:1.6;cursor:pointer;}
 .v2-invitation-page .radio-option:has(input:checked){color:var(--v2-violet-deep);}
-.v2-invitation-page .radio-option input{appearance:none;width:18px;height:18px;margin:0;border:1.5px solid #aaa5b7;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 4px #fff;cursor:pointer;}
+.v2-invitation-page .radio-option input{appearance:none;display:inline-block;width:18px;height:18px;margin:0;padding-inline:14px;border:1.5px solid #aaa5b7;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 4px #fff;cursor:pointer;vertical-align:baseline;}
 .v2-invitation-page .radio-option input:checked{border-color:var(--v2-violet-deep);background:var(--v2-violet-deep);}
 .v2-invitation-page .radio-option input:focus-visible{outline:3px solid rgba(109,49,242,.18);outline-offset:3px;}
 /* .form-submit-row (maquette) : padding 30px 48px 38px 284px (aligné sur
