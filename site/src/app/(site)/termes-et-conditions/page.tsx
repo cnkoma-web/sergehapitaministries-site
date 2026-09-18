@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 // contenus-juridiques-integres/*.md du 10/09.
 export default function TermesEtConditionsPage() {
   return (
-    <LegalPageLayout title="Termes et conditions" lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne" currentHref="/termes-et-conditions">
+    <LegalPageLayout title="Termes et conditions" lastUpdate="Dernière mise à jour : 18 septembre 2026" currentHref="/termes-et-conditions">
           <h2>Objet</h2>
           <p>
             Les présentes conditions régissent l&apos;utilisation du site sergehapitaministries.org ainsi que

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 // contenus-juridiques-integres/*.md du 10/09.
 export default function PolitiqueDeCookiesPage() {
   return (
-    <LegalPageLayout title="Politique de cookies" lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne" currentHref="/politique-de-cookies">
+    <LegalPageLayout title="Politique de cookies" lastUpdate="Dernière mise à jour : 18 septembre 2026" currentHref="/politique-de-cookies">
           <h2>Qu&apos;est-ce qu&apos;un cookie ?</h2>
           <p>
             Un cookie est un petit fichier texte déposé sur votre appareil (ordinateur, tablette, smartphone) lors

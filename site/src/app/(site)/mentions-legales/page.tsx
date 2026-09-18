@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 // 11/09, jamais supposé silencieusement.
 export default function MentionsLegalesPage() {
   return (
-    <LegalPageLayout title="Mentions légales" lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne" currentHref="/mentions-legales">
+    <LegalPageLayout title="Mentions légales" lastUpdate="Dernière mise à jour : 18 septembre 2026" currentHref="/mentions-legales">
           <h2>Éditeur du site</h2>
           <p>
             Le site sergehapitaministries.org est édité par Serge Hapita, dans le cadre de son

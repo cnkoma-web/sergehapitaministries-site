@@ -28,7 +28,7 @@ export default function PolitiqueDeConfidentialitePage() {
   return (
     <LegalPageLayout
       title="Politique de confidentialité"
-      lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne"
+      lastUpdate="Dernière mise à jour : 18 septembre 2026"
       currentHref="/politique-de-confidentialite"
     >
           <h2>Quelles données collectons-nous ?</h2>
