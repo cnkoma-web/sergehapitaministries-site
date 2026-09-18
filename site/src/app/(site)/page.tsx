@@ -144,25 +144,13 @@ export default async function HomePage() {
           JeConfesseContent.tsx), jamais affichés ici : cette carte montre
           un aperçu de la déclaration du jour, comme la carte Rosée
           Matinale voisine.
-          Date ajoutée (retour de validation humaine, 13/09) — la maquette
-          statique (prototype-html/index.html § .confession-meta) omet la
-          date, mais sa propre grille (.confession-card : 4 colonnes, la 2e
-          dédiée à la date, largeur et styles quasi identiques à
-          .dew-date/.dew-date span de Rosée Matinale juste au-dessus) montre
-          qu'elle était prévue au même endroit — jamais codée en dur ici,
-          real article_date de getConfessionDuJour, exactement comme
-          roseeDuJour.article_date. */}
+          La composition reste celle de la V35 : libellé seul, sans date. */}
       <section className="v2-wrap" aria-label="Proclamation du jour — Je Confesse">
         <div className="v2-confession-wrap">
           <article className="v2-confession-card">
             <div className="v2-confession-label">Je Confesse</div>
             <div className="v2-confession-meta">
               <span>Proclamation du jour</span>
-              {confessionDuJour && (
-                <time dateTime={confessionDuJour.article_date}>
-                  {new Date(confessionDuJour.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                </time>
-              )}
             </div>
             {confessionDuJour ? (
               <>

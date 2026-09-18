@@ -26,8 +26,23 @@ function displayExcerpt(a: Article): string | undefined {
   return raw ? nbspBeforeClosingGuillemet(raw) : undefined;
 }
 
-export default function RelatedArticlesSection({ articles, heading = "Autres articles similaires" }: { articles: Article[]; heading?: string }) {
+export default function RelatedArticlesSection({
+  articles,
+  heading = "Autres articles similaires",
+  includeWeekday = false,
+}: {
+  articles: Article[];
+  heading?: string;
+  includeWeekday?: boolean;
+}) {
   if (articles.length === 0) return null;
+
+  const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
+    weekday: includeWeekday ? "long" : undefined,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <section className="related-articles">
@@ -45,11 +60,10 @@ export default function RelatedArticlesSection({ articles, heading = "Autres art
               // compris) — même principe que .feed-item : seuls le titre et
               // le chapeau sont cliquables, chacun avec son propre lien.
               <div className="related-card" key={a.id}>
-                {/* .related-card time (prototype) : un vrai <time>, "7
-                    septembre 2026" sans le jour de la semaine — écarts
-                    corrigés le 11/09. */}
+                {/* Rosée Matinale et Je Confesse affichent aussi le jour de
+                    la semaine, conformément à leurs maquettes V35. */}
                 <time className="verse" dateTime={a.article_date}>
-                  {new Date(a.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                  {dateFormatter.format(new Date(a.article_date))}
                 </time>
                 <h3>
                   <Link href={href}>{a.title}</Link>

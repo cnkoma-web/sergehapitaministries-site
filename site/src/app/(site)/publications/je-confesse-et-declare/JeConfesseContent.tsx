@@ -171,7 +171,7 @@ export default async function JeConfesseContent({
         </div>
       </section>
 
-      <RelatedArticlesSection articles={relatedArticles} />
+      <RelatedArticlesSection articles={relatedArticles} includeWeekday />
 
       <section className="rm-archive" id="archive">
         <div className="wrap">

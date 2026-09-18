@@ -189,7 +189,7 @@ export default function RoseeMatinaleContent({
           --lavender pâle (.related-articles), juste après la zone de
           partage --lavender-deep ci-dessus (2e passage, 07/09) — les deux
           teintes de lavande restent bien distinctes l'une de l'autre. */}
-      <RelatedArticlesSection articles={relatedArticles} />
+      <RelatedArticlesSection articles={relatedArticles} includeWeekday />
 
       <section className="rm-archive" id="archive">
         <div className="wrap">
