@@ -84,7 +84,7 @@ export default async function MonComptePage() {
           firstName={profile?.first_name ?? ""}
           lastName={profile?.last_name ?? ""}
           email={user.email ?? ""}
-          vsArticles={vsArticles.map((a) => ({ slug: a.slug, title: a.title }))}
+          vsArticles={vsArticles\n            .filter((article) => article.access === "free")\n            .map((article) => ({ slug: article.slug, title: article.title }))}
           reviews={myReviews}
           orders={myOrders}
         />
