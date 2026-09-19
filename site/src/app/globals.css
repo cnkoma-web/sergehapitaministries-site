@@ -4305,19 +4305,18 @@ footer.footer--dark{
 .v2-compte-page .account-form .consent a{color:var(--v2-violet-deep);}
 .v2-compte-page .account-form button.btn{min-height:50px;margin-top:4px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-weight:800;cursor:pointer;font-family:inherit;}
 .v2-compte-page .admin-error{margin:0;padding:12px 14px;border-radius:6px;background:#fdeceb;color:#b3261e;font-size:13px;}
-/* .oauth-choice/.oauth-buttons (chantier Compte, reprise) : § réels de la
-   maquette — un seul conteneur pour les boutons ET le séparateur (jamais
-   .social-auth + .account-divider éclatés), boutons CÔTE À CÔTE (2
-   colonnes, jamais empilés). */
-.v2-compte-page .oauth-choice{margin-bottom:28px;}
+/* OAuth reste visuellement secondaire : le formulaire e-mail est présenté
+   d'abord, puis les deux fournisseurs sous une séparation compacte. */
+.v2-compte-page .oauth-choice{margin-top:10px;}
 .v2-compte-page .oauth-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.v2-compte-page .social-btn{min-height:47px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);background:#fff;font-size:12px;font-weight:800;cursor:not-allowed;opacity:.6;}
+.v2-compte-page .social-btn{min-height:43px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);background:#fff;font-size:12px;font-weight:800;cursor:pointer;opacity:1;}
+.v2-compte-page .social-btn:hover:not(:disabled){border-color:var(--v2-violet);background:#fbfaff;}
+.v2-compte-page .social-btn:focus-visible{outline:3px solid rgba(109,49,242,.18);outline-offset:2px;}
+.v2-compte-page .social-btn:disabled{cursor:not-allowed;opacity:.55;}
 .v2-compte-page .account-soon{margin-top:10px;color:var(--v2-muted);font-size:11px;text-align:center;}
-.v2-compte-page .account-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0 0;color:var(--v2-muted);font-size:12px;}
+.v2-compte-page .oauth-error{margin-top:10px;}
+.v2-compte-page .account-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:4px 0 13px;color:var(--v2-muted);font-size:12px;}
 .v2-compte-page .account-divider::before,.v2-compte-page .account-divider::after{content:"";flex:1;height:1px;background:var(--v2-line);}
-@media (max-width:640px){
-  .v2-compte-page .oauth-buttons{grid-template-columns:1fr;}
-}
 
 /* --- Mon espace (tableau de bord) — cible les classes réelles
    DashTabs.tsx. --- */
