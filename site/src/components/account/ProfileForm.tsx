@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import PasswordInput from "@/components/account/PasswordInput";
 
 type Props = {
   userId: string;
@@ -94,13 +95,12 @@ export default function ProfileForm({ userId, initialFirstName, initialLastName,
         <label htmlFor="profile-password">
           Nouveau mot de passe <span style={{ fontWeight: 400, color: "var(--v2-muted)" }}>(laisser vide pour ne pas changer)</span>
         </label>
-        <input
+        <PasswordInput
           id="profile-password"
           name="password"
-          type="password"
           minLength={8}
           autoComplete="new-password"
-          ref={passwordRef}
+          inputRef={passwordRef}
         />
       </div>
 

@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getCartItemsForMerge, mergeCartItemsIntoCurrentUser } from "@/lib/cart/actions";
 import { linkPreparedAnonymousOrdersToCurrentAccount, prepareAnonymousOrderTransfer } from "@/lib/orders/actions";
 import SocialAuthButtons from "./SocialAuthButtons";
+import PasswordInput from "./PasswordInput";
 
 type Tab = "login" | "signup";
 
@@ -28,7 +28,17 @@ function signupErrorMessage(code: string | undefined, fallbackMessage: string): 
   }
 }
 
-export default function AuthTabs({ initialTab }: { initialTab: Tab }) {
+type SocialProviders = { google: boolean; facebook: boolean };
+
+export default function AuthTabs({
+  initialTab,
+  socialProviders,
+  oauthError,
+}: {
+  initialTab: Tab;
+  socialProviders: SocialProviders;
+  oauthError?: boolean;
+}) {
   const [tab, setTab] = useState<Tab>(initialTab);
 
   return (
@@ -61,14 +71,20 @@ export default function AuthTabs({ initialTab }: { initialTab: Tab }) {
         </button>
       </div>
 
-      {tab === "login" ? <LoginForm /> : <SignupForm />}
+      {tab === "login" ? (
+        <LoginForm socialProviders={socialProviders} oauthError={oauthError} />
+      ) : (
+        <SignupForm socialProviders={socialProviders} />
+      )}
     </>
   );
 }
 
-function LoginForm() {
+function LoginForm({ socialProviders, oauthError }: { socialProviders: SocialProviders; oauthError?: boolean }) {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    oauthError ? "La connexion sociale n’a pas abouti. Réessayez ou utilisez votre adresse e-mail." : null
+  );
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -79,19 +95,8 @@ function LoginForm() {
     const formData = new FormData(e.currentTarget);
     const supabase = createClient();
 
-    // Capturé pendant que la session est encore l'éventuelle session anonyme
-    // (Phase 5) — signInWithPassword la remplace par la vraie session ensuite,
-    // le panier anonyme redeviendrait sinon inaccessible (RLS).
-    let anonymousCartItems: Awaited<ReturnType<typeof getCartItemsForMerge>> = [];
     try {
-      const [capturedCartItems, orderTransfer] = await Promise.all([
-        getCartItemsForMerge(),
-        prepareAnonymousOrderTransfer(),
-      ]);
-      // Si un checkout a déjà été créé, ses lignes ne doivent pas être
-      // recopiées dans le panier du compte pendant le court délai précédant
-      // éventuellement le webhook Stripe.
-      anonymousCartItems = orderTransfer.prepared ? [] : capturedCartItems;
+      await prepareAnonymousOrderTransfer();
     } catch (transferPreparationError) {
       console.error("[compte] Préparation des données anonymes impossible :", transferPreparationError);
     }
@@ -108,10 +113,7 @@ function LoginForm() {
     }
 
     try {
-      const [orderLinkResult] = await Promise.all([
-        linkPreparedAnonymousOrdersToCurrentAccount(),
-        anonymousCartItems.length > 0 ? mergeCartItemsIntoCurrentUser(anonymousCartItems) : Promise.resolve(),
-      ]);
+      const orderLinkResult = await linkPreparedAnonymousOrdersToCurrentAccount();
       if (orderLinkResult.error) {
         setLoading(false);
         setError("La connexion a réussi, mais votre commande n'a pas encore pu être rattachée. Réessayez une fois.");
@@ -130,18 +132,6 @@ function LoginForm() {
 
   return (
     <form id="login-pane" role="tabpanel" aria-label="Se connecter" className="account-form" onSubmit={handleSubmit}>
-      {/* .oauth-choice AJOUTÉ (chantier Compte, reprise) : § de la maquette,
-          un seul conteneur pour les boutons ET le séparateur — éclaté
-          jusqu'ici en 2 blocs distincts (.social-auth + .account-divider
-          sibling). Texte du séparateur corrigé ("ou avec votre adresse
-          e-mail", jamais "ou par e-mail"). */}
-      <div className="oauth-choice">
-        <SocialAuthButtons />
-        <div className="account-divider">
-          <span>ou avec votre adresse e-mail</span>
-        </div>
-      </div>
-
       {error && <div className="admin-error">{error}</div>}
 
       <label className="field-label" htmlFor="login-email">
@@ -152,7 +142,7 @@ function LoginForm() {
       <label className="field-label" htmlFor="login-password">
         Mot de passe *
       </label>
-      <input id="login-password" name="password" type="password" required autoComplete="current-password" />
+      <PasswordInput id="login-password" name="password" required autoComplete="current-password" />
 
       <a href="/compte/mot-de-passe-oublie" className="forgot">
         Mot de passe oublié ?
@@ -161,11 +151,18 @@ function LoginForm() {
       <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
         {loading ? "Connexion…" : "Se connecter →"}
       </button>
+
+      <div className="oauth-choice">
+        <div className="account-divider">
+          <span>ou continuer avec</span>
+        </div>
+        <SocialAuthButtons enabled={socialProviders} />
+      </div>
     </form>
   );
 }
 
-function SignupForm() {
+function SignupForm({ socialProviders }: { socialProviders: SocialProviders }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -243,18 +240,6 @@ function SignupForm() {
 
   return (
     <form id="signup-pane" role="tabpanel" aria-label="Créer un compte" className="account-form" onSubmit={handleSubmit}>
-      {/* .oauth-choice AJOUTÉ (chantier Compte, reprise) : § de la maquette,
-          un seul conteneur pour les boutons ET le séparateur — éclaté
-          jusqu'ici en 2 blocs distincts (.social-auth + .account-divider
-          sibling). Texte du séparateur corrigé ("ou avec votre adresse
-          e-mail", jamais "ou par e-mail"). */}
-      <div className="oauth-choice">
-        <SocialAuthButtons />
-        <div className="account-divider">
-          <span>ou avec votre adresse e-mail</span>
-        </div>
-      </div>
-
       {error && <div className="admin-error">{error}</div>}
 
       <label className="field-label" htmlFor="signup-first-name">
@@ -275,12 +260,12 @@ function SignupForm() {
       <label className="field-label" htmlFor="signup-password">
         Mot de passe *
       </label>
-      <input id="signup-password" name="password" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordInput id="signup-password" name="password" required minLength={8} autoComplete="new-password" />
 
       <label className="field-label" htmlFor="signup-password-confirm">
         Confirmer le mot de passe *
       </label>
-      <input id="signup-password-confirm" name="password_confirm" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordInput id="signup-password-confirm" name="password_confirm" required minLength={8} autoComplete="new-password" />
 
       <label className="consent">
         <input type="checkbox" required />
@@ -293,6 +278,13 @@ function SignupForm() {
       <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
         {loading ? "Création…" : "Créer mon compte →"}
       </button>
+
+      <div className="oauth-choice">
+        <div className="account-divider">
+          <span>ou continuer avec</span>
+        </div>
+        <SocialAuthButtons enabled={socialProviders} />
+      </div>
     </form>
   );
 }

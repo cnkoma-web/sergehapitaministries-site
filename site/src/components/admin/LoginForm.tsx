@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import PasswordInput from "@/components/account/PasswordInput";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function LoginForm() {
       </div>
       <div className="admin-field" style={{ marginBottom: 8 }}>
         <label htmlFor="password">Mot de passe</label>
-        <input id="password" name="password" type="password" required autoComplete="current-password" />
+        <PasswordInput id="password" name="password" required autoComplete="current-password" />
       </div>
       {/* Même compte, même flux Supabase Auth que le site public (retour du
           06/09) — pas de page "mot de passe oublié" distincte pour l'admin,
