@@ -160,8 +160,8 @@ function SignupForm() {
     setLoading(true);
     const supabase = createClient();
     const email = String(formData.get("email"));
-    const first_name = String(formData.get("first_name"));
-    const last_name = String(formData.get("last_name"));
+    const first_name = String(formData.get("first_name")).trim();
+    const last_name = String(formData.get("last_name")).trim();
 
     const {
       data: { session: existingSession },
@@ -177,12 +177,27 @@ function SignupForm() {
       ? await supabase.auth.updateUser({ email, password, data: { first_name, last_name } })
       : await supabase.auth.signUp({ email, password, options: { data: { first_name, last_name } } });
 
-    setLoading(false);
-
     if (signUpError) {
+      setLoading(false);
       setError(signupErrorMessage(signUpError.code, signUpError.message));
       return;
     }
+
+    // La conversion d'une session anonyme conserve le même utilisateur : le
+    // trigger de création ne se relance donc pas. On synchronise explicitement
+    // le profil maintenant que les noms ont été fournis.
+    if (isAnonymousUpgrade && data.user) {
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ first_name, last_name })
+        .eq("id", data.user.id);
+
+      if (profileError) {
+        console.error("[compte] Profil non synchronisé après conversion anonyme :", profileError.message);
+      }
+    }
+
+    setLoading(false);
 
     // Upgrade anonyme : la session existante reste valide immédiatement (même si
     // l'e-mail doit encore être confirmé) — inscription classique : une session

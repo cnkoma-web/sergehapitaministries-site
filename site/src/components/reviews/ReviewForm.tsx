@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-type Props = { bookId?: string; goodieId?: string };
+type Props = { bookId?: string; goodieId?: string; initialAuthorName?: string };
 
 // Bouton "Envoyer mon avis" (jamais "Publier") — la publication passe par
 // modération, jamais instantanée (cahier §3.3).
-export default function ReviewForm({ bookId, goodieId }: Props) {
+export default function ReviewForm({ bookId, goodieId, initialAuthorName = "" }: Props) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [sent, setSent] = useState(false);
@@ -67,7 +67,7 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
     <form className="review-form" onSubmit={handleSubmit}>
       {error && <div className="admin-error">{error}</div>}
       <label htmlFor="review-name">Votre nom</label>
-      <input id="review-name" type="text" name="author_name" />
+      <input id="review-name" type="text" name="author_name" defaultValue={initialAuthorName} />
       {/* STRUCTURE corrigée (SECTION 08, lot dédié 15/09) : le <div>
           enveloppant précédemment ce label + .star-input n'existe pas dans
           la maquette (tous les champs sont des enfants DIRECTS et à plat

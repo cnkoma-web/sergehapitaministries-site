@@ -46,6 +46,7 @@ type Props = {
   vsArticles: VsArticle[];
   reviews: MyReview[];
   orders: MyOrder[];
+  initialSection?: Section;
 };
 
 const REVIEW_STATUS_LABEL: Record<string, string> = {
@@ -88,8 +89,8 @@ const ICONS: Record<"person" | "box" | "lock" | "chat", React.ReactNode> = {
   ),
 };
 
-export default function DashTabs({ userId, firstName, lastName, email, vsArticles, reviews, orders }: Props) {
-  const [section, setSection] = useState<Section>("apercu");
+export default function DashTabs({ userId, firstName, lastName, email, vsArticles, reviews, orders, initialSection = "apercu" }: Props) {
+  const [section, setSection] = useState<Section>(initialSection);
 
   return (
     <div className="dashboard-grid">
