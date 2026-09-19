@@ -21,9 +21,7 @@ export default function ContactForm() {
     <form
       className="contact-form"
       action={(formData) => {
-        startTransition(() => {
-          submitContactForm(formData);
-        });
+        startTransition(() => submitContactForm(formData));
       }}
     >
       <div className="field">

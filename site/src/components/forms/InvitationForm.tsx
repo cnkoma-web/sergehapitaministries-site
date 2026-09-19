@@ -11,9 +11,7 @@ export default function InvitationForm() {
   return (
     <form
       action={(formData) => {
-        startTransition(() => {
-          submitInvitationForm(formData);
-        });
+        startTransition(() => submitInvitationForm(formData));
       }}
     >
       {/* RECTIFICATION (14/09, 2e retour) : la reprise précédente avait

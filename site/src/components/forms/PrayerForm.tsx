@@ -15,9 +15,7 @@ export default function PrayerForm() {
       // jamais partagé, donc sans risque pour une autre page.
       className="v2-salvation-form"
       action={(formData) => {
-        startTransition(() => {
-          submitPrayerForm(formData);
-        });
+        startTransition(() => submitPrayerForm(formData));
       }}
     >
       {/* Retour de validation humaine (section "Je veux recevoir Jésus") :

@@ -48,12 +48,11 @@ export default function Newsletter() {
     e.preventDefault();
     setResult(null);
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    startTransition(() => {
-      subscribeToNewsletter(formData).then((res) => {
-        setResult(res.ok ? "ok" : "error");
-        if (res.ok) setEmail("");
-        else setCaptchaReset((value) => value + 1);
-      });
+    startTransition(async () => {
+      const res = await subscribeToNewsletter(formData);
+      setResult(res.ok ? "ok" : "error");
+      if (res.ok) setEmail("");
+      else setCaptchaReset((value) => value + 1);
     });
   }
 
