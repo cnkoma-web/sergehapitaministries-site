@@ -2,13 +2,14 @@
 
 import { useTransition } from "react";
 import { submitInvitationForm } from "@/lib/forms/actions";
+import BotTrapFields from "@/components/security/BotTrapFields";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 export default function InvitationForm() {
   const [isPending, startTransition] = useTransition();
 
   return (
     <form
-      className="invitation-form"
       action={(formData) => {
         startTransition(() => {
           submitInvitationForm(formData);
@@ -136,16 +137,16 @@ export default function InvitationForm() {
           <h2>Informations complémentaires</h2>
         </div>
         <div className="form-fields">
-          <div className="field">
-            <span className="field-label">Prévoyez-vous de couvrir les frais de voyage et d’hébergement ? *</span>
-            <div className="radio-group">
-              <label className="radio-option">
+          <div>
+            <label className="field-label">Prévoyez-vous de couvrir les frais de voyage et d’hébergement ? *</label>
+            <div className="radio-row">
+              <label>
                 <input type="radio" name="frais_couverts" value="Oui" required /> Oui
               </label>
-              <label className="radio-option">
+              <label>
                 <input type="radio" name="frais_couverts" value="Non" /> Non
               </label>
-              <label className="radio-option">
+              <label>
                 <input type="radio" name="frais_couverts" value="À discuter" /> À discuter
               </label>
             </div>
@@ -179,6 +180,9 @@ export default function InvitationForm() {
             <a href="/termes-et-conditions">conditions</a>, que nous vous invitons à lire avant.
           </span>
         </label>
+
+        <BotTrapFields />
+        <TurnstileWidget action="invitation" />
 
         <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={isPending}>
           {isPending ? "Envoi…" : "Envoyer la demande →"}

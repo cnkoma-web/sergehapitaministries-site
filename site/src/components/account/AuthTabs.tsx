@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { linkPreparedAnonymousOrdersToCurrentAccount, prepareAnonymousOrderTransfer } from "@/lib/orders/actions";
 import SocialAuthButtons from "./SocialAuthButtons";
 import PasswordInput from "./PasswordInput";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 type Tab = "login" | "signup";
 
@@ -86,10 +87,16 @@ function LoginForm({ socialProviders, oauthError }: { socialProviders: SocialPro
     oauthError ? "La connexion sociale n’a pas abouti. Réessayez ou utilisez votre adresse e-mail." : null
   );
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    if (!captchaToken) {
+      setError("La vérification de sécurité est encore en cours. Réessayez dans un instant.");
+      return;
+    }
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -104,10 +111,13 @@ function LoginForm({ socialProviders, oauthError }: { socialProviders: SocialPro
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: String(formData.get("email")),
       password: String(formData.get("password")),
+      options: { captchaToken },
     });
 
     if (signInError) {
       setLoading(false);
+      setCaptchaToken("");
+      setCaptchaReset((value) => value + 1);
       setError("E-mail ou mot de passe incorrect.");
       return;
     }
@@ -148,7 +158,9 @@ function LoginForm({ socialProviders, oauthError }: { socialProviders: SocialPro
         Mot de passe oublié ?
       </a>
 
-      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
+      <TurnstileWidget action="signin" name={false} onToken={setCaptchaToken} resetSignal={captchaReset} />
+
+      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading || !captchaToken}>
         {loading ? "Connexion…" : "Se connecter →"}
       </button>
 
@@ -166,10 +178,17 @@ function SignupForm({ socialProviders }: { socialProviders: SocialProviders }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+
+    if (!captchaToken) {
+      setError("La vérification de sécurité est encore en cours. Réessayez dans un instant.");
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const password = String(formData.get("password"));
@@ -190,44 +209,47 @@ function SignupForm({ socialProviders }: { socialProviders: SocialProviders }) {
       data: { session: existingSession },
     } = await supabase.auth.getSession();
 
-    // Un visiteur non connecté a déjà une session anonyme (CartSessionBootstrap,
-    // Phase 5) : on la convertit en compte permanent plutôt que d'en créer un
-    // nouveau, pour que son panier le suive automatiquement — même identifiant
-    // technique conservé de bout en bout.
-    const isAnonymousUpgrade = existingSession?.user?.is_anonymous === true;
+    // La conversion directe updateUser d'une session anonyme contournerait la
+    // protection CAPTCHA de l'endpoint signup. On conserve donc la preuve de
+    // la session anonyme, puis on crée un compte neuf protégé ; panier et
+    // commandes seront rattachés après ouverture de la session réelle.
+    if (existingSession?.user?.is_anonymous) {
+      try {
+        await prepareAnonymousOrderTransfer({ maxAgeSeconds: 24 * 60 * 60 });
+        await supabase.auth.signOut({ scope: "local" });
+      } catch (transferPreparationError) {
+        console.error("[compte] Préparation des données anonymes impossible :", transferPreparationError);
+        setLoading(false);
+        setCaptchaToken("");
+        setCaptchaReset((value) => value + 1);
+        setError("Vos données en cours n'ont pas pu être sécurisées. Actualisez la page avant de créer le compte.");
+        return;
+      }
+    }
 
-    const { data, error: signUpError } = isAnonymousUpgrade
-      ? await supabase.auth.updateUser({ email, password, data: { first_name, last_name } })
-      : await supabase.auth.signUp({ email, password, options: { data: { first_name, last_name } } });
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { first_name, last_name }, captchaToken },
+    });
 
     if (signUpError) {
       setLoading(false);
+      setCaptchaToken("");
+      setCaptchaReset((value) => value + 1);
       setError(signupErrorMessage(signUpError.code, signUpError.message));
       return;
     }
 
-    // La conversion d'une session anonyme conserve le même utilisateur : le
-    // trigger de création ne se relance donc pas. On synchronise explicitement
-    // le profil maintenant que les noms ont été fournis.
-    if (isAnonymousUpgrade && data.user) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ first_name, last_name })
-        .eq("id", data.user.id);
-
-      if (profileError) {
-        console.error("[compte] Profil non synchronisé après conversion anonyme :", profileError.message);
-      }
-    }
-
     setLoading(false);
 
-    // Upgrade anonyme : la session existante reste valide immédiatement (même si
-    // l'e-mail doit encore être confirmé) — inscription classique : une session
-    // n'est renvoyée que si la confirmation par e-mail est désactivée.
-    const hasImmediateSession = isAnonymousUpgrade || ("session" in data && Boolean(data.session));
-    if (hasImmediateSession) {
-      router.push("/mon-compte");
+    if (data.session) {
+      const transfer = await linkPreparedAnonymousOrdersToCurrentAccount();
+      if (transfer.error) {
+        setError("Le compte a bien été créé, mais vos données en cours n'ont pas encore pu être rattachées.");
+        return;
+      }
+      router.push(transfer.linked > 0 ? "/mon-compte?section=commandes" : "/mon-compte");
       router.refresh();
       return;
     }
@@ -275,7 +297,9 @@ function SignupForm({ socialProviders }: { socialProviders: SocialProviders }) {
         </span>
       </label>
 
-      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
+      <TurnstileWidget action="signup" name={false} onToken={setCaptchaToken} resetSignal={captchaReset} />
+
+      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading || !captchaToken}>
         {loading ? "Création…" : "Créer mon compte →"}
       </button>
 

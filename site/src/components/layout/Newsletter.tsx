@@ -4,6 +4,8 @@ import { useEffect, useState, useTransition } from "react";
 import { subscribeToNewsletter } from "@/lib/mailerlite/subscribe";
 import { createClient } from "@/lib/supabase/client";
 import { isRealUser } from "@/lib/supabase/realUser";
+import BotTrapFields from "@/components/security/BotTrapFields";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 // Bloc newsletter "ParoleDeViePourVous". Un seul champ (email) + consentement RGPD —
 // jamais de champ Nom/Ville en plus (cahier §1.2). Présent sur 15 des 23 pages.
@@ -24,6 +26,7 @@ export default function Newsletter() {
   const [usesAccountEmail, setUsesAccountEmail] = useState(false);
   const [consent, setConsent] = useState(false);
   const [result, setResult] = useState<"ok" | "error" | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -44,10 +47,12 @@ export default function Newsletter() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setResult(null);
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
     startTransition(() => {
-      subscribeToNewsletter(email).then((res) => {
+      subscribeToNewsletter(formData).then((res) => {
         setResult(res.ok ? "ok" : "error");
         if (res.ok) setEmail("");
+        else setCaptchaReset((value) => value + 1);
       });
     });
   }
@@ -93,6 +98,8 @@ export default function Newsletter() {
                 <input type="checkbox" required checked={consent} onChange={(e) => setConsent(e.target.checked)} />
                 <span>J&apos;accepte de recevoir les communications par e-mail (RGPD)</span>
               </label>
+              <BotTrapFields />
+              <TurnstileWidget action="newsletter" resetSignal={captchaReset} />
               {result === "error" && (
                 <p style={{ fontSize: 13, marginTop: 8 }}>
                   Une erreur est survenue, merci de réessayer dans un instant.

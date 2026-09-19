@@ -4,15 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import PasswordInput from "@/components/account/PasswordInput";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 export default function LoginForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    if (!captchaToken) {
+      setError("La vérification de sécurité est encore en cours. Réessayez dans un instant.");
+      return;
+    }
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -20,11 +27,17 @@ export default function LoginForm() {
     const password = String(formData.get("password"));
 
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: { captchaToken },
+    });
 
     setLoading(false);
 
     if (signInError) {
+      setCaptchaToken("");
+      setCaptchaReset((value) => value + 1);
       setError("Identifiants incorrects, ou ce compte n'a pas accès à l'administration.");
       return;
     }
@@ -51,7 +64,8 @@ export default function LoginForm() {
       <a href="/compte/mot-de-passe-oublie" className="admin-forgot">
         Mot de passe oublié ?
       </a>
-      <button type="submit" className="admin-btn-primary" style={{ width: "100%" }} disabled={loading}>
+      <TurnstileWidget action="admin_signin" name={false} onToken={setCaptchaToken} resetSignal={captchaReset} />
+      <button type="submit" className="admin-btn-primary" style={{ width: "100%" }} disabled={loading || !captchaToken}>
         {loading ? "Connexion…" : "Se connecter"}
       </button>
     </form>

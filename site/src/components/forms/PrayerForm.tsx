@@ -2,6 +2,8 @@
 
 import { useTransition } from "react";
 import { submitPrayerForm } from "@/lib/forms/actions";
+import BotTrapFields from "@/components/security/BotTrapFields";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 export default function PrayerForm() {
   const [isPending, startTransition] = useTransition();
@@ -47,6 +49,8 @@ export default function PrayerForm() {
         <input type="checkbox" name="accepte_contact" />
         <span>Oui, j&apos;accepte d&apos;être contacté(e) pour la prière du salut afin de recevoir Jésus dans mon cœur.</span>
       </label>
+      <BotTrapFields />
+      <TurnstileWidget action="prayer" />
       <button className="btn btn-primary" type="submit" disabled={isPending}>
         {isPending ? "Envoi…" : "Envoyer →"}
       </button>

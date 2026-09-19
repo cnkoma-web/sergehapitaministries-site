@@ -19,7 +19,12 @@ const TRANSFER_COOKIE_OPTIONS = {
  * qu'une connexion par mot de passe ou OAuth ne la remplace.
  * Le jeton reste dans un cookie HttpOnly et n'est jamais renvoyé au composant.
  */
-export async function prepareAnonymousOrderTransfer(): Promise<{ prepared: boolean }> {
+export async function prepareAnonymousOrderTransfer(
+  options: { maxAgeSeconds?: number } = {}
+): Promise<{ prepared: boolean }> {
+  const cookieStore = await cookies();
+  if (cookieStore.get(TRANSFER_COOKIE)?.value) return { prepared: true };
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -38,10 +43,9 @@ export async function prepareAnonymousOrderTransfer(): Promise<{ prepared: boole
     .not("stripe_checkout_session_id", "is", null)
     .limit(1)
     .maybeSingle();
-  const cookieStore = await cookies();
   cookieStore.set(TRANSFER_COOKIE, session.access_token, {
     ...TRANSFER_COOKIE_OPTIONS,
-    maxAge: 10 * 60,
+    maxAge: options.maxAgeSeconds ?? 10 * 60,
   });
   return { prepared: Boolean(order) };
 }

@@ -28,7 +28,7 @@ export default function PolitiqueDeConfidentialitePage() {
   return (
     <LegalPageLayout
       title="Politique de confidentialité"
-      lastUpdate="Dernière mise à jour : 18 septembre 2026"
+      lastUpdate="Dernière mise à jour : à préciser lors de la mise en ligne"
       currentHref="/politique-de-confidentialite"
     >
           <h2>Quelles données collectons-nous ?</h2>
@@ -64,7 +64,21 @@ export default function PolitiqueDeConfidentialitePage() {
             <li>Un hébergeur, pour le fonctionnement du site</li>
             <li>MailerLite, pour l&apos;envoi de la newsletter « ParoleDeViePourVous »</li>
             <li>Resend, pour l&apos;envoi des emails transactionnels (confirmation de commande, réponse à un message, etc.)</li>
+            <li>
+              Cloudflare Turnstile, pour vérifier automatiquement qu&apos;une demande ne provient pas d&apos;un robot
+              malveillant
+            </li>
           </ul>
+
+          <h2>Protection contre les abus</h2>
+          <p>
+            Les formulaires, la création de compte et la connexion sont protégés par Cloudflare Turnstile. Lors de
+            ces interactions, des données techniques telles que l&apos;adresse IP et des informations relatives au
+            navigateur peuvent être traitées afin de détecter les soumissions automatisées et les tentatives
+            frauduleuses. Ce traitement repose sur notre intérêt légitime à sécuriser le site, les comptes et les
+            données reçues. Ces informations ne sont pas utilisées par Serge Hapita Ministries à des fins
+            publicitaires.
+          </p>
 
           <h2>Durée de conservation</h2>
           <p>
