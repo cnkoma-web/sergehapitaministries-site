@@ -133,13 +133,25 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
           )}
 
           {article.type === "vs" && (
-            <div className="editor-field">
-              <label>Accès</label>
-              <select name="access" defaultValue={article.access}>
-                <option value="free">Gratuit (compte requis)</option>
-                <option value="paid">Payant (à activer plus tard)</option>
-              </select>
-            </div>
+            <>
+              <div className="editor-field">
+                <label>Accès</label>
+                <select name="access" defaultValue={article.access}>
+                  <option value="free">Gratuit (compte requis)</option>
+                  <option value="paid">Payant (à activer plus tard)</option>
+                </select>
+              </div>
+              <div className="editor-field">
+                <label>Ce que la suite aborde</label>
+                <textarea
+                  name="toc_keywords"
+                  defaultValue={article.toc_keywords.join("\n")}
+                  rows={7}
+                  placeholder="Un point par ligne"
+                />
+                <small>Un point par ligne. Cette liste présente la suite de l&apos;article avant l&apos;accès au texte complet.</small>
+              </div>
+            </>
           )}
 
           <div className="editor-field">

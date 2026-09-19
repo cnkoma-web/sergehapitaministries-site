@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getCartItemsForMerge, mergeCartItemsIntoCurrentUser } from "@/lib/cart/actions";
+import { linkPreparedAnonymousOrdersToCurrentAccount, prepareAnonymousOrderTransfer } from "@/lib/orders/actions";
 import SocialAuthButtons from "./SocialAuthButtons";
 
 type Tab = "login" | "signup";
@@ -81,25 +82,50 @@ function LoginForm() {
     // Capturé pendant que la session est encore l'éventuelle session anonyme
     // (Phase 5) — signInWithPassword la remplace par la vraie session ensuite,
     // le panier anonyme redeviendrait sinon inaccessible (RLS).
-    const anonymousCartItems = await getCartItemsForMerge();
+    let anonymousCartItems: Awaited<ReturnType<typeof getCartItemsForMerge>> = [];
+    try {
+      const [capturedCartItems, orderTransfer] = await Promise.all([
+        getCartItemsForMerge(),
+        prepareAnonymousOrderTransfer(),
+      ]);
+      // Si un checkout a déjà été créé, ses lignes ne doivent pas être
+      // recopiées dans le panier du compte pendant le court délai précédant
+      // éventuellement le webhook Stripe.
+      anonymousCartItems = orderTransfer.prepared ? [] : capturedCartItems;
+    } catch (transferPreparationError) {
+      console.error("[compte] Préparation des données anonymes impossible :", transferPreparationError);
+    }
 
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: String(formData.get("email")),
       password: String(formData.get("password")),
     });
 
-    setLoading(false);
     if (signInError) {
+      setLoading(false);
       setError("E-mail ou mot de passe incorrect.");
       return;
     }
 
-    if (anonymousCartItems.length > 0) {
-      await mergeCartItemsIntoCurrentUser(anonymousCartItems);
-    }
+    try {
+      const [orderLinkResult] = await Promise.all([
+        linkPreparedAnonymousOrdersToCurrentAccount(),
+        anonymousCartItems.length > 0 ? mergeCartItemsIntoCurrentUser(anonymousCartItems) : Promise.resolve(),
+      ]);
+      if (orderLinkResult.error) {
+        setLoading(false);
+        setError("La connexion a réussi, mais votre commande n'a pas encore pu être rattachée. Réessayez une fois.");
+        return;
+      }
 
-    router.push("/mon-compte");
-    router.refresh();
+      setLoading(false);
+      router.push(orderLinkResult.linked > 0 ? "/mon-compte?section=commandes" : "/mon-compte");
+      router.refresh();
+    } catch (transferError) {
+      console.error("[compte] Rattachement après connexion impossible :", transferError);
+      setLoading(false);
+      setError("La connexion a réussi, mais votre commande n'a pas encore pu être rattachée. Réessayez une fois.");
+    }
   }
 
   return (

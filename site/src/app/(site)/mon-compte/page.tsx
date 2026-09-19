@@ -42,7 +42,7 @@ export default async function MonComptePage({
     supabase
       .from("orders")
       .select("id, status, subtotal_cents, shipping_cents, total_cents, created_at, order_items(title_snapshot, quantity, unit_price_cents)")
-      .eq("user_id", user.id)
+      .or(`user_id.eq.${user.id},account_user_id.eq.${user.id}`)
       .order("created_at", { ascending: false }),
   ]);
 

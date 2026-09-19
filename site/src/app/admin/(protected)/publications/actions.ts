@@ -38,6 +38,13 @@ function parseTags(raw: string): string[] {
     .filter(Boolean);
 }
 
+function parseLines(raw: string): string[] {
+  return raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
 export async function createArticle(formData: FormData) {
   const supabase = await createClient();
   const title = String(formData.get("title") ?? "Nouvel article").trim() || "Nouvel article";
@@ -101,6 +108,7 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   }
   if (type === "vs") {
     update.access = String(formData.get("access") ?? "free");
+    update.toc_keywords = parseLines(String(formData.get("toc_keywords") ?? ""));
   }
 
   if (status) update.status = status;

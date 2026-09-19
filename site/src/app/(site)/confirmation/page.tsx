@@ -133,6 +133,11 @@ export default async function ConfirmationPage({
                   >
                     {hasRealAccount ? "Voir ma commande →" : "Créer mon compte →"}
                   </Link>
+                  {!hasRealAccount ? (
+                    <Link href="/compte?tab=login" className="v2-btn v2-btn-secondary">
+                      J&apos;ai déjà un compte →
+                    </Link>
+                  ) : null}
                   <Link href="/" className="v2-btn v2-btn-secondary">
                     Retour à l&apos;accueil
                   </Link>
