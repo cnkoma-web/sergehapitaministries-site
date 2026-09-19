@@ -88,10 +88,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const paragraphs = extractParagraphs(rawBody);
 
   if (article.type === "vs") {
-    // Gating (cahier §3.5) : le corps complet n'est renvoyé au client que si
-    // l'utilisateur est connecté — c'est un mur d'accès éditorial, pas un
-    // chiffrement (voir commentaire de la policy RLS `articles`).
-    const unlocked = isRealUser(user);
+    // Premier droit calculé de « Mon accès » : un enseignement gratuit est
+    // déverrouillé pour un compte réel. Un contenu marqué « paid » reste
+    // fermé tant que les droits accordés par événement ne sont pas raccordés.
+    // Ce mur reste éditorial : la policy RLS publique de `articles` n'est pas
+    // une protection adaptée à un futur contenu confidentiel ou payant.
+    const hasRealAccount = isRealUser(user);
+    const unlocked = hasRealAccount && article.access === "free";
     // Bouton "J'aime" (retour du 05/09) — réservé aux comptes connectés ici,
     // même barrière que la lecture elle-même. Lu au chargement pour savoir
     // si CE compte a déjà aimé cet article, sans attendre un clic.
@@ -181,14 +184,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <div className="content-col">
                 <div className="gate-box">
                   <div className="lock">🔒</div>
-                  <h3>La suite est réservée aux membres</h3>
+                  <h3>{article.access === "paid" ? "Cet accès n’est pas actif" : "La suite est réservée aux membres"}</h3>
                   <p>
-                    L&apos;article complet est accessible gratuitement aux personnes disposant
-                    d&apos;un compte sur ce site.
+                    {article.access === "paid"
+                      ? "Cet enseignement nécessite un accès attribué à votre compte."
+                      : "L’article complet est accessible gratuitement aux personnes disposant d’un compte sur ce site."}
                   </p>
                   <div className="gate-actions">
-                    <Link href="/compte?tab=signup" className="btn btn-primary">Créer un compte →</Link>
-                    <Link href="/compte" className="btn btn-outline">Se connecter</Link>
+                    {!hasRealAccount ? (
+                      <>
+                        <Link href="/compte?tab=signup" className="btn btn-primary">Créer un compte →</Link>
+                        <Link href="/compte" className="btn btn-outline">Se connecter</Link>
+                      </>
+                    ) : (
+                      <Link href="/mon-compte" className="btn btn-primary">Voir Mon accès →</Link>
+                    )}
                   </div>
                 </div>
 
