@@ -41,7 +41,7 @@ export default async function MonComptePage({
       .order("created_at", { ascending: false }),
     supabase
       .from("orders")
-      .select("id, status, subtotal_cents, shipping_cents, total_cents, created_at, order_items(title_snapshot, quantity, unit_price_cents)")
+      .select("id, status, subtotal_cents, shipping_cents, total_cents, created_at, fulfillment_status, confirmed_at, preparing_at, shipped_at, delivered_at, tracking_carrier, tracking_number, tracking_url, order_items(title_snapshot, quantity, unit_price_cents)")
       .or(`user_id.eq.${user.id},account_user_id.eq.${user.id}`)
       .order("created_at", { ascending: false }),
   ]);
@@ -53,6 +53,14 @@ export default async function MonComptePage({
     shippingCents: o.shipping_cents,
     totalCents: o.total_cents,
     createdAt: o.created_at,
+    fulfillmentStatus: o.fulfillment_status,
+    confirmedAt: o.confirmed_at,
+    preparingAt: o.preparing_at,
+    shippedAt: o.shipped_at,
+    deliveredAt: o.delivered_at,
+    trackingCarrier: o.tracking_carrier,
+    trackingNumber: o.tracking_number,
+    trackingUrl: o.tracking_url,
     items: (Array.isArray(o.order_items) ? o.order_items : []).map((i) => ({
       label: `${i.title_snapshot} ×${i.quantity}`,
       priceCents: i.unit_price_cents * i.quantity,

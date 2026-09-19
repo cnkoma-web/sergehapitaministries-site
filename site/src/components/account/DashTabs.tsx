@@ -4,6 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import ProfileForm from "./ProfileForm";
 import { formatPrice } from "@/lib/format";
+import {
+  FULFILLMENT_STATUS_LABEL,
+  FULFILLMENT_STEPS,
+  isFulfillmentStatus,
+  shortOrderReference,
+  type FulfillmentStatus,
+} from "@/lib/orders/fulfillment";
 
 type Section = "apercu" | "commandes" | "profil" | "acces" | "avis";
 
@@ -35,6 +42,14 @@ type MyOrder = {
   shippingCents: number;
   totalCents: number;
   createdAt: string;
+  fulfillmentStatus: string | null;
+  confirmedAt: string | null;
+  preparingAt: string | null;
+  shippedAt: string | null;
+  deliveredAt: string | null;
+  trackingCarrier: string | null;
+  trackingNumber: string | null;
+  trackingUrl: string | null;
   items: OrderItem[];
 };
 
@@ -61,6 +76,19 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
   failed: "Échouée",
   refunded: "Remboursée",
 };
+
+function orderDisplayStatus(order: MyOrder): string {
+  return order.status === "paid" && isFulfillmentStatus(order.fulfillmentStatus)
+    ? FULFILLMENT_STATUS_LABEL[order.fulfillmentStatus]
+    : ORDER_STATUS_LABEL[order.status] ?? order.status;
+}
+
+function orderStepDate(order: MyOrder, status: FulfillmentStatus): string | null {
+  if (status === "confirmed") return order.confirmedAt;
+  if (status === "preparing") return order.preparingAt;
+  if (status === "shipped") return order.shippedAt;
+  return order.deliveredAt;
+}
 
 // Icônes SVG reprises à l'identique de chaque .dashboard-empty de la
 // maquette (une icône différente par onglet).
@@ -134,7 +162,7 @@ export default function DashTabs({ userId, firstName, lastName, email, vsArticle
                 <div className="num">{orders[0].items.map((i) => i.label).join(", ")}</div>
                 <div className="date">{new Date(orders[0].createdAt).toLocaleDateString("fr-FR")}</div>
               </div>
-              <span className="order-status">{ORDER_STATUS_LABEL[orders[0].status] ?? orders[0].status}</span>
+              <span className="order-status">{orderDisplayStatus(orders[0])}</span>
             </div>
           )}
         </section>
@@ -158,8 +186,16 @@ export default function DashTabs({ userId, firstName, lastName, email, vsArticle
               {orders.map((o) => (
                 <div className="order-entry" key={o.id}>
                   <div className="order-row">
-                    <div className="date">{new Date(o.createdAt).toLocaleDateString("fr-FR")}</div>
-                    <span className="order-status">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
+                    <div>
+                      <div className="num">Commande n° {shortOrderReference(o.id)}</div>
+                      <div className="date">{new Date(o.createdAt).toLocaleDateString("fr-FR")}</div>
+                    </div>
+                    <div className="order-status-group">
+                      <span className="order-status">Paiement : {ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
+                      {isFulfillmentStatus(o.fulfillmentStatus) && (
+                        <span className="order-status secondary">Traitement : {FULFILLMENT_STATUS_LABEL[o.fulfillmentStatus]}</span>
+                      )}
+                    </div>
                   </div>
                   <div className="order-entry-items">
                     {o.items.map((item, i) => (
@@ -172,7 +208,7 @@ export default function DashTabs({ userId, firstName, lastName, email, vsArticle
                       <span>Sous-total</span>
                       <span>{formatPrice(o.subtotalCents)}</span>
                     </div>
-                    {o.status === "paid" ? (
+                    {o.status === "paid" || o.status === "refunded" ? (
                       <>
                         <div className="order-entry-line muted">
                           <span>Livraison</span>
@@ -190,6 +226,32 @@ export default function DashTabs({ userId, firstName, lastName, email, vsArticle
                       <p className="order-entry-note">Frais de livraison non définitifs tant que le paiement n&apos;est pas confirmé.</p>
                     )}
                   </div>
+                  {isFulfillmentStatus(o.fulfillmentStatus) && (
+                    <div className="account-fulfillment">
+                      <ol aria-label="Avancement de la commande">
+                        {FULFILLMENT_STEPS.map((step, index) => {
+                          const currentIndex = FULFILLMENT_STEPS.findIndex((candidate) => candidate.id === o.fulfillmentStatus);
+                          const completed = index <= currentIndex;
+                          const date = orderStepDate(o, step.id);
+                          return (
+                            <li key={step.id} className={completed ? "is-complete" : undefined} aria-current={step.id === o.fulfillmentStatus ? "step" : undefined}>
+                              <span />
+                              <strong>{step.label}</strong>
+                              <small>{date ? new Date(date).toLocaleDateString("fr-FR") : "À venir"}</small>
+                            </li>
+                          );
+                        })}
+                      </ol>
+                      {(o.trackingCarrier || o.trackingNumber || o.trackingUrl) && (
+                        <div className="account-tracking">
+                          <strong>Suivi du colis</strong>
+                          {o.trackingCarrier && <span>Transporteur : {o.trackingCarrier}</span>}
+                          {o.trackingNumber && <span>Numéro : {o.trackingNumber}</span>}
+                          {o.trackingUrl && <a href={o.trackingUrl} target="_blank" rel="noreferrer">Suivre mon colis →</a>}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

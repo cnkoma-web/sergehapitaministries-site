@@ -1,3 +1,5 @@
+import "server-only";
+
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 // ⚠️ Client "service_role" — contourne TOUTES les policies RLS. Réservé au
