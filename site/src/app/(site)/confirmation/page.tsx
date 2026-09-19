@@ -34,7 +34,7 @@ const PAYMENT_MESSAGES: Record<string, [string, string]> = {
   ],
   failed: [
     "Le paiement n’a pas été confirmé",
-    "Votre commande est enregistrée, mais le paiement n’a pas abouti. Aucun paiement confirmé ne sera présenté comme reçu.",
+    "Votre commande est enregistrée, mais le paiement n’a pas abouti. Son statut reste consultable depuis votre espace.",
   ],
   refunded: [
     "Votre commande a été remboursée",
@@ -112,7 +112,7 @@ export default async function ConfirmationPage({
                     <span>Livraison</span>
                     <strong>
                       {orderSummary.shipping_cents === 0
-                        ? orderSummary.status === "paid" ? "Offerte" : "À confirmer"
+                        ? ["paid", "refunded"].includes(orderSummary.status) ? "Offerte" : "À confirmer"
                         : formatPrice(orderSummary.shipping_cents)}
                     </strong>
                   </div>
