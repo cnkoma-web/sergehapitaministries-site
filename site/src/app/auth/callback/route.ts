@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  let transfer = { linked: 0, merged: 0, error: undefined as string | undefined };
+  let transfer: { linked: number; merged: number; error?: string } = { linked: 0, merged: 0 };
   try {
     transfer = await linkPreparedAnonymousOrdersToCurrentAccount();
   } catch (transferError) {
