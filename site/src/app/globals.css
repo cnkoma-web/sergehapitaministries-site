@@ -4370,9 +4370,11 @@ footer.footer--dark{
    (le CSS pré-V2 de .profile-form, plus haut dans ce fichier, ne pose
    qu'un style d'input/label en colonne unique). */
 .v2-dashboard-page .profile-form{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px;}
+.v2-dashboard-page .profile-form .v2-profile-field{display:flex;min-width:0;flex-direction:column;}
 .v2-dashboard-page .profile-form label{margin:0;color:var(--v2-ink-soft);font-size:12px;font-weight:800;}
 .v2-dashboard-page .profile-form input{width:100%;max-width:none;height:48px;margin:6px 0 0;padding-inline:13px;border:1px solid var(--v2-line);border-radius:6px;font-family:inherit;font-size:16px;}
 .v2-dashboard-page .profile-form .v2-profile-form-full{grid-column:1/-1;}
+.v2-dashboard-page .profile-form .v2-profile-feedback{grid-column:1/-1;margin:0;}
 .v2-dashboard-page .profile-form button{width:fit-content;min-height:46px;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;}
 
 @media (max-width:980px){
@@ -4397,6 +4399,7 @@ footer.footer--dark{
   .v2-compte-page .account-card{grid-template-columns:1fr;}
   .v2-dashboard-page .dashboard-grid{grid-template-columns:1fr;}
   .v2-dashboard-page .dashboard-tabs{position:static;grid-auto-flow:column;overflow-x:auto;}
+  .v2-dashboard-page .profile-form{grid-template-columns:1fr;}
 }
 @media (max-width:720px){
   .v2-product-page .v2-breadcrumbs-hero{padding-block:26px;}
