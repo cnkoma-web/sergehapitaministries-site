@@ -29,6 +29,47 @@ function signupErrorMessage(code: string | undefined, fallbackMessage: string): 
 
 type SocialProviders = { google: boolean; facebook: boolean };
 
+function PasswordField({
+  id,
+  name,
+  autoComplete,
+  minLength,
+}: {
+  id: string;
+  name: string;
+  autoComplete: "current-password" | "new-password";
+  minLength?: number;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className="password-field">
+      <input
+        id={id}
+        name={name}
+        type={visible ? "text" : "password"}
+        required
+        minLength={minLength}
+        autoComplete={autoComplete}
+      />
+      <button
+        type="button"
+        className="password-toggle"
+        aria-label={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+        aria-pressed={visible}
+        title={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+        onClick={() => setVisible((current) => !current)}
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+          <circle cx="12" cy="12" r="2.7" />
+          {visible && <path d="m4 4 16 16" />}
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 export default function AuthTabs({
   initialTab,
   socialProviders,
@@ -141,7 +182,7 @@ function LoginForm({ socialProviders, oauthError }: { socialProviders: SocialPro
       <label className="field-label" htmlFor="login-password">
         Mot de passe *
       </label>
-      <input id="login-password" name="password" type="password" required autoComplete="current-password" />
+      <PasswordField id="login-password" name="password" autoComplete="current-password" />
 
       <a href="/compte/mot-de-passe-oublie" className="forgot">
         Mot de passe oublié ?
@@ -259,12 +300,12 @@ function SignupForm({ socialProviders }: { socialProviders: SocialProviders }) {
       <label className="field-label" htmlFor="signup-password">
         Mot de passe *
       </label>
-      <input id="signup-password" name="password" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordField id="signup-password" name="password" minLength={8} autoComplete="new-password" />
 
       <label className="field-label" htmlFor="signup-password-confirm">
         Confirmer le mot de passe *
       </label>
-      <input id="signup-password-confirm" name="password_confirm" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordField id="signup-password-confirm" name="password_confirm" minLength={8} autoComplete="new-password" />
 
       <label className="consent">
         <input type="checkbox" required />
