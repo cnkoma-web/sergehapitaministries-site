@@ -4950,3 +4950,91 @@ footer.footer--dark{
   .v2-category-hub-feed .category-article h2{margin:18px 0 10px;font-size:27px;}
   .v2-category-hub-feed .category-article p{font-size:16px;}
 }
+
+/* ============================================================
+   CHANTIER 3 — suivi de commande
+   Paiement et traitement logistique restent volontairement
+   distincts dans l'administration comme dans l'espace client.
+   ============================================================ */
+.order-admin-row{grid-template-columns:110px minmax(230px,2fr) 90px 130px 145px 105px 72px;}
+.order-admin-reference{font-size:13px;font-weight:800;color:var(--purple);}
+.order-admin-open{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;}
+.fulfillment-badge{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:750;background:#ede9fe;color:#5b21b6;}
+.fulfillment-badge.fulfillment-none{background:#f1f5f9;color:#64748b;}
+.fulfillment-badge.fulfillment-shipped,.fulfillment-badge.fulfillment-delivered{background:#dcfce7;color:#166534;}
+
+.admin-back-link{display:inline-flex;margin-bottom:20px;color:var(--purple);font-size:13px;font-weight:750;text-decoration:none;}
+.admin-kicker{margin:0 0 3px;color:var(--ink-soft);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.order-detail-header{align-items:flex-end;margin-bottom:24px;}
+.order-detail-header h2{margin:0;}
+.order-detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.72fr);gap:20px;align-items:start;}
+.order-detail-card{padding:24px;border:1px solid var(--line);border-radius:12px;background:#fff;}
+.order-detail-card h3{margin:0 0 20px;font-family:Georgia,serif;font-size:20px;}
+.fulfillment-timeline{display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:0;list-style:none;}
+.fulfillment-timeline li{position:relative;display:grid;justify-items:center;gap:6px;color:var(--ink-soft);text-align:center;}
+.fulfillment-timeline li::before{content:"";position:absolute;top:8px;right:50%;width:100%;height:2px;background:var(--line);}
+.fulfillment-timeline li:first-child::before{display:none;}
+.fulfillment-timeline li.is-complete::before{background:var(--purple);}
+.fulfillment-dot{position:relative;z-index:1;width:18px;height:18px;border:3px solid #fff;border-radius:50%;background:var(--line);box-shadow:0 0 0 1px var(--line);}
+.fulfillment-timeline li.is-complete .fulfillment-dot{background:var(--purple);box-shadow:0 0 0 1px var(--purple);}
+.fulfillment-timeline strong{font-size:12px;color:inherit;}
+.fulfillment-timeline li.is-complete strong{color:var(--ink);}
+.fulfillment-timeline small{font-size:10.5px;}
+.order-advance-form{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line);}
+.order-advance-form p,.order-complete-message{margin:0;color:var(--ink-soft);font-size:13px;}
+.order-shipping-fields{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.order-shipping-fields label{display:grid;gap:5px;color:var(--ink-soft);font-size:12px;font-weight:700;}
+.order-shipping-fields label:last-child{grid-column:1/-1;}
+.order-shipping-fields input{width:100%;height:42px;padding:0 11px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);}
+.order-tracking-form{display:grid;gap:13px;}
+.order-tracking-form label{display:grid;gap:5px;color:var(--ink-soft);font-size:12px;font-weight:700;}
+.order-tracking-form input{width:100%;height:42px;padding:0 11px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);}
+.order-tracking-form .admin-btn-sm{justify-self:start;}
+.order-detail-help{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.55;}
+.order-email-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+.order-detail-list{display:grid;gap:14px;margin:0;}
+.order-detail-list div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;}
+.order-detail-list dt{color:var(--ink-soft);font-size:12px;font-weight:750;}
+.order-detail-list dd{margin:0;font-size:13px;line-height:1.55;overflow-wrap:anywhere;}
+.order-detail-items{display:grid;gap:8px;}
+.order-detail-items>div{display:flex;justify-content:space-between;gap:18px;font-size:13px;}
+.order-detail-items small{display:block;margin-top:2px;color:var(--ink-soft);}
+.order-detail-items .muted{color:var(--ink-soft);}
+.order-detail-items .total{margin-top:6px;padding-top:10px;border-top:1px solid var(--line);font-size:14px;}
+.order-detail-meta{margin:18px 0 0;color:var(--ink-soft);font-size:11px;line-height:1.5;}
+
+.v2-dashboard-page .account-fulfillment{margin-top:18px;padding:18px;border-radius:9px;background:#f8f6ff;}
+.v2-dashboard-page .account-fulfillment ol{display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:0;list-style:none;}
+.v2-dashboard-page .account-fulfillment li{position:relative;display:grid;justify-items:center;gap:5px;color:var(--v2-muted);text-align:center;}
+.v2-dashboard-page .account-fulfillment li::before{content:"";position:absolute;top:7px;right:50%;width:100%;height:2px;background:var(--v2-line);}
+.v2-dashboard-page .account-fulfillment li:first-child::before{display:none;}
+.v2-dashboard-page .account-fulfillment li.is-complete::before{background:var(--v2-violet-deep);}
+.v2-dashboard-page .account-fulfillment li>span{position:relative;z-index:1;width:16px;height:16px;border:3px solid #f8f6ff;border-radius:50%;background:var(--v2-line);box-shadow:0 0 0 1px var(--v2-line);}
+.v2-dashboard-page .account-fulfillment li.is-complete>span{background:var(--v2-violet-deep);box-shadow:0 0 0 1px var(--v2-violet-deep);}
+.v2-dashboard-page .account-fulfillment li strong{font-size:11px;}
+.v2-dashboard-page .account-fulfillment li small{font-size:10px;}
+.v2-dashboard-page .account-tracking{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:18px;padding-top:14px;border-top:1px solid var(--v2-line);font-size:12px;}
+.v2-dashboard-page .account-tracking strong{width:100%;color:var(--v2-ink);}
+.v2-dashboard-page .account-tracking span{color:var(--v2-muted);}
+.v2-dashboard-page .account-tracking a{color:var(--v2-violet-deep);font-weight:800;}
+.v2-dashboard-page .order-status-group{display:grid;justify-items:end;gap:5px;text-align:right;}
+.v2-dashboard-page .order-status.secondary{color:var(--v2-muted);font-size:10.5px;}
+
+@media (max-width:1100px){
+  .order-admin-table{overflow-x:auto;}
+  .order-admin-row{min-width:1050px;}
+  .order-detail-grid{grid-template-columns:1fr;}
+}
+@media (max-width:720px){
+  .admin-main{padding-inline:18px;}
+  .fulfillment-timeline,.v2-dashboard-page .account-fulfillment ol{grid-template-columns:1fr;gap:12px;}
+  .fulfillment-timeline li,.v2-dashboard-page .account-fulfillment li{grid-template-columns:22px 1fr;justify-items:start;text-align:left;}
+  .fulfillment-timeline li::before,.v2-dashboard-page .account-fulfillment li::before{top:-12px;left:8px;width:2px;height:24px;}
+  .fulfillment-timeline li>div{display:grid;}
+  .v2-dashboard-page .account-fulfillment li strong,.v2-dashboard-page .account-fulfillment li small{grid-column:2;}
+  .v2-dashboard-page .account-fulfillment li>span{grid-row:1 / span 2;}
+  .order-detail-list div{grid-template-columns:1fr;gap:3px;}
+  .order-shipping-fields{grid-template-columns:1fr;}
+  .order-shipping-fields label:last-child{grid-column:auto;}
+  .v2-dashboard-page .order-status-group{justify-items:start;text-align:left;}
+}

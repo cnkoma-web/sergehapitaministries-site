@@ -8,11 +8,13 @@
 // la notification par e-mail est différée jusqu'à la configuration de la clé.
 const SENDER = "Serge Hapita Ministries <notifications@amdgeditions.fr>";
 
-async function sendEmail(to: string, subject: string, htmlBody: string): Promise<void> {
+type SendEmailOptions = { idempotencyKey?: string };
+
+async function sendEmail(to: string, subject: string, htmlBody: string, options?: SendEmailOptions): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn(`[email] RESEND_API_KEY absente — e-mail "${subject}" (à ${to}) non envoyé.`);
-    return;
+    return false;
   }
 
   try {
@@ -21,6 +23,7 @@ async function sendEmail(to: string, subject: string, htmlBody: string): Promise
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        ...(options?.idempotencyKey ? { "Idempotency-Key": options.idempotencyKey } : {}),
       },
       body: JSON.stringify({
         from: SENDER,
@@ -31,11 +34,14 @@ async function sendEmail(to: string, subject: string, htmlBody: string): Promise
     });
     if (!res.ok) {
       console.error(`[email] Échec envoi Resend (${res.status}) à ${to} : ${await res.text()}`);
+      return false;
     }
+    return true;
   } catch (err) {
     // Un envoi raté ne doit jamais faire échouer l'opération qui le déclenche
     // (commande déjà enregistrée, formulaire déjà soumis, etc.).
     console.error("[email] Erreur d'envoi Resend :", err);
+    return false;
   }
 }
 
@@ -53,7 +59,12 @@ export async function sendNotificationEmail(subject: string, htmlBody: string): 
 /** Envoie un e-mail transactionnel directement à un client (confirmation de
  * commande, avis approuvé...). N'envoie rien si l'adresse est vide/absente
  * (ex. session anonyme sans e-mail réel). */
-export async function sendCustomerEmail(to: string | null | undefined, subject: string, htmlBody: string): Promise<void> {
-  if (!to) return;
-  await sendEmail(to, subject, htmlBody);
+export async function sendCustomerEmail(
+  to: string | null | undefined,
+  subject: string,
+  htmlBody: string,
+  options?: SendEmailOptions
+): Promise<boolean> {
+  if (!to) return false;
+  return sendEmail(to, subject, htmlBody, options);
 }
