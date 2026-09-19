@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { subscribeToNewsletter } from "@/lib/mailerlite/subscribe";
+import { createClient } from "@/lib/supabase/client";
+import { isRealUser } from "@/lib/supabase/realUser";
 
 // Bloc newsletter "ParoleDeViePourVous". Un seul champ (email) + consentement RGPD —
 // jamais de champ Nom/Ville en plus (cahier §1.2). Présent sur 15 des 23 pages.
@@ -19,9 +21,25 @@ import { subscribeToNewsletter } from "@/lib/mailerlite/subscribe";
 // pages.
 export default function Newsletter() {
   const [email, setEmail] = useState("");
+  const [usesAccountEmail, setUsesAccountEmail] = useState(false);
   const [consent, setConsent] = useState(false);
   const [result, setResult] = useState<"ok" | "error" | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    let active = true;
+    const supabase = createClient();
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!active || !isRealUser(user) || !user.email) return;
+      setEmail((currentEmail) => currentEmail || user.email || "");
+      setUsesAccountEmail(true);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -60,6 +78,7 @@ export default function Newsletter() {
                   name="email"
                   placeholder="vous@exemple.fr"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -67,6 +86,9 @@ export default function Newsletter() {
                   {isPending ? "Inscription…" : "S'inscrire"} <span>→</span>
                 </button>
               </div>
+              {usesAccountEmail && (
+                <p className="form-note">L&apos;adresse liée à votre compte est déjà renseignée.</p>
+              )}
               <label className="consent">
                 <input type="checkbox" required checked={consent} onChange={(e) => setConsent(e.target.checked)} />
                 <span>J&apos;accepte de recevoir les communications par e-mail (RGPD)</span>

@@ -12,7 +12,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function MonComptePage() {
+type AccountSection = "apercu" | "commandes" | "profil" | "acces" | "avis";
+
+const ACCOUNT_SECTIONS = new Set<AccountSection>(["apercu", "commandes", "profil", "acces", "avis"]);
+
+export default async function MonComptePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ section?: string }>;
+}) {
+  const { section: requestedSection } = await searchParams;
+  const initialSection: AccountSection = ACCOUNT_SECTIONS.has(requestedSection as AccountSection)
+    ? (requestedSection as AccountSection)
+    : "apercu";
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,7 +32,7 @@ export default async function MonComptePage() {
   if (!isRealUser(user)) redirect("/compte?tab=login");
 
   const [{ data: profile }, vsArticles, { data: reviews }, { data: orders }] = await Promise.all([
-    supabase.from("profiles").select("first_name, last_name").eq("id", user.id).single(),
+    supabase.from("profiles").select("first_name, last_name").eq("id", user.id).maybeSingle(),
     getPublishedArticles("vs"),
     supabase
       .from("reviews")
@@ -80,15 +92,17 @@ export default async function MonComptePage() {
           <SignOutLink />
         </div>
         <DashTabs
+          key={initialSection}
           userId={user.id}
-          firstName={profile?.first_name ?? ""}
-          lastName={profile?.last_name ?? ""}
+          firstName={profile?.first_name ?? String(user.user_metadata?.first_name ?? "")}
+          lastName={profile?.last_name ?? String(user.user_metadata?.last_name ?? "")}
           email={user.email ?? ""}
           vsArticles={vsArticles
             .filter((article) => article.access === "free")
             .map((article) => ({ slug: article.slug, title: article.title }))}
           reviews={myReviews}
           orders={myOrders}
+          initialSection={initialSection}
         />
       </div>
 

@@ -197,7 +197,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         <Link href="/compte" className="btn btn-outline">Se connecter</Link>
                       </>
                     ) : (
-                      <Link href="/mon-compte" className="btn btn-primary">Voir Mon accès →</Link>
+                      <Link href="/mon-compte?section=acces" className="btn btn-primary">Voir Mon accès →</Link>
                     )}
                   </div>
                 </div>

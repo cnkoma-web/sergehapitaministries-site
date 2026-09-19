@@ -30,23 +30,21 @@ export default function ProfileForm({ userId, initialFirstName, initialLastName,
 
     const supabase = createClient();
 
-    // last_name AJOUTÉ (chantier /mon-compte, reprise) : § .profile-form
-    // "Nom" de la maquette — donnée réelle déjà en base (profiles.last_name,
-    // migration 20260824030000) avec le GRANT UPDATE déjà accordé à
-    // authenticated, jamais exposée par ce formulaire jusqu'ici.
-    if (firstName || lastName) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ first_name: firstName, last_name: lastName })
-        .eq("id", userId);
-      if (profileError) {
-        setError("Impossible de mettre à jour vos informations.");
-        setLoading(false);
-        return;
-      }
+    const { data: updatedProfile, error: profileError } = await supabase
+      .from("profiles")
+      .update({ first_name: firstName || null, last_name: lastName || null })
+      .eq("id", userId)
+      .select("id")
+      .maybeSingle();
+    if (profileError || !updatedProfile) {
+      setError("Impossible de mettre à jour vos informations.");
+      setLoading(false);
+      return;
     }
 
-    const authUpdates: { email?: string; password?: string } = {};
+    const authUpdates: { email?: string; password?: string; data: { first_name: string; last_name: string } } = {
+      data: { first_name: firstName, last_name: lastName },
+    };
     if (email && email !== initialEmail) authUpdates.email = email;
     if (newPassword) authUpdates.password = newPassword;
 
