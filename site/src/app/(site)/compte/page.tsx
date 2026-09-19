@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function ComptePage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; oauth_error?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -26,8 +26,12 @@ export default async function ComptePage({
   } = await supabase.auth.getUser();
   if (isRealUser(user)) redirect("/mon-compte");
 
-  const { tab } = await searchParams;
+  const { tab, oauth_error: oauthError } = await searchParams;
   const initialTab = tab === "signup" ? "signup" : "login";
+  const socialProviders = {
+    google: process.env.OAUTH_GOOGLE_ENABLED === "true",
+    facebook: process.env.OAUTH_FACEBOOK_ENABLED === "true",
+  };
 
   return (
     // V2 (retour du 11/09, Lot 5) — reproduit prototype-html/compte/
@@ -60,7 +64,7 @@ export default async function ComptePage({
               </div>
             </div>
             <div className="account-form-area">
-              <AuthTabs initialTab={initialTab} />
+              <AuthTabs initialTab={initialTab} socialProviders={socialProviders} oauthError={oauthError === "1"} />
             </div>
           </div>
         </div>
