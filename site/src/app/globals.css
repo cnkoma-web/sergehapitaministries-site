@@ -4972,14 +4972,15 @@ footer.footer--dark{
 .order-detail-card h3{margin:0 0 20px;font-family:Georgia,serif;font-size:20px;}
 .fulfillment-timeline{display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:0;list-style:none;}
 .fulfillment-timeline li{position:relative;display:grid;justify-items:center;gap:6px;color:var(--ink-soft);text-align:center;}
+.fulfillment-timeline li>div{display:grid;justify-items:center;gap:3px;min-width:0;}
 .fulfillment-timeline li::before{content:"";position:absolute;top:8px;right:50%;width:100%;height:2px;background:var(--line);}
 .fulfillment-timeline li:first-child::before{display:none;}
 .fulfillment-timeline li.is-complete::before{background:var(--purple);}
 .fulfillment-dot{position:relative;z-index:1;width:18px;height:18px;border:3px solid #fff;border-radius:50%;background:var(--line);box-shadow:0 0 0 1px var(--line);}
 .fulfillment-timeline li.is-complete .fulfillment-dot{background:var(--purple);box-shadow:0 0 0 1px var(--purple);}
-.fulfillment-timeline strong{font-size:12px;color:inherit;}
+.fulfillment-timeline strong{font-size:12px;line-height:1.35;color:inherit;}
 .fulfillment-timeline li.is-complete strong{color:var(--ink);}
-.fulfillment-timeline small{font-size:10.5px;}
+.fulfillment-timeline small{font-size:10.5px;line-height:1.4;}
 .order-advance-form{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line);}
 .order-advance-form p,.order-complete-message{margin:0;color:var(--ink-soft);font-size:13px;}
 .order-shipping-fields{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:13px;}
@@ -5030,7 +5031,7 @@ footer.footer--dark{
   .fulfillment-timeline,.v2-dashboard-page .account-fulfillment ol{grid-template-columns:1fr;gap:12px;}
   .fulfillment-timeline li,.v2-dashboard-page .account-fulfillment li{grid-template-columns:22px 1fr;justify-items:start;text-align:left;}
   .fulfillment-timeline li::before,.v2-dashboard-page .account-fulfillment li::before{top:-12px;left:8px;width:2px;height:24px;}
-  .fulfillment-timeline li>div{display:grid;}
+  .fulfillment-timeline li>div{justify-items:start;}
   .v2-dashboard-page .account-fulfillment li strong,.v2-dashboard-page .account-fulfillment li small{grid-column:2;}
   .v2-dashboard-page .account-fulfillment li>span{grid-row:1 / span 2;}
   .order-detail-list div{grid-template-columns:1fr;gap:3px;}
