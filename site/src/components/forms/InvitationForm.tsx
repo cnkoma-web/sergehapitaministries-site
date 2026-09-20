@@ -133,7 +133,7 @@ export default function InvitationForm() {
       <div className="inv-form-section">
         <div className="form-section-heading">
           <span>04</span>
-          <h2>Informations complémentaires</h2>
+          <h2>Compléments d&apos;infos</h2>
         </div>
         <div className="form-fields">
           <div className="field">
