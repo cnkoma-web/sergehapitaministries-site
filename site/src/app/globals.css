@@ -4509,9 +4509,6 @@ footer.footer--dark{
    touchés. */
 .inv-form-section{display:grid;grid-template-columns:190px minmax(0,1fr);gap:46px;margin:0;padding:42px 48px;border-bottom:1px solid var(--v2-line);}
 .inv-form-section:last-of-type{border-bottom:0;}
-@media (min-width:981px){
-  .v2-invitation-page .inv-form-section-details{column-gap:70px;}
-}
 .v2-invitation-page .form-section-heading{display:flex;align-items:flex-start;gap:13px;}
 .v2-invitation-page .form-section-heading span{flex:0 0 auto;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;color:#fff;background:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:11px;font-weight:800;}
 /* Intitulé d'étape (h2) : SEUL point allégé sur cette SECTION (14/09, 2e
@@ -4523,7 +4520,7 @@ footer.footer--dark{
    d'intitulé d'étape (bien plus petit qu'un titre de page dans une colonne
    de 190px) plutôt que de reprendre son clamp(36px,5vw,54px) intégral. */
 .v2-invitation-page .form-section-heading h2{margin:0;padding:4px 0 0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:25px;font-weight:500;line-height:1.2;text-transform:none;letter-spacing:normal;}
-.v2-invitation-page .form-fields{display:grid;gap:18px;}
+.v2-invitation-page .form-fields{display:grid;width:100%;max-width:680px;min-width:0;gap:18px;}
 .v2-invitation-page .field{line-height:1.6;}
 .v2-invitation-page .field-label{display:block;margin-bottom:8px;color:var(--v2-ink-soft);font-size:13px;font-weight:750;}
 .v2-invitation-page .optional-tag{color:var(--v2-muted);font-size:11px;font-weight:500;}
@@ -4550,6 +4547,8 @@ footer.footer--dark{
 .v2-invitation-page .consent-label{display:flex;align-items:flex-start;gap:10px;margin:0 0 20px;color:var(--v2-muted);font-size:12px;line-height:1.6;}
 .v2-invitation-page .consent-label input{width:auto;margin:3px 0 0;accent-color:var(--v2-violet-deep);}
 .v2-invitation-page .consent-label a{color:var(--v2-violet-deep);text-decoration:underline;}
+.v2-invitation-page .inv-submit-row .consent-label,
+.v2-invitation-page .inv-submit-row .btn.btn-primary{max-width:680px;}
 .v2-invitation-page .btn.btn-primary{width:100%;min-height:54px;border:0;border-radius:7px;color:#fff;background:linear-gradient(135deg,#4e2cff,#8b35ee);box-shadow:0 13px 28px rgba(79,37,216,.22);font-weight:800;}
 
 /* --- Partenariat --- */
