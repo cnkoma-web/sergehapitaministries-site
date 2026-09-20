@@ -130,7 +130,7 @@ export default function InvitationForm() {
         </div>
       </div>
 
-      <div className="inv-form-section">
+      <div className="inv-form-section inv-form-section-details">
         <div className="form-section-heading">
           <span>04</span>
           <h2>Informations complémentaires</h2>
