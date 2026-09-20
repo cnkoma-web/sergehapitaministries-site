@@ -41,7 +41,10 @@ export async function submitContactForm(formData: FormData): Promise<void> {
 
   const supabase = createServiceRoleClient();
   const { error } = await supabase.from("contact_submissions").insert({ nom, email, sujet, message });
-  if (error) throw new Error("Impossible d'envoyer le message pour le moment.");
+  if (error) {
+    console.error("[contact] Insertion refusée :", error.message);
+    throw new Error("Impossible d'envoyer le message pour le moment.");
+  }
 
   const safeNom = escapeHtml(nom);
   const safeEmail = escapeHtml(email);
@@ -102,7 +105,10 @@ export async function submitInvitationForm(formData: FormData): Promise<void> {
 
   const supabase = createServiceRoleClient();
   const { error } = await supabase.from("invitation_submissions").insert(row);
-  if (error) throw new Error("Impossible d'envoyer la demande pour le moment.");
+  if (error) {
+    console.error("[invitation] Insertion refusée :", error.message);
+    throw new Error("Impossible d'envoyer la demande pour le moment.");
+  }
 
   const safe = Object.fromEntries(
     Object.entries(row).map(([key, value]) => [key, value === null ? null : escapeHtml(value)])
@@ -137,7 +143,10 @@ export async function submitPrayerForm(formData: FormData): Promise<void> {
   const { error } = await supabase
     .from("prayer_submissions")
     .insert({ nom, ville, email, telephone, accepte_contact });
-  if (error) throw new Error("Impossible d'envoyer votre démarche pour le moment.");
+  if (error) {
+    console.error("[prayer] Insertion refusée :", error.message);
+    throw new Error("Impossible d'envoyer votre démarche pour le moment.");
+  }
 
   await sendNotificationEmail(
     "Nouvelle prière du salut",
