@@ -4,12 +4,14 @@ import { useTransition } from "react";
 import { submitInvitationForm } from "@/lib/forms/actions";
 import BotTrapFields from "@/components/security/BotTrapFields";
 import TurnstileWidget from "@/components/security/TurnstileWidget";
+import styles from "./InvitationForm.module.css";
 
 export default function InvitationForm() {
   const [isPending, startTransition] = useTransition();
 
   return (
     <form
+      className={styles.form}
       action={(formData) => {
         startTransition(() => submitInvitationForm(formData));
       }}

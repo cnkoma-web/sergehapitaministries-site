@@ -103,7 +103,11 @@ export default function TurnstileWidget({
   }, [executeChallenge, resetSignal]);
 
   return (
-    <div className="turnstile-security" aria-live="polite">
+    <div
+      className="turnstile-security"
+      aria-live="polite"
+      style={{ position: "absolute", width: 0, height: 0, margin: 0, padding: 0, overflow: "visible" }}
+    >
       <Script
         id="cloudflare-turnstile"
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
