@@ -4,14 +4,13 @@ import { useTransition } from "react";
 import { submitInvitationForm } from "@/lib/forms/actions";
 import BotTrapFields from "@/components/security/BotTrapFields";
 import TurnstileWidget from "@/components/security/TurnstileWidget";
-import styles from "./InvitationForm.module.css";
 
 export default function InvitationForm() {
   const [isPending, startTransition] = useTransition();
 
   return (
     <form
-      className={styles.form}
+      className="invitation-form"
       action={(formData) => {
         startTransition(() => submitInvitationForm(formData));
       }}
@@ -137,16 +136,16 @@ export default function InvitationForm() {
           <h2>Informations complémentaires</h2>
         </div>
         <div className="form-fields">
-          <div>
-            <label className="field-label">Prévoyez-vous de couvrir les frais de voyage et d’hébergement ? *</label>
-            <div className="radio-row">
-              <label>
+          <div className="field">
+            <span className="field-label">Prévoyez-vous de couvrir les frais de voyage et d’hébergement ? *</span>
+            <div className="radio-group">
+              <label className="radio-option">
                 <input type="radio" name="frais_couverts" value="Oui" required /> Oui
               </label>
-              <label>
+              <label className="radio-option">
                 <input type="radio" name="frais_couverts" value="Non" /> Non
               </label>
-              <label>
+              <label className="radio-option">
                 <input type="radio" name="frais_couverts" value="À discuter" /> À discuter
               </label>
             </div>
