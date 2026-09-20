@@ -38,8 +38,8 @@ type Props = {
 
 /**
  * Widget Turnstile invisible partagé par les formulaires et Supabase Auth.
- * La clé factice officielle Cloudflare n'est utilisée qu'en préproduction
- * lorsque la vraie clé publique n'est pas encore configurée.
+ * La clé factice officielle Cloudflare est réservée au développement local.
+ * Les déploiements Vercel doivent toujours fournir la vraie clé publique.
  */
 export default function TurnstileWidget({
   action,
@@ -73,7 +73,13 @@ export default function TurnstileWidget({
     if (!ready || !window.turnstile || !containerRef.current || widgetIdRef.current) return;
 
     const api = window.turnstile;
-    const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || TURNSTILE_TEST_SITE_KEY;
+    const sitekey =
+      process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ||
+      (process.env.NODE_ENV === "development" ? TURNSTILE_TEST_SITE_KEY : "");
+    if (!sitekey) {
+      console.error("[security] NEXT_PUBLIC_TURNSTILE_SITE_KEY absente sur le déploiement.");
+      return;
+    }
     const widgetId = api.render(containerRef.current, {
       sitekey,
       action,
