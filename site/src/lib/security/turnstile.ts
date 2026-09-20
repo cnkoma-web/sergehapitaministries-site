@@ -12,9 +12,8 @@ type TurnstileResponse = {
   "error-codes"?: string[];
 };
 
-function isNonProductionEnvironment() {
-  if (process.env.VERCEL_ENV) return process.env.VERCEL_ENV !== "production";
-  return process.env.NODE_ENV !== "production";
+function isLocalDevelopment() {
+  return !process.env.VERCEL_ENV && process.env.NODE_ENV === "development";
 }
 
 export async function getRequestIp(): Promise<string> {
@@ -30,7 +29,7 @@ export async function verifyTurnstileToken(token: string, expectedAction: string
   if (!token || token.length > 4096) return false;
 
   const secret = process.env.TURNSTILE_SECRET_KEY ||
-    (isNonProductionEnvironment() ? TURNSTILE_TEST_SECRET_KEY : "");
+    (isLocalDevelopment() ? TURNSTILE_TEST_SECRET_KEY : "");
   if (!secret) {
     console.error("[security] TURNSTILE_SECRET_KEY absente en production.");
     return false;
