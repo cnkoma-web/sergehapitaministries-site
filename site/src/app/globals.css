@@ -4509,6 +4509,9 @@ footer.footer--dark{
    touchés. */
 .inv-form-section{display:grid;grid-template-columns:190px minmax(0,1fr);gap:46px;margin:0;padding:42px 48px;border-bottom:1px solid var(--v2-line);}
 .inv-form-section:last-of-type{border-bottom:0;}
+@media (min-width:981px){
+  .v2-invitation-page .inv-form-section-details{column-gap:70px;}
+}
 .v2-invitation-page .form-section-heading{display:flex;align-items:flex-start;gap:13px;}
 .v2-invitation-page .form-section-heading span{flex:0 0 auto;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;color:#fff;background:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:11px;font-weight:800;}
 /* Intitulé d'étape (h2) : SEUL point allégé sur cette SECTION (14/09, 2e
