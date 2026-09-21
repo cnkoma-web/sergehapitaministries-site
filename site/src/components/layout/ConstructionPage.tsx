@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/layout/Footer";
 
@@ -21,20 +20,12 @@ export default function ConstructionPage({ section, eyebrow }: ConstructionPageP
 
         <section className="v2-construction-card" aria-labelledby="construction-title">
           <div className="v2-construction-mark" aria-hidden="true">SHM</div>
-          <Image
-            src="/logo.png"
-            alt="Serge Hapita Ministries"
-            width={188}
-            height={63}
-            className="v2-construction-logo"
-            priority
-          />
           <p className="v2-construction-eyebrow">
             <span />
             {eyebrow}
           </p>
           <h1 id="construction-title">{section}</h1>
-          <p className="v2-construction-status">Page en construction</p>
+          <p className="v2-construction-status">En construction</p>
           <div className="v2-construction-rule" aria-hidden="true">
             <span />
           </div>
