@@ -3,15 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 export default function ForgotPasswordForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    if (!captchaToken) {
+      setError("La vérification de sécurité est encore en cours. Réessayez dans un instant.");
+      return;
+    }
     setLoading(true);
 
     const email = String(new FormData(e.currentTarget).get("email"));
@@ -26,10 +33,13 @@ export default function ForgotPasswordForm() {
     // le comportement réel.
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/compte/nouveau-mot-de-passe`,
+      captchaToken,
     });
 
     setLoading(false);
     if (resetError) {
+      setCaptchaToken("");
+      setCaptchaReset((value) => value + 1);
       setError("Impossible d'envoyer l'e-mail pour le moment. Réessayez plus tard.");
       return;
     }
@@ -49,7 +59,8 @@ export default function ForgotPasswordForm() {
       {error && <div className="admin-error">{error}</div>}
       <label htmlFor="forgot-email">Adresse e-mail</label>
       <input id="forgot-email" name="email" type="email" required autoComplete="username" />
-      <button type="submit" disabled={loading}>
+      <TurnstileWidget action="password_reset" name={false} onToken={setCaptchaToken} resetSignal={captchaReset} />
+      <button type="submit" disabled={loading || !captchaToken}>
         {loading ? "Envoi…" : "Recevoir le lien →"}
       </button>
     </form>
