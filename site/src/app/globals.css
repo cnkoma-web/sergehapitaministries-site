@@ -5080,3 +5080,5 @@ footer.footer--dark{
   .v2-construction-message{font-size:17px;}
   .v2-construction-mark{font-size:145px;}
 }
+
+.v2-construction-message strong{display:block;margin-top:14px;color:#7f5bd6;font-family:var(--v2-serif);font-weight:700;}
