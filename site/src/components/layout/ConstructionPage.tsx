@@ -32,7 +32,10 @@ export default function ConstructionPage({ section, eyebrow }: ConstructionPageP
           <p className="v2-construction-message">
             Cet espace est en cours de préparation.
             <br />
-            Revenez bientôt, et que Dieu vous bénisse.
+            Revenez bientôt.
+            <strong>
+              <em>Que Dieu vous bénisse.</em>
+            </strong>
           </p>
           <Link href="/" className="v2-construction-link">
             Retour à l’accueil <span aria-hidden="true">→</span>
