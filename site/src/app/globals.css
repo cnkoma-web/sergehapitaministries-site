@@ -5044,3 +5044,39 @@ footer.footer--dark{
   .order-shipping-fields label:last-child{grid-column:auto;}
   .v2-dashboard-page .order-status-group{justify-items:start;text-align:left;}
 }
+
+
+/* ============================================================
+   PAGES TEMPORAIRES — Boutique, Vidéos et Podcast
+   ============================================================ */
+.v2-construction-page{min-height:100vh;background:var(--v2-paper);}
+.v2-construction-main{position:relative;isolation:isolate;min-height:680px;display:grid;place-items:center;overflow:hidden;padding:88px 24px 104px;background:
+  linear-gradient(145deg,rgba(238,232,255,.94),rgba(251,250,255,.96) 42%,rgba(255,255,255,.98)),
+  radial-gradient(circle at 20% 20%,rgba(109,49,242,.18),transparent 34%);
+}
+.v2-construction-main::before{content:"";position:absolute;z-index:-1;inset:0;opacity:.42;background-image:linear-gradient(rgba(79,37,216,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(79,37,216,.08) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,transparent,#000 24%,#000 74%,transparent);}
+.v2-construction-glow{position:absolute;z-index:-1;border-radius:999px;filter:blur(4px);pointer-events:none;}
+.v2-construction-glow-one{width:420px;height:420px;top:-210px;right:-80px;background:rgba(109,49,242,.13);}
+.v2-construction-glow-two{width:320px;height:320px;bottom:-190px;left:-70px;background:rgba(46,47,224,.1);}
+.v2-construction-card{position:relative;width:min(100%,760px);overflow:hidden;padding:62px 70px 58px;border:1px solid rgba(79,37,216,.14);border-radius:18px;background:rgba(255,255,255,.88);box-shadow:0 30px 90px rgba(23,20,45,.13);text-align:center;backdrop-filter:blur(10px);}
+.v2-construction-mark{position:absolute;top:50%;left:50%;color:rgba(79,37,216,.045);font-family:var(--v2-serif);font-size:clamp(150px,25vw,250px);font-weight:700;line-height:1;letter-spacing:-.1em;transform:translate(-52%,-50%);white-space:nowrap;pointer-events:none;}
+.v2-construction-logo{position:relative;width:166px;height:auto;margin:0 auto 36px;object-fit:contain;}
+.v2-construction-eyebrow{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 17px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:12px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;}
+.v2-construction-eyebrow span{width:27px;height:2px;background:var(--v2-violet);}
+.v2-construction-card h1{position:relative;margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(43px,7vw,70px);font-weight:500;line-height:1.02;letter-spacing:-.035em;}
+.v2-construction-status{position:relative;margin:16px 0 0;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:15px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;}
+.v2-construction-rule{position:relative;width:112px;height:1px;margin:29px auto;background:var(--v2-line);}
+.v2-construction-rule span{position:absolute;top:-3px;left:50%;width:7px;height:7px;border-radius:50%;background:var(--v2-violet);transform:translateX(-50%);}
+.v2-construction-message{position:relative;margin:0;color:var(--v2-muted);font-family:var(--v2-serif);font-size:19px;line-height:1.72;}
+.v2-construction-link{position:relative;display:inline-flex;align-items:center;gap:10px;margin-top:35px;padding:13px 19px;border:1px solid var(--v2-violet-deep);border-radius:7px;color:#fff;background:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:800;transition:transform .2s ease,box-shadow .2s ease;}
+.v2-construction-link:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(79,37,216,.22);}
+.v2-construction-link:focus-visible{outline:3px solid rgba(109,49,242,.25);outline-offset:4px;}
+@media (max-width:720px){
+  .v2-construction-main{min-height:590px;padding:58px 18px 72px;}
+  .v2-construction-card{padding:46px 24px 43px;border-radius:14px;}
+  .v2-construction-logo{width:145px;margin-bottom:31px;}
+  .v2-construction-card h1{font-size:43px;}
+  .v2-construction-status{font-size:12px;}
+  .v2-construction-message{font-size:17px;}
+  .v2-construction-mark{font-size:145px;}
+}
