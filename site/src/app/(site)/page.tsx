@@ -161,23 +161,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Repères chiffrés (getActiveStats) — fonctionnalité réelle,
-          réglable dans l'admin, sans emplacement dans la maquette de
-          l'accueil : réutilise l'habillage déjà posé pour De Serge
-          (.v2-ds-stats, Lot 2) plutôt que d'en inventer un nouveau. */}
-      {stats.length > 0 && (
-        <section className="v2-ds-stats" aria-label="Repères du ministère">
-          <div className="v2-wrap v2-ds-stats-grid">
-            {stats.map((s) => (
-              <div key={s.key}>
-                <strong>{s.value}</strong>
-                <span>{s.label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Vitrine statique par catégorie (§ .publications-section/
           .category-grid) — menu de navigation, pas un aperçu de contenu
           (voir la note en tête de section dans globals.css). 4 cartes
@@ -352,6 +335,23 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Repères chiffrés (getActiveStats) — fonctionnalité réelle,
+          réglable dans l'admin, sans emplacement dans la maquette de
+          l'accueil : réutilise l'habillage déjà posé pour De Serge
+          (.v2-ds-stats, Lot 2) plutôt que d'en inventer un nouveau. */}
+      {stats.length > 0 && (
+        <section className="v2-ds-stats" aria-label="Repères du ministère">
+          <div className="v2-wrap v2-ds-stats-grid">
+            {stats.map((s) => (
+              <div key={s.key}>
+                <strong>{s.value}</strong>
+                <span>{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="v2-support-section" id="partenariat">
         <div className="v2-support-orb" aria-hidden="true" />
