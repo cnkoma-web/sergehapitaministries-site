@@ -5086,3 +5086,12 @@ footer.footer--dark{
 }
 
 .v2-construction-message strong{display:block;margin-top:14px;color:#7f5bd6;font-family:var(--v2-serif);font-weight:700;}
+
+
+/* Accueil V2 — alignement Sites v40 : verrouille l'écart mobile entre
+   Dernières parutions et Rencontres et conférences après toutes les règles
+   historiques afin que la cascade ne puisse pas rétablir l'ancien retrait. */
+@media (max-width:720px){
+  .v2-books-section{padding-bottom:48px;}
+  .v2-books-section + .v2-events-section{padding-top:0;}
+}
