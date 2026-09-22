@@ -28,3 +28,10 @@
   .rosee-editor-topbar{top:62px}
 }
 @media(max-width:767px){.admin-main{padding-top:82px}}
+
+/* Tablette paysage et desktop : la navigation reste visible pendant le défilement. */
+@media(min-width:1024px){
+  .admin-layout{align-items:start}
+  .admin-sidebar-desktop{position:sticky;top:0;display:flex;flex-direction:column;align-self:start;height:100vh;overflow-y:auto;overscroll-behavior:contain}
+  .admin-main{min-width:0}
+}
