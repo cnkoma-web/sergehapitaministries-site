@@ -18,8 +18,7 @@ export default function LoginForm() {
     setError(null);
 
     if (!captchaToken) {
-      setCaptchaReset((value) => value + 1);
-      setError("La vérification de sécurité n’est pas terminée. Elle vient d’être relancée ; réessayez dans un instant.");
+      setError("Terminez la vérification de sécurité avant de vous connecter.");
       return;
     }
 
@@ -57,7 +56,7 @@ export default function LoginForm() {
 
   const securityMessage = captchaToken
     ? "Vérification de sécurité terminée."
-    : "Vérification de sécurité en cours…";
+    : "Effectuez la vérification de sécurité ci-dessus.";
 
   return (
     <form onSubmit={handleSubmit} className="admin-card" aria-busy={loading}>
@@ -79,8 +78,13 @@ export default function LoginForm() {
       </a>
       <TurnstileWidget
         action="admin_signin"
+        mode="interactive"
         name={false}
-        onToken={setCaptchaToken}
+        onError={() => setError("La vérification de sécurité a échoué. Actualisez la page puis réessayez.")}
+        onToken={(token) => {
+          setCaptchaToken(token);
+          if (token) setError(null);
+        }}
         resetSignal={captchaReset}
       />
       <p id="admin-security-status" aria-live="polite" style={{ margin: "12px 0", fontSize: 14 }}>
