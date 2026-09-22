@@ -235,6 +235,51 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="v2-books-section v2-wrap" id="livres">
+        <div className="v2-section-heading">
+          <div>
+            <p className="v2-eyebrow v2-brand-case">
+              <span /> amDG Éditions
+            </p>
+            <h2>
+              Dernières <em>parutions</em>
+            </h2>
+          </div>
+          <Link href="/livres" className="v2-catalogue-link">
+            Voir tout le catalogue →
+          </Link>
+        </div>
+        {latestBooks.length === 0 ? (
+          <p className="empty-state">Le catalogue est en cours de préparation.</p>
+        ) : (
+          <div className="v2-books-grid">
+            {latestBooks.map((book, i) => (
+              <article className={`v2-book-card${i === 0 ? " main" : ""}`} key={book.id}>
+                {book.cover_url ? (
+                  <Link href={`/livres/${book.slug}`} className="v2-book-cover">
+                    <CoverRollover src={book.cover_url} hoverSrc={book.hover_cover_url} alt={book.title} />
+                  </Link>
+                ) : (
+                  <Link href={`/livres/${book.slug}`} className="v2-book-cover" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,var(--v2-violet),var(--v2-violet-deep))", padding: 14, textAlign: "center" }}>
+                    <div style={{ fontFamily: "var(--v2-serif)", fontWeight: 600, color: "#fff", fontSize: 16, lineHeight: 1.3 }}>{book.title}</div>
+                  </Link>
+                )}
+                <div className="v2-book-info">
+                  {book.badge && <span>{book.badge}</span>}
+                  <h3>{book.title}</h3>
+                  {i === 0 && (
+                    <p>
+                      <PublisherLink publisher={book.publisher} />
+                    </p>
+                  )}
+                  <Link href={`/livres/${book.slug}`}>Découvrir {i === 0 ? "le livre" : ""} →</Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Agenda / Événements (§ .events-section) — branché sur de vraies
           données (Lot 11, 11/09, nouvelle table + admin CRUD dédiés) :
           prochain rendez-vous calculé (événement visible le plus proche non
@@ -306,51 +351,6 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="v2-books-section v2-wrap" id="livres">
-        <div className="v2-section-heading">
-          <div>
-            <p className="v2-eyebrow v2-brand-case">
-              <span /> amDG Éditions
-            </p>
-            <h2>
-              Dernières <em>parutions</em>
-            </h2>
-          </div>
-          <Link href="/livres" className="v2-catalogue-link">
-            Voir tout le catalogue →
-          </Link>
-        </div>
-        {latestBooks.length === 0 ? (
-          <p className="empty-state">Le catalogue est en cours de préparation.</p>
-        ) : (
-          <div className="v2-books-grid">
-            {latestBooks.map((book, i) => (
-              <article className={`v2-book-card${i === 0 ? " main" : ""}`} key={book.id}>
-                {book.cover_url ? (
-                  <Link href={`/livres/${book.slug}`} className="v2-book-cover">
-                    <CoverRollover src={book.cover_url} hoverSrc={book.hover_cover_url} alt={book.title} />
-                  </Link>
-                ) : (
-                  <Link href={`/livres/${book.slug}`} className="v2-book-cover" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,var(--v2-violet),var(--v2-violet-deep))", padding: 14, textAlign: "center" }}>
-                    <div style={{ fontFamily: "var(--v2-serif)", fontWeight: 600, color: "#fff", fontSize: 16, lineHeight: 1.3 }}>{book.title}</div>
-                  </Link>
-                )}
-                <div className="v2-book-info">
-                  {book.badge && <span>{book.badge}</span>}
-                  <h3>{book.title}</h3>
-                  {i === 0 && (
-                    <p>
-                      <PublisherLink publisher={book.publisher} />
-                    </p>
-                  )}
-                  <Link href={`/livres/${book.slug}`}>Découvrir {i === 0 ? "le livre" : ""} →</Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
       </section>
 
       <section className="v2-support-section" id="partenariat">
