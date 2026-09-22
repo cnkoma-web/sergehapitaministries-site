@@ -1,3 +1,4 @@
+import "@/app/admin-mobile.css";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/supabase/auth";
