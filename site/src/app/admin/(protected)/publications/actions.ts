@@ -194,22 +194,12 @@ export async function publishRosee(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
   const verse_text = String(formData.get("verse_text") ?? "").trim();
-  // Plus de paragraphsToHtml ici (retour du 07/09) — ce champ vient
-  // désormais du même RichTextEditor que l'écran d'édition (retour du
-  // 07/09, unification des deux éditeurs), qui produit déjà du HTML tout
-  // fait via son propre champ caché, pas du texte brut à convertir en
-  // paragraphes comme le faisait l'ancien <textarea> simple.
   const body = String(formData.get("body") ?? "").trim();
-  if (!verse_text) return;
+  if (!verse_text) redirect("/admin/rosee-matinale?error=missing-fields");
 
-  // Champ "Titre" (retour du 07/09) — optionnel : laissé vide, on retombe
-  // sur l'ancien comportement (titre reconstruit depuis la date), utilisé
-  // ailleurs sur le site (liste "Articles similaires", message de partage)
-  // tant que Serge n'a pas renseigné un vrai titre pour cette entrée.
   const submittedTitle = String(formData.get("title") ?? "").trim();
   const autoTitle = `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
-
-  await supabase.from("articles").insert({
+  const { error } = await supabase.from("articles").insert({
     type: "rm",
     slug: `rm-${article_date}`,
     title: submittedTitle || autoTitle,
@@ -224,35 +214,31 @@ export async function publishRosee(formData: FormData) {
     reading_time_minutes: body ? computeReadingTime(body) : null,
   });
 
+  if (error) {
+    console.error("[admin/rosee-matinale] publish failed", error);
+    redirect("/admin/rosee-matinale?error=publish");
+  }
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
   revalidatePath("/publications");
+  redirect("/admin/rosee-matinale?saved=published");
 }
 
-/** Édition d'une entrée Rosée Matinale existante — écran dédié, séparé de
- * l'éditeur d'article générique (Que Dit la Bible / La Vie Supérieure) qui a
- * des champs sans rapport pour ce format (thèmes, articles similaires...) —
- * mais garde couverture + mots-clés SEO, utiles ici aussi (cahier §3.2 + §1.5). */
 export async function updateRoseeEntry(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
   const verse_text = String(formData.get("verse_text") ?? "").trim();
-  if (!id || !verse_text) return;
+  if (!id || !verse_text) redirect(`/admin/rosee-matinale/${id}?error=missing-fields`);
 
   const body = String(formData.get("body") ?? "").trim();
   const article_date = String(formData.get("article_date") ?? "") || undefined;
-
-  // Champ "Titre" (retour du 07/09) — même règle qu'à la création : vide,
-  // le titre continue de se reconstruire depuis la date (comportement
-  // d'origine, avant ce champ) ; rempli, il prend le dessus et n'est plus
-  // écrasé par un changement de date ultérieur.
   const submittedTitle = String(formData.get("title") ?? "").trim();
   const autoTitle = article_date
     ? `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
     : undefined;
 
-  await supabase
+  const { error } = await supabase
     .from("articles")
     .update({
       article_date,
@@ -267,13 +253,32 @@ export async function updateRoseeEntry(formData: FormData) {
     })
     .eq("id", id);
 
+  if (error) {
+    console.error("[admin/rosee-matinale] update failed", error);
+    redirect(`/admin/rosee-matinale/${id}?error=save`);
+  }
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
   revalidatePath("/publications");
-  // Reste sur l'écran d'édition (retour du 05/09) — voir le commentaire
-  // équivalent sur updateArticle ci-dessus.
   redirect(`/admin/rosee-matinale/${id}?saved=1`);
+}
+
+export async function deleteRoseeEntry(formData: FormData) {
+  const supabase = await createClient();
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/admin/rosee-matinale?error=delete");
+
+  const { error } = await supabase.from("articles").delete().eq("id", id).eq("type", "rm");
+  if (error) {
+    console.error("[admin/rosee-matinale] delete failed", error);
+    redirect("/admin/rosee-matinale?error=delete");
+  }
+  revalidatePath("/admin/rosee-matinale");
+  revalidatePath("/rosee-matinale");
+  revalidatePath("/");
+  revalidatePath("/publications");
+  redirect("/admin/rosee-matinale?saved=deleted");
 }
 
 // ===== Je Confesse (Lot 4, 11/09 — corrigé le 11/09 après relecture de la
