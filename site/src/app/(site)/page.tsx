@@ -3,13 +3,12 @@ import Link from "next/link";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import { getBooks } from "@/lib/content/books";
-import { getRoseeDuJour, getConfessionDuJour } from "@/lib/content/articles";
-import { stripHtml } from "@/lib/richtext";
 import { getActiveStats } from "@/lib/content/stats";
 import { getSocialLinks } from "@/lib/content/footer";
 import { getNextEvent, getPastEvents, formatEventDateRange } from "@/lib/content/events";
 import CoverRollover from "@/components/shop/CoverRollover";
 import PublisherLink from "@/components/shop/PublisherLink";
+import HomeLatestPublications from "@/components/home/HomeLatestPublications";
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -43,10 +42,8 @@ const SOCIAL_HANDLE: Record<string, string> = {
 };
 
 export default async function HomePage() {
-  const [books, roseeDuJour, confessionDuJour, stats, socialLinks, nextEvent, pastEvents] = await Promise.all([
+  const [books, stats, socialLinks, nextEvent, pastEvents] = await Promise.all([
     getBooks(),
-    getRoseeDuJour(),
-    getConfessionDuJour(),
     getActiveStats(),
     getSocialLinks(),
     getNextEvent(),
@@ -101,75 +98,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Rosée matinale du jour — carte flottante sur la charnière hero →
-          contenu (§ .dew-wrap). Donnée réelle inchangée (getRoseeDuJour). */}
-      <section className="v2-wrap" aria-label="Rosée matinale du jour">
-        <div className="v2-dew-wrap">
-          <article className="v2-dew-card">
-            <div className="v2-dew-label">Rosée Matinale</div>
-            {roseeDuJour ? (
-              <>
-                <div className="v2-dew-date">
-                  <span>Édition du jour</span>
-                  <time dateTime={roseeDuJour.article_date}>
-                    {new Date(roseeDuJour.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-                  </time>
-                </div>
-                <div className="v2-dew-content">
-                  <h2>{roseeDuJour.title}</h2>
-                  <p>{(roseeDuJour.verse_text || roseeDuJour.body || "").slice(0, 220)}</p>
-                </div>
-                <Link href="/rosee-matinale">Lire la pensée du jour →</Link>
-              </>
-            ) : (
-              <>
-                <div className="v2-dew-date">
-                  <span>Édition du jour</span>
-                </div>
-                <div className="v2-dew-content">
-                  <p>La pensée du jour arrive bientôt.</p>
-                </div>
-                <Link href="/publications">Publications →</Link>
-              </>
-            )}
-          </article>
-        </div>
-      </section>
-
-      {/* Je Confesse du jour (Lot 4, 11/09) — même principe que la capsule
-          Rosée Matinale ci-dessus (§ .confession-wrap). Donnée réelle
-          (getConfessionDuJour). Extrait du corps de la proclamation du jour
-          (corrigé le 11/09) — le verset d'en-tête et la signature de
-          clôture sont désormais des réglages fixes de la rubrique (voir
-          JeConfesseContent.tsx), jamais affichés ici : cette carte montre
-          un aperçu de la déclaration du jour, comme la carte Rosée
-          Matinale voisine.
-          La composition reste celle de la V35 : libellé seul, sans date. */}
-      <section className="v2-wrap" aria-label="Proclamation du jour — Je Confesse">
-        <div className="v2-confession-wrap">
-          <article className="v2-confession-card">
-            <div className="v2-confession-label">Je Confesse</div>
-            <div className="v2-confession-meta">
-              <span>Proclamation du jour</span>
-            </div>
-            {confessionDuJour ? (
-              <>
-                <div className="v2-confession-content">
-                  <blockquote>« {stripHtml(confessionDuJour.body ?? "").slice(0, 160)} »</blockquote>
-                </div>
-                <Link href="/publications/je-confesse-et-declare">Lire et proclamer →</Link>
-              </>
-            ) : (
-              <>
-                <div className="v2-confession-content">
-                  <blockquote>La proclamation du jour arrive bientôt.</blockquote>
-                </div>
-                <Link href="/publications">Publications →</Link>
-              </>
-            )}
-          </article>
-        </div>
-      </section>
+      <HomeLatestPublications />
 
       {/* Passerelle Connaître Jésus (§ .jesus-gateway) — miniature + lien
           vers la page dédiée, qui porte elle la vraie vidéo intégrée (voir
