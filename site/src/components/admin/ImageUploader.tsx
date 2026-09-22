@@ -69,8 +69,9 @@ export default function ImageUploader({ bucket, currentUrl, onUploaded }: Props)
       } = supabase.storage.from(bucket).getPublicUrl(path);
 
       onUploaded(publicUrl, path);
-    } catch {
-      setError("Ce fichier n'est pas une image valide.");
+    } catch (cause) {
+      console.error("[admin/image-upload] image processing failed", cause);
+      setError(cause instanceof Error ? cause.message : "Ce fichier n’est pas une image valide.");
       e.target.value = "";
     } finally {
       setUploading(false);
