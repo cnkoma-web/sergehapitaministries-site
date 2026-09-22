@@ -5092,6 +5092,6 @@ footer.footer--dark{
    Dernières parutions et Rencontres et conférences après toutes les règles
    historiques afin que la cascade ne puisse pas rétablir l'ancien retrait. */
 @media (max-width:720px){
-  .v2-books-section{padding-bottom:48px;}
-  .v2-books-section + .v2-events-section{padding-top:0;}
+  .v2-home .v2-books-section{padding-bottom:48px;}
+  .v2-home .v2-books-section + .v2-events-section{padding-top:0;}
 }
