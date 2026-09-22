@@ -1,57 +1,45 @@
-// Recadrage automatique côté client (cahier Partie 5 §6.4) : Serge ne doit
-// jamais avoir à recadrer une image lui-même avant de l'envoyer, ni voir de
-// blocage/avertissement de ratio à l'envoi. On recadre silencieusement au
-// centre pour obtenir le ratio attendu, quelle que soit l'image fournie.
-export function cropImageToRatio(file: File, targetRatio: number): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const objectUrl = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      const { naturalWidth: w, naturalHeight: h } = img;
-      const currentRatio = w / h;
+// Recadrage automatique côté client. La sortie est limitée à 1920 px de
+// large afin d'éviter les échecs mémoire des canvas mobiles sur les PNG lourds.
+export async function cropImageToRatio(file: File, targetRatio: number): Promise<Blob> {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const w = bitmap.width;
+    const h = bitmap.height;
+    if (!w || !h) throw new Error("Les dimensions de cette image sont illisibles.");
 
-      let sx = 0,
-        sy = 0,
-        sw = w,
-        sh = h;
-      if (currentRatio > targetRatio) {
-        // Image trop large pour le ratio cible : on rogne les côtés.
-        sw = Math.round(h * targetRatio);
-        sx = Math.round((w - sw) / 2);
-      } else if (currentRatio < targetRatio) {
-        // Image trop haute : on rogne le haut/bas.
-        sh = Math.round(w / targetRatio);
-        sy = Math.round((h - sh) / 2);
-      }
+    const currentRatio = w / h;
+    let sx = 0;
+    let sy = 0;
+    let sw = w;
+    let sh = h;
 
-      const canvas = document.createElement("canvas");
-      canvas.width = sw;
-      canvas.height = sh;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        URL.revokeObjectURL(objectUrl);
-        reject(new Error("Recadrage impossible (canvas non supporté)."));
-        return;
-      }
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+    if (currentRatio > targetRatio) {
+      sw = Math.round(h * targetRatio);
+      sx = Math.round((w - sw) / 2);
+    } else if (currentRatio < targetRatio) {
+      sh = Math.round(w / targetRatio);
+      sy = Math.round((h - sh) / 2);
+    }
 
+    const outputWidth = Math.max(1, Math.min(sw, 1920));
+    const outputHeight = Math.max(1, Math.round(outputWidth / targetRatio));
+    const canvas = document.createElement("canvas");
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Le recadrage d’image n’est pas disponible sur cet appareil.");
+
+    ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, outputWidth, outputHeight);
+    const outputType = file.type === "image/png" ? "image/png" : "image/jpeg";
+
+    return await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(
-        (blob) => {
-          URL.revokeObjectURL(objectUrl);
-          if (!blob) {
-            reject(new Error("Échec de la conversion de l'image recadrée."));
-            return;
-          }
-          resolve(blob);
-        },
-        file.type === "image/png" ? "image/png" : "image/jpeg",
-        0.92
+        (blob) => blob ? resolve(blob) : reject(new Error("La conversion de l’image a échoué.")),
+        outputType,
+        0.9
       );
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error("Impossible de lire ce fichier comme une image."));
-    };
-    img.src = objectUrl;
-  });
+    });
+  } finally {
+    bitmap.close();
+  }
 }
