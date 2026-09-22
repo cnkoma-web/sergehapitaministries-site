@@ -16,56 +16,83 @@ export default function LoginForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+
     if (!captchaToken) {
-      setError("La vérification de sécurité est encore en cours. Réessayez dans un instant.");
+      setCaptchaReset((value) => value + 1);
+      setError("La vérification de sécurité n’est pas terminée. Elle vient d’être relancée ; réessayez dans un instant.");
       return;
     }
+
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const email = String(formData.get("email"));
-    const password = String(formData.get("password"));
+    try {
+      const formData = new FormData(e.currentTarget);
+      const email = String(formData.get("email"));
+      const password = String(formData.get("password"));
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+        options: { captchaToken },
+      });
 
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-      options: { captchaToken },
-    });
+      if (signInError) {
+        setCaptchaToken("");
+        setCaptchaReset((value) => value + 1);
+        setError("Identifiants incorrects, ou ce compte n’a pas accès à l’administration.");
+        return;
+      }
 
-    setLoading(false);
-
-    if (signInError) {
+      router.replace("/admin");
+      router.refresh();
+    } catch (signInFailure) {
+      console.error("[admin] Connexion impossible :", signInFailure);
       setCaptchaToken("");
       setCaptchaReset((value) => value + 1);
-      setError("Identifiants incorrects, ou ce compte n'a pas accès à l'administration.");
-      return;
+      setError("La connexion n’a pas pu aboutir. Vérifiez votre réseau puis réessayez.");
+    } finally {
+      setLoading(false);
     }
-
-    router.push("/admin");
-    router.refresh();
   }
 
+  const securityMessage = captchaToken
+    ? "Vérification de sécurité terminée."
+    : "Vérification de sécurité en cours…";
+
   return (
-    <form onSubmit={handleSubmit} className="admin-card">
-      {error && <div className="admin-error">{error}</div>}
+    <form onSubmit={handleSubmit} className="admin-card" aria-busy={loading}>
+      {error && (
+        <div className="admin-error" role="alert">
+          {error}
+        </div>
+      )}
       <div className="admin-field" style={{ marginBottom: 16 }}>
         <label htmlFor="email">E-mail</label>
-        <input id="email" name="email" type="email" required autoComplete="username" />
+        <input id="email" name="email" type="email" required autoComplete="username" inputMode="email" />
       </div>
       <div className="admin-field" style={{ marginBottom: 8 }}>
         <label htmlFor="password">Mot de passe</label>
         <PasswordInput id="password" name="password" required autoComplete="current-password" />
       </div>
-      {/* Même compte, même flux Supabase Auth que le site public (retour du
-          06/09) — pas de page "mot de passe oublié" distincte pour l'admin,
-          celle du site public suffit (voir /auth/confirm pour la correction
-          du lien de récupération lui-même). */}
       <a href="/compte/mot-de-passe-oublie" className="admin-forgot">
         Mot de passe oublié ?
       </a>
-      <TurnstileWidget action="admin_signin" name={false} onToken={setCaptchaToken} resetSignal={captchaReset} />
-      <button type="submit" className="admin-btn-primary" style={{ width: "100%" }} disabled={loading || !captchaToken}>
+      <TurnstileWidget
+        action="admin_signin"
+        name={false}
+        onToken={setCaptchaToken}
+        resetSignal={captchaReset}
+      />
+      <p id="admin-security-status" aria-live="polite" style={{ margin: "12px 0", fontSize: 14 }}>
+        {securityMessage}
+      </p>
+      <button
+        type="submit"
+        className="admin-btn-primary"
+        style={{ width: "100%" }}
+        disabled={loading}
+        aria-describedby="admin-security-status"
+      >
         {loading ? "Connexion…" : "Se connecter"}
       </button>
     </form>
