@@ -78,38 +78,32 @@ export default function ImageUploader({ bucket, currentUrl, onUploaded }: Props)
   }
 
   return (
-    <div>
-      <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+    <div className="admin-image-uploader">
+      <div className="admin-image-uploader-layout">
         {preview && (
-          <div
-            style={{
-              width: 100,
-              aspectRatio: spec.ratio,
-              borderRadius: 8,
-              overflow: "hidden",
-              border: "1px solid var(--line)",
-              flexShrink: 0,
-              background: "var(--lavender)",
-            }}
-          >
+          <div className="admin-image-preview" style={{ aspectRatio: spec.ratio }}>
             {/* eslint-disable-next-line @next/next/no-img-element -- aperçu local d'un fichier tout juste sélectionné, pas une image du site */}
             <img src={preview} alt="Aperçu" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
         )}
-        <div style={{ flex: 1 }}>
+        <div className="admin-image-controls">
+          <label className="admin-file-picker">
+            <span>{preview ? "Remplacer l’image" : "Choisir une image"}</span>
           <input
             ref={inputRef}
             type="file"
             accept="image/*"
             onChange={handleFileChange}
             disabled={uploading}
+            aria-describedby="admin-image-help"
           />
-          <div style={{ fontSize: 12, color: "var(--ink-soft)", marginTop: 6 }}>
+          </label>
+          <div id="admin-image-help" className="admin-image-help">
             Recadrage automatique au format {spec.ratioLabel} · {spec.maxFileSizeMb} Mo max.
           </div>
-          {uploading && <div style={{ fontSize: 13, color: "var(--ink-soft)", marginTop: 6 }}>Envoi en cours…</div>}
-          {warning && <div className="admin-error" style={{ background: "#FFF6E0", color: "#8A6D1D", marginTop: 8 }}>{warning}</div>}
-          {error && <div className="admin-error" style={{ marginTop: 8 }}>{error}</div>}
+          {uploading && <div className="admin-upload-state" role="status"><span className="admin-button-spinner" aria-hidden="true" /> Envoi en cours…</div>}
+          {warning && <div className="admin-feedback warning" role="status">{warning}</div>}
+          {error && <div className="admin-feedback error" role="alert">{error}</div>}
         </div>
       </div>
     </div>
