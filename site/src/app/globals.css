@@ -3259,7 +3259,7 @@ footer.footer--dark{
 /* --- Dernières parutions --- */
 .v2-books-section{padding-block:120px 130px;font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);}
 .v2-books-section + .v2-events-section{padding-top:0;}
-@media(max-width:720px){.v2-books-section{padding-bottom:95px;}}
+@media(max-width:720px){.v2-books-section{padding-bottom:48px;}}
 /* Même contournement local que pour [07] (voir plus haut) — h1..h4{color:
    var(--ink)} (ancien token) l'emporte sur l'héritage, .v2-section-heading
    étant partagé avec [05]/[07]. */
@@ -3338,7 +3338,7 @@ footer.footer--dark{
   /* .jesus-intro h3/.category-number (prototype, media 720px) */
   .v2-jesus-intro h3{font-size:31px;}
   .v2-jesus-intro{padding:32px 24px;}
-  .v2-jesus-gateway{padding-block:95px;}
+  .v2-jesus-gateway{padding-block:48px 95px;}
   .v2-jesus-stage{border-radius:15px;}
   .v2-jesus-video-frame{min-height:205px;}
   /* Même écart de marge qu'aux autres sections (16px de chaque côté sous
