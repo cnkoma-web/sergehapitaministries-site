@@ -3257,9 +3257,9 @@ footer.footer--dark{
 .v2-past-event b{color:var(--v2-violet);}
 
 /* --- Dernières parutions --- */
-.v2-books-section{padding-block:120px;font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);}
+.v2-books-section{padding-block:120px 56px;font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);}
 .v2-books-section + .v2-events-section{padding-top:0;}
-@media(max-width:720px){.v2-books-section{padding-bottom:90px;}}
+@media(max-width:720px){.v2-books-section{padding-bottom:40px;}}
 /* Même contournement local que pour [07] (voir plus haut) — h1..h4{color:
    var(--ink)} (ancien token) l'emporte sur l'héritage, .v2-section-heading
    étant partagé avec [05]/[07]. */
