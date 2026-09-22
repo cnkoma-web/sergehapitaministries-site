@@ -3265,7 +3265,7 @@ footer.footer--dark{
 .v2-books-section .v2-section-heading h2 em{color:var(--v2-violet);font-weight:500;}
 .v2-catalogue-link{justify-self:end;font-size:14px;font-weight:800;}
 .v2-books-grid{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:24px;align-items:stretch;}
-.v2-book-card{border:1px solid var(--v2-line);background:#fff;min-width:0;}
+.v2-book-card{display:flex;flex-direction:column;border:1px solid var(--v2-line);background:#fff;min-width:0;}
 .v2-book-card.main{display:grid;grid-template-columns:1.08fr .92fr;background:var(--v2-ink);color:#fff;}
 /* Dans la maquette, .book-cover (un <a> resté display:inline) laisse le
    height:100% de son img se résoudre à travers lui jusqu'à .book-card (696px,
@@ -3281,7 +3281,7 @@ footer.footer--dark{
    remplissage total quirky de la maquette — écart mineur et volontaire,
    signalé au référentiel comme CONTRÔLE MANUEL REQUIS plutôt que corrigé
    à l'identique. */
-.v2-book-cover{display:block;position:relative;overflow:hidden;background:#161227;aspect-ratio:.665;}
+.v2-book-cover{display:block;position:relative;flex:0 0 auto;overflow:hidden;background:#161227;aspect-ratio:.665;}
 .v2-book-cover img{width:100%;height:100%;aspect-ratio:.665;object-fit:cover;transition:transform .35s ease;}
 .v2-book-card:hover .v2-book-cover img{transform:scale(1.025);}
 .v2-book-card.main .v2-book-cover{aspect-ratio:auto;}
@@ -3293,7 +3293,7 @@ footer.footer--dark{
    pour ne pas affecter /livres ou /livres/[slug] (hors de ce lot). */
 .v2-book-cover .cover-rollover .cr-front,
 .v2-book-cover .cover-rollover .cr-back{object-fit:cover;}
-.v2-book-info{padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
+.v2-book-info{min-width:0;flex:1;padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
 .v2-book-card.main .v2-book-info{padding:46px 34px;justify-content:center;}
 .v2-book-info>span{color:var(--v2-violet);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
 .v2-book-card.main .v2-book-info>span{color:#cbb8ff;}
