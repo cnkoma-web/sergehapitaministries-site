@@ -26,10 +26,14 @@ const SECTIONS = [
 
 export default function AdminSidebarNav() {
   const pathname = usePathname();
+
+  function closeMobileMenu(event: React.MouseEvent<HTMLAnchorElement>) {
+    event.currentTarget.closest("details")?.removeAttribute("open");
+  }
   return (
     <>
       {SECTIONS.map((s) => (
-        <Link key={s.href} href={s.href} className={(s.exact ? pathname === s.href : pathname.startsWith(s.href)) ? "active" : undefined}>
+        <Link key={s.href} href={s.href} onClick={closeMobileMenu} className={(s.exact ? pathname === s.href : pathname.startsWith(s.href)) ? "active" : undefined}>
           {s.label}
         </Link>
       ))}

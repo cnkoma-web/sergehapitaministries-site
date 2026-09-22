@@ -1,11 +1,10 @@
+import "@/app/admin-mobile.css";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import AdminSidebarNav from "@/components/admin/AdminSidebarNav";
 
-// Sidebar verticale + zone de contenu (cahier Partie 5 §6.1) — remplace l'ancienne
-// barre horizontale. Toutes les sections de l'admin s'affichent dans .admin-main,
-// qu'elles aient déjà été reconstruites au nouveau modèle liste/détail ou non.
 export default async function AdminProtectedLayout({ children }: { children: React.ReactNode }) {
   const admin = await getCurrentAdmin();
   if (!admin) redirect("/admin/login");
@@ -17,16 +16,32 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
     redirect("/admin/login");
   }
 
+  const account = (
+    <form action={signOut} className="admin-signout">
+      <button type="submit">Se déconnecter<span>{admin.user.email}</span></button>
+    </form>
+  );
+
   return (
     <div className="admin-shell">
       <div className="admin-layout">
-        <nav className="admin-sidebar">
+        <aside className="admin-sidebar admin-sidebar-desktop" aria-label="Navigation d’administration">
           <h1>Administration</h1>
-          <AdminSidebarNav />
-          <form action={signOut}>
-            <button type="submit">Se déconnecter ({admin.user.email})</button>
-          </form>
-        </nav>
+          <nav><AdminSidebarNav /></nav>
+          {account}
+        </aside>
+
+        <header className="admin-mobile-header">
+          <Link href="/admin" className="admin-mobile-brand">SHM <span>Admin</span></Link>
+          <details className="admin-mobile-menu">
+            <summary aria-label="Ouvrir la navigation"><span aria-hidden="true">☰</span> Menu</summary>
+            <div className="admin-mobile-menu-panel">
+              <nav aria-label="Navigation d’administration"><AdminSidebarNav /></nav>
+              {account}
+            </div>
+          </details>
+        </header>
+
         <main className="admin-main">{children}</main>
       </div>
     </div>
