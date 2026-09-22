@@ -18,7 +18,7 @@ type TurnstileApi = {
       appearance?: "always";
       callback: (token: string) => void;
       "expired-callback": () => void;
-      "error-callback": () => boolean;
+      "error-callback": (errorCode: string) => boolean;
     }
   ) => string;
   execute: (widgetId: string) => void;
@@ -101,7 +101,8 @@ export default function TurnstileWidget({
       ...(interactive ? { appearance: "always" as const } : {}),
       callback: publishToken,
       "expired-callback": resetChallenge,
-      "error-callback": () => {
+      "error-callback": (errorCode) => {
+        console.error("[security] Échec Turnstile :", errorCode);
         publishToken("");
         onErrorRef.current?.();
         return true;
