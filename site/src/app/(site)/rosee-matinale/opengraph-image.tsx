@@ -13,6 +13,7 @@ export const alt = "Rosée Matinale";
 // opengraph-image.tsx pour l'archive, retour du 05/09, restructuration en
 // URL par jour qui a résolu la limitation qui existait ici auparavant).
 export default async function Image() {
+  await headers();
   const entry = await getRoseeDuJour();
   return renderOgImage({
     category: "rm",
