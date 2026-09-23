@@ -1,134 +1,69 @@
 import { ImageResponse } from "next/og";
 import sharp from "sharp";
 
-// Visuels de partage social générés à la volée (cahier Partie 5 §6.7) — plus de
-// chemins statiques /assets/og/*.jpg qui n'existent pas (d'où l'absence
-// d'image lors d'un partage WhatsApp/Facebook). Un seul gabarit partagé, dans
-// le style du site, paramétré par catégorie/eyebrow/titre — appelé depuis
-// chaque fichier `opengraph-image.tsx`.
-//
-// Retour du 05/09 (2e passage) — identité visuelle renforcée : logo du site
-// intégré (plus un simple nom en texte), dégradé propre à chaque catégorie de
-// publication (violet Que Dit la Bible, bleu La Vie Supérieure, sarcelle
-// Rosée Matinale — mêmes couleurs que les capsules .feed-badge sur le site),
-// et polices de marque (Fraunces pour le titre, Manrope pour le reste) au
-// lieu de la police système générique. Satori (le moteur derrière
-// ImageResponse) ne sait pas lire une police via un <link> Google Fonts
-// comme une page web — il lui faut les octets bruts de la police. Les
-// polices ne sont jamais servies en WOFF2 (compression que Satori ne sait
-// pas décoder) à un navigateur identifié comme trop ancien pour le
-// supporter — se faire passer pour un tel navigateur (getFontData ci-dessous)
-// est la façon standard d'obtenir un format que Satori sait lire.
-
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 
-const INK = "#1B1730";
-const BLUE = "#2E2FE0";
-const PURPLE = "#7B3FE4";
-const TEAL = "#3D6E86";
-// Je Confesse (Lot 4, 11/09) — violet profond, distinct des trois autres
-// (jamais le sarcelle de Rosée Matinale ni le violet clair de Que Dit la
-// Bible), cohérent avec .badge-confess/.category-confess du prototype.
-const CONFESS = "#6C2BD9";
-const LAVENDER_DEEP = "#EAE6F9";
-// Version blanche dédiée (retour du 05/09) — le logo violet habituel du site
-// (/logo.png) ne contraste pas assez sur les fonds colorés violet/bleu/
-// sarcelle de ces images ; cette version reste réservée aux images de
-// partage, le logo affiché ailleurs sur le site ne change pas.
-const LOGO_URL = "https://sergehapitaministries.org/logo-white.png";
-
-// Mêmes couleurs que .feed-badge.qdlb/.vs/.rm dans globals.css — la capsule
-// de catégorie sur le site et celle de l'image de partage doivent se
-// répondre visuellement.
 export type OgCategory = "qdlb" | "vs" | "rm" | "jc";
-const CATEGORY_COLOR: Record<OgCategory, string> = { qdlb: PURPLE, vs: BLUE, rm: TEAL, jc: CONFESS };
+
 const CATEGORY_LABEL: Record<OgCategory, string> = {
-  qdlb: "Que Dit la Bible ?",
+  qdlb: "Que dit la Bible ?",
   vs: "La Vie Supérieure",
   rm: "Rosée Matinale",
   jc: "Je Confesse",
 };
 
-// Cache mémoire au niveau du module (retour du 05/09) — réutilisé d'un appel
-// à l'autre tant que l'instance de fonction serverless reste "chaude" (le cas
-// normal sur Vercel entre deux partages proches dans le temps) : une seule
-// vraie requête réseau vers Google Fonts par démarrage à froid, pas une par
-// image générée.
-//
-// Bug corrigé en vérifiant (retour du 05/09) : la première version
-// demandait la police déjà réduite aux caractères du premier titre rendu
-// (`&text=...`), puis réutilisait ce sous-ensemble tel quel pour tous les
-// titres suivants via le cache — un deuxième article dont le titre contient
-// des lettres absentes du premier voyait ces lettres basculer sur Manrope
-// (l'autre police chargée), un mélange visible en plein milieu d'un mot
-// (constaté en direct : "qui son" en sans-serif au milieu d'un titre en
-// Fraunces). Il faut la police complète, pas un sous-ensemble par titre,
-// pour que le cache reste valable d'un article à l'autre.
+const SITE_URL = "https://sergehapitaministries.org";
+const OFFICIAL_LOGO_URL = `${SITE_URL}/logo.png`;
+const FALLBACK_IMAGE: Record<OgCategory, string> = {
+  rm: `${SITE_URL}/og/fallback-rm.jpg`,
+  jc: `${SITE_URL}/og/fallback-jc.jpg`,
+  qdlb: `${SITE_URL}/og/fallback-qdlb.jpg`,
+  vs: `${SITE_URL}/og/fallback-vs.jpg`,
+};
+
 let frauncesCache: ArrayBuffer | null = null;
 let manropeCache: ArrayBuffer | null = null;
-
-// User-Agent d'un navigateur trop ancien pour WOFF2 (retour du 05/09) —
-// Google Fonts sert alors la police en WOFF classique, un format que Satori
-// sait décoder (contrairement à WOFF2, compressé en Brotli).
 const LEGACY_UA = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
 async function fetchGoogleFont(cssUrl: string): Promise<ArrayBuffer | null> {
   try {
     const cssRes = await fetch(cssUrl, { headers: { "User-Agent": LEGACY_UA } });
     const css = await cssRes.text();
-    // Une police complète (sans &text=) revient en PLUSIEURS blocs
-    // @font-face, un par plage Unicode (vietnamese, latin-ext, latin...) —
-    // il faut précisément celui commenté "latin" (couvre le français, y
-    // compris les caractères accentués via Latin-1 Supplement), pas le
-    // premier bloc rencontré (systématiquement "vietnamese" en tête,
-    // inutilisable tel quel : bug trouvé en vérifiant le rendu réel).
     const latinBlock = css.match(/\/\* latin \*\/\s*@font-face\s*{[^}]*src:\s*url\(([^)]+)\)/);
     const anyBlock = css.match(/src:\s*url\(([^)]+)\)/);
     const fontUrl = latinBlock?.[1] ?? anyBlock?.[1];
     if (!fontUrl) return null;
-    const fontRes = await fetch(fontUrl);
-    return await fontRes.arrayBuffer();
-  } catch {
-    // Une police introuvable ne doit jamais empêcher l'image de partage
-    // d'exister — juste un repli sur la police système (voir renderOgImage).
-    return null;
-  }
+    return await (await fetch(fontUrl)).arrayBuffer();
+  } catch { return null; }
 }
-
-async function getFrauncesFont(): Promise<ArrayBuffer | null> {
+async function getFrauncesFont() {
   if (frauncesCache) return frauncesCache;
   frauncesCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=Fraunces:wght@600");
   return frauncesCache;
 }
-
-async function getManropeFont(): Promise<ArrayBuffer | null> {
+async function getManropeFont() {
   if (manropeCache) return manropeCache;
   manropeCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=Manrope:wght@700");
   return manropeCache;
 }
 
-// Couverture de livre (retour du 05/09) — les couvertures uploadées via
-// l'admin peuvent peser plusieurs Mo (même défaut déjà rencontré et corrigé
-// pour les photos de couverture d'article, cahier §6.7 : une photo de 2,6 Mo
-// suffisait à faire disparaître l'aperçu WhatsApp). Transmise telle quelle à
-// Satori (le moteur derrière ImageResponse), une image de plusieurs Mo fait
-// carrément planter le rendu ("Buffer size limit exceeded", constaté en
-// conditions réelles avec une couverture de 9,3 Mo) — retaillée et
-// recompressée ici avant de lui être transmise, jamais le fichier brut.
-async function fetchResizedCover(url: string): Promise<string | null> {
+async function prepareEditorialImage(url: string): Promise<string | null> {
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
     const buffer = Buffer.from(await res.arrayBuffer());
-    const resized = await sharp(buffer).resize(340, 510, { fit: "cover" }).jpeg({ quality: 82 }).toBuffer();
-    return `data:image/jpeg;base64,${resized.toString("base64")}`;
-  } catch {
-    // Une couverture illisible ou trop lourde ne doit jamais empêcher
-    // l'image de partage d'exister — repli sur le gabarit texte seul (voir
-    // renderOgImage), même philosophie que pour une police introuvable.
-    return null;
-  }
+    const image = await sharp(buffer).resize(620, 630, { fit: "cover", position: "attention" }).jpeg({ quality: 82 }).toBuffer();
+    return `data:image/jpeg;base64,${image.toString("base64")}`;
+  } catch { return null; }
+}
+
+function titleSize(title: string) {
+  if (title.length > 105) return 40;
+  if (title.length > 78) return 44;
+  if (title.length > 52) return 50;
+  if (title.length > 32) return 56;
+  return 62;
 }
 
 export async function renderOgImage({
@@ -142,190 +77,41 @@ export async function renderOgImage({
   category?: OgCategory;
   title: string;
   footer?: string;
-  // Fiche livre (retour du 05/09) — quand une couverture existe, elle doit
-  // être "bien visible" (demande explicite), pas juste une vignette dans un
-  // coin : mise en page à deux colonnes dédiée (voir plus bas), plutôt que
-  // le gabarit texte seul utilisé pour les articles. Sans couverture (livre
-  // pas encore illustré), repli sur ce même gabarit texte — jamais d'image
-  // cassée à la place d'une couverture manquante.
   coverImageUrl?: string;
 }) {
-  const accent = category ? CATEGORY_COLOR[category] : PURPLE;
-  const badgeLabel = category ? CATEGORY_LABEL[category] : eyebrow;
-  // Le forçage en majuscules ne doit s'appliquer qu'aux libellés de
-  // catégorie (déjà écrits sans casse particulière) — jamais à un eyebrow
-  // libre comme "Livre — amDG Éditions" (retour du 06/09) : la casse
-  // volontaire "amDG" (déjà corrigée ailleurs sur le site) était détruite en
-  // majuscules ("AMDG") par ce même style appliqué sans distinction.
-  const badgeUppercase = Boolean(category);
-  const gradient = category
-    ? `linear-gradient(135deg, ${accent} 0%, ${INK} 100%)`
-    : `linear-gradient(120deg, ${BLUE} 0%, ${PURPLE} 100%)`;
-
-  const [fraunces, manrope, resizedCover] = await Promise.all([
+  const label = category ? CATEGORY_LABEL[category] : eyebrow || "Serge Hapita Ministries";
+  const fallback = category ? FALLBACK_IMAGE[category] : null;
+  const [fraunces, manrope, editorial] = await Promise.all([
     getFrauncesFont(),
     getManropeFont(),
-    coverImageUrl ? fetchResizedCover(coverImageUrl) : Promise.resolve(null),
+    prepareEditorialImage(coverImageUrl || fallback || `${SITE_URL}/logo.png`),
   ]);
   const fonts = [
     fraunces && { name: "Fraunces", data: fraunces, style: "normal" as const, weight: 600 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
   ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
 
-  if (resizedCover) {
-    return new ImageResponse(
-      (
-        <div style={{ width: "100%", height: "100%", display: "flex", fontFamily: manrope ? "Manrope" : "sans-serif" }}>
-          <div
-            style={{
-              width: 440,
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: LAVENDER_DEEP,
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={resizedCover}
-              width={300}
-              height={450}
-              alt=""
-              style={{ objectFit: "cover", borderRadius: 12, boxShadow: "0 30px 60px -20px rgba(27,23,48,.55)" }}
-            />
-          </div>
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              padding: "60px 56px",
-              background: gradient,
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {/* Logo + badge de rubrique centrés ensemble, comme un seul
-                  bloc (retour du 05/09, 2e passage) — le trait fin de
-                  démarcation vient juste après cet ensemble, pas sous le
-                  logo seul. Le badge n'a donc plus son propre alignement à
-                  gauche ni sa propre marge : c'est le groupe entier qui est
-                  centré, puis le titre qui suit reste, lui, aligné à
-                  gauche. Espacement logo→badge élargi (retour du 05/09, 3e
-                  passage) — les deux étaient trop collés l'un à l'autre. */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 32 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={LOGO_URL} width={170} height={64} alt="" style={{ objectFit: "contain" }} />
-                {badgeLabel && (
-                  <div
-                    style={{
-                      display: "flex",
-                      background: "#fff",
-                      color: accent,
-                      fontSize: 20,
-                      fontWeight: 700,
-                      textTransform: badgeUppercase ? "uppercase" : "none",
-                      letterSpacing: 2,
-                      padding: "9px 20px",
-                      borderRadius: 999,
-                      marginTop: 28,
-                    }}
-                  >
-                    {badgeLabel}
-                  </div>
-                )}
-                <div style={{ display: "flex", width: 90, height: 1, background: "rgba(255,255,255,.35)", marginTop: 20 }} />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  color: "#fff",
-                  fontFamily: fraunces ? "Fraunces" : "sans-serif",
-                  fontWeight: 600,
-                  fontSize: title.length > 40 ? 44 : 54,
-                  lineHeight: 1.15,
-                  maxWidth: 560,
-                }}
-              >
-                {title}
-              </div>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {footer && <div style={{ display: "flex", color: "rgba(255,255,255,.75)", fontSize: 22, marginBottom: 6 }}>{footer}</div>}
-              <div style={{ display: "flex", color: LAVENDER_DEEP, fontSize: 24, fontWeight: 700 }}>sergehapitaministries.org</div>
-            </div>
-          </div>
-        </div>
-      ),
-      { ...OG_SIZE, fonts: fonts.length > 0 ? fonts : undefined }
-    );
-  }
-
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "64px 72px",
-          background: gradient,
-          fontFamily: manrope ? "Manrope" : "sans-serif",
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {/* Logo + badge de rubrique centrés ensemble, comme un seul bloc
-              (retour du 05/09, 2e passage) — le trait fin de démarcation
-              vient juste après cet ensemble, pas sous le logo seul. Le
-              titre qui suit reste, lui, aligné à gauche. Espacement
-              logo→badge élargi (retour du 05/09, 3e passage) — les deux
-              étaient trop collés l'un à l'autre. */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 40 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={LOGO_URL} width={200} height={75} alt="" style={{ objectFit: "contain" }} />
-            {badgeLabel && (
-              <div
-                style={{
-                  display: "flex",
-                  background: "#fff",
-                  color: accent,
-                  fontSize: 22,
-                  fontWeight: 700,
-                  textTransform: badgeUppercase ? "uppercase" : "none",
-                  letterSpacing: 2,
-                  padding: "10px 22px",
-                  borderRadius: 999,
-                  marginTop: 32,
-                }}
-              >
-                {badgeLabel}
-              </div>
-            )}
-            <div style={{ display: "flex", width: 100, height: 1, background: "rgba(255,255,255,.35)", marginTop: 22 }} />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              color: "#fff",
-              fontFamily: fraunces ? "Fraunces" : "sans-serif",
-              fontWeight: 600,
-              fontSize: title.length > 60 ? 50 : 62,
-              lineHeight: 1.15,
-              maxWidth: 1000,
-            }}
-          >
-            {title}
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", color: LAVENDER_DEEP, fontSize: 26, fontWeight: 700 }}>sergehapitaministries.org</div>
-          {footer && <div style={{ display: "flex", color: "rgba(255,255,255,.75)", fontSize: 24 }}>{footer}</div>}
-        </div>
+    <div style={{ width: "100%", height: "100%", display: "flex", background: "#fbf9fd", fontFamily: manrope ? "Manrope" : "sans-serif", overflow: "hidden" }}>
+      <div style={{ width: 660, height: "100%", display: "flex", flexDirection: "column", padding: "54px 62px", position: "relative", background: "linear-gradient(135deg,#fff 0%,#fbf9fd 70%,#f1ecfb 100%)" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={OFFICIAL_LOGO_URL} width={235} height={79} alt="" style={{ objectFit: "contain", objectPosition: "left center" }} />
+        <div style={{ display: "flex", width: 72, height: 5, background: "#b68a4b", marginTop: 28, marginBottom: 24 }} />
+        <div style={{ display: "flex", color: "#6427a8", fontSize: 21, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.6, marginBottom: 22 }}>{label}</div>
+        <div style={{ display: "flex", color: "#24123f", fontFamily: fraunces ? "Fraunces" : "serif", fontWeight: 600, fontSize: titleSize(title), lineHeight: 1.08, maxWidth: 520 }}>{title}</div>
+        <div style={{ display: "flex", width: 86, height: 5, background: "#b68a4b", marginTop: 28 }} />
+        <div style={{ position: "absolute", right: -105, top: -80, width: 220, height: 790, borderRadius: "50%", border: "38px solid rgba(111,48,165,.84)" }} />
+        <div style={{ position: "absolute", right: -72, top: -55, width: 160, height: 740, borderRadius: "50%", border: "22px solid rgba(184,151,220,.52)" }} />
       </div>
-    ),
-    { ...OG_SIZE, fonts: fonts.length > 0 ? fonts : undefined }
+      <div style={{ width: 540, height: "100%", display: "flex", background: "#ded4ec", overflow: "hidden" }}>
+        {editorial ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={editorial} width={540} height={630} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "flex", background: "linear-gradient(135deg,#e9e1f3,#6f30a5)" }} />
+        )}
+      </div>
+    </div>,
+    { ...OG_SIZE, fonts: fonts.length ? fonts : undefined }
   );
 }
