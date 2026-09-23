@@ -45,7 +45,7 @@ export default function RoseeMatinaleContent({
   basePath: string;
   relatedArticles: Article[];
 }) {
-  const pageUrl = `${SITE_URL}${dayHref(current.article_date)}`;
+  const pageUrl = basePath === "/rosee-matinale" ? `${SITE_URL}/rosee-matinale` : `${SITE_URL}${dayHref(current.article_date)}`;
   const paragraphs = extractParagraphs(current.body || "");
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
 
