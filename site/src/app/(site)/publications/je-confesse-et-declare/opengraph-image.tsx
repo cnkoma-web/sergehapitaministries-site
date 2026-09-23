@@ -9,6 +9,7 @@ export const alt = "Je Confesse";
 
 // V2 (Lot 4, 11/09) — calqué sur rosee-matinale/opengraph-image.tsx.
 export default async function Image() {
+  await headers();
   const entry = await getConfessionDuJour();
   return renderOgImage({
     category: "jc",
