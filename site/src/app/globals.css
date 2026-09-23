@@ -3427,6 +3427,7 @@ footer.footer--dark{
 .v2-jc-hero-image{position:absolute;z-index:-2;inset:0;background-size:cover;background-position:center;opacity:.3;}
 .v2-jc-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(20,14,40,.78),rgba(76,49,124,.28),rgba(23,15,44,.48));}
 .v2-jc-hero-copy{position:relative;max-width:860px;margin:0 auto;text-align:center;}
+.v2-jc-hero-intro{margin:0 auto 14px;color:rgba(255,255,255,.86);font-family:var(--v2-sans);font-size:15px;font-weight:600;letter-spacing:.02em;}
 .v2-jc-hero h1{margin:0 auto 25px;color:#fff;font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
 .v2-jc-hero h1 cite{font-family:var(--v2-sans);font-size:.55em;font-style:normal;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.62);}
 .v2-jc-hero-context{width:min(600px,100%);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.34);}

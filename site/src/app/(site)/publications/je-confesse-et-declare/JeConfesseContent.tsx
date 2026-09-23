@@ -72,6 +72,7 @@ export default async function JeConfesseContent({
               gabarit, pas tapé par Serge, jamais nbspBeforeClosingGuillemet
               ici (elle ne traite qu'un " »" déjà présent dans le texte,
               pas un guillemet ajouté séparément juste après). */}
+          <p className="v2-jc-hero-intro">Parce qu&apos;il est écrit :</p>
           <h1>
             « {settings.verseText}
             {" "}» <cite>{settings.verseReference}</cite>

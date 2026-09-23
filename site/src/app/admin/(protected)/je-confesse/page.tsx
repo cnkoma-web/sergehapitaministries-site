@@ -5,6 +5,8 @@ import { stripHtml } from "@/lib/richtext";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import Pagination from "@/components/admin/Pagination";
+import AdminSubmitButton from "@/components/admin/AdminSubmitButton";
+import AdminKeywordsField from "@/components/admin/AdminKeywordsField";
 
 const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
 const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "actif" };
@@ -20,9 +22,9 @@ const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "acti
 export default async function AdminJeConfessePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; perPage?: string }>;
+  searchParams: Promise<{ page?: string; perPage?: string; saved?: string; error?: string }>;
 }) {
-  const { page: pageParam, perPage: perPageParam } = await searchParams;
+  const { page: pageParam, perPage: perPageParam, saved, error } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const perPage = Number(perPageParam) || 5;
 
@@ -33,6 +35,9 @@ export default async function AdminJeConfessePage({
   return (
     <>
       <h1>Je Confesse</h1>
+      {saved === "published" && <p className="admin-feedback success" role="status">La confession a bien été publiée. L’éditeur est prêt pour une nouvelle saisie.</p>}
+      {error === "missing-fields" && <p className="admin-feedback error" role="alert">La proclamation est obligatoire.</p>}
+      {error === "publish" && <p className="admin-feedback error" role="alert">La publication a échoué. Aucune donnée n’a été masquée : réessayez ou signalez le problème.</p>}
       <p className="admin-lede">
         Publier une nouvelle entrée bascule automatiquement l&apos;ancienne en archive — pas de
         bouton séparé, c&apos;est juste la plus récente entrée par date. L&apos;archive complète se
@@ -57,11 +62,9 @@ export default async function AdminJeConfessePage({
           </div>
           <div className="editor-field">
             <label>Mots-clés (SEO) — séparés par des virgules</label>
-            <input type="text" name="seo_keywords" placeholder="identité, victoire, confession" />
+            <AdminKeywordsField />
           </div>
-          <button type="submit" className="admin-btn-primary">
-            Publier
-          </button>
+          <AdminSubmitButton pendingLabel="Publication…">Publier</AdminSubmitButton>
         </form>
       </div>
 

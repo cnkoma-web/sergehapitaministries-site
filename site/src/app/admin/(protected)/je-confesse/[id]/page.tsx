@@ -6,6 +6,8 @@ import { updateConfessionEntry, deleteArticle } from "../../publications/actions
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import SavedToast from "@/components/admin/SavedToast";
+import AdminSubmitButton from "@/components/admin/AdminSubmitButton";
+import AdminKeywordsField from "@/components/admin/AdminKeywordsField";
 
 // V2 (Lot 4, 11/09 — corrigé le 11/09 après relecture de la maquette) —
 // calqué sur admin/rosee-matinale/[id]/page.tsx (voir le commentaire
@@ -35,9 +37,7 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
             <button type="submit" form="delete-confession-form" className="btn-danger">
               Supprimer
             </button>
-            <button type="submit" className="admin-btn-primary">
-              Enregistrer
-            </button>
+            <AdminSubmitButton pendingLabel="Enregistrement…">Enregistrer</AdminSubmitButton>
           </div>
         </div>
 
@@ -77,12 +77,7 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
 
           <div className="editor-field" style={{ marginBottom: 0 }}>
             <label>Mots-clés (SEO) — séparés par des virgules</label>
-            <input
-              type="text"
-              name="seo_keywords"
-              defaultValue={entry.seo_keywords.join(", ")}
-              placeholder="identité, victoire, confession"
-            />
+            <AdminKeywordsField defaultKeywords={entry.seo_keywords} />
           </div>
         </div>
       </form>
