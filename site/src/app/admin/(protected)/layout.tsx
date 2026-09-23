@@ -1,10 +1,23 @@
 import "@/app/admin-mobile.css";
 import "@/app/admin-lot2.css";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import AdminSidebarNav from "@/components/admin/AdminSidebarNav";
+import AdminPwaRegister from "@/components/admin/AdminPwaRegister";
+
+export const metadata: Metadata = {
+  title: "SHM Admin",
+  manifest: "/admin-manifest.webmanifest",
+  themeColor: "#4f25d8",
+  appleWebApp: {
+    capable: true,
+    title: "SHM Admin",
+    statusBarStyle: "default",
+  },
+};
 
 export default async function AdminProtectedLayout({ children }: { children: React.ReactNode }) {
   const admin = await getCurrentAdmin();
@@ -25,6 +38,7 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
 
   return (
     <div className="admin-shell">
+      <AdminPwaRegister />
       <div className="admin-layout">
         <aside className="admin-sidebar admin-sidebar-desktop" aria-label="Navigation d’administration">
           <h1>Administration</h1>
