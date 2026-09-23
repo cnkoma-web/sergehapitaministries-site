@@ -53,7 +53,7 @@ export default async function JeConfesseContent({
   basePath: string;
   relatedArticles: Article[];
 }) {
-  const pageUrl = basePath === "/publications/je-confesse-et-declare" ? `${SITE_URL}/publications/je-confesse-et-declare` : `${SITE_URL}${dayHref(current.article_date)}`;
+  const pageUrl = `${SITE_URL}${dayHref(current.article_date)}`;
   const paragraphs = extractParagraphs(current.body || "");
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
   const settings = await getJeConfesseSettings();
