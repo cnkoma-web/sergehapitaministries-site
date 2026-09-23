@@ -90,7 +90,7 @@
 
   .admin-main .admin-editor-topbar {
     position: sticky;
-    top: var(--admin-mobile-header-height, 72px);
+    top: 62px;
     z-index: 30;
     gap: 10px;
     margin: -20px -18px 24px !important;
@@ -185,7 +185,6 @@
   .admin-main .pagination { align-items: stretch; flex-direction: column; gap: 10px; }
   .admin-main .pagination a,
   .admin-main .pagination button { justify-content: center; min-height: 44px; }
-  .admin-main .admin-editor-topbar .actions .admin-btn-ghost { display: none; }
 }
 
 @media (min-width: 901px) and (max-width: 1280px) {
@@ -258,5 +257,47 @@
 
   .admin-main .order-detail-card {
     padding-inline: 14px;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-main .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .admin-main .chip {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-main .category-suggestions {
+    right: 0;
+    left: 0;
+    max-width: 100%;
+  }
+
+  .admin-main .body-input,
+  .admin-main .desc-editable {
+    min-width: 0;
+    max-width: 100%;
+    scroll-margin-bottom: 110px;
+    font-size: 16px;
+  }
+
+  .admin-main .rich-toolbar-mini {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .admin-main .admin-saved-toast,
+  .admin-main .admin-feedback,
+  .admin-main .admin-error {
+    max-width: calc(100vw - 32px);
+    overflow-wrap: anywhere;
   }
 }
