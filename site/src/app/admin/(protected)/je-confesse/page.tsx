@@ -6,6 +6,7 @@ import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import Pagination from "@/components/admin/Pagination";
 import AdminSubmitButton from "@/components/admin/AdminSubmitButton";
+import AdminKeywordsField from "@/components/admin/AdminKeywordsField";
 
 const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
 const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "actif" };
@@ -61,7 +62,7 @@ export default async function AdminJeConfessePage({
           </div>
           <div className="editor-field">
             <label>Mots-clés (SEO) — séparés par des virgules</label>
-            <input type="text" name="seo_keywords" placeholder="identité, victoire, confession" />
+            <AdminKeywordsField />
           </div>
           <AdminSubmitButton pendingLabel="Publication…">Publier</AdminSubmitButton>
         </form>
