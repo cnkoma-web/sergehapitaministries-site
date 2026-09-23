@@ -16,10 +16,10 @@ const CATEGORY_LABEL: Record<OgCategory, string> = {
 const SITE_URL = "https://sergehapitaministries.org";
 const OFFICIAL_LOGO_URL = `${SITE_URL}/logo.png`;
 const FALLBACK_IMAGE: Record<OgCategory, string> = {
-  rm: `${SITE_URL}/og/fallback-rm.jpg`,
-  jc: `${SITE_URL}/og/fallback-jc.jpg`,
-  qdlb: `${SITE_URL}/og/fallback-qdlb.jpg`,
-  vs: `${SITE_URL}/og/fallback-vs.jpg`,
+  rm: `${SITE_URL}/og/fallback-rm.svg`,
+  jc: `${SITE_URL}/og/fallback-jc.svg`,
+  qdlb: `${SITE_URL}/og/fallback-qdlb.svg`,
+  vs: `${SITE_URL}/og/fallback-vs.svg`,
 };
 
 let frauncesCache: ArrayBuffer | null = null;
