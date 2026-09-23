@@ -8,6 +8,7 @@ export const contentType = OG_CONTENT_TYPE;
 export const alt = "Publication";
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
+  await headers();
   const { slug } = await params;
   const article = await getArticleBySlugAnyType(slug);
   if (!article) return renderOgImage({ eyebrow: "Publications", title: "Publications" });
