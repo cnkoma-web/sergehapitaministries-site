@@ -15,5 +15,6 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     category: article.type === "rm" ? undefined : article.type,
     eyebrow: article.type === "rm" ? "Rosée Matinale" : undefined,
     title: article.title,
+    coverImageUrl: article.cover_url ?? undefined,
   });
 }
