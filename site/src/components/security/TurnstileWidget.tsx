@@ -62,6 +62,28 @@ export default function TurnstileWidget({
   const [ready, setReady] = useState(false);
   const [token, setToken] = useState("");
 
+  // Une PWA peut réutiliser le script Turnstile entre deux navigations sans
+  // redéclencher l'événement de chargement de next/script. On détecte donc
+  // aussi explicitement l'API déjà présente afin de toujours rendre le défi.
+  useEffect(() => {
+    if (window.turnstile) {
+      setReady(true);
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      if (!window.turnstile) return;
+      setReady(true);
+      window.clearInterval(interval);
+    }, 100);
+
+    const timeout = window.setTimeout(() => window.clearInterval(interval), 15000);
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, []);
+
   onErrorRef.current = onError;
   onTokenRef.current = onToken;
 
@@ -149,6 +171,7 @@ export default function TurnstileWidget({
         id="cloudflare-turnstile"
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         strategy="afterInteractive"
+        onLoad={() => setReady(true)}
         onReady={() => setReady(true)}
       />
       <div ref={containerRef} style={mode === "interactive" ? { width: "100%" } : undefined} />
