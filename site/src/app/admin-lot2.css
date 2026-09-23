@@ -192,3 +192,71 @@
   .admin-main .editor-layout { grid-template-columns: minmax(260px, 34%) minmax(0, 1fr); }
   .admin-main .editor-layout.livre-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 32%); }
 }
+
+/* Adaptations des écrans métier qui utilisent leurs propres grilles. */
+@media (max-width: 900px) {
+  .admin-main .order-detail-grid,
+  .admin-main .order-shipping-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px;
+  }
+
+  .admin-main .order-detail-card,
+  .admin-main .order-detail-list,
+  .admin-main .order-detail-items {
+    min-width: 0;
+  }
+
+  .admin-main .order-email-actions,
+  .admin-main .status-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .admin-main .order-email-actions > *,
+  .admin-main .status-row > * {
+    max-width: 100%;
+  }
+
+  .admin-main .order-advance-form,
+  .admin-main .order-tracking-form {
+    min-width: 0;
+  }
+
+  .admin-main .order-advance-form input,
+  .admin-main .order-tracking-form input,
+  .admin-main .order-advance-form select,
+  .admin-main .order-tracking-form select {
+    width: 100%;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .admin-main .editor-card[style*="max-width"] {
+    width: 100%;
+  }
+
+  .admin-main .admin-btn-primary,
+  .admin-main .admin-btn-ghost,
+  .admin-main .btn-add {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 430px) {
+  .admin-main .admin-editor-topbar .actions {
+    gap: 8px;
+  }
+
+  .admin-main .admin-editor-topbar .actions button,
+  .admin-main .admin-editor-topbar .actions a {
+    padding-inline: 12px;
+  }
+
+  .admin-main .order-detail-card {
+    padding-inline: 14px;
+  }
+}
