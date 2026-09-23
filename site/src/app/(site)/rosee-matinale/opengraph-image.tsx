@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { getRoseeDuJour } from "@/lib/content/articles";
 import { renderOgImage, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
 
