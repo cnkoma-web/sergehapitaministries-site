@@ -1,0 +1,200 @@
+/* Phase 2 — Lot 2: socle responsive commun aux rubriques Admin */
+.admin-main,
+.admin-main > *,
+.admin-main img,
+.admin-main video,
+.admin-main iframe {
+  max-width: 100%;
+}
+
+.admin-main button,
+.admin-main .button,
+.admin-main a.button {
+  min-height: 44px;
+}
+
+.admin-main input,
+.admin-main select,
+.admin-main textarea {
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .admin-main {
+    min-width: 0;
+    overflow-x: clip;
+  }
+
+  .admin-main .items-table {
+    display: grid;
+    gap: 14px;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .admin-main .items-table .items-head,
+  .admin-main .items-table .item-head {
+    display: none !important;
+  }
+
+  .admin-main .items-table .item-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--admin-border, #e7e2ee);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 4px 18px rgb(31 23 48 / 5%);
+  }
+
+  .admin-main .item-row > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-main .item-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .admin-main .item-actions a,
+  .admin-main .item-actions button {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+
+  .admin-main .editor-layout,
+  .admin-main .editor-layout.livre-layout,
+  .admin-main .order-detail-layout,
+  .admin-main .product-editor-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100%;
+  }
+
+  .admin-main .editor-field-row,
+  .admin-main .form-row,
+  .admin-main .field-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-main .editor-card,
+  .admin-main .admin-card {
+    min-width: 0;
+  }
+
+  .admin-main .admin-editor-topbar {
+    position: sticky;
+    top: var(--admin-mobile-header-height, 72px);
+    z-index: 30;
+    gap: 10px;
+    padding-block: 10px;
+    background: rgb(248 247 251 / 96%);
+    backdrop-filter: blur(10px);
+  }
+
+  .admin-main .admin-editor-topbar .actions {
+    position: fixed;
+    z-index: 80;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px max(14px, env(safe-area-inset-right))
+      calc(10px + env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
+    border-top: 1px solid #e4deeb;
+    background: rgb(255 255 255 / 96%);
+    box-shadow: 0 -8px 24px rgb(31 23 48 / 10%);
+    backdrop-filter: blur(12px);
+  }
+
+  .admin-main .admin-editor-topbar .actions .danger,
+  .admin-main .admin-editor-topbar .actions [data-destructive="true"] {
+    margin-right: auto;
+  }
+
+  .admin-main:has(.admin-editor-topbar .actions) {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+
+  .admin-main table {
+    max-width: 100%;
+  }
+
+  .admin-main .table-scroll,
+  .admin-main .orders-table-wrap {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-main .gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .admin-main .rich-toolbar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+
+  .admin-main .rich-toolbar button {
+    flex: 0 0 auto;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-main .items-table {
+    gap: 12px;
+  }
+
+  .admin-main .items-table .item-row {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .admin-main .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-main .stats-row,
+  .admin-main .charts-row,
+  .admin-main .todo-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-main .pagination {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .admin-main .pagination a,
+  .admin-main .pagination button {
+    justify-content: center;
+    min-height: 44px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1280px) {
+  .admin-main .editor-layout {
+    grid-template-columns: minmax(260px, 34%) minmax(0, 1fr);
+  }
+
+  .admin-main .editor-layout.livre-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 32%);
+  }
+}
