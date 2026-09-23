@@ -10,6 +10,7 @@ export default async function Image() {
   const entry = await getConfessionDuJour();
   return renderOgImage({
     category: "jc",
-    title: entry?.verse_text?.slice(0, 140) ?? "La proclamation du jour",
+    title: entry?.title ?? "Je Confesse",
+    coverImageUrl: entry?.cover_url ?? undefined,
   });
 }
