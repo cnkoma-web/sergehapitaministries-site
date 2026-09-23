@@ -14,6 +14,7 @@ export const alt = "Rosée Matinale";
 // jour, [date] est un paramètre de route, donc disponible ici — l'image
 // générée montre enfin le jour réellement partagé.
 export default async function Image({ params }: { params: Promise<{ date: string }> }) {
+  await headers();
   const { date } = await params;
   const entries = await getPublishedArticles("rm");
   const entry = entries.find((e) => e.article_date === date);
