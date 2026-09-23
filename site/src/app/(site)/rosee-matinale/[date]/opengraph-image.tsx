@@ -17,6 +17,7 @@ export default async function Image({ params }: { params: Promise<{ date: string
   const entry = entries.find((e) => e.article_date === date);
   return renderOgImage({
     category: "rm",
-    title: entry?.verse_text?.slice(0, 140) ?? "La pensée du jour",
+    title: entry?.title ?? "Rosée Matinale",
+    coverImageUrl: entry?.cover_url ?? undefined,
   });
 }
