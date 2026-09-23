@@ -3,26 +3,32 @@
 .admin-main > *,
 .admin-main img,
 .admin-main video,
-.admin-main iframe {
-  max-width: 100%;
-}
+.admin-main iframe { max-width: 100%; }
 
 .admin-main button,
 .admin-main .button,
-.admin-main a.button {
-  min-height: 44px;
-}
+.admin-main a.button { min-height: 44px; }
 
 .admin-main input,
 .admin-main select,
-.admin-main textarea {
-  max-width: 100%;
-}
+.admin-main textarea { max-width: 100%; }
 
 @media (max-width: 900px) {
-  .admin-main {
-    min-width: 0;
-    overflow-x: clip;
+  .admin-main { min-width: 0; overflow-x: clip; }
+
+  .admin-main .admin-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .admin-main .admin-header > form,
+  .admin-main .admin-header > div,
+  .admin-main .admin-header .btn-add { max-width: 100%; }
+
+  .admin-main .admin-header > form {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .admin-main .items-table {
@@ -34,7 +40,8 @@
   }
 
   .admin-main .items-table .items-head,
-  .admin-main .items-table .item-head {
+  .admin-main .items-table .item-head,
+  .admin-main .items-table .item-row.head {
     display: none !important;
   }
 
@@ -43,17 +50,15 @@
     grid-template-columns: minmax(0, 1fr) !important;
     gap: 10px;
     min-width: 0;
-    padding: 16px;
+    padding: 16px !important;
     border: 1px solid var(--admin-border, #e7e2ee);
     border-radius: 16px;
     background: #fff;
     box-shadow: 0 4px 18px rgb(31 23 48 / 5%);
   }
 
-  .admin-main .item-row > * {
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
+  .admin-main .item-row > * { min-width: 0; overflow-wrap: anywhere; }
+  .admin-main .item-thumb { width: 72px; height: 72px; border-radius: 12px; }
 
   .admin-main .item-actions {
     display: flex;
@@ -64,10 +69,7 @@
   }
 
   .admin-main .item-actions a,
-  .admin-main .item-actions button {
-    min-height: 44px;
-    padding: 10px 14px;
-  }
+  .admin-main .item-actions button { min-height: 44px; padding: 10px 14px; }
 
   .admin-main .editor-layout,
   .admin-main .editor-layout.livre-layout,
@@ -79,23 +81,27 @@
 
   .admin-main .editor-field-row,
   .admin-main .form-row,
-  .admin-main .field-row {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
+  .admin-main .field-row { grid-template-columns: minmax(0, 1fr) !important; }
 
   .admin-main .editor-card,
-  .admin-main .admin-card {
-    min-width: 0;
-  }
+  .admin-main .admin-card,
+  .admin-main .params-panel,
+  .admin-main .content-area { min-width: 0; }
 
   .admin-main .admin-editor-topbar {
     position: sticky;
     top: var(--admin-mobile-header-height, 72px);
     z-index: 30;
     gap: 10px;
-    padding-block: 10px;
+    margin: -20px -18px 24px !important;
+    padding: 10px 18px !important;
     background: rgb(248 247 251 / 96%);
     backdrop-filter: blur(10px);
+  }
+
+  .admin-main .admin-editor-topbar .left {
+    min-width: 0;
+    flex-wrap: wrap;
   }
 
   .admin-main .admin-editor-topbar .actions {
@@ -108,6 +114,7 @@
     gap: 10px;
     align-items: center;
     justify-content: flex-end;
+    overflow-x: auto;
     padding: 10px max(14px, env(safe-area-inset-right))
       calc(10px + env(safe-area-inset-bottom))
       max(14px, env(safe-area-inset-left));
@@ -117,19 +124,16 @@
     backdrop-filter: blur(12px);
   }
 
+  .admin-main .admin-editor-topbar .actions > * { flex: 0 0 auto; }
   .admin-main .admin-editor-topbar .actions .danger,
-  .admin-main .admin-editor-topbar .actions [data-destructive="true"] {
-    margin-right: auto;
-  }
+  .admin-main .admin-editor-topbar .actions .btn-danger,
+  .admin-main .admin-editor-topbar .actions [data-destructive="true"] { margin-right: auto; }
 
   .admin-main:has(.admin-editor-topbar .actions) {
-    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+    padding-bottom: calc(82px + env(safe-area-inset-bottom));
   }
 
-  .admin-main table {
-    max-width: 100%;
-  }
-
+  .admin-main table { max-width: 100%; }
   .admin-main .table-scroll,
   .admin-main .orders-table-wrap {
     overflow-x: auto;
@@ -137,9 +141,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .admin-main .gallery-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
+  .admin-main .gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 
   .admin-main .rich-toolbar {
     display: flex;
@@ -154,47 +156,39 @@
     min-width: 44px;
     min-height: 44px;
   }
+
+  .admin-main .order-admin-row > [role="cell"]::before {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .admin-main .order-admin-row > [role="cell"]:nth-child(1)::before { content: "Commande"; }
+  .admin-main .order-admin-row > [role="cell"]:nth-child(2)::before { content: "Client et articles"; }
+  .admin-main .order-admin-row > [role="cell"]:nth-child(3)::before { content: "Total"; }
+  .admin-main .order-admin-row > [role="cell"]:nth-child(4)::before { content: "Paiement"; }
+  .admin-main .order-admin-row > [role="cell"]:nth-child(5)::before { content: "Traitement"; }
+  .admin-main .order-admin-row > [role="cell"]:nth-child(6)::before { content: "Date"; }
+  .admin-main .order-admin-row > [role="cell"]:nth-child(7)::before { content: "Action"; }
 }
 
 @media (max-width: 767px) {
-  .admin-main .items-table {
-    gap: 12px;
-  }
-
-  .admin-main .items-table .item-row {
-    padding: 14px;
-    border-radius: 14px;
-  }
-
-  .admin-main .gallery-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
+  .admin-main .items-table { gap: 12px; }
+  .admin-main .items-table .item-row { padding: 14px !important; border-radius: 14px; }
+  .admin-main .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .admin-main .stats-row,
   .admin-main .charts-row,
-  .admin-main .todo-row {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  .admin-main .pagination {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
-  }
-
+  .admin-main .todo-row { grid-template-columns: minmax(0, 1fr) !important; }
+  .admin-main .pagination { align-items: stretch; flex-direction: column; gap: 10px; }
   .admin-main .pagination a,
-  .admin-main .pagination button {
-    justify-content: center;
-    min-height: 44px;
-  }
+  .admin-main .pagination button { justify-content: center; min-height: 44px; }
+  .admin-main .admin-editor-topbar .actions .admin-btn-ghost { display: none; }
 }
 
 @media (min-width: 901px) and (max-width: 1280px) {
-  .admin-main .editor-layout {
-    grid-template-columns: minmax(260px, 34%) minmax(0, 1fr);
-  }
-
-  .admin-main .editor-layout.livre-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 32%);
-  }
+  .admin-main .editor-layout { grid-template-columns: minmax(260px, 34%) minmax(0, 1fr); }
+  .admin-main .editor-layout.livre-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 32%); }
 }
