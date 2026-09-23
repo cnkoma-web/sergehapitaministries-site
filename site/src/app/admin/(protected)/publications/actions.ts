@@ -297,11 +297,11 @@ export async function publishConfession(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
   const body = String(formData.get("body") ?? "").trim();
-  if (!body) return;
+  if (!body) redirect("/admin/je-confesse?error=missing-fields");
 
   const title = `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
 
-  await supabase.from("articles").insert({
+  const { error } = await supabase.from("articles").insert({
     type: "jc",
     slug: `jc-${article_date}`,
     title,
@@ -315,10 +315,16 @@ export async function publishConfession(formData: FormData) {
     reading_time_minutes: computeReadingTime(body),
   });
 
+  if (error) {
+    console.error("[admin/je-confesse] publish failed", error);
+    redirect("/admin/je-confesse?error=publish");
+  }
+
   revalidatePath("/admin/je-confesse");
   revalidatePath("/publications/je-confesse-et-declare");
   revalidatePath("/");
   revalidatePath("/publications");
+  redirect("/admin/je-confesse?saved=published");
 }
 
 export async function updateConfessionEntry(formData: FormData) {
