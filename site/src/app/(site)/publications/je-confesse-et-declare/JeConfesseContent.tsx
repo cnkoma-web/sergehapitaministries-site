@@ -168,6 +168,7 @@ export default async function JeConfesseContent({
             category="jc"
             articleDate={current.article_date}
             excerpt={current.body ? stripHtml(current.body) : undefined}
+            shareContent={{ intro: current.excerpt, scriptureReference: settings.verseReference, scriptureText: settings.verseText, body: current.body }}
           />
         </div>
       </section>
