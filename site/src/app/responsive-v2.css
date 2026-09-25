@@ -541,8 +541,8 @@
    QDLB / Vie Supérieure : respiration latérale des cartes similaires en mobile.
    Fiche Livre : respiration entre badges et titre uniquement en mobile. */
 .v2-article-page .related-articles h2,
-.v2-rm-page .related-articles h2{font-size:37px;}
-.v2-rm-page .rm-archive h2{font-size:38px;}
+.v2-rm-page .related-articles h2{font-size:34px;}
+.v2-rm-page .rm-archive h2{font-size:35px;}
 
 @media (max-width:720px){
   .v2-article-page.qdlb .related-articles>.wrap,
@@ -554,4 +554,9 @@
   .v2-product-page .product-info-col:has(.status-badge,.product-badge) .product-title{
     margin-top:19px;
   }
+  /* RM / Je Confesse : après inversion de l'ordre, les deux sections
+     lavande se suivent. On divise par deux leur respiration cumulée en
+     mobile, sans toucher aux valeurs tablette/desktop. */
+  .v2-rm-page .rm-archive{padding-bottom:50px;}
+  .v2-rm-page .rm-archive + .related-articles{padding-top:40px;}
 }
