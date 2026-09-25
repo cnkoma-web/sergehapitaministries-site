@@ -44,6 +44,7 @@ export default function ShareCartouche({
   category,
   articleDate,
   excerpt,
+  shareContent,
   bookDescription,
   invite,
   platformOrder,
@@ -78,6 +79,7 @@ export default function ShareCartouche({
   // publications n'en ont pas (repli déjà géré par l'appelant, voir
   // publications/[slug]/page.tsx).
   excerpt?: string;
+  shareContent?: PublicationShareContent;
   // Description du livre, débarrassée de son HTML par l'appelant (voir
   // livres/[slug]/page.tsx) — jamais utilisé en même temps que category.
   bookDescription?: string;
@@ -89,8 +91,8 @@ export default function ShareCartouche({
   let formattedMessage: string;
   let plainMessage: string;
   if (category) {
-    formattedMessage = buildShareMessage({ category, title, articleDate: articleDate ?? "", excerpt, url });
-    plainMessage = buildPlainShareMessage({ category, title, articleDate: articleDate ?? "", excerpt, url });
+    formattedMessage = buildShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, url });
+    plainMessage = buildPlainShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, url });
   } else if (bookDescription) {
     formattedMessage = buildBookShareMessage({ title, description: bookDescription, url });
     plainMessage = buildPlainBookShareMessage({ title, description: bookDescription, url });
