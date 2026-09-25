@@ -119,7 +119,7 @@ function buildMessage({
   url: string;
   formatted: boolean;
 }): string {
-  const blocks: string[] = ["SHM partage avec toi", formatted ? `*${title}*` : title];
+  const blocks: string[] = [formatted ? "*SHM* partage avec toi" : "SHM partage avec toi", formatted ? `*${title}*` : title];
   if (content?.intro?.trim()) blocks.push(content.intro.trim());
   const scripture = scriptureLine(content?.scriptureReference, content?.scriptureText);
   if (scripture) blocks.push(scripture);
