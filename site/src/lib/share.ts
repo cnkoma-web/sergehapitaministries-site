@@ -32,28 +32,20 @@ function decodeEntities(text: string): string {
 function htmlToParagraphs(html?: string | null): string[] {
   if (!html) return [];
   const normalized = html
-    .replace(/<br\s*\/?>/gi, "
-")
-    .replace(/<\/(p|div|blockquote|li|h[1-6])\s*>/gi, "
-
-")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|blockquote|li|h[1-6])\s*>/gi, "\n\n")
     .replace(/<li[^>]*>/gi, "• ")
     .replace(/<[^>]+>/g, "");
   return decodeEntities(normalized)
-    .split(/
-\s*
-+/)
-    .map((p) => p.replace(/[ \t\r\f\v]+/g, " ").replace(/
-+/g, " ").trim())
+    .split(/\n\s*\n+/)
+    .map((p) => p.replace(/[ \t\r\f\v]+/g, " ").replace(/\n+/g, " ").trim())
     .filter(Boolean);
 }
 
 function plainParagraphs(text?: string | null): string[] {
   if (!text) return [];
   return decodeEntities(text)
-    .split(/
-\s*
-+/)
+    .split(/\n\s*\n+/)
     .map((p) => p.replace(/\s+/g, " ").trim())
     .filter(Boolean);
 }
@@ -91,9 +83,7 @@ function developmentExcerpt(body?: string | null, secondParagraphMax = SECOND_PA
       : first;
     const remaining = Math.max(90, TOTAL_BODY_SAFETY_MAX - firstSafe.length - 2);
     const secondPart = cutAtWord(second, Math.min(secondParagraphMax, remaining));
-    return `${firstSafe}
-
-${secondPart}…`;
+    return `${firstSafe}\n\n${secondPart}…`;
   }
 
   // Repli : un seul paragraphe disponible. On n'invente rien et on signale
@@ -112,8 +102,7 @@ const CATEGORY_INVITE: Record<ShareCategory, string> = {
 function scriptureLine(reference?: string | null, text?: string | null): string | null {
   const ref = reference?.trim();
   const verse = text?.trim();
-  if (ref && verse) return `${ref}
-« ${verse} »`;
+  if (ref && verse) return `${ref}\n« ${verse} »`;
   return verse || ref || null;
 }
 
@@ -136,11 +125,8 @@ function buildMessage({
   if (scripture) blocks.push(scripture);
   const development = developmentExcerpt(content?.body, category === "rm" ? RM_SECOND_PARAGRAPH_MAX : SECOND_PARAGRAPH_MAX);
   if (development) blocks.push(development);
-  blocks.push(`${CATEGORY_INVITE[category]} :
-${url}`);
-  return blocks.join("
-
-");
+  blocks.push(`${CATEGORY_INVITE[category]} :\n${url}`);
+  return blocks.join("\n\n");
 }
 
 export function buildShareMessage({
@@ -198,16 +184,7 @@ function buildBookMessage({
   const hookText = `${text}…`;
   const hookBlock = formatted ? `_${hookText}_` : hookText;
   const blessing = formatted ? "_*demeure abondamment béni.*_" : "demeure abondamment béni.";
-  return `Bonjour,
-
-Serge t'invite à découvrir son livre : ${titlePart}
-
-${hookBlock}
-
-👉 Découvre le livre ici :
-${url}
-
-Bonne lecture et ${blessing}`;
+  return `Bonjour,\n\nSerge t'invite à découvrir son livre : ${titlePart}\n\n${hookBlock}\n\n👉 Découvre le livre ici :\n${url}\n\nBonne lecture et ${blessing}`;
 }
 
 export function buildBookShareMessage({ title, description, url }: { title: string; description: string; url: string }): string {
