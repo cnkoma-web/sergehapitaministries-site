@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -46,13 +47,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // toujours à la bonne taille, avec la capsule de catégorie) devient la
   // seule source — Next.js la prend automatiquement via la convention de
   // fichier, sans qu'on ait besoin de la référencer ici.
+  const socialImage = await socialImageUrl(`/publications/${slug}/opengraph-image`);
   return {
     title,
     description,
     keywords: article.seo_keywords.length > 0 ? article.seo_keywords : undefined,
-    alternates: { canonical: `/publications/${slug}` },
-    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: officialUrl(`/publications/${slug}`) },
+    openGraph: { type: "article", title, description, url: officialUrl(`/publications/${slug}`), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [socialImage] },
+    twitter: { card: "summary_large_image", title, description, images: [socialImage] },
   };
 }
 
