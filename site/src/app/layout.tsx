@@ -10,8 +10,19 @@ import CookieConsentBanner from "@/components/CookieConsentBanner";
 //
 // Layout racine volontairement minimal : le chrome du site public (header/ticker/nav)
 // vit dans app/(site)/layout.tsx, pas ici, pour que /admin ne l'hérite pas.
+//
+// Les URLs relatives des métadonnées doivent rester sur le domaine officiel en
+// production, mais sur chaque hostname immuable du déploiement en Preview.
+// VERCEL_URL peut désigner l'alias de branche (réutilisé entre déploiements) ;
+// VERCEL_BRANCH_URL est également stable par branche. VERCEL_DEPLOYMENT_URL,
+// lorsqu'il est fourni par Vercel, identifie le déploiement courant.
+const metadataOrigin =
+  process.env.VERCEL_ENV === "preview" && process.env.VERCEL_DEPLOYMENT_URL
+    ? `https://${process.env.VERCEL_DEPLOYMENT_URL}`
+    : "https://sergehapitaministries.org";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sergehapitaministries.org"),
+  metadataBase: new URL(metadataOrigin),
   title: "Serge Hapita Ministries — Révéler Christ au croyant",
 };
 
