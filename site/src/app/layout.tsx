@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 import "./responsive-v2.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -10,21 +11,21 @@ import CookieConsentBanner from "@/components/CookieConsentBanner";
 //
 // Layout racine volontairement minimal : le chrome du site public (header/ticker/nav)
 // vit dans app/(site)/layout.tsx, pas ici, pour que /admin ne l'hérite pas.
-//
-// Les URLs relatives des métadonnées doivent rester sur le domaine officiel en
-// production, mais sur chaque hostname immuable du déploiement en Preview.
-// VERCEL_URL peut désigner l'alias de branche (réutilisé entre déploiements) ;
-// VERCEL_BRANCH_URL est également stable par branche. VERCEL_DEPLOYMENT_URL,
-// lorsqu'il est fourni par Vercel, identifie le déploiement courant.
-const metadataOrigin =
-  process.env.VERCEL_ENV === "preview" && process.env.VERCEL_DEPLOYMENT_URL
-    ? `https://${process.env.VERCEL_DEPLOYMENT_URL}`
-    : "https://sergehapitaministries.org";
+const OFFICIAL_ORIGIN = "https://sergehapitaministries.org";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(metadataOrigin),
-  title: "Serge Hapita Ministries — Révéler Christ au croyant",
-};
+function requestOrigin(host: string | null, proto: string | null) {
+  if (!host) return OFFICIAL_ORIGIN;
+  if (host.endsWith(".vercel.app")) return `${proto || "https"}://${host}`;
+  return OFFICIAL_ORIGIN;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const h = await headers();
+  return {
+    metadataBase: new URL(requestOrigin(h.get("x-forwarded-host") || h.get("host"), h.get("x-forwarded-proto"))),
+    title: "Serge Hapita Ministries — Révéler Christ au croyant",
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
