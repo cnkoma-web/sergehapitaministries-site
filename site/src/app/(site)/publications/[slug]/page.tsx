@@ -434,7 +434,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           design inchangé, seul l'emplacement change. */}
       <section className="share-zone">
         <div className="content-col">
-          <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
+          <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} shareContent={{ intro: article.excerpt, scriptureReference: article.verse_reference, scriptureText: article.verse_text, body: article.body }} />
         </div>
       </section>
 
