@@ -22,7 +22,7 @@ const FALLBACK_IMAGE: Record<OgCategory, string> = {
   vs: `${SITE_URL}/og/fallback-vs.svg`,
 };
 
-let frauncesCache: ArrayBuffer | null = null;
+let dmSerifCache: ArrayBuffer | null = null;
 let manropeCache: ArrayBuffer | null = null;
 const LEGACY_UA = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
@@ -37,10 +37,10 @@ async function fetchGoogleFont(cssUrl: string): Promise<ArrayBuffer | null> {
     return await (await fetch(fontUrl)).arrayBuffer();
   } catch { return null; }
 }
-async function getFrauncesFont() {
-  if (frauncesCache) return frauncesCache;
-  frauncesCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=Fraunces:wght@600");
-  return frauncesCache;
+async function getDmSerifFont() {
+  if (dmSerifCache) return dmSerifCache;
+  dmSerifCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=DM+Serif+Display");
+  return dmSerifCache;
 }
 async function getManropeFont() {
   if (manropeCache) return manropeCache;
@@ -75,13 +75,13 @@ function rmTitleSize(title: string) {
 }
 
 async function renderRoseeMatinaleV1(title: string, coverImageUrl?: string) {
-  const [fraunces, manrope, editorial] = await Promise.all([
-    getFrauncesFont(),
+  const [dmSerif, manrope, editorial] = await Promise.all([
+    getDmSerifFont(),
     getManropeFont(),
     prepareEditorialImage(coverImageUrl || FALLBACK_IMAGE.rm, 700),
   ]);
   const fonts = [
-    fraunces && { name: "Fraunces", data: fraunces, style: "normal" as const, weight: 600 as const },
+    dmSerif && { name: "DM Serif Display", data: dmSerif, style: "normal" as const, weight: 400 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
   ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
 
@@ -103,7 +103,7 @@ async function renderRoseeMatinaleV1(title: string, coverImageUrl?: string) {
       <img src={OFFICIAL_LOGO_URL} width={305} height={102} alt="" style={{ position: "absolute", left: 80, top: 50, objectFit: "contain", objectPosition: "left center" }} />
       <div style={{ position: "absolute", left: 82, top: 224, width: 88, height: 5, display: "flex", background: "#b68a4b" }} />
       <div style={{ position: "absolute", left: 82, top: 261, display: "flex", color: "#6427a8", fontFamily: manrope ? "Manrope" : "sans-serif", fontSize: 22, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5 }}>Rosée Matinale</div>
-      <div style={{ position: "absolute", left: 82, top: 310, width: 445, maxHeight: 220, display: "flex", color: "#24123f", fontFamily: fraunces ? "Fraunces" : "serif", fontWeight: 600, fontSize: rmTitleSize(title), lineHeight: 1.08 }}>{title}</div>
+      <div style={{ position: "absolute", left: 82, top: 310, width: 445, maxHeight: 220, display: "flex", color: "#24123f", fontFamily: dmSerif ? "DM Serif Display" : "serif", fontWeight: 400, fontSize: rmTitleSize(title), lineHeight: 1.08 }}>{title}</div>
       <div style={{ position: "absolute", left: 82, top: 542, width: 88, height: 5, display: "flex", background: "#b68a4b" }} />
     </div>,
     { ...OG_SIZE, fonts: fonts.length ? fonts : undefined }
@@ -111,13 +111,13 @@ async function renderRoseeMatinaleV1(title: string, coverImageUrl?: string) {
 }
 
 async function renderJeConfesseV1(title: string, coverImageUrl?: string) {
-  const [fraunces, manrope, editorial] = await Promise.all([
-    getFrauncesFont(),
+  const [dmSerif, manrope, editorial] = await Promise.all([
+    getDmSerifFont(),
     getManropeFont(),
     prepareEditorialImage(coverImageUrl || FALLBACK_IMAGE.jc, 700),
   ]);
   const fonts = [
-    fraunces && { name: "Fraunces", data: fraunces, style: "normal" as const, weight: 600 as const },
+    dmSerif && { name: "DM Serif Display", data: dmSerif, style: "normal" as const, weight: 400 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
   ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
 
@@ -137,7 +137,7 @@ async function renderJeConfesseV1(title: string, coverImageUrl?: string) {
       <img src={OFFICIAL_LOGO_URL} width={305} height={102} alt="" style={{ position: "absolute", left: 80, top: 50, objectFit: "contain", objectPosition: "left center" }} />
       <div style={{ position: "absolute", left: 82, top: 224, width: 88, height: 5, display: "flex", background: "#b68a4b" }} />
       <div style={{ position: "absolute", left: 82, top: 261, display: "flex", color: "#6427a8", fontFamily: manrope ? "Manrope" : "sans-serif", fontSize: 22, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5 }}>Je Confesse</div>
-      <div style={{ position: "absolute", left: 82, top: 310, width: 445, maxHeight: 220, display: "flex", color: "#24123f", fontFamily: fraunces ? "Fraunces" : "serif", fontWeight: 600, fontSize: rmTitleSize(title), lineHeight: 1.08 }}>{title}</div>
+      <div style={{ position: "absolute", left: 82, top: 310, width: 445, maxHeight: 220, display: "flex", color: "#24123f", fontFamily: dmSerif ? "DM Serif Display" : "serif", fontWeight: 400, fontSize: rmTitleSize(title), lineHeight: 1.08 }}>{title}</div>
       <div style={{ position: "absolute", left: 82, top: 542, width: 88, height: 5, display: "flex", background: "#b68a4b" }} />
     </div>,
     { ...OG_SIZE, fonts: fonts.length ? fonts : undefined }
@@ -162,13 +162,13 @@ export async function renderOgImage({
 
   const label = category ? CATEGORY_LABEL[category] : eyebrow || "Serge Hapita Ministries";
   const fallback = category ? FALLBACK_IMAGE[category] : null;
-  const [fraunces, manrope, editorial] = await Promise.all([
-    getFrauncesFont(),
+  const [dmSerif, manrope, editorial] = await Promise.all([
+    getDmSerifFont(),
     getManropeFont(),
     prepareEditorialImage(coverImageUrl || fallback || `${SITE_URL}/logo.png`),
   ]);
   const fonts = [
-    fraunces && { name: "Fraunces", data: fraunces, style: "normal" as const, weight: 600 as const },
+    dmSerif && { name: "DM Serif Display", data: dmSerif, style: "normal" as const, weight: 400 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
   ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
 
@@ -179,7 +179,7 @@ export async function renderOgImage({
         <img src={OFFICIAL_LOGO_URL} width={285} height={96} alt="" style={{ objectFit: "contain", objectPosition: "left center" }} />
         <div style={{ display: "flex", width: 88, height: 5, background: "#b68a4b", marginTop: 24, marginBottom: 22 }} />
         <div style={{ display: "flex", color: "#6427a8", fontSize: 21, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.4, marginBottom: 24 }}>{label}</div>
-        <div style={{ display: "flex", color: "#24123f", fontFamily: fraunces ? "Fraunces" : "serif", fontWeight: 600, fontSize: titleSize(title), lineHeight: 1.08, maxWidth: 455 }}>{title}</div>
+        <div style={{ display: "flex", color: "#24123f", fontFamily: dmSerif ? "DM Serif Display" : "serif", fontWeight: 600, fontSize: titleSize(title), lineHeight: 1.08, maxWidth: 455 }}>{title}</div>
         <div style={{ display: "flex", width: 88, height: 5, background: "#b68a4b", marginTop: 28 }} />
         <div style={{ position: "absolute", right: -128, top: -92, width: 250, height: 820, borderRadius: "50%", border: "42px solid rgba(111,48,165,.88)" }} />
         <div style={{ position: "absolute", right: -86, top: -64, width: 182, height: 770, borderRadius: "50%", border: "24px solid rgba(184,151,220,.55)" }} />
