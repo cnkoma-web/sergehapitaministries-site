@@ -178,6 +178,7 @@ export default function RoseeMatinaleContent({
             category="rm"
             articleDate={current.article_date}
             excerpt={current.verse_text ?? undefined}
+            shareContent={{ scriptureReference: current.verse_reference, scriptureText: current.verse_text, body: current.body }}
           />
         </div>
       </section>
