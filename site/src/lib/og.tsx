@@ -59,11 +59,11 @@ async function prepareEditorialImage(url: string): Promise<string | null> {
 }
 
 function titleSize(title: string) {
-  if (title.length > 105) return 40;
-  if (title.length > 78) return 44;
-  if (title.length > 52) return 50;
-  if (title.length > 32) return 56;
-  return 62;
+  if (title.length > 105) return 38;
+  if (title.length > 78) return 42;
+  if (title.length > 52) return 48;
+  if (title.length > 32) return 54;
+  return 60;
 }
 
 export async function renderOgImage({
@@ -93,20 +93,20 @@ export async function renderOgImage({
 
   return new ImageResponse(
     <div style={{ width: "100%", height: "100%", display: "flex", background: "#fbf9fd", fontFamily: manrope ? "Manrope" : "sans-serif", overflow: "hidden" }}>
-      <div style={{ width: 660, height: "100%", display: "flex", flexDirection: "column", padding: "54px 62px", position: "relative", background: "linear-gradient(135deg,#fff 0%,#fbf9fd 70%,#f1ecfb 100%)" }}>
+      <div style={{ width: 610, height: "100%", display: "flex", flexDirection: "column", padding: "52px 78px", position: "relative", background: "linear-gradient(135deg,#fff 0%,#fbf9fd 70%,#f1ecfb 100%)" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={OFFICIAL_LOGO_URL} width={235} height={79} alt="" style={{ objectFit: "contain", objectPosition: "left center" }} />
-        <div style={{ display: "flex", width: 72, height: 5, background: "#b68a4b", marginTop: 28, marginBottom: 24 }} />
-        <div style={{ display: "flex", color: "#6427a8", fontSize: 21, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.6, marginBottom: 22 }}>{label}</div>
-        <div style={{ display: "flex", color: "#24123f", fontFamily: fraunces ? "Fraunces" : "serif", fontWeight: 600, fontSize: titleSize(title), lineHeight: 1.08, maxWidth: 520 }}>{title}</div>
-        <div style={{ display: "flex", width: 86, height: 5, background: "#b68a4b", marginTop: 28 }} />
-        <div style={{ position: "absolute", right: -105, top: -80, width: 220, height: 790, borderRadius: "50%", border: "38px solid rgba(111,48,165,.84)" }} />
-        <div style={{ position: "absolute", right: -72, top: -55, width: 160, height: 740, borderRadius: "50%", border: "22px solid rgba(184,151,220,.52)" }} />
+        <img src={OFFICIAL_LOGO_URL} width={285} height={96} alt="" style={{ objectFit: "contain", objectPosition: "left center" }} />
+        <div style={{ display: "flex", width: 88, height: 5, background: "#b68a4b", marginTop: 24, marginBottom: 22 }} />
+        <div style={{ display: "flex", color: "#6427a8", fontSize: 21, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.4, marginBottom: 24 }}>{label}</div>
+        <div style={{ display: "flex", color: "#24123f", fontFamily: fraunces ? "Fraunces" : "serif", fontWeight: 600, fontSize: titleSize(title), lineHeight: 1.08, maxWidth: 455 }}>{title}</div>
+        <div style={{ display: "flex", width: 88, height: 5, background: "#b68a4b", marginTop: 28 }} />
+        <div style={{ position: "absolute", right: -128, top: -92, width: 250, height: 820, borderRadius: "50%", border: "42px solid rgba(111,48,165,.88)" }} />
+        <div style={{ position: "absolute", right: -86, top: -64, width: 182, height: 770, borderRadius: "50%", border: "24px solid rgba(184,151,220,.55)" }} />
       </div>
-      <div style={{ width: 540, height: "100%", display: "flex", background: "#ded4ec", overflow: "hidden" }}>
+      <div style={{ width: 590, height: "100%", display: "flex", background: "#ded4ec", overflow: "hidden" }}>
         {editorial ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={editorial} width={540} height={630} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src={editorial} width={590} height={630} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <div style={{ width: "100%", height: "100%", display: "flex", background: "linear-gradient(135deg,#e9e1f3,#6f30a5)" }} />
         )}
