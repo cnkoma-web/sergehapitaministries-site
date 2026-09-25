@@ -7,7 +7,7 @@ import {
   buildBookShareMessage,
   buildPlainBookShareMessage,
   SHARE_BLOCK_INVITE,
-  type ShareCategory,
+  type ShareCategory,\n  type PublicationShareContent,
 } from "@/lib/share";
 
 // Icônes SVG réelles pour chaque plateforme (jamais d'emoji ni de lettre
