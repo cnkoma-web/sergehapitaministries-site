@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import "./globals.css";
 import "./responsive-v2.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -9,23 +8,13 @@ import CookieConsentBanner from "@/components/CookieConsentBanner";
 // gabarit "Titre | Serge Hapita Ministries" uniforme — ex. l'accueil a un titre-accroche
 // à part) — pas de `template` ici pour éviter une double concaténation.
 //
-// Layout racine volontairement minimal : le chrome du site public (header/ticker/nav)
-// vit dans app/(site)/layout.tsx, pas ici, pour que /admin ne l'hérite pas.
-const OFFICIAL_ORIGIN = "https://sergehapitaministries.org";
-
-function requestOrigin(host: string | null, proto: string | null) {
-  if (!host) return OFFICIAL_ORIGIN;
-  if (host.endsWith(".vercel.app")) return `${proto || "https"}://${host}`;
-  return OFFICIAL_ORIGIN;
-}
-
-export async function generateMetadata(): Promise<Metadata> {
-  const h = await headers();
-  return {
-    metadataBase: new URL(requestOrigin(h.get("x-forwarded-host") || h.get("host"), h.get("x-forwarded-proto"))),
-    title: "Serge Hapita Ministries — Révéler Christ au croyant",
-  };
-}
+// Le domaine officiel reste la base de toutes les métadonnées éditoriales
+// (canonical, og:url, etc.). Les images sociales de Preview utilisent
+// explicitement l'origine de la requête dans les pages concernées.
+export const metadata: Metadata = {
+  metadataBase: new URL("https://sergehapitaministries.org"),
+  title: "Serge Hapita Ministries — Révéler Christ au croyant",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
