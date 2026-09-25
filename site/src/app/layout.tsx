@@ -8,8 +8,9 @@ import CookieConsentBanner from "@/components/CookieConsentBanner";
 // gabarit "Titre | Serge Hapita Ministries" uniforme — ex. l'accueil a un titre-accroche
 // à part) — pas de `template` ici pour éviter une double concaténation.
 //
-// Layout racine volontairement minimal : le chrome du site public (header/ticker/nav)
-// vit dans app/(site)/layout.tsx, pas ici, pour que /admin ne l'hérite pas.
+// Le domaine officiel reste la base de toutes les métadonnées éditoriales
+// (canonical, og:url, etc.). Les images sociales de Preview utilisent
+// explicitement l'origine de la requête dans les pages concernées.
 export const metadata: Metadata = {
   metadataBase: new URL("https://sergehapitaministries.org"),
   title: "Serge Hapita Ministries — Révéler Christ au croyant",

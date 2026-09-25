@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import { notFound } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import ViewTracker from "@/components/articles/ViewTracker";
@@ -12,20 +13,22 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
   if (!current) return {};
   const title = `${current.title} | Serge Hapita Ministries`;
   const description = current.verse_text || "La proclamation du jour — Je Confesse.";
+  const socialImage = await socialImageUrl(`/publications/je-confesse-et-declare/${date}/opengraph-image`);
   return {
     title,
     description,
     keywords: current.seo_keywords.length > 0 ? current.seo_keywords : undefined,
-    alternates: { canonical: `/publications/je-confesse-et-declare/${date}` },
+    alternates: { canonical: officialUrl(`/publications/je-confesse-et-declare/${date}`) },
     openGraph: {
       type: "website",
       title,
       description,
-      url: `/publications/je-confesse-et-declare/${date}`,
+      url: officialUrl(`/publications/je-confesse-et-declare/${date}`),
       siteName: "Serge Hapita Ministries",
       locale: "fr_FR",
+      images: [socialImage],
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", title, description, images: [socialImage] },
   };
 }
 
