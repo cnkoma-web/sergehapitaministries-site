@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import { notFound } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import ViewTracker from "@/components/articles/ViewTracker";
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
   // du navigateur/le partage sur les réseaux le montraient).
   const title = `${current.title} | Serge Hapita Ministries`;
   const description = current.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
+  const socialImage = await socialImageUrl(`/rosee-matinale/${date}/opengraph-image`);
   return {
     title,
     description,
@@ -24,9 +26,9 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
     // entrée de l'archive a désormais sa propre adresse permanente, donc sa
     // propre image de partage générée (voir opengraph-image.tsx ici), enfin
     // fidèle au jour réellement partagé.
-    alternates: { canonical: `/rosee-matinale/${date}` },
-    openGraph: { type: "website", title, description, url: `/rosee-matinale/${date}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: officialUrl(`/rosee-matinale/${date}`) },
+    openGraph: { type: "website", title, description, url: officialUrl(`/rosee-matinale/${date}`), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [socialImage] },
+    twitter: { card: "summary_large_image", title, description, images: [socialImage] },
   };
 }
 
