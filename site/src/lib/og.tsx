@@ -48,12 +48,12 @@ async function getManropeFont() {
   return manropeCache;
 }
 
-async function prepareEditorialImage(url: string): Promise<string | null> {
+async function prepareEditorialImage(url: string, width = 620): Promise<string | null> {
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
     const buffer = Buffer.from(await res.arrayBuffer());
-    const image = await sharp(buffer).resize(620, 630, { fit: "cover", position: "attention" }).jpeg({ quality: 82 }).toBuffer();
+    const image = await sharp(buffer).resize(width, 630, { fit: "cover", position: "attention" }).jpeg({ quality: 82 }).toBuffer();
     return `data:image/jpeg;base64,${image.toString("base64")}`;
   } catch { return null; }
 }
@@ -64,6 +64,50 @@ function titleSize(title: string) {
   if (title.length > 52) return 48;
   if (title.length > 32) return 54;
   return 60;
+}
+
+function rmTitleSize(title: string) {
+  if (title.length > 90) return 40;
+  if (title.length > 68) return 44;
+  if (title.length > 50) return 48;
+  if (title.length > 34) return 54;
+  return 60;
+}
+
+async function renderRoseeMatinaleV1(title: string, coverImageUrl?: string) {
+  const [fraunces, manrope, editorial] = await Promise.all([
+    getFrauncesFont(),
+    getManropeFont(),
+    prepareEditorialImage(coverImageUrl || FALLBACK_IMAGE.rm, 700),
+  ]);
+  const fonts = [
+    fraunces && { name: "Fraunces", data: fraunces, style: "normal" as const, weight: 600 as const },
+    manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
+  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
+
+  return new ImageResponse(
+    <div style={{ width: 1200, height: 630, display: "flex", position: "relative", overflow: "hidden", background: "#fbfafc" }}>
+      {editorial ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={editorial} width={700} height={630} alt="" style={{ position: "absolute", right: 0, top: 0, width: 700, height: 630, objectFit: "cover" }} />
+      ) : null}
+
+      <svg width="720" height="630" viewBox="0 0 720 630" style={{ position: "absolute", left: 0, top: 0 }}>
+        <path d="M0 0H500C505 105 552 171 573 258C601 374 574 486 404 630H0Z" fill="#fbfafc" />
+        <path d="M500 0C507 106 552 174 574 260C603 375 577 489 405 630H487C603 500 634 386 607 267C586 175 551 102 548 0Z" fill="#6f30a5" />
+        <path d="M548 0C552 102 587 175 608 267C635 386 604 500 488 630H551C648 505 675 391 648 270C628 178 599 105 598 0Z" fill="#a77bd0" fill-opacity=".72" />
+        <path d="M598 0C600 104 629 178 649 270C676 391 649 505 552 630H610C687 510 709 395 683 273C665 181 642 106 642 0Z" fill="#6f30a5" fill-opacity=".55" />
+      </svg>
+
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={OFFICIAL_LOGO_URL} width={305} height={102} alt="" style={{ position: "absolute", left: 80, top: 50, objectFit: "contain", objectPosition: "left center" }} />
+      <div style={{ position: "absolute", left: 82, top: 224, width: 88, height: 5, display: "flex", background: "#b68a4b" }} />
+      <div style={{ position: "absolute", left: 82, top: 261, display: "flex", color: "#6427a8", fontFamily: manrope ? "Manrope" : "sans-serif", fontSize: 22, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5 }}>Rosée Matinale</div>
+      <div style={{ position: "absolute", left: 82, top: 310, width: 445, maxHeight: 220, display: "flex", color: "#24123f", fontFamily: fraunces ? "Fraunces" : "serif", fontWeight: 600, fontSize: rmTitleSize(title), lineHeight: 1.08 }}>{title}</div>
+      <div style={{ position: "absolute", left: 82, top: 542, width: 88, height: 5, display: "flex", background: "#b68a4b" }} />
+    </div>,
+    { ...OG_SIZE, fonts: fonts.length ? fonts : undefined }
+  );
 }
 
 export async function renderOgImage({
@@ -79,6 +123,8 @@ export async function renderOgImage({
   footer?: string;
   coverImageUrl?: string;
 }) {
+  if (category === "rm") return renderRoseeMatinaleV1(title, coverImageUrl);
+
   const label = category ? CATEGORY_LABEL[category] : eyebrow || "Serge Hapita Ministries";
   const fallback = category ? FALLBACK_IMAGE[category] : null;
   const [fraunces, manrope, editorial] = await Promise.all([
