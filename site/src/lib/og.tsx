@@ -24,7 +24,6 @@ const FALLBACK_IMAGE: Record<OgCategory, string> = {
 
 let dmSerifCache: ArrayBuffer | null = null;
 let manropeCache: ArrayBuffer | null = null;
-let dmSerifCache: ArrayBuffer | null = null;
 const LEGACY_UA = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
 async function fetchGoogleFont(cssUrl: string): Promise<ArrayBuffer | null> {
@@ -47,11 +46,6 @@ async function getManropeFont() {
   if (manropeCache) return manropeCache;
   manropeCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=Manrope:wght@700");
   return manropeCache;
-}
-async function getDmSerifFont() {
-  if (dmSerifCache) return dmSerifCache;
-  dmSerifCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=DM+Serif+Display");
-  return dmSerifCache;
 }
 
 async function prepareEditorialImage(url: string, width = 620): Promise<string | null> {
