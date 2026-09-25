@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import { redirect } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import Newsletter from "@/components/layout/Newsletter";
@@ -21,13 +22,14 @@ export async function generateMetadata(): Promise<Metadata> {
   // retour du 05/09, restructuration en URL par jour). L'image de partage
   // générée par opengraph-image.tsx reflète donc, elle aussi, toujours
   // aujourd'hui — cohérent avec le sens de cette URL fixe et permanente.
+  const socialImage = await socialImageUrl(`/rosee-matinale/opengraph-image`);
   return {
     title,
     description,
     keywords: current?.seo_keywords && current.seo_keywords.length > 0 ? current.seo_keywords : undefined,
-    alternates: { canonical: "/rosee-matinale" },
-    openGraph: { type: "website", title, description, url: "/rosee-matinale", siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: officialUrl("/rosee-matinale") },
+    openGraph: { type: "website", title, description, url: officialUrl("/rosee-matinale"), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [socialImage] },
+    twitter: { card: "summary_large_image", title, description, images: [socialImage] },
   };
 }
 
