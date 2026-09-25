@@ -83,7 +83,7 @@ async function renderRoseeMatinaleV1(title: string, coverImageUrl?: string) {
   const fonts = [
     dmSerif && { name: "DM Serif Display", data: dmSerif, style: "normal" as const, weight: 400 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
-  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
+  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 400 | 700 } => Boolean(f));
 
   return new ImageResponse(
     <div style={{ width: 1200, height: 630, display: "flex", position: "relative", overflow: "hidden", background: "#fbfafc" }}>
@@ -119,7 +119,7 @@ async function renderJeConfesseV1(title: string, coverImageUrl?: string) {
   const fonts = [
     dmSerif && { name: "DM Serif Display", data: dmSerif, style: "normal" as const, weight: 400 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
-  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
+  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 400 | 700 } => Boolean(f));
 
   return new ImageResponse(
     <div style={{ width: 1200, height: 630, display: "flex", position: "relative", overflow: "hidden", background: "#fbfafc" }}>
@@ -170,7 +170,7 @@ export async function renderOgImage({
   const fonts = [
     dmSerif && { name: "DM Serif Display", data: dmSerif, style: "normal" as const, weight: 400 as const },
     manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
-  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
+  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 400 | 700 } => Boolean(f));
 
   return new ImageResponse(
     <div style={{ width: "100%", height: "100%", display: "flex", background: "#fbf9fd", fontFamily: manrope ? "Manrope" : "sans-serif", overflow: "hidden" }}>
