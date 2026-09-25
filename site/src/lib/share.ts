@@ -64,10 +64,10 @@ function cutAtWord(text: string, max: number): string {
   return cut.replace(/[,:;.!?]+$/u, "").trimEnd();
 }
 
-const SECOND_PARAGRAPH_MAX = 260;
+const SECOND_PARAGRAPH_MAX = 260;\n// Rosée Matinale : environ trois lignes de lecture du deuxième paragraphe.\nconst RM_SECOND_PARAGRAPH_MAX = 170;
 const TOTAL_BODY_SAFETY_MAX = 900;
 
-function developmentExcerpt(body?: string | null): string | null {
+function developmentExcerpt(body?: string | null, secondParagraphMax = SECOND_PARAGRAPH_MAX): string | null {
   const paragraphs = cleanParagraphs(body);
   if (!paragraphs.length) return null;
 
@@ -80,7 +80,7 @@ function developmentExcerpt(body?: string | null): string | null {
       ? cutAtWord(first, TOTAL_BODY_SAFETY_MAX)
       : first;
     const remaining = Math.max(90, TOTAL_BODY_SAFETY_MAX - firstSafe.length - 2);
-    const secondPart = cutAtWord(second, Math.min(SECOND_PARAGRAPH_MAX, remaining));
+    const secondPart = cutAtWord(second, Math.min(secondParagraphMax, remaining));
     return `${firstSafe}\n\n${secondPart}…`;
   }
 
@@ -121,7 +121,7 @@ function buildMessage({
   if (content?.intro?.trim()) blocks.push(content.intro.trim());
   const scripture = scriptureLine(content?.scriptureReference, content?.scriptureText);
   if (scripture) blocks.push(scripture);
-  const development = developmentExcerpt(content?.body);
+  const development = developmentExcerpt(content?.body, category === "rm" ? RM_SECOND_PARAGRAPH_MAX : SECOND_PARAGRAPH_MAX);
   if (development) blocks.push(development);
   blocks.push(`${CATEGORY_INVITE[category]} :\n${url}`);
   return blocks.join("\n\n");
