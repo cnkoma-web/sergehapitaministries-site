@@ -114,7 +114,7 @@ export default function ShareCartouche({
       <a
         key="whatsapp"
         className="share-icon"
-        href={`https://api.whatsapp.com/send?text=${encodedFormattedMessage}`}
+        href={`https://wa.me/?text=${encodedFormattedMessage}`}
         target="_blank"
         rel="noopener"
         aria-label="WhatsApp"
