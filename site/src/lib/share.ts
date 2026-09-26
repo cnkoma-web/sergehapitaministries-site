@@ -110,12 +110,14 @@ function buildMessage({
   category,
   title,
   content,
+  articleDate,
   url,
   formatted,
 }: {
   category: ShareCategory;
   title: string;
   content?: PublicationShareContent;
+  articleDate?: string;
   url: string;
   formatted: boolean;
 }): string {
@@ -129,16 +131,21 @@ function buildMessage({
   const blocks: string[] = ["Bonjour,", `${shm} partage avec toi${categoryLead[category] ? ` ${categoryLead[category]}` : " :"}`];
 
   if (category === "jc") {
-    const dateMatch = title.match(/(\d{1,2})[\s/-]+([A-Za-zÀ-ÿ]+|\d{1,2})[\s/-]+(\d{4})/);
-    const displayTitle = dateMatch
-      ? `${formatted ? "*Je Confesse*" : "Je Confesse"} du ${dateMatch[1]} ${dateMatch[2]} ${dateMatch[3]}`
-      : (formatted ? `*${title}*` : title);
-    blocks.push(displayTitle);
+    const parsedDate = articleDate ? new Date(`${articleDate}T12:00:00`) : null;
+    const dateLabel = parsedDate && !Number.isNaN(parsedDate.getTime())
+      ? parsedDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+      : null;
+    blocks.push(dateLabel
+      ? `${formatted ? "*Je Confesse*" : "Je Confesse"} du ${dateLabel}`
+      : (formatted ? "*Je Confesse*" : "Je Confesse"));
   } else {
     blocks.push(formatted ? `*${title}*` : title);
   }
 
-  if (content?.intro?.trim()) blocks.push(content.intro.trim());
+  // QDLB et Vie Supérieure reprennent leur chapeau CMS. Rosée Matinale et
+  // Je Confesse commencent directement par leur développement, conformément
+  // aux quatre modèles de partage validés.
+  if ((category === "qdlb" || category === "vs") && content?.intro?.trim()) blocks.push(content.intro.trim());
 
   const development = developmentExcerpt(content?.body, category === "rm" ? RM_SECOND_PARAGRAPH_MAX : SECOND_PARAGRAPH_MAX);
   if (development) blocks.push(development);
@@ -156,9 +163,10 @@ export function buildShareMessage({
   category: ShareCategory;
   title: string;
   content?: PublicationShareContent;
+  articleDate?: string;
   url: string;
 }): string {
-  return buildMessage({ category, title, content, url, formatted: true });
+  return buildMessage({ category, title, content, articleDate, url, formatted: true });
 }
 
 export function buildPlainShareMessage({
@@ -170,9 +178,10 @@ export function buildPlainShareMessage({
   category: ShareCategory;
   title: string;
   content?: PublicationShareContent;
+  articleDate?: string;
   url: string;
 }): string {
-  return buildMessage({ category, title, content, url, formatted: false });
+  return buildMessage({ category, title, content, articleDate, url, formatted: false });
 }
 
 // Partage des livres : hors périmètre du chantier, conservé à l'identique.
