@@ -60,7 +60,7 @@
 .v2-wrap{width:min(1180px,calc(100% - 48px));margin-inline:auto;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{overflow-x:hidden;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;scroll-padding-top:90px;}
 /* Empêche le gonflement automatique de la taille du texte de Safari iOS sur
    certains petits blocs (retour du 05/09) — cause probable d'un retour à la
    ligne des liens "Lire la suite"/"Découvrir" visible seulement sur
@@ -250,7 +250,11 @@ header{
    font-family, donc tout héritait silencieusement de body{font-family:
    'Manrope',sans-serif} (l'ancien système) au lieu de --v2-sans (Inter) —
    700 en Manrope n'a pas le même rendu visuel que 650-700 en Inter. */
-.v2-site-header{position:relative;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--v2-line);font-family:var(--v2-sans);}
+/* Header public sticky (26/09/2026) — le bandeau réseau/ticker qui le précède
+   reste dans le flux normal. Le header ne s'accroche qu'une fois arrivé en
+   haut du viewport. Fond volontairement opaque pour que le contenu défilant
+   ne transparaisse jamais sous la navigation. */
+.v2-site-header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--v2-line);font-family:var(--v2-sans);}
 .v2-network-bar{background:var(--v2-ink);color:rgba(255,255,255,.83);font-size:13px;letter-spacing:.02em;font-family:var(--v2-sans);line-height:1.6;}
 .v2-network-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:34px;padding-block:7px;}
 .v2-partner-nav{display:flex;align-items:center;gap:14px;white-space:nowrap;}
@@ -351,6 +355,7 @@ header{
   .v2-menu-button{display:inline-grid;place-items:center;}
 }
 @media (max-width:720px){
+  html{scroll-padding-top:74px;}
   /* Écart réel corrigé (Accueil, Section 01 — Header/nav, protocole
      atomique mobile) : le prototype (styles.css) réduit .wrap à
      min(100% - 32px,1180px) sous 720px — mesuré ici 343px à 375px de
