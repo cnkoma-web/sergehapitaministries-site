@@ -99,14 +99,9 @@ export default function ShareCartouche({
   } else {
     formattedMessage = plainMessage = `${title} - ${url}`;
   }
-  // WhatsApp mobile construit plus fiablement l'aperçu lorsque l'URL
-  // canonique est le premier lien détectable du message. Le contenu éditorial
-  // reste strictement identique : on déplace seulement l'URL finale en tête.
-  const formattedWithoutTrailingUrl = formattedMessage.endsWith(url)
-    ? formattedMessage.slice(0, -url.length).trimEnd()
-    : formattedMessage;
-  const whatsappMessage = `${url}\n\n${formattedWithoutTrailingUrl}`;
-  const encodedWhatsappMessage = encodeURIComponent(whatsappMessage);
+  // Test WhatsApp mobile : le message éditorial court conserve l'URL
+  // canonique en dernière position, conformément au parcours de lecture.
+  const encodedWhatsappMessage = encodeURIComponent(formattedMessage);
   const encodedPlainMessage = encodeURIComponent(plainMessage);
 
   // Pictogrammes (retour validation humaine, 13/09) : glyphes exacts de
