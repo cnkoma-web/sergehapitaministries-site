@@ -35,7 +35,7 @@ export default async function HomeLatestPublications() {
     getPublishedArticles("vs"),
   ]);
 
-  const rows: Row[] = [
+  const rows = ([
     { article: rosee, label: "Rosée Matinale", meta: "Pensée du jour", href: "/rosee-matinale", tone: "dew" },
     {
       article: confession,
@@ -59,7 +59,7 @@ export default async function HomeLatestPublications() {
       href: lifeArticles[0] ? `/publications/${lifeArticles[0].slug}` : "/publications/la-vie-superieure",
       tone: "life",
     },
-  ].sort((a, b) => {
+  ] satisfies Row[]).sort((a, b) => {
     const aDate = a.article?.article_date ? new Date(a.article.article_date).getTime() : Number.NEGATIVE_INFINITY;
     const bDate = b.article?.article_date ? new Date(b.article.article_date).getTime() : Number.NEGATIVE_INFINITY;
     return bDate - aDate;
