@@ -129,7 +129,7 @@ function buildMessage({
   const blocks: string[] = ["Bonjour,", `${shm} partage avec toi${categoryLead[category] ? ` ${categoryLead[category]}` : " :"}`];
 
   if (category === "jc") {
-    const dateMatch = title.match(/(\\d{1,2})[\\s/-]+([A-Za-zÀ-ÿ]+|\\d{1,2})[\\s/-]+(\\d{4})/);
+    const dateMatch = title.match(/(\d{1,2})[\s/-]+([A-Za-zÀ-ÿ]+|\d{1,2})[\s/-]+(\d{4})/);
     const displayTitle = dateMatch
       ? `${formatted ? "*Je Confesse*" : "Je Confesse"} du ${dateMatch[1]} ${dateMatch[2]} ${dateMatch[3]}`
       : (formatted ? `*${title}*` : title);
