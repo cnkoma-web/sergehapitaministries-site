@@ -554,9 +554,26 @@
   .v2-product-page .product-info-col:has(.status-badge,.product-badge) .product-title{
     margin-top:19px;
   }
-  /* RM / Je Confesse : après inversion de l'ordre, les deux sections
-     lavande se suivent. On divise par deux leur respiration cumulée en
-     mobile, sans toucher aux valeurs tablette/desktop. */
+  /* Jonctions éditoriales : respiration réelle mesurée entre la fin d'un
+     bloc et le titre du suivant. Archive -> similaires est ramené à la
+     moitié du grand vide constaté ; les autres transitions utilisent la
+     même échelle sans modifier contenu, ordre ni composants. */
+  .v2-rm-page .rm-archive{padding-bottom:32px;}
+  .v2-rm-page .rm-archive + .related-articles{padding-top:32px;}
+  .v2-article-page .article-extras{padding-block:40px 48px;}
+  .v2-article-page .article-extras + .section{padding-top:0;}
+  .v2-article-page .share-zone + .related-articles{padding-top:48px;}
+  .v2-article-page .related-articles + .article-extras{padding-top:40px;}
+}
+
+
+/* Harmonisation des jonctions éditoriales tablette / desktop — 26/09/2026.
+   Les sections gardent leur composition interne ; seules les respirations
+   aux frontières successives sont alignées sur une échelle commune. */
+@media (min-width:721px){
   .v2-rm-page .rm-archive{padding-bottom:50px;}
-  .v2-rm-page .rm-archive + .related-articles{padding-top:40px;}
+  .v2-rm-page .rm-archive + .related-articles{padding-top:50px;}
+  .v2-article-page .article-extras{padding-block:50px 58px;}
+  .v2-article-page .share-zone + .related-articles{padding-top:58px;}
+  .v2-article-page .related-articles + .article-extras{padding-top:50px;}
 }
