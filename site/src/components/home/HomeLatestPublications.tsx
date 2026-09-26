@@ -59,7 +59,11 @@ export default async function HomeLatestPublications() {
       href: lifeArticles[0] ? `/publications/${lifeArticles[0].slug}` : "/publications/la-vie-superieure",
       tone: "life",
     },
-  ];
+  ].sort((a, b) => {
+    const aDate = a.article?.article_date ? new Date(a.article.article_date).getTime() : Number.NEGATIVE_INFINITY;
+    const bDate = b.article?.article_date ? new Date(b.article.article_date).getTime() : Number.NEGATIVE_INFINITY;
+    return bDate - aDate;
+  });
 
   return (
     <section className={`${styles.latest} v2-wrap`} aria-label="Dernières publications">
@@ -76,21 +80,25 @@ export default async function HomeLatestPublications() {
         const text = preview(article);
         return (
           <article className={`${styles.row} ${styles[tone]}`} key={tone}>
-            <div className={styles.label}>{label}</div>
+            <div className={styles.identity}>
+              <div className={styles.label}>{label}</div>
+              <span className={styles.qualifier}>{meta}</span>
+            </div>
             <div className={styles.meta}>
-              <span>{meta}</span>
               {article && <time dateTime={article.article_date}>{formatDate(article.article_date)}</time>}
             </div>
             <div className={styles.content}>
               {article ? (
-                quotation ? (
-                  <blockquote>« {text || "La proclamation du jour est disponible."} »</blockquote>
-                ) : (
-                  <>
-                    <h2>{article.title}</h2>
-                    {text && <p>{text}</p>}
-                  </>
-                )
+                <Link className={styles.contentLink} href={href}>
+                  {quotation ? (
+                    <blockquote>« {text || "La proclamation du jour est disponible."} »</blockquote>
+                  ) : (
+                    <>
+                      <h2>{article.title}</h2>
+                      {text && <p>{text}</p>}
+                    </>
+                  )}
+                </Link>
               ) : (
                 <p>Le prochain contenu sera publié ici.</p>
               )}
