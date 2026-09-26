@@ -99,7 +99,14 @@ export default function ShareCartouche({
   } else {
     formattedMessage = plainMessage = `${title} - ${url}`;
   }
-  const encodedFormattedMessage = encodeURIComponent(formattedMessage);
+  // WhatsApp mobile construit plus fiablement l'aperçu lorsque l'URL
+  // canonique est le premier lien détectable du message. Le contenu éditorial
+  // reste strictement identique : on déplace seulement l'URL finale en tête.
+  const formattedWithoutTrailingUrl = formattedMessage.endsWith(url)
+    ? formattedMessage.slice(0, -url.length).trimEnd()
+    : formattedMessage;
+  const whatsappMessage = `${url}\n\n${formattedWithoutTrailingUrl}`;
+  const encodedWhatsappMessage = encodeURIComponent(whatsappMessage);
   const encodedPlainMessage = encodeURIComponent(plainMessage);
 
   // Pictogrammes (retour validation humaine, 13/09) : glyphes exacts de
@@ -114,7 +121,7 @@ export default function ShareCartouche({
       <a
         key="whatsapp"
         className="share-icon"
-        href={`https://wa.me/?text=${encodedFormattedMessage}`}
+        href={`https://wa.me/?text=${encodedWhatsappMessage}`}
         target="_blank"
         rel="noopener"
         aria-label="WhatsApp"
