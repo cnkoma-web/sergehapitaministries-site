@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
     // propre image de partage générée (voir opengraph-image.tsx ici), enfin
     // fidèle au jour réellement partagé.
     alternates: { canonical: officialUrl(`/rosee-matinale/${date}`) },
-    openGraph: { type: "website", title, description, url: officialUrl(`/rosee-matinale/${date}`), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [socialImage] },
-    twitter: { card: "summary_large_image", title, description, images: [socialImage] },
+    openGraph: { type: "website", title, description, url: officialUrl(`/rosee-matinale/${date}`), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [{ url: socialImage, width: 1200, height: 630, type: "image/png" }] },
+    twitter: { card: "summary_large_image", title, description, images: [{ url: socialImage, width: 1200, height: 630, type: "image/png" }] },
   };
 }
 
