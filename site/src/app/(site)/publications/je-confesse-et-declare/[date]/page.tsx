@@ -26,9 +26,9 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
       url: officialUrl(`/publications/je-confesse-et-declare/${date}`),
       siteName: "Serge Hapita Ministries",
       locale: "fr_FR",
-      images: [socialImage],
+      images: [{ url: socialImage, width: 1200, height: 630, type: "image/png" }],
     },
-    twitter: { card: "summary_large_image", title, description, images: [socialImage] },
+    twitter: { card: "summary_large_image", title, description, images: [{ url: socialImage, width: 1200, height: 630, type: "image/png" }] },
   };
 }
 
