@@ -119,10 +119,30 @@ function buildMessage({
   url: string;
   formatted: boolean;
 }): string {
-  const blocks: string[] = [formatted ? "*SHM* partage avec toi" : "SHM partage avec toi", formatted ? `*${title}*` : title];
+  const categoryLead: Record<ShareCategory, string> = {
+    qdlb: "le devotionnel du jour :",
+    vs: "cette étude biblique :",
+    rm: "la pensée du jour :",
+    jc: "",
+  };
+  const shm = formatted ? "*S.H.M*" : "S.H.M";
+  const blocks: string[] = ["Bonjour,", `${shm} partage avec toi${categoryLead[category] ? ` ${categoryLead[category]}` : " :"}`];
+
+  if (category === "jc") {
+    const dateMatch = title.match(/(\\d{1,2})[\\s/-]+([A-Za-zÀ-ÿ]+|\\d{1,2})[\\s/-]+(\\d{4})/);
+    const displayTitle = dateMatch
+      ? `${formatted ? "*Je Confesse*" : "Je Confesse"} du ${dateMatch[1]} ${dateMatch[2]} ${dateMatch[3]}`
+      : (formatted ? `*${title}*` : title);
+    blocks.push(displayTitle);
+  } else {
+    blocks.push(formatted ? `*${title}*` : title);
+  }
+
   if (content?.intro?.trim()) blocks.push(content.intro.trim());
+
   const development = developmentExcerpt(content?.body, category === "rm" ? RM_SECOND_PARAGRAPH_MAX : SECOND_PARAGRAPH_MAX);
   if (development) blocks.push(development);
+
   blocks.push(`${CATEGORY_INVITE[category]} :\n${url}`);
   return blocks.join("\n\n");
 }
