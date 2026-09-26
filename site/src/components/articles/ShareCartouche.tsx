@@ -91,8 +91,8 @@ export default function ShareCartouche({
   let formattedMessage: string;
   let plainMessage: string;
   if (category) {
-    formattedMessage = buildShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, url });
-    plainMessage = buildPlainShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, url });
+    formattedMessage = buildShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, articleDate, url });
+    plainMessage = buildPlainShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, articleDate, url });
   } else if (bookDescription) {
     formattedMessage = buildBookShareMessage({ title, description: bookDescription, url });
     plainMessage = buildPlainBookShareMessage({ title, description: bookDescription, url });
