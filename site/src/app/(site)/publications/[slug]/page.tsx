@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     keywords: article.seo_keywords.length > 0 ? article.seo_keywords : undefined,
     alternates: { canonical: officialUrl(`/publications/${slug}`) },
     openGraph: { type: "article", title, description, url: officialUrl(`/publications/${slug}`), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }] },
-    twitter: { card: "summary_large_image", title, description, images: [{ url: socialImage, width: 1200, height: 630, type: "image/png" }] },
+    twitter: { card: "summary_large_image", title, description, images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }] },
   };
 }
 
