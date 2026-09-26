@@ -128,7 +128,9 @@ function buildMessage({
     jc: "",
   };
   const shm = formatted ? "*S.H.M*" : "S.H.M";
-  const blocks: string[] = ["Bonjour,", `${shm} partage avec toi${categoryLead[category] ? ` ${categoryLead[category]}` : " :"}`];
+  const blocks: string[] = category === "jc"
+    ? ["Bonjour,", `${shm} t'invite à déclarer le :`]
+    : ["Bonjour,", `${shm} partage avec toi${categoryLead[category] ? ` ${categoryLead[category]}` : " :"}`];
 
   if (category === "jc") {
     const parsedDate = articleDate ? new Date(`${articleDate}T12:00:00`) : null;
@@ -136,7 +138,7 @@ function buildMessage({
       ? parsedDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
       : null;
     blocks.push(dateLabel
-      ? `${formatted ? "*Je Confesse*" : "Je Confesse"} du ${dateLabel}`
+      ? `${formatted ? "*Je Confesse*" : "Je Confesse"} du ${dateLabel} :`
       : (formatted ? "*Je Confesse*" : "Je Confesse"));
   } else {
     blocks.push(formatted ? `*${title}*` : title);
