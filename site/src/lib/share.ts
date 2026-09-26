@@ -119,18 +119,11 @@ function buildMessage({
   url: string;
   formatted: boolean;
 }): string {
-  const header = [formatted ? "*SHM* partage avec toi" : "SHM partage avec toi", formatted ? `*${title}*` : title];
-  const intro = content?.intro?.trim() || "";
-  const continuation = `${CATEGORY_INVITE[category]} :\n${url}`;
-  const fixedLength = [...header, intro, continuation].filter(Boolean).join("\n\n").length;
-  const developmentBudget = Math.max(0, 500 - fixedLength - 4);
-  const development = developmentBudget > 40
-    ? developmentExcerpt(content?.body, Math.min(170, developmentBudget))
-    : null;
-  const blocks = [...header];
-  if (intro) blocks.push(intro);
-  if (development) blocks.push(cutAtWord(development, developmentBudget));
-  blocks.push(continuation);
+  const blocks: string[] = [formatted ? "*SHM* partage avec toi" : "SHM partage avec toi", formatted ? `*${title}*` : title];
+  if (content?.intro?.trim()) blocks.push(content.intro.trim());
+  const development = developmentExcerpt(content?.body, category === "rm" ? RM_SECOND_PARAGRAPH_MAX : SECOND_PARAGRAPH_MAX);
+  if (development) blocks.push(development);
+  blocks.push(`${CATEGORY_INVITE[category]} :\n${url}`);
   return blocks.join("\n\n");
 }
 
