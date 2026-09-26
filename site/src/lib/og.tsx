@@ -232,3 +232,21 @@ export async function renderOgImage({
     { ...OG_SIZE, fonts: fonts.length ? fonts : undefined }
   );
 }
+
+
+export async function renderLightweightOgImage(args: Parameters<typeof renderOgImage>[0]) {
+  const pngResponse = await renderOgImage(args);
+  const pngBuffer = Buffer.from(await pngResponse.arrayBuffer());
+  const jpeg = await sharp(pngBuffer)
+    .jpeg({ quality: 76, chromaSubsampling: "4:2:0", mozjpeg: true })
+    .toBuffer();
+
+  return new Response(jpeg, {
+    status: 200,
+    headers: {
+      "Content-Type": "image/jpeg",
+      "Content-Length": String(jpeg.length),
+      "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
+    },
+  });
+}
