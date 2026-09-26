@@ -158,6 +158,7 @@ export function buildShareMessage({
   category,
   title,
   content,
+  articleDate,
   url,
 }: {
   category: ShareCategory;
