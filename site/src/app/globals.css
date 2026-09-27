@@ -2878,7 +2878,7 @@ footer.footer--dark{
    publications.css § .rm-hero/.rm-hero .category-badge/.rm-hero-date/
    .rm-hero-meta/.rm-chapeau blockquote/.entry-body > p/.rm-nav-days. */
 .v2-rm-page .rm-photo-hero{min-height:560px;align-items:center;isolation:isolate;overflow:hidden;padding:80px 0;color:#fff;background-color:#221940;background-position:center;background-size:cover;}
-.v2-rm-page .rm-photo-hero::after{z-index:-1;background:linear-gradient(90deg,rgba(18,13,38,.9),rgba(24,15,48,.72) 50%,rgba(23,15,44,.55));}
+.v2-rm-page .rm-photo-hero::after{z-index:-1;background:linear-gradient(90deg,rgba(18,13,38,.8),rgba(24,15,48,.62) 50%,rgba(23,15,44,.45));}
 .v2-rm-page .rm-photo-hero>.wrap{width:min(860px,calc(100% - 48px));max-width:860px;margin-inline:auto;padding:0;text-align:center;}
 /* .rm-hero h1 (prototype) : Georgia, 36.5px, 600, 1.12, -.025em (mobile 24.5px) */
 .v2-rm-page .rm-photo-hero .entry-title{margin:0 auto 25px;font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
@@ -3430,7 +3430,7 @@ footer.footer--dark{
    visiblement trop faible. */
 .v2-jc-hero{position:relative;min-height:560px;display:flex;align-items:center;isolation:isolate;overflow:hidden;padding:80px 0;color:#fff;background:linear-gradient(135deg,#17122d 0%,#37205f 52%,#7452ad 100%);}
 .v2-jc-hero-image{position:absolute;z-index:-2;inset:0;background-size:cover;background-position:center;opacity:.3;}
-.v2-jc-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(20,14,40,.78),rgba(76,49,124,.28),rgba(23,15,44,.48));}
+.v2-jc-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(20,14,40,.68),rgba(76,49,124,.18),rgba(23,15,44,.38));}
 .v2-jc-hero-copy{position:relative;max-width:860px;margin:0 auto;text-align:center;}
 .v2-jc-hero-context{width:min(600px,100%);margin:0 auto 28px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.34);}
 .v2-jc-hero-reading{width:min(820px,100%);margin:0 auto;}
