@@ -14,7 +14,8 @@ export default async function AdminLivresPage({
 }) {
   const { page: pageParam, perPage: perPageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const requestedPerPage = Number(perPageParam);\n  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
+  const requestedPerPage = Number(perPageParam);
+  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
 
   const { books, total } = await getBooksAdmin(page, perPage);
 
