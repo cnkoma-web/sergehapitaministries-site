@@ -72,17 +72,27 @@ export default async function JeConfesseContent({
               gabarit, pas tapé par Serge, jamais nbspBeforeClosingGuillemet
               ici (elle ne traite qu'un " »" déjà présent dans le texte,
               pas un guillemet ajouté séparément juste après). */}
-          <p className="v2-jc-hero-intro">Parce qu&apos;il est écrit :</p>
-          <h1>
-            « {verseText}
-            {" "}» <cite>{verseReference}</cite>
-          </h1>
           <div className="v2-jc-hero-context">
             <span className="v2-jc-badge">Je Confesse</span>
             <time className="v2-jc-date">
-              {new Date(current.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+              {new Date(current.created_at).toLocaleDateString("fr-FR", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </time>
             <ArticleMeta viewCount={current.view_count} readingTimeMinutes={current.reading_time_minutes} />
+          </div>
+          <div className="v2-jc-hero-reading">
+            <h1 className="v2-jc-title">{current.title}</h1>
+            <p className="v2-jc-hero-intro">Parce qu&apos;il est écrit :</p>
+            <blockquote className="v2-jc-scripture">
+              « {verseText}
+              {" "}» <cite>{verseReference}</cite>
+            </blockquote>
           </div>
         </div>
       </section>
@@ -192,7 +202,7 @@ export default async function JeConfesseContent({
                 {archivePaged.map((entry) => (
                   <Link href={dayHref(entry.article_date)} className="rm-item" key={entry.id}>
                     <div className="date">{new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</div>
-                    <div className="excerpt">{stripHtml(entry.body ?? "").slice(0, 140)}</div>
+                    <div className="excerpt">{entry.title}</div>
                   </Link>
                 ))}
               </div>
