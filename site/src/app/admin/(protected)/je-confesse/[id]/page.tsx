@@ -61,6 +61,17 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
           </div>
 
           <div className="editor-field">
+            <label>Titre de la confession</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={entry.title}
+              placeholder="Ex. : Je marche dans la victoire"
+              required
+            />
+          </div>
+
+          <div className="editor-field">
             <label>Référence biblique</label>
             <input
               type="text"
