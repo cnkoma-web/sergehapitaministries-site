@@ -16,13 +16,14 @@ export default async function AdminCommandesPage({ searchParams }: { searchParam
   const { page: pageParam, perPage: perPageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const requestedPerPage = Number(perPageParam);
-  const perPage = [20, 50, 100].includes(requestedPerPage) ? requestedPerPage : 20;
+  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
 
   const supabase = await createClient();
   const from = (page - 1) * perPage;
   const { data: orders, count, error } = await supabase
     .from("orders")
     .select("id, status, fulfillment_status, total_cents, customer_email, created_at, order_items(title_snapshot, quantity)", { count: "exact" })
+    .is("archived_at", null)
     .order("created_at", { ascending: false })
     .range(from, from + perPage - 1);
   if (error) throw new Error(`Lecture des commandes impossible : ${error.message}`);
@@ -32,7 +33,7 @@ export default async function AdminCommandesPage({ searchParams }: { searchParam
       <div className="admin-header">
         <h2>Commandes</h2>
       </div>
-      <p className="admin-lede">Paiement et traitement logistique sont suivis séparément, de la confirmation à la livraison.</p>
+      <p className="admin-lede">Paiement et traitement logistique sont suivis séparément. Les commandes archivées restent conservées pour la traçabilité Stripe.</p>
 
       <div className="admin-note" style={{ marginTop: 0, marginBottom: 24 }}>
         Une commande devient à traiter uniquement après confirmation du paiement par Stripe. Ouvrez-la ensuite pour la faire avancer :
@@ -80,7 +81,7 @@ export default async function AdminCommandesPage({ searchParams }: { searchParam
         })}
       </div>
 
-      {(count ?? 0) > 0 && <Pagination page={page} perPage={perPage} total={count ?? 0} basePath="/admin/commandes" />}
+      {(count ?? 0) > 0 && <Pagination page={page} perPage={perPage} total={count ?? 0} basePath="/admin/commandes" perPageOptions={[5, 7]} />}
     </>
   );
 }
