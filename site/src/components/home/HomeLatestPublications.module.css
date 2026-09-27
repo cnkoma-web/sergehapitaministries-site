@@ -50,7 +50,7 @@
 .row {
   min-height: 126px;
   display: grid;
-  grid-template-columns: 160px 180px minmax(0, 1fr) auto;
+  grid-template-columns: 160px 150px 150px minmax(0, 1fr) auto;
   align-items: center;
   gap: 24px;
   padding: 22px 28px;
@@ -125,7 +125,12 @@
 }
 
 .content h2 {
+  display: -webkit-box;
   margin: 0 0 4px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   color: var(--v2-ink);
   font-family: var(--v2-serif);
   font-size: 22px;
@@ -142,6 +147,15 @@
   line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.confessionLead {
+  margin-bottom: 0 !important;
+  color: var(--v2-ink) !important;
+  font-family: var(--v2-serif);
+  font-size: 22px !important;
+  font-weight: 700;
+  line-height: 1.16 !important;
 }
 
 .content blockquote {
@@ -162,6 +176,37 @@
   color: var(--v2-violet-deep);
   font-size: 14px;
   font-weight: 800;
+}
+
+@media (min-width: 721px) and (max-width: 1100px) {
+  .row {
+    grid-template-columns: 122px 112px 130px minmax(0, 1fr) 92px;
+    gap: 12px;
+    padding-inline: 20px;
+  }
+
+  .label {
+    padding-inline: 7px;
+    font-size: 13px;
+  }
+
+  .qualifier {
+    font-size: 10px;
+    letter-spacing: .06em;
+  }
+
+  .meta {
+    font-size: 12px;
+  }
+
+  .content h2,
+  .confessionLead {
+    font-size: 18px !important;
+  }
+
+  .arrow {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 720px) {
@@ -233,6 +278,12 @@
   .content p {
     margin-bottom: 17px;
     font-size: 14px;
+  }
+
+  .confessionLead {
+    margin-bottom: 20px !important;
+    font-size: 23px !important;
+    -webkit-line-clamp: 3;
   }
 
   .content blockquote {
