@@ -291,12 +291,11 @@ export async function deleteRoseeEntry(formData: FormData) {
 export async function publishConfession(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
+  const title = String(formData.get("title") ?? "").trim();
   const verse_reference = String(formData.get("verse_reference") ?? "").trim();
   const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!verse_reference || !verse_text || !body) redirect("/admin/je-confesse?error=missing-fields");
-
-  const title = `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
+  if (!title || !verse_reference || !verse_text || !body) redirect("/admin/je-confesse?error=missing-fields");
 
   const { error } = await supabase.from("articles").insert({
     type: "jc",
@@ -329,17 +328,15 @@ export async function publishConfession(formData: FormData) {
 export async function updateConfessionEntry(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
+  const title = String(formData.get("title") ?? "").trim();
   const verse_reference = String(formData.get("verse_reference") ?? "").trim();
   const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!id || !verse_reference || !verse_text || !body) {
+  if (!id || !title || !verse_reference || !verse_text || !body) {
     redirect(`/admin/je-confesse/${id}?error=missing-fields`);
   }
 
   const article_date = String(formData.get("article_date") ?? "") || undefined;
-  const title = article_date
-    ? `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
-    : undefined;
 
   await supabase
     .from("articles")
