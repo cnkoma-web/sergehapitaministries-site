@@ -18,7 +18,8 @@ export default async function AdminPublicationsPage({
 }) {
   const { page: pageParam, perPage: perPageParam, type: typeParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const requestedPerPage = Number(perPageParam);\n  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
+  const requestedPerPage = Number(perPageParam);
+  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
   const types: ArticleType[] = typeParam === "qdlb" || typeParam === "vs" ? [typeParam] : ["qdlb", "vs"];
 
   const { articles, total } = await getArticlesAdmin(types, page, perPage);
