@@ -16,9 +16,14 @@ function formatDate(value?: string | null) {
   if (!value) return null;
   return new Date(value).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 }
-function preview(article: Article | null) {
+function preview(article: Article | null, tone: Row["tone"]) {
   if (!article) return "";
-  return stripHtml(article.excerpt || article.verse_text || article.body || "").trim();
+  // Sur Je Confesse, l’accueil présente toujours le début de la confession,
+  // jamais le passage biblique affiché dans le héros de la page dédiée.
+  const source = tone === "confession"
+    ? article.body || article.excerpt || ""
+    : article.excerpt || article.verse_text || article.body || "";
+  return stripHtml(source).trim();
 }
 export default async function HomeLatestPublications() {
   const [rosee, confession, bibleArticles, lifeArticles] = await Promise.all([
@@ -33,13 +38,13 @@ export default async function HomeLatestPublications() {
   return <section className={`${styles.latest} v2-wrap`} aria-label="Dernières publications">
     <div className={styles.heading}><h2>Dernières <em>publications</em></h2><Link href="/publications">Voir toutes les publications <span>→</span></Link></div>
     {rows.map(({article,label,meta,href,tone,titleVisible})=>{
-      const text=preview(article);
+      const text=preview(article, tone);
       return <article className={`${styles.row} ${styles[tone]}`} key={tone}>
         <div className={styles.identity}><div className={styles.label}>{label}</div><span className={styles.qualifier}>{meta}</span></div>
         <div className={styles.meta}>{article && <time dateTime={article.article_date}>{formatDate(article.article_date)}</time>}</div>
         <div className={styles.content}>{article ? <Link className={styles.contentLink} href={href}>
           {titleVisible && <h2>{article.title}</h2>}
-          {text && <p>{text}</p>}
+          {text && <p className={tone === "confession" ? styles.confessionLead : undefined}>{text}</p>}
         </Link> : <p>Le prochain contenu sera publié ici.</p>}</div>
         <Link className={styles.arrow} href={href}>Lire la suite <span>→</span></Link>
       </article>;
