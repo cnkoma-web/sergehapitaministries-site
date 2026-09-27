@@ -283,21 +283,18 @@ export async function deleteRoseeEntry(formData: FormData) {
 
 // ===== Je Confesse (Lot 4, 11/09 — corrigé le 11/09 après relecture de la
 // maquette) — même principe exact que Rosée Matinale ci-dessus : publication
-// rapide de l'entrée du jour + écran d'édition dédié. Correction impérative
-// (retour du 11/09) : le verset d'en-tête (Proverbes 18:20) et la signature
-// de clôture (Romains 10:10) sont FIXES pour toute la rubrique — réglages
-// globaux (interface_texts, § getJeConfesseSettings dans interfaceTexts.ts),
-// jamais un champ par proclamation. Seuls deux champs varient par
-// proclamation : l'image de couverture (comme Rosée Matinale) et le corps
-// de la déclaration (obligatoire, contrairement à Rosée Matinale où il est
-// facultatif). Toujours pas de champ "Titre" (titre reconstruit depuis la
-// date, jamais éditorial). =====
+// rapide de l'entrée du jour + écran d'édition dédié. Le passage biblique
+// d'en-tête (texte + référence) varie désormais selon chaque confession.
+// La signature de clôture (Romains 10:10) reste un réglage global.
+// Toujours pas de champ "Titre" (titre reconstruit depuis la date). =====
 
 export async function publishConfession(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
+  const verse_reference = String(formData.get("verse_reference") ?? "").trim();
+  const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!body) redirect("/admin/je-confesse?error=missing-fields");
+  if (!verse_reference || !verse_text || !body) redirect("/admin/je-confesse?error=missing-fields");
 
   const title = `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
 
@@ -306,6 +303,8 @@ export async function publishConfession(formData: FormData) {
     slug: `jc-${article_date}`,
     title,
     article_date,
+    verse_reference,
+    verse_text,
     body,
     cover_url: String(formData.get("cover_url") ?? "").trim() || null,
     cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,
@@ -330,8 +329,12 @@ export async function publishConfession(formData: FormData) {
 export async function updateConfessionEntry(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
+  const verse_reference = String(formData.get("verse_reference") ?? "").trim();
+  const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!id || !body) return;
+  if (!id || !verse_reference || !verse_text || !body) {
+    redirect(`/admin/je-confesse/${id}?error=missing-fields`);
+  }
 
   const article_date = String(formData.get("article_date") ?? "") || undefined;
   const title = article_date
@@ -343,6 +346,8 @@ export async function updateConfessionEntry(formData: FormData) {
     .update({
       article_date,
       title,
+      verse_reference,
+      verse_text,
       body,
       cover_url: String(formData.get("cover_url") ?? "").trim() || null,
       cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,

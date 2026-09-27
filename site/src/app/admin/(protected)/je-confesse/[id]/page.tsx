@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleByIdAdmin } from "@/lib/content/articles";
+import { getJeConfesseSettings } from "@/lib/content/interfaceTexts";
 import { updateConfessionEntry, deleteArticle } from "../../publications/actions";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
@@ -12,12 +13,13 @@ import AdminKeywordsField from "@/components/admin/AdminKeywordsField";
 // V2 (Lot 4, 11/09 — corrigé le 11/09 après relecture de la maquette) —
 // calqué sur admin/rosee-matinale/[id]/page.tsx (voir le commentaire
 // détaillé dans publications/actions.ts pour les différences volontaires
-// avec Rosée Matinale). Le verset d'en-tête et la signature de clôture
-// sont des réglages globaux (/admin/textes), jamais édités ici.
+// avec Rosée Matinale). Le passage biblique d'en-tête est propre à
+// chaque confession ; seule la signature de clôture reste globale.
 export default async function AdminJeConfesseEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const entry = await getArticleByIdAdmin(id);
   if (!entry || entry.type !== "jc") notFound();
+  const settings = await getJeConfesseSettings();
 
   return (
     <>
@@ -56,6 +58,28 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
                 <option value="draft">Brouillon</option>
               </select>
             </div>
+          </div>
+
+          <div className="editor-field">
+            <label>Référence biblique</label>
+            <input
+              type="text"
+              name="verse_reference"
+              defaultValue={entry.verse_reference?.trim() || settings.verseReference}
+              placeholder="Ex. : Romains 8:37"
+              required
+            />
+          </div>
+
+          <div className="editor-field">
+            <label>Passage biblique</label>
+            <textarea
+              name="verse_text"
+              rows={4}
+              defaultValue={entry.verse_text?.trim() || settings.verseText}
+              placeholder="Saisissez le texte du passage biblique…"
+              required
+            />
           </div>
 
           <div className="editor-field">

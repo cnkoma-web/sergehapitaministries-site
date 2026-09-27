@@ -25,12 +25,10 @@ function dayHref(date: string): string {
 // RoseeMatinaleContent.tsx (même principe : rendu partagé entre la route
 // "aujourd'hui" et la route par jour de l'archive).
 //
-// Correction impérative du 11/09 : le verset d'en-tête (Proverbes 18:20)
-// et la signature de clôture (Romains 10:10) sont FIXES pour toute la
-// rubrique — réglages globaux (getJeConfesseSettings, interface_texts),
-// jamais un champ par proclamation. Seuls varient par proclamation :
-// l'image de couverture (affichée en filigrane à 30% d'opacité dans le
-// héros, jamais un portrait par défaut) et le corps de la déclaration.
+// Le passage biblique d'en-tête varie selon chaque confession. Les
+// réglages globaux historiques servent de repli aux anciennes entrées qui
+// ne possèdent pas encore leurs propres valeurs. La signature de clôture
+// reste commune à toute la rubrique.
 //
 // Section "Version audio" (§ .confession-audio, restaurée le 13/09 après
 // validation humaine) : /podcast/ (Lot 9) existe désormais — voir le
@@ -57,6 +55,8 @@ export default async function JeConfesseContent({
   const paragraphs = extractParagraphs(current.body || "");
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
   const settings = await getJeConfesseSettings();
+  const verseText = current.verse_text?.trim() || settings.verseText;
+  const verseReference = current.verse_reference?.trim() || settings.verseReference;
 
   return (
     <div className="v2-rm-page v2-jc-page">
@@ -74,8 +74,8 @@ export default async function JeConfesseContent({
               pas un guillemet ajouté séparément juste après). */}
           <p className="v2-jc-hero-intro">Parce qu&apos;il est écrit :</p>
           <h1>
-            « {settings.verseText}
-            {" "}» <cite>{settings.verseReference}</cite>
+            « {verseText}
+            {" "}» <cite>{verseReference}</cite>
           </h1>
           <div className="v2-jc-hero-context">
             <span className="v2-jc-badge">Je Confesse</span>
@@ -168,7 +168,7 @@ export default async function JeConfesseContent({
             category="jc"
             articleDate={current.article_date}
             excerpt={current.body ? stripHtml(current.body) : undefined}
-            shareContent={{ intro: current.excerpt, scriptureReference: settings.verseReference, scriptureText: settings.verseText, body: current.body }}
+            shareContent={{ intro: current.excerpt, scriptureReference: verseReference, scriptureText: verseText, body: current.body }}
           />
         </div>
       </section>

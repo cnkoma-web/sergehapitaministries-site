@@ -16,9 +16,9 @@ const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "acti
 // principe exact : publier bascule automatiquement l'ancienne entrée en
 // archive, pas de bouton séparé). Différences volontaires avec Rosée
 // Matinale (voir le commentaire détaillé dans publications/actions.ts) :
-// pas de champ Titre, corps obligatoire (pas facultatif). Le verset d'en-
-// tête et la signature de clôture sont des réglages globaux de la rubrique
-// (/admin/textes, clés je_confesse.*), jamais un champ ici.
+// pas de champ Titre, corps obligatoire (pas facultatif). Le passage
+// biblique d'en-tête varie désormais selon chaque confession ; seule la
+// signature de clôture reste un réglage global de la rubrique.
 export default async function AdminJeConfessePage({
   searchParams,
 }: {
@@ -36,7 +36,7 @@ export default async function AdminJeConfessePage({
     <>
       <h1>Je Confesse</h1>
       {saved === "published" && <p className="admin-feedback success" role="status">La confession a bien été publiée. L’éditeur est prêt pour une nouvelle saisie.</p>}
-      {error === "missing-fields" && <p className="admin-feedback error" role="alert">La proclamation est obligatoire.</p>}
+      {error === "missing-fields" && <p className="admin-feedback error" role="alert">Le passage biblique, sa référence et la proclamation sont obligatoires.</p>}
       {error === "publish" && <p className="admin-feedback error" role="alert">La publication a échoué. Aucune donnée n’a été masquée : réessayez ou signalez le problème.</p>}
       <p className="admin-lede">
         Publier une nouvelle entrée bascule automatiquement l&apos;ancienne en archive — pas de
@@ -50,6 +50,14 @@ export default async function AdminJeConfessePage({
           <div className="editor-field" style={{ maxWidth: 220 }}>
             <label>Date</label>
             <input name="article_date" type="date" defaultValue={today} required />
+          </div>
+          <div className="editor-field">
+            <label>Référence biblique</label>
+            <input name="verse_reference" type="text" placeholder="Ex. : Romains 8:37" required />
+          </div>
+          <div className="editor-field">
+            <label>Passage biblique</label>
+            <textarea name="verse_text" rows={4} placeholder="Saisissez le texte du passage biblique…" required />
           </div>
           <div className="editor-field">
             <label>Image de couverture</label>
