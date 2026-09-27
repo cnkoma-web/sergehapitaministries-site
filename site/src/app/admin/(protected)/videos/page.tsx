@@ -10,7 +10,7 @@ export default async function AdminVideosPage({
 }) {
   const { page: pageParam, perPage: perPageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const perPage = Number(perPageParam) || 20;
+  const requestedPerPage = Number(perPageParam);\n  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
 
   const { videos, total } = await getVideosAdmin(page, perPage);
 
@@ -66,7 +66,7 @@ export default async function AdminVideosPage({
         ))}
       </div>
 
-      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/videos" />}
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/videos" perPageOptions={[5, 7]} />}
     </>
   );
 }
