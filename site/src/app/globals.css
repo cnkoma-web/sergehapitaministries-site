@@ -3434,9 +3434,9 @@ footer.footer--dark{
 .v2-jc-hero-copy{position:relative;max-width:860px;margin:0 auto;text-align:center;}
 .v2-jc-hero-context{width:min(600px,100%);margin:0 auto 28px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.34);}
 .v2-jc-hero-reading{width:min(820px,100%);margin:0 auto;}
-.v2-jc-title{margin:0 auto 24px;color:#fff;font-family:var(--v2-serif);font-size:clamp(32px,calc(4.3vw - 2px),46px);font-weight:600;line-height:1.12;letter-spacing:-.025em;}
+.v2-jc-title{margin:0 auto 24px;color:#fff;font-family:var(--v2-serif);font-size:34px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
 .v2-jc-hero-intro{margin:0 auto 12px;color:rgba(255,255,255,.86);font-family:var(--v2-sans);font-size:15px;font-weight:600;letter-spacing:.02em;}
-.v2-jc-scripture{margin:0 auto;color:#fff;font-family:var(--v2-serif);font-size:34px;font-style:normal;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
+.v2-jc-scripture{margin:0 auto;color:#fff;font-family:var(--v2-serif);font-size:32px;font-style:normal;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
 .v2-jc-scripture cite{font-family:var(--v2-sans);font-size:15px;font-style:normal;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.62);}
 /* .rm-hero .category-badge (prototype, s'applique aussi à .confess-hero) :
    24px, pas 22px — écart trouvé (retour du 11/09, audit typographique). */
@@ -3528,8 +3528,8 @@ footer.footer--dark{
   .v2-confession-card{grid-template-columns:1fr;text-align:center;}
 }
 @media (max-width:720px){
-  .v2-jc-title{font-size:28px;}
-  .v2-jc-scripture{font-size:22px;}
+  .v2-jc-title{font-size:22px;}
+  .v2-jc-scripture{font-size:20px;}
   .v2-jc-scripture cite{font-size:15px;}
   .v2-jc-body-html{font-size:18px;line-height:1.82;}
   /* .rm-hero .category-badge (prototype, media 720px) : 20px */
