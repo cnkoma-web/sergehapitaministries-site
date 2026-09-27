@@ -5,15 +5,9 @@ import { getPodcastEpisodeByIdAdmin } from "@/lib/content/podcast";
 import { updatePodcastEpisode, publishPodcastEpisode, unpublishPodcastEpisode, deletePodcastEpisode } from "../actions";
 import { ARTICLE_TYPE_LABEL, getArticleByIdAdmin, getArticleOptionsForPodcastLink } from "@/lib/content/articles";
 import PodcastCoverField from "@/components/admin/PodcastCoverField";
+import PodcastMediaField from "@/components/admin/PodcastMediaField";
 import SavedToast from "@/components/admin/SavedToast";
 
-// V2 Lot 9 (11/09) — écran d'édition d'un épisode, calqué fichier pour
-// fichier sur admin/publications/[id]/page.tsx (même principe des boutons
-// formAction sur un seul formulaire englobant, plus un petit formulaire à
-// part pour la suppression). Le champ « Lien audio » reste une simple URL
-// texte (pas d'upload de fichier audio) — c'est le lien direct fourni par
-// Ausha une fois l'épisode publié là-bas, en attendant une vraie
-// synchronisation RSS/API (voir la migration 20260911030000).
 export default async function AdminPodcastEpisodePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const episode = await getPodcastEpisodeByIdAdmin(id);
@@ -94,8 +88,8 @@ export default async function AdminPodcastEpisodePage({ params }: { params: Prom
           </div>
 
           <div className="editor-field">
-            <label>Lien audio (fourni par Ausha)</label>
-            <input type="url" name="audio_url" defaultValue={episode.audio_url} placeholder="https://…" required />
+            <label>Média de l’épisode</label>
+            <PodcastMediaField currentUrl={episode.audio_url} />
           </div>
 
           <div className="editor-field-row" style={{ gridTemplateColumns: "1fr 1fr", marginBottom: 18 }}>
