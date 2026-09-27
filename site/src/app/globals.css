@@ -2904,7 +2904,7 @@ footer.footer--dark{
 .v2-rm-page .rm-quote-wrap{max-width:min(880px,calc(100% - 48px));}
 .v2-rm-page .rm-quote-mark{color:var(--v2-violet);opacity:1;font-family:var(--v2-serif);font-style:italic;font-weight:500;font-size:72px;line-height:.8;}
 /* .rm-chapeau blockquote (prototype) : Georgia, clamp(25px,3.3vw,39px), 500, italique, 1.4, centré (mobile 25px fixe) */
-.v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-weight:500;font-style:italic;line-height:1.4;text-align:center;}
+.v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(23px,calc(3.3vw - 2px),37px);font-weight:500;font-style:italic;line-height:1.4;text-align:center;}
 /* .entry-body > p (prototype) : Georgia, 19px, 1.9 — le composant fixait ces
    deux dernières valeurs en style inline (16.5px/1.85, voir
    RoseeMatinaleContent.tsx) : un style inline gagne toujours sur n'importe
