@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleByIdAdmin } from "@/lib/content/articles";
+import { getJeConfesseSettings } from "@/lib/content/interfaceTexts";
 import { updateConfessionEntry, deleteArticle } from "../../publications/actions";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
@@ -18,6 +19,7 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
   const { id } = await params;
   const entry = await getArticleByIdAdmin(id);
   if (!entry || entry.type !== "jc") notFound();
+  const settings = await getJeConfesseSettings();
 
   return (
     <>
@@ -63,7 +65,7 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
             <input
               type="text"
               name="verse_reference"
-              defaultValue={entry.verse_reference ?? ""}
+              defaultValue={entry.verse_reference?.trim() || settings.verseReference}
               placeholder="Ex. : Romains 8:37"
               required
             />
@@ -74,7 +76,7 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
             <textarea
               name="verse_text"
               rows={4}
-              defaultValue={entry.verse_text ?? ""}
+              defaultValue={entry.verse_text?.trim() || settings.verseText}
               placeholder="Saisissez le texte du passage biblique…"
               required
             />
