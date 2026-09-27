@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { getCurrentAdmin } from "@/lib/supabase/auth";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { sendCustomerEmail } from "@/lib/email/resend";
@@ -180,4 +181,13 @@ export async function resendOrderNotification(formData: FormData) {
   }
 
   revalidatePath(`/admin/commandes/${id}`);
+}
+
+export async function archiveOrder(formData: FormData) {
+  const id=clean(formData.get("id")); if(!id) return;
+  const supabase=await requireAdmin();
+  const {error}=await supabase.from("orders").update({archived_at:new Date().toISOString()}).eq("id",id);
+  if(error) throw new Error(`Archivage impossible : ${error.message}`);
+  revalidatePath("/admin/commandes"); revalidatePath(`/admin/commandes/${id}`);
+  redirect("/admin/commandes");
 }
