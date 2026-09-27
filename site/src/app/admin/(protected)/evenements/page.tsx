@@ -12,7 +12,7 @@ export default async function AdminEvenementsPage({
 }) {
   const { page: pageParam, perPage: perPageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const perPage = Number(perPageParam) || 20;
+  const requestedPerPage = Number(perPageParam);\n  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
 
   const { events, total } = await getEventsAdmin(page, perPage);
 
@@ -77,7 +77,7 @@ export default async function AdminEvenementsPage({
           </div>
         ))}
       </div>
-      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/evenements" />}
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/evenements" perPageOptions={[5, 7]} />}
     </>
   );
 }
