@@ -111,6 +111,7 @@ export default async function AdminPublicationsPage({
           total={total}
           basePath="/admin/publications"
           extraParams={typeParam ? { type: typeParam } : undefined}
+          perPageOptions={[5, 7]}
         />
       )}
 
