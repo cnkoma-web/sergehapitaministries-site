@@ -36,7 +36,7 @@ export default async function AdminJeConfessePage({
     <>
       <h1>Je Confesse</h1>
       {saved === "published" && <p className="admin-feedback success" role="status">La confession a bien été publiée. L’éditeur est prêt pour une nouvelle saisie.</p>}
-      {error === "missing-fields" && <p className="admin-feedback error" role="alert">Le passage biblique, sa référence et la proclamation sont obligatoires.</p>}
+      {error === "missing-fields" && <p className="admin-feedback error" role="alert">Le titre, le passage biblique, sa référence et la proclamation sont obligatoires.</p>}
       {error === "publish" && <p className="admin-feedback error" role="alert">La publication a échoué. Aucune donnée n’a été masquée : réessayez ou signalez le problème.</p>}
       <p className="admin-lede">
         Publier une nouvelle entrée bascule automatiquement l&apos;ancienne en archive — pas de
@@ -50,6 +50,10 @@ export default async function AdminJeConfessePage({
           <div className="editor-field" style={{ maxWidth: 220 }}>
             <label>Date</label>
             <input name="article_date" type="date" defaultValue={today} required />
+          </div>
+          <div className="editor-field">
+            <label>Titre de la confession</label>
+            <input name="title" type="text" placeholder="Ex. : Je marche dans la victoire" required />
           </div>
           <div className="editor-field">
             <label>Référence biblique</label>
