@@ -11,7 +11,7 @@ import {
   shortOrderReference,
   type OrderPaymentStatus,
 } from "@/lib/orders/fulfillment";
-import { advanceOrderFulfillment, resendOrderNotification, updateOrderTracking } from "../actions";
+import { advanceOrderFulfillment, archiveOrder, resendOrderNotification, updateOrderTracking } from "../actions";
 
 type Address = {
   line1?: string | null;
@@ -64,9 +64,10 @@ export default async function AdminCommandeDetailPage({ params }: { params: Prom
           <p className="admin-kicker">Commande</p>
           <h2>#{shortOrderReference(order.id)}</h2>
         </div>
+        <div className="admin-detail-actions"><form action={archiveOrder}><input type="hidden" name="id" value={order.id}/><button className="btn-danger">Archiver</button></form>
         <span className={`status-badge ${order.status === "paid" ? "actif" : order.status === "pending" ? "precommande" : "masque"}`}>
           {PAYMENT_STATUS_LABEL[order.status as OrderPaymentStatus] ?? order.status}
-        </span>
+        </span></div>
       </div>
 
       <div className="order-detail-grid">
