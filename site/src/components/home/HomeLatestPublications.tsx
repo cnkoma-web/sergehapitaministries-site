@@ -18,11 +18,9 @@ function formatDate(value?: string | null) {
 }
 function preview(article: Article | null, tone: Row["tone"]) {
   if (!article) return "";
-  // Sur Je Confesse, l’accueil présente toujours le début de la confession,
-  // jamais le passage biblique affiché dans le héros de la page dédiée.
-  const source = tone === "confession"
-    ? article.body || article.excerpt || ""
-    : article.excerpt || article.verse_text || article.body || "";
+  // Sur Je Confesse, l’accueil affiche le titre de la confession uniquement.
+  if (tone === "confession") return "";
+  const source = article.excerpt || article.verse_text || article.body || "";
   return stripHtml(source).trim();
 }
 export default async function HomeLatestPublications() {
@@ -31,7 +29,7 @@ export default async function HomeLatestPublications() {
   ]);
   const rows = ([
     { article: rosee, label: "Rosée Matinale", meta: "Pensée du jour", href: "/rosee-matinale", tone: "dew", titleVisible: true },
-    { article: confession, label: "Je Confesse", meta: "Proclamation du jour", href: "/publications/je-confesse-et-declare", tone: "confession" },
+    { article: confession, label: "Je Confesse", meta: "Proclamation du jour", href: "/publications/je-confesse-et-declare", tone: "confession", titleVisible: true },
     { article: bibleArticles[0] ?? null, label: "Que dit la Bible ?", meta: "Examen du jour", href: bibleArticles[0] ? `/publications/${bibleArticles[0].slug}` : "/publications/que-dit-la-bible", tone: "bible", titleVisible: true },
     { article: lifeArticles[0] ?? null, label: "La Vie Supérieure", meta: "Enseignement du jour", href: lifeArticles[0] ? `/publications/${lifeArticles[0].slug}` : "/publications/la-vie-superieure", tone: "life", titleVisible: true },
   ] satisfies Row[]).sort((a,b)=>(b.article?.article_date ? new Date(b.article.article_date).getTime() : -Infinity) - (a.article?.article_date ? new Date(a.article.article_date).getTime() : -Infinity));
