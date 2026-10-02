@@ -144,10 +144,10 @@ function buildMessage({
     blocks.push(formatted ? `*${title}*` : title);
   }
 
-  // QDLB et Vie Supérieure : chapeau CMS en italique, puis passage biblique.
-  // Rosée Matinale suit son modèle sans chapeau distinct. Je Confesse conserve
-  // la décision spécifique la plus récente : aucun verset.
-  if ((category === "qdlb" || category === "vs") && content?.intro?.trim()) {
+  // QDLB, Vie Supérieure et Rosée Matinale : chapeau CMS en italique.
+  // QDLB et Vie Supérieure ajoutent ensuite leur passage biblique.
+  // Je Confesse conserve la décision spécifique la plus récente : aucun verset.
+  if ((category === "qdlb" || category === "vs" || category === "rm") && content?.intro?.trim()) {
     const intro = content.intro.trim();
     blocks.push(formatted ? `_${intro}_` : intro);
   }
