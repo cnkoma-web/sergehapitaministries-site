@@ -3298,8 +3298,10 @@ footer.footer--dark{
    grille livres de l'accueil attend object-fit:cover. Surcharge locale par
    spécificité (3 classes), sans toucher à la règle partagée ni au composant,
    pour ne pas affecter /livres ou /livres/[slug] (hors de ce lot). */
-.v2-book-cover .cover-rollover .cr-front,
-.v2-book-cover .cover-rollover .cr-back{object-fit:cover;}
+.v2-book-cover .cover-rollover .cr-front{object-fit:cover;}
+/* Le dos contient du texte éditorial : il doit rester entièrement lisible,
+   même lorsque son ratio diffère du cadre de la carte. */
+.v2-book-cover .cover-rollover .cr-back{object-fit:contain;object-position:center;}
 .v2-book-info{min-width:0;flex:1;padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
 .v2-book-card.main .v2-book-info{padding:46px 34px;justify-content:center;}
 .v2-book-info>span{color:var(--v2-violet);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
@@ -3634,8 +3636,10 @@ footer.footer--dark{
    existait déjà pour ce même piège sur la fiche vedette de l'accueil
    (.v2-book-cover .cover-rollover ...), jamais répliqué ici — mesuré
    object-fit:"contain" au lieu de "cover" sur les cartes du catalogue. */
-.v2-catalog-cover .cover-rollover .cr-front,
-.v2-catalog-cover .cover-rollover .cr-back{object-fit:cover;}
+.v2-catalog-cover .cover-rollover .cr-front{object-fit:cover;}
+/* La quatrième de couverture ne doit jamais être rognée : contrairement au
+   recto décoratif, son contenu textuel prime sur le remplissage du cadre. */
+.v2-catalog-cover .cover-rollover .cr-back{object-fit:contain;object-position:center;}
 .v2-catalog-card-body{flex:1;display:flex;flex-direction:column;align-items:flex-start;padding:23px 20px 21px;}
 /* line-height:1.6 ajouté (audit Hub Livres, 14/09) : même mécanisme que
    .v2-catalog-price ci-dessus — mesuré 16px (10×1.6) sur la maquette contre
