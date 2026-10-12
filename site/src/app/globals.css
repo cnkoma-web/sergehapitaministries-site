@@ -3970,8 +3970,8 @@ footer.footer--dark{
    Georgia comme la maquette (§ .book-description-copy p, dont hérite
    implicitement son premier <p><strong>). Écart réel démontré (police
    réellement chargée vérifiée, pas seulement la valeur CSS). */
-.v2-product-page .product-desc p:first-child,
-.v2-product-page .product-desc b:first-child{display:block;margin:0 0 22px;color:#fff;font-family:var(--v2-serif);font-size:24px;line-height:1.58;}
+.v2-product-page .product-desc .product-desc-copy>p:first-child,
+.v2-product-page .product-desc .product-desc-copy>b:first-child{display:block;margin:0 0 22px;color:#fff;font-family:var(--v2-serif);font-size:24px;line-height:1.58;}
 /* Contenu riche (RichTextEditor, admin) injecté ici — mêmes garde-fous que
    partout ailleurs sur fond sombre (h1-h4 globaux + liens explicitement
    recolorés, jamais laissés hériter). */
