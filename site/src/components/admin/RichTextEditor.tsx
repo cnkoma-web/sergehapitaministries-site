@@ -30,29 +30,6 @@ const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "L
 // ramenés par un copier-coller depuis une autre source (Word, un site...) et
 // les balises vides laissées par le navigateur après une suppression/fusion de
 // paragraphes (cause des écarts de ligne inattendus signalés en test réel).
-// En mode compact (descriptions livres/goodies), les styles inline comme gras/italique
-// doivent rester à l'intérieur du paragraphe courant. Certains anciens contenus ont
-// été enregistrés avec un <p> artificiel ne contenant qu'un <strong>/<em>, ce qui
-// provoque un retour à la ligne non voulu sur le front. On ne fusionne que ce cas
-// structurel explicite ; les vrais paragraphes saisis avec Entrée restent intacts.
-function normalizeCompactInlineBlocks(root: HTMLElement) {
-  const children = Array.from(root.children);
-  for (let i = 1; i < children.length; i++) {
-    const current = children[i] as HTMLElement;
-    const previous = current.previousElementSibling as HTMLElement | null;
-    if (!previous || current.tagName !== "P" || previous.tagName !== "P") continue;
-    const meaningful = Array.from(current.childNodes).filter((node) =>
-      node.nodeType === Node.TEXT_NODE ? Boolean(node.textContent?.trim()) : true
-    );
-    if (meaningful.length !== 1 || meaningful[0].nodeType !== Node.ELEMENT_NODE) continue;
-    const inline = meaningful[0] as HTMLElement;
-    if (!["STRONG", "B", "EM", "I"].includes(inline.tagName)) continue;
-    previous.appendChild(document.createTextNode(" "));
-    previous.appendChild(inline);
-    current.remove();
-  }
-}
-
 function sanitize(root: HTMLElement) {
   const walk = (node: Element) => {
     Array.from(node.children).forEach(walk);
@@ -195,11 +172,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   // création, sans ce passage elles resteraient du texte en ligne classique
   // tant que Serge ne les recrée pas à la main.
   useEffect(() => {
-    if (editorRef.current) {
-      sanitize(editorRef.current);
-      if (compact) normalizeCompactInlineBlocks(editorRef.current);
-      sync();
-    }
+    if (editorRef.current) sanitize(editorRef.current);
   }, []);
 
   // Ne recopie QUE la valeur, sans toucher au DOM en cours d'édition — appelé à
@@ -217,10 +190,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   // n'est plus en train de taper dans l'élément concerné (perte de focus,
   // juste après un collage, après une action de la barre d'outils).
   function sanitizeAndSync() {
-    if (editorRef.current) {
-      sanitize(editorRef.current);
-      if (compact) normalizeCompactInlineBlocks(editorRef.current);
-    }
+    if (editorRef.current) sanitize(editorRef.current);
     sync();
   }
 
