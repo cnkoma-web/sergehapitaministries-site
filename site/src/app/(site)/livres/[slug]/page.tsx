@@ -241,7 +241,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
           {book.description ? (
             // L'admin (seul auteur possible de ce HTML, is_admin() en base) est la
             // seule source de ce contenu — voir RichTextEditor pour la frontière de confiance.
-            <div dangerouslySetInnerHTML={{ __html: book.description }} />
+            <div className="product-desc-copy" dangerouslySetInnerHTML={{ __html: book.description }} />
           ) : (
             <p>Description complète à venir.</p>
           )}
