@@ -149,7 +149,7 @@ export default async function GoodieDetailPage({ params }: { params: Promise<{ s
               du produit
             </h2>
             {/* Seul un admin (is_admin() en base) peut écrire ce HTML — voir RichTextEditor. */}
-            <div dangerouslySetInnerHTML={{ __html: goodie.description }} />
+            <div className="product-desc-copy" dangerouslySetInnerHTML={{ __html: goodie.description }} />
           </div>
         </section>
       )}
