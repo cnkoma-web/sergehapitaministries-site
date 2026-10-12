@@ -47,7 +47,7 @@ export default async function LivresPage() {
       <section className="v2-commerce-wrap">
         <div className="v2-catalog-intro">
           <h2>
-            Chaque livre est un compagnon de route, un outil de transformation intérieure, un appel à vivre selon la{" "}
+            Chaque livre est un compagnon de route, un outil de transformation, un appel à vivre selon la{" "}
             <em>justice du Royaume.</em>
           </h2>
         </div>

@@ -3607,7 +3607,7 @@ footer.footer--dark{
 
 /* --- Introduction catalogue --- */
 .v2-catalog-intro{max-width:850px;padding-block:66px 42px;}
-.v2-catalog-intro h2{max-width:720px;margin:0;font-family:var(--v2-serif);font-size:clamp(33px,calc(5vw - 2px),55px);font-weight:500;line-height:1.09;letter-spacing:-.035em;}
+.v2-catalog-intro h2{max-width:720px;margin:0;font-family:var(--v2-serif);font-size:clamp(32px,calc(5vw - 3px),54px);font-weight:500;line-height:1.09;letter-spacing:-.035em;}
 /* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : "font-style:normal" ici
    annulait à tort l'italique par défaut du <em> — la règle maquette
    (.catalog-intro h2 em) ne déclare AUCUN font-style, laissant l'italique
