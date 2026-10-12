@@ -13,6 +13,15 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
+
+function normalizeCompactRichText(html: string): string {
+  // Répare uniquement les blocs de mise en forme isolés créés par l'ancien
+  // éditeur compact. Les paragraphes ordinaires restent des paragraphes.
+  return html
+    .replace(/<\/p>\s*<p>\s*((?:<(?:strong|b|em|i)>[\s\S]*?<\/(?:strong|b|em|i)>)+)\s*<\/p>/gi, " $1</p>")
+    .trim();
+}
+
 /** Le statut "précommande" reste un simple champ, sans position d'affichage
  * séparée (cahier §6.4 : corrige une proposition précédente qui compliquait
  * les choses). "active" (booléen historique) reste synchronisé pour ne rien
@@ -73,7 +82,7 @@ export async function updateBook(formData: FormData) {
       pages: formData.get("pages") ? Number(formData.get("pages")) : null,
       isbn: String(formData.get("isbn") ?? "").trim() || null,
       language: String(formData.get("language") ?? "").trim() || null,
-      description: String(formData.get("description") ?? "").trim() || null,
+      description: normalizeCompactRichText(String(formData.get("description") ?? "")) || null,
       // Promesse du livre (SECTION 04, décision validée 15/09) : facultatif,
       // jamais de valeur fabriquée — chaîne vide -> null, bloc non rendu.
       promise: String(formData.get("promise") ?? "").trim() || null,
