@@ -5111,6 +5111,17 @@ footer.footer--dark{
 }
 
 
+/* Le mode contain laisse volontairement respirer l'image. Le fond visible
+   reprend la teinte lavande claire du site, jamais l'ancien cadre noir. */
+.v2-book-cover,
+.v2-catalog-cover,
+.v2-product-page .product-cover,
+.v2-book-cover .cover-rollover,
+.v2-catalog-cover .cover-rollover,
+.v2-product-page .product-cover .cover-rollover{
+  background:#f3f0fb;
+}
+
 /* CORRECTION COUVERTURES — affichage intégral, sans rognage.
    Les règles historiques de l'accueil, du catalogue et de la fiche livre
    imposaient ponctuellement object-fit:cover puis un zoom au survol.
