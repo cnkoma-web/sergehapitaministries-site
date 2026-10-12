@@ -5109,3 +5109,36 @@ footer.footer--dark{
   .v2-home .v2-books-section{padding-bottom:48px;}
   .v2-home .v2-books-section + .v2-events-section{padding-top:0;}
 }
+
+
+/* CORRECTION COUVERTURES — affichage intégral, sans rognage.
+   Les règles historiques de l'accueil, du catalogue et de la fiche livre
+   imposaient ponctuellement object-fit:cover puis un zoom au survol.
+   Cette règle finale harmonise les trois emplacements : l'image complète
+   reste dans le cadre avec une marge de sécurité de 2 %, sans déformation. */
+.v2-book-cover .cover-rollover .cr-front,
+.v2-book-cover .cover-rollover .cr-back,
+.v2-catalog-cover .cover-rollover .cr-front,
+.v2-catalog-cover .cover-rollover .cr-back,
+.v2-product-page .product-cover .cover-rollover .cr-front,
+.v2-product-page .product-cover .cover-rollover .cr-back{
+  inset:2%;
+  width:96%;
+  height:96%;
+  aspect-ratio:auto;
+  object-fit:contain;
+  object-position:center;
+  transform:none;
+}
+.v2-book-card:hover .v2-book-cover .cover-rollover .cr-front,
+.v2-book-card:hover .v2-book-cover .cover-rollover .cr-back,
+.v2-product-page .cover-rollover:focus-within .cr-front,
+.v2-product-page .cover-rollover:focus-within .cr-back{
+  transform:none;
+}
+@media (hover:hover) and (pointer:fine){
+  .v2-product-page .cover-rollover:hover .cr-front,
+  .v2-product-page .cover-rollover:hover .cr-back{
+    transform:none;
+  }
+}
