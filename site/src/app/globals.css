@@ -3455,7 +3455,7 @@ footer.footer--dark{
 .v2-jc-body-html{margin-bottom:20px;color:#343044;font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
 /* .confess-signature (maquette) : bordures haut/bas manquantes ici. */
 .v2-jc-chapeau{padding:54px 0;background:#f3edff;border-top:1px solid rgba(79,37,216,.12);border-bottom:1px solid rgba(79,37,216,.12);}
-.v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
+.v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(23.5px,3.18vw,37.5px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
 .v2-jc-chapeau cite{display:block;margin-top:18px;color:#4f25d8;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
 
 /* Bug réel corrigé (validation humaine, 13/09) : .like-block (composant
@@ -3948,7 +3948,7 @@ footer.footer--dark{
    exhaustif, invisible à une simple lecture de couleur/police. */
 .v2-product-page .product-desc h2{position:sticky;top:28px;margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(40px,5vw,61px);font-weight:500;line-height:1.05;letter-spacing:-.04em;}
 .v2-product-page .product-desc>.v2-commerce-wrap>div:last-child{max-width:730px;}
-.v2-product-page .product-desc p{margin:0 0 22px;color:rgba(255,255,255,.72);font-family:var(--v2-serif);font-size:19px;line-height:1.78;}
+.v2-product-page .product-desc p{margin:0 0 22px;color:rgba(255,255,255,.72);font-family:var(--v2-serif);font-size:18px;line-height:1.78;}
 /* BUG RÉEL CORRIGÉ (reprise après validation humaine, 14/09) : le premier
    paragraphe réel de ce livre (books.description) est stocké en
    "<b>...</b><p>...</p>" — le texte d'ouverture n'est PAS enveloppé dans
