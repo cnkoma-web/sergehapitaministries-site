@@ -16,6 +16,7 @@ export type PodcastEpisode = {
   audio_url: string;
   duration_seconds: number | null;
   cover_url: string | null;
+  linked_article_cover_url: string | null;
   share_image_url: string | null;
   linked_article_id: string | null;
   position: number;
@@ -26,6 +27,25 @@ const COLUMNS =
 const ADMIN_COLUMNS = `${COLUMNS}, status`;
 
 export type AdminPodcastEpisode = PodcastEpisode & { status: "draft" | "published" };
+
+type PodcastEpisodeRow = Omit<PodcastEpisode, "linked_article_cover_url">;
+
+async function addLinkedArticleCovers(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  episodes: PodcastEpisodeRow[]
+): Promise<PodcastEpisode[]> {
+  const articleIds = [...new Set(episodes.map((episode) => episode.linked_article_id).filter((id): id is string => Boolean(id)))];
+  if (articleIds.length === 0) {
+    return episodes.map((episode) => ({ ...episode, linked_article_cover_url: null }));
+  }
+
+  const { data: articles } = await supabase.from("articles").select("id, cover_url").in("id", articleIds);
+  const covers = new Map((articles ?? []).map((article) => [article.id, article.cover_url]));
+  return episodes.map((episode) => ({
+    ...episode,
+    linked_article_cover_url: episode.linked_article_id ? covers.get(episode.linked_article_id) ?? null : null,
+  }));
+}
 
 /** Pagination fixe (cahier §Lot 9) — 8 épisodes par page, sur la
  * bibliothèque publique comme sur ses filtres par univers. */
@@ -46,7 +66,7 @@ export async function getPodcastEpisodes(
     .order("created_at", { ascending: false })
     .range(from, from + perPage - 1);
   if (error || !data) return { episodes: [], total: 0 };
-  return { episodes: data, total: count ?? 0 };
+  return { episodes: await addLinkedArticleCovers(supabase, data), total: count ?? 0 };
 }
 
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
@@ -58,7 +78,40 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
     .eq("status", "published")
     .single();
   if (error || !data) return null;
-  return data;
+  const [episode] = await addLinkedArticleCovers(supabase, [data]);
+  return episode;
+}
+
+export async function getPodcastEpisodeForArticle(
+  articleId: string,
+  episodeId?: string | null
+): Promise<PodcastEpisode | null> {
+  const supabase = await createClient();
+
+  if (episodeId) {
+    const { data } = await supabase
+      .from("podcast_episodes")
+      .select(COLUMNS)
+      .eq("id", episodeId)
+      .eq("status", "published")
+      .maybeSingle();
+    if (data) {
+      const [episode] = await addLinkedArticleCovers(supabase, [data]);
+      return episode;
+    }
+  }
+
+  const { data, error } = await supabase
+    .from("podcast_episodes")
+    .select(COLUMNS)
+    .eq("linked_article_id", articleId)
+    .eq("status", "published")
+    .order("episode_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error || !data) return null;
+  const [episode] = await addLinkedArticleCovers(supabase, [data]);
+  return episode;
 }
 
 // ===== Admin (voit aussi les brouillons) =====
@@ -75,12 +128,17 @@ export async function getPodcastEpisodesAdmin(
     .order("episode_date", { ascending: false })
     .range(from, from + perPage - 1);
   if (error || !data) return { episodes: [], total: 0 };
-  return { episodes: data, total: count ?? 0 };
+  return {
+    episodes: (await addLinkedArticleCovers(supabase, data)) as AdminPodcastEpisode[],
+    total: count ?? 0,
+  };
 }
 
 export async function getPodcastEpisodeByIdAdmin(id: string): Promise<AdminPodcastEpisode | null> {
   const supabase = await createClient();
   const { data, error } = await supabase.from("podcast_episodes").select(ADMIN_COLUMNS).eq("id", id).single();
   if (error || !data) return null;
-  return data;
+  const [episode] = await addLinkedArticleCovers(supabase, [data]);
+  return episode as AdminPodcastEpisode;
 }
+

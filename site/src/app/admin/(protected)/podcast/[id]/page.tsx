@@ -104,7 +104,7 @@ export default async function AdminPodcastEpisodePage({ params }: { params: Prom
           </div>
 
           <div className="editor-field">
-            <label>Vignette (carrée)</label>
+            <label>Vignette (carrée, facultative)</label>
             <PodcastCoverField currentUrl={episode.cover_url} />
           </div>
 
@@ -141,3 +141,4 @@ export default async function AdminPodcastEpisodePage({ params }: { params: Prom
     </>
   );
 }
+

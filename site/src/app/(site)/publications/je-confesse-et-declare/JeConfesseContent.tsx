@@ -9,6 +9,7 @@ import LikeButton from "@/components/articles/LikeButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import Pagination from "@/components/admin/Pagination";
+import { getPodcastEpisodeForArticle } from "@/lib/content/podcast";
 
 const SITE_URL = "https://sergehapitaministries.org";
 // Même règle que Rosée Matinale (retour du 05/09) — 3 entrées d'archive par page.
@@ -54,7 +55,10 @@ export default async function JeConfesseContent({
   const pageUrl = `${SITE_URL}${dayHref(current.article_date)}`;
   const paragraphs = extractParagraphs(current.body || "");
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
-  const settings = await getJeConfesseSettings();
+  const [settings, podcastEpisode] = await Promise.all([
+    getJeConfesseSettings(),
+    getPodcastEpisodeForArticle(current.id, current.podcast_episode_id),
+  ]);
   const verseText = current.verse_text?.trim() || settings.verseText;
   const verseReference = current.verse_reference?.trim() || settings.verseReference;
 
@@ -162,7 +166,9 @@ export default async function JeConfesseContent({
             <h2>Écouter cette proclamation</h2>
             <span>Retrouve cette proclamation dans la série Je Confesse.</span>
           </div>
-          <Link href="/podcast?univers=jc">Découvrir la série →</Link>
+          <Link href={podcastEpisode ? `/podcast/${podcastEpisode.slug}` : "/podcast?univers=jc"}>
+            {podcastEpisode ? "Écouter le podcast →" : "Découvrir la série →"}
+          </Link>
         </div>
       </section>
 
@@ -227,3 +233,4 @@ export default async function JeConfesseContent({
     </div>
   );
 }
+
