@@ -3488,7 +3488,10 @@ footer.footer--dark{
    seulement un filtre par query param, la vraie fonction équivalente). */
 .v2-jc-audio{padding:25px 0;color:#fff;background:#1d1830;}
 .v2-jc-audio-inner{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:20px;align-items:center;}
-.v2-jc-audio-icon{width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.28);border-radius:50%;color:#fff;background:rgba(255,255,255,.07);font-size:17px;}
+.v2-jc-audio-icon{width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.28);border-radius:50%;color:#fff;background:rgba(255,255,255,.07);font-family:var(--v2-sans);font-size:17px;cursor:pointer;}
+button.v2-jc-audio-icon:hover{background:rgba(255,255,255,.15);}
+button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3px;}
+.v2-jc-audio-icon>audio{display:none;}
 .v2-jc-audio-inner p{margin:0 0 4px;color:#cdbdf3;font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;}
 .v2-jc-audio-inner h2{margin:0 0 5px;color:#fff;font-family:var(--v2-serif);font-size:24px;font-weight:600;}
 .v2-jc-audio-inner div>span{color:rgba(255,255,255,.62);font-size:13px;}
