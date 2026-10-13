@@ -92,10 +92,10 @@ export default async function PodcastPage({
                 const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[e.universe]} : ${e.title}. ${episodeUrl}`;
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
-                    <div className="v2-podcast-share-card" aria-label={`Aperçu de la carte de partage ${ARTICLE_TYPE_LABEL[e.universe]}`}>
+                    <div className="v2-podcast-share-card">
                       {coverUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- fond décoratif en aplat de couleur, jamais l'image principale du contenu.
-                        <img src={coverUrl} alt="" />
+                        // eslint-disable-next-line @next/next/no-img-element -- URL publique issue du CMS.
+                        <img src={coverUrl} alt={`Pochette de ${e.title}`} />
                       ) : (
                         <>
                           <span>{ARTICLE_TYPE_LABEL[e.universe]}</span>
@@ -104,17 +104,17 @@ export default async function PodcastPage({
                         </>
                       )}
                     </div>
+                    <PodcastCardPlayer src={e.audio_url} title={e.title} />
                     <div className="v2-podcast-card-content">
                       <span className={`feed-badge ${e.universe}`}>{ARTICLE_TYPE_LABEL[e.universe]}</span>
                       <h3>
                         <Link href={`/podcast/${e.slug}`}>{e.title}</Link>
                       </h3>
-                      {e.theme && <p>{e.theme}</p>}
                       <div className="v2-podcast-card-meta">
                         <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
                         {e.duration_seconds ? <span>{Math.round(e.duration_seconds / 60)} min</span> : null}
                       </div>
-                      <PodcastCardPlayer src={e.audio_url} title={e.title} />
+                      {e.theme && <p>{e.theme}</p>}
                       <div className="v2-podcast-card-bottom">
                         {e.linked_article_id ? (
                           <Link href={`/podcast/${e.slug}`} className="v2-podcast-detail-link">
