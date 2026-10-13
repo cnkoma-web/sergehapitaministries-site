@@ -53,6 +53,15 @@ async function saveEpisode(formData: FormData, status?: "draft" | "published") {
   const audio_url = String(formData.get("audio_url") ?? "").trim();
   if (!id || !title) return;
 
+  const { data: previousEpisode, error: previousEpisodeError } = await supabase
+    .from("podcast_episodes")
+    .select("linked_article_id")
+    .eq("id", id)
+    .single();
+  if (previousEpisodeError) throw previousEpisodeError;
+
+  const linkedArticleId = String(formData.get("linked_article_id") ?? "").trim() || null;
+
   const update: Record<string, unknown> = {
     title,
     universe: parseUniverse(formData.get("universe")),
@@ -62,17 +71,55 @@ async function saveEpisode(formData: FormData, status?: "draft" | "published") {
     duration_seconds: Number(formData.get("duration_seconds")) || null,
     cover_url: String(formData.get("cover_url") ?? "").trim() || null,
     share_image_url: String(formData.get("share_image_url") ?? "").trim() || null,
-    linked_article_id: String(formData.get("linked_article_id") ?? "").trim() || null,
+    linked_article_id: linkedArticleId,
     position: Number(formData.get("position")) || 0,
   };
 
   if (status) update.status = status;
 
-  await supabase.from("podcast_episodes").update(update).eq("id", id);
+  const { error: episodeError } = await supabase.from("podcast_episodes").update(update).eq("id", id);
+  if (episodeError) throw episodeError;
+
+  // La relation est disponible dans les deux sens : le podcast connaît son
+  // contenu écrit et la confession connaît son podcast. Cela évite que le
+  // bouton audio disparaisse selon le côté depuis lequel le lien est lu.
+  const { error: clearCurrentLinksError } = await supabase
+    .from("articles")
+    .update({ podcast_episode_id: null })
+    .eq("podcast_episode_id", id);
+  if (clearCurrentLinksError) throw clearCurrentLinksError;
+
+  if (linkedArticleId) {
+    const { data: linkedArticle, error: linkedArticleError } = await supabase
+      .from("articles")
+      .select("podcast_episode_id")
+      .eq("id", linkedArticleId)
+      .single();
+    if (linkedArticleError) throw linkedArticleError;
+
+    if (linkedArticle.podcast_episode_id && linkedArticle.podcast_episode_id !== id) {
+      const { error: detachPreviousEpisodeError } = await supabase
+        .from("podcast_episodes")
+        .update({ linked_article_id: null })
+        .eq("id", linkedArticle.podcast_episode_id)
+        .eq("linked_article_id", linkedArticleId);
+      if (detachPreviousEpisodeError) throw detachPreviousEpisodeError;
+    }
+
+    const { error: articleError } = await supabase
+      .from("articles")
+      .update({ podcast_episode_id: id })
+      .eq("id", linkedArticleId);
+    if (articleError) throw articleError;
+  }
 
   revalidatePath(`/admin/podcast/${id}`);
   revalidatePath("/admin/podcast");
   revalidatePath("/podcast");
+  revalidatePath("/publications/je-confesse-et-declare");
+  if (previousEpisode.linked_article_id || linkedArticleId) {
+    revalidatePath("/publications/je-confesse-et-declare", "layout");
+  }
   revalidatePath("/");
 }
 
@@ -103,9 +150,17 @@ export async function deletePodcastEpisode(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
   if (!id) return;
-  await supabase.from("podcast_episodes").delete().eq("id", id);
+  const { error: unlinkError } = await supabase
+    .from("articles")
+    .update({ podcast_episode_id: null })
+    .eq("podcast_episode_id", id);
+  if (unlinkError) throw unlinkError;
+  const { error: deleteError } = await supabase.from("podcast_episodes").delete().eq("id", id);
+  if (deleteError) throw deleteError;
   revalidatePath("/admin/podcast");
   revalidatePath("/podcast");
+  revalidatePath("/publications/je-confesse-et-declare", "layout");
   revalidatePath("/");
   redirect("/admin/podcast");
 }
+
