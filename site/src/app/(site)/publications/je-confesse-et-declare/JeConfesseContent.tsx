@@ -55,8 +55,10 @@ export default async function JeConfesseContent({
   const pageUrl = `${SITE_URL}${dayHref(current.article_date)}`;
   const paragraphs = extractParagraphs(current.body || "");
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
-  const settings = await getJeConfesseSettings();
-  const podcastEpisode = await getPodcastEpisodeForArticle(current.id, current.podcast_episode_id);
+  const [settings, podcastEpisode] = await Promise.all([
+    getJeConfesseSettings(),
+    getPodcastEpisodeForArticle(current.id, current.podcast_episode_id),
+  ]);
   const verseText = current.verse_text?.trim() || settings.verseText;
   const verseReference = current.verse_reference?.trim() || settings.verseReference;
 
