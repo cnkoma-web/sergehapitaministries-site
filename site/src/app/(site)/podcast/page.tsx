@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getPodcastEpisodes, type PodcastUniverse } from "@/lib/content/podcast";
 import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import PodcastCardPlayer from "@/components/podcast/PodcastCardPlayer";
+import PodcastShareActions from "@/components/podcast/PodcastShareActions";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -29,6 +30,8 @@ const FILTERS: { value: PodcastUniverse | "all"; label: string }[] = [
   { value: "rm", label: ARTICLE_TYPE_LABEL.rm },
   { value: "vs", label: ARTICLE_TYPE_LABEL.vs },
 ];
+
+const SITE_URL = "https://sergehapitaministries.org";
 
 export default async function PodcastPage({
   searchParams,
@@ -85,6 +88,8 @@ export default async function PodcastPage({
             <div className="v2-podcast-grid">
               {episodes.map((e) => {
                 const coverUrl = e.cover_url || e.linked_article_cover_url;
+                const episodeUrl = `${SITE_URL}/podcast/${e.slug}`;
+                const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[e.universe]} : ${e.title}. ${episodeUrl}`;
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
                     <div className="v2-podcast-share-card">
@@ -101,10 +106,13 @@ export default async function PodcastPage({
                     </div>
                     <PodcastCardPlayer src={e.audio_url} title={e.title} />
                     <div className="v2-podcast-card-content">
-                      {e.theme && <p>{e.theme}</p>}
-                      <div className="v2-podcast-card-meta">
-                        <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
+                      <div className="v2-podcast-card-copy">
+                        {e.theme && <p>{e.theme}</p>}
+                        <div className="v2-podcast-card-meta">
+                          <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
+                        </div>
                       </div>
+                      <PodcastShareActions title={e.title} message={shareMessage} url={episodeUrl} />
                     </div>
                   </article>
                 );
