@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { ArticleType } from "@/lib/content/articles";
+import { resolvePodcastAudioUrl } from "@/lib/podcast/resolveAudioUrl";
 
 // V2 Lot 9 (11/09) — Podcast, nouvelle fonctionnalité additive. "universe"
 // réutilise directement les 4 catégories existantes (ArticleType) — jamais
@@ -79,7 +80,7 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
     .single();
   if (error || !data) return null;
   const [episode] = await addLinkedArticleCovers(supabase, [data]);
-  return episode;
+  return { ...episode, audio_url: await resolvePodcastAudioUrl(episode.audio_url) };
 }
 
 export async function getPodcastEpisodeForArticle(
