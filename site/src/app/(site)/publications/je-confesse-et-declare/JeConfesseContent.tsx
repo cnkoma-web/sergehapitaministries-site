@@ -10,6 +10,7 @@ import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import Pagination from "@/components/admin/Pagination";
 import { getPodcastEpisodeForArticle } from "@/lib/content/podcast";
+import PodcastInlinePlayButton from "@/components/podcast/PodcastInlinePlayButton";
 
 const SITE_URL = "https://sergehapitaministries.org";
 // Même règle que Rosée Matinale (retour du 05/09) — 3 entrées d'archive par page.
@@ -33,8 +34,8 @@ function dayHref(date: string): string {
 //
 // Section "Version audio" (§ .confession-audio, restaurée le 13/09 après
 // validation humaine) : /podcast/ (Lot 9) existe désormais — voir le
-// commentaire détaillé dans globals.css § .v2-jc-audio. Lien réel vers le
-// filtre Podcast/Je Confesse, jamais un lecteur statique factice.
+// commentaire détaillé dans globals.css § .v2-jc-audio. Lorsqu'un épisode
+// est associé, la commande lit directement son fichier audio.
 export default async function JeConfesseContent({
   current,
   previous,
@@ -160,7 +161,11 @@ export default async function JeConfesseContent({
 
       <section className="v2-jc-audio" aria-label="Version audio de la proclamation">
         <div className="v2-wrap v2-jc-audio-inner">
-          <span className="v2-jc-audio-icon" aria-hidden="true">▶</span>
+          {podcastEpisode ? (
+            <PodcastInlinePlayButton src={podcastEpisode.audio_url} title={podcastEpisode.title} />
+          ) : (
+            <span className="v2-jc-audio-icon" aria-hidden="true">▶</span>
+          )}
           <div>
             <p>Version audio</p>
             <h2>Écouter cette proclamation</h2>
