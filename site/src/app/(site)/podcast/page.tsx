@@ -92,13 +92,16 @@ export default async function PodcastPage({
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
                     <div className="v2-podcast-share-card" aria-label={`Aperçu de la carte de partage ${ARTICLE_TYPE_LABEL[e.universe]}`}>
-                      {coverUrl && (
+                      {coverUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element -- fond décoratif en aplat de couleur, jamais l'image principale du contenu.
                         <img src={coverUrl} alt="" />
+                      ) : (
+                        <>
+                          <span>{ARTICLE_TYPE_LABEL[e.universe]}</span>
+                          <strong>{e.title}</strong>
+                          <small>Serge Hapita Ministries</small>
+                        </>
                       )}
-                      <span>{ARTICLE_TYPE_LABEL[e.universe]}</span>
-                      <strong>{e.title}</strong>
-                      <small>Serge Hapita Ministries</small>
                     </div>
                     <div className="v2-podcast-card-content">
                       <span className={`feed-badge ${e.universe}`}>{ARTICLE_TYPE_LABEL[e.universe]}</span>
@@ -110,15 +113,13 @@ export default async function PodcastPage({
                         <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
                         {e.duration_seconds ? <span>{Math.round(e.duration_seconds / 60)} min</span> : null}
                       </div>
-                      <div className="v2-podcast-player-preview" aria-label="Aperçu du lecteur audio">
-                        <span className="v2-podcast-play" aria-hidden="true">
-                          ▶
-                        </span>
-                        <div className="v2-podcast-progress">
-                          <span />
-                        </div>
-                        <time>{e.duration_seconds ? `${Math.round(e.duration_seconds / 60)}:00` : "0:00"}</time>
-                      </div>
+                      <audio
+                        controls
+                        preload="none"
+                        src={e.audio_url}
+                        aria-label={`Écouter ${e.title}`}
+                        style={{ width: "100%", height: 42 }}
+                      />
                       <div className="v2-podcast-card-bottom">
                         {e.linked_article_id ? (
                           <Link href={`/podcast/${e.slug}`} className="v2-podcast-detail-link">
