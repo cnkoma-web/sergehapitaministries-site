@@ -87,13 +87,14 @@ export default async function PodcastPage({
             <div className="v2-podcast-grid">
               {episodes.map((e) => {
                 const episodeUrl = `${SITE_URL}/podcast/${e.slug}`;
+                const coverUrl = e.cover_url || e.linked_article_cover_url;
                 const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[e.universe]} : ${e.title}. ${episodeUrl}`;
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
                     <div className="v2-podcast-share-card" aria-label={`Aperçu de la carte de partage ${ARTICLE_TYPE_LABEL[e.universe]}`}>
-                      {e.cover_url && (
+                      {coverUrl && (
                         // eslint-disable-next-line @next/next/no-img-element -- fond décoratif en aplat de couleur, jamais l'image principale du contenu.
-                        <img src={e.cover_url} alt="" />
+                        <img src={coverUrl} alt="" />
                       )}
                       <span>{ARTICLE_TYPE_LABEL[e.universe]}</span>
                       <strong>{e.title}</strong>
@@ -155,3 +156,4 @@ export default async function PodcastPage({
     </div>
   );
 }
+
