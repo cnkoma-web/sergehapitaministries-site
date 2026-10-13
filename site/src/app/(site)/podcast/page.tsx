@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getPodcastEpisodes, type PodcastUniverse } from "@/lib/content/podcast";
 import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import PodcastShareActions from "@/components/podcast/PodcastShareActions";
+import PodcastCardPlayer from "@/components/podcast/PodcastCardPlayer";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -113,13 +114,7 @@ export default async function PodcastPage({
                         <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
                         {e.duration_seconds ? <span>{Math.round(e.duration_seconds / 60)} min</span> : null}
                       </div>
-                      <audio
-                        controls
-                        preload="none"
-                        src={e.audio_url}
-                        aria-label={`Écouter ${e.title}`}
-                        style={{ width: "100%", height: 42 }}
-                      />
+                      <PodcastCardPlayer src={e.audio_url} title={e.title} />
                       <div className="v2-podcast-card-bottom">
                         {e.linked_article_id ? (
                           <Link href={`/podcast/${e.slug}`} className="v2-podcast-detail-link">
