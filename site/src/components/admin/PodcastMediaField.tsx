@@ -15,9 +15,10 @@ export default function PodcastMediaField({currentUrl}:{currentUrl:string}) {
   setUrl(supabase.storage.from("podcast-media").getPublicUrl(path).data.publicUrl); setBusy(false);
  }
  return <div className="podcast-media-field">
-  <input type="url" name="audio_url" value={url} onChange={e=>setUrl(e.target.value)} placeholder="https://…" required/>
+  <input type="url" name="audio_url" value={url} onChange={e=>setUrl(e.target.value)} placeholder="Lien de la publication Substack ou URL audio directe" required/>
   <label className="admin-file-picker"><span>{busy?"Envoi en cours…":"Importer un audio ou une vidéo"}</span><input type="file" accept="audio/*,video/*" onChange={upload} disabled={busy}/></label>
-  <small>Vous pouvez coller un lien externe ou importer un fichier audio/vidéo (200 Mo maximum).</small>
+  <small>Collez simplement le lien de la publication Substack. Vous pouvez aussi utiliser une URL audio directe ou importer un fichier (200 Mo maximum).</small>
   {error&&<div className="admin-feedback error" role="alert">{error}</div>}
  </div>;
 }
+
