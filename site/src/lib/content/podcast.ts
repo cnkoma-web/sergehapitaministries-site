@@ -48,6 +48,10 @@ async function addLinkedArticleCovers(
   }));
 }
 
+async function resolvePublicEpisodeAudio(episode: PodcastEpisode): Promise<PodcastEpisode> {
+  return { ...episode, audio_url: await resolvePodcastAudioUrl(episode.audio_url) };
+}
+
 /** Pagination fixe (cahier §Lot 9) — 8 épisodes par page, sur la
  * bibliothèque publique comme sur ses filtres par univers. */
 export async function getPodcastEpisodes(
@@ -69,12 +73,7 @@ export async function getPodcastEpisodes(
   if (error || !data) return { episodes: [], total: 0 };
   const episodes = await addLinkedArticleCovers(supabase, data);
   return {
-    episodes: await Promise.all(
-      episodes.map(async (episode) => ({
-        ...episode,
-        audio_url: await resolvePodcastAudioUrl(episode.audio_url),
-      }))
-    ),
+    episodes: await Promise.all(episodes.map(resolvePublicEpisodeAudio)),
     total: count ?? 0,
   };
 }
@@ -89,7 +88,7 @@ export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpis
     .single();
   if (error || !data) return null;
   const [episode] = await addLinkedArticleCovers(supabase, [data]);
-  return { ...episode, audio_url: await resolvePodcastAudioUrl(episode.audio_url) };
+  return resolvePublicEpisodeAudio(episode);
 }
 
 export async function getPodcastEpisodeForArticle(
@@ -107,7 +106,7 @@ export async function getPodcastEpisodeForArticle(
       .maybeSingle();
     if (data) {
       const [episode] = await addLinkedArticleCovers(supabase, [data]);
-      return episode;
+      return resolvePublicEpisodeAudio(episode);
     }
   }
 
@@ -121,7 +120,7 @@ export async function getPodcastEpisodeForArticle(
     .maybeSingle();
   if (error || !data) return null;
   const [episode] = await addLinkedArticleCovers(supabase, [data]);
-  return episode;
+  return resolvePublicEpisodeAudio(episode);
 }
 
 // ===== Admin (voit aussi les brouillons) =====
