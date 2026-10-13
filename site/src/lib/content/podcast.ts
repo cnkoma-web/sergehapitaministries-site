@@ -67,7 +67,16 @@ export async function getPodcastEpisodes(
     .order("created_at", { ascending: false })
     .range(from, from + perPage - 1);
   if (error || !data) return { episodes: [], total: 0 };
-  return { episodes: await addLinkedArticleCovers(supabase, data), total: count ?? 0 };
+  const episodes = await addLinkedArticleCovers(supabase, data);
+  return {
+    episodes: await Promise.all(
+      episodes.map(async (episode) => ({
+        ...episode,
+        audio_url: await resolvePodcastAudioUrl(episode.audio_url),
+      }))
+    ),
+    total: count ?? 0,
+  };
 }
 
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
