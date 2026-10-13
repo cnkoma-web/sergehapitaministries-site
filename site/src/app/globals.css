@@ -4786,7 +4786,7 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
 .v2-podcast-card{display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid rgba(79,37,216,.14);border-radius:12px;background:#fff;box-shadow:0 12px 28px rgba(23,20,45,.07);}
 
 .v2-podcast-share-card{position:relative;aspect-ratio:1;display:flex;flex-direction:column;justify-content:flex-end;padding:24px;color:#fff;background:radial-gradient(circle at 82% 16%,rgba(169,133,255,.52),transparent 27%),linear-gradient(145deg,#17142d,#362267);}
-.v2-podcast-share-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;background:#1d1830;}
+.v2-podcast-share-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;background:#1d1830;}
 .v2-podcast-share-card::before{display:none;}
 .v2-podcast-share-card>span,.v2-podcast-share-card>strong,.v2-podcast-share-card>small{position:relative;}
 .v2-podcast-share-card>span{margin-bottom:9px;color:#d9ccff;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;}
@@ -4800,7 +4800,7 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
 .v2-podcast-card.rm .v2-podcast-share-card{background:radial-gradient(circle at 80% 18%,rgba(255,255,255,.16),transparent 25%),linear-gradient(145deg,#5f3aaf,#7b3fe4);}
 .v2-podcast-card.vs .v2-podcast-share-card{background:radial-gradient(circle at 82% 16%,rgba(111,80,193,.52),transparent 27%),linear-gradient(145deg,#151229,#29204d);}
 
-.v2-podcast-card-content{display:flex;flex:1;flex-direction:column;padding:20px 20px 18px;}
+.v2-podcast-card-content{display:flex;flex-direction:column;padding:14px 18px 15px;}
 /* .feed-badge (globals.css §L624) n'a pas de width:fit-content contrairement
    à son équivalent .category-badge du prototype — jamais remarqué ailleurs
    sur le site car toujours placé dans un conteneur flex en ligne
@@ -4813,8 +4813,8 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
 .v2-podcast-card-content>.feed-badge{align-self:flex-start;width:fit-content;}
 .v2-podcast-card-content h3{margin:13px 0 8px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(24px,2.1vw,30px);font-weight:500;line-height:1.05;letter-spacing:-.025em;}
 .v2-podcast-card-content h3 a:hover{color:var(--v2-violet-deep);}
-.v2-podcast-card-content>p{margin:12px 0 0;max-width:690px;color:var(--v2-muted);font-size:14px;line-height:1.52;}
-.v2-podcast-card-meta{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:12px;color:var(--v2-violet-deep);font-size:12px;font-weight:750;}
+.v2-podcast-card-content>p{margin:0;color:var(--v2-ink-soft);font-size:13.5px;font-weight:600;line-height:1.45;}
+.v2-podcast-card-meta{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:7px;color:var(--v2-violet-deep);font-size:11.5px;font-weight:750;}
 
 .v2-podcast-player-preview{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:11px;align-items:center;margin-top:18px;padding:10px;border-radius:9px;color:#fff;background:#1d1830;}
 .v2-podcast-card>.v2-podcast-player-preview{margin-top:0;border-radius:0;}
@@ -4872,7 +4872,7 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
   .v2-podcast-grid{grid-template-columns:1fr;}
   .v2-podcast-share-card{padding:20px;}
   .v2-podcast-share-card strong{max-width:290px;font-size:25px;}
-  .v2-podcast-card-content{padding:21px 19px 22px;}
+  .v2-podcast-card-content{padding:13px 16px 14px;}
   .v2-podcast-card-content h3{font-size:27px;}
   .v2-podcast-card-bottom{align-items:flex-start;flex-direction:column;}
   .podcast-share-actions{width:100%;}

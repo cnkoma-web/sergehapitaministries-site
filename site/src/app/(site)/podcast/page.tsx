@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getPodcastEpisodes, type PodcastUniverse } from "@/lib/content/podcast";
 import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
-import PodcastShareActions from "@/components/podcast/PodcastShareActions";
 import PodcastCardPlayer from "@/components/podcast/PodcastCardPlayer";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
@@ -30,8 +29,6 @@ const FILTERS: { value: PodcastUniverse | "all"; label: string }[] = [
   { value: "rm", label: ARTICLE_TYPE_LABEL.rm },
   { value: "vs", label: ARTICLE_TYPE_LABEL.vs },
 ];
-
-const SITE_URL = "https://sergehapitaministries.org";
 
 export default async function PodcastPage({
   searchParams,
@@ -87,9 +84,7 @@ export default async function PodcastPage({
           ) : (
             <div className="v2-podcast-grid">
               {episodes.map((e) => {
-                const episodeUrl = `${SITE_URL}/podcast/${e.slug}`;
                 const coverUrl = e.cover_url || e.linked_article_cover_url;
-                const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[e.universe]} : ${e.title}. ${episodeUrl}`;
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
                     <div className="v2-podcast-share-card">
@@ -106,24 +101,9 @@ export default async function PodcastPage({
                     </div>
                     <PodcastCardPlayer src={e.audio_url} title={e.title} />
                     <div className="v2-podcast-card-content">
-                      <span className={`feed-badge ${e.universe}`}>{ARTICLE_TYPE_LABEL[e.universe]}</span>
-                      <h3>
-                        <Link href={`/podcast/${e.slug}`}>{e.title}</Link>
-                      </h3>
+                      {e.theme && <p>{e.theme}</p>}
                       <div className="v2-podcast-card-meta">
                         <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
-                        {e.duration_seconds ? <span>{Math.round(e.duration_seconds / 60)} min</span> : null}
-                      </div>
-                      {e.theme && <p>{e.theme}</p>}
-                      <div className="v2-podcast-card-bottom">
-                        {e.linked_article_id ? (
-                          <Link href={`/podcast/${e.slug}`} className="v2-podcast-detail-link">
-                            Écouter l&apos;épisode →
-                          </Link>
-                        ) : (
-                          <Link href={`/podcast/${e.slug}`}>Écouter l&apos;épisode →</Link>
-                        )}
-                        <PodcastShareActions title={e.title} message={shareMessage} url={episodeUrl} />
                       </div>
                     </div>
                   </article>
