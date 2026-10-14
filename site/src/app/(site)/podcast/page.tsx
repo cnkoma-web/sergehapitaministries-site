@@ -92,7 +92,11 @@ export default async function PodcastPage({
                 const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[e.universe]} : ${e.title}. ${episodeUrl}`;
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
-                    <div className="v2-podcast-share-card">
+                    <Link
+                      href={`/podcast/${e.slug}`}
+                      className="v2-podcast-share-card"
+                      aria-label={`Ouvrir la page d’écoute de ${e.title}`}
+                    >
                       {coverUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element -- URL publique issue du CMS.
                         <img src={coverUrl} alt={`Pochette de ${e.title}`} />
@@ -103,7 +107,7 @@ export default async function PodcastPage({
                           <small>Serge Hapita Ministries</small>
                         </>
                       )}
-                    </div>
+                    </Link>
                     <div className="v2-podcast-audio-panel">
                       <PodcastCardPlayer src={e.audio_url} title={e.title} />
                       <div className="v2-podcast-card-content">
