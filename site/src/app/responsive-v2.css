@@ -1181,3 +1181,42 @@
     height:16px;
   }
 }
+
+
+/* Hub Podcast mobile — panneaux alignés et déclencheur rééquilibré. */
+@media (max-width:720px){
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel{
+    display:flex;
+    height:144px;
+    flex-direction:column;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .v2-podcast-card-content{
+    flex:1;
+    align-content:start;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .v2-podcast-card-copy>p{
+    margin-top:7px;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-player-preview{
+    grid-template-columns:24px minmax(0,1fr);
+    gap:7px;
+    min-height:34px;
+    flex:0 0 34px;
+    padding:6px 8px;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-play{
+    width:24px;
+    height:22px;
+    font-size:15px;
+    font-weight:900;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-progress{height:3px;}
+  .v2-podcast-page .v2-podcast-library .v2-podcast-progress::-webkit-slider-thumb{
+    width:10px;
+    height:10px;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-progress::-moz-range-thumb{
+    width:10px;
+    height:10px;
+  }
+}
