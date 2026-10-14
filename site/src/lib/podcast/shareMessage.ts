@@ -31,7 +31,8 @@ export function buildPodcastShareMessage({
     `*S.H.M* t’invite à ${invitation} :`,
     "",
     `*${label} du ${formatPodcastDate(episodeDate)}* :`,
-    `*${title}*`,
+    "",
+    `_*${title}*_`,
   ];
 
   if (universe === "jc") {
