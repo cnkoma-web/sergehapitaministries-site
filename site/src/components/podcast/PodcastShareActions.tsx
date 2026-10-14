@@ -19,7 +19,7 @@ export default function PodcastShareActions({ title, message, url }: { title: st
     }
 
     try {
-      await navigator.clipboard.writeText(message);
+      await navigator.clipboard.writeText(`${message}\n${url}`);
       setFeedback("Lien copié !");
       setTimeout(() => setFeedback(null), 2000);
     } catch {

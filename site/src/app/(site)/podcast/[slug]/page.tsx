@@ -5,6 +5,7 @@ import { getPodcastEpisodeBySlug } from "@/lib/content/podcast";
 import { getArticlesByIds, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import PodcastImmersivePlayer from "@/components/podcast/PodcastImmersivePlayer";
 import PodcastShareActions from "@/components/podcast/PodcastShareActions";
+import { buildPodcastShareMessage, formatPodcastDate } from "@/lib/podcast/shareMessage";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -40,34 +41,44 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function PodcastEpisodePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function PodcastEpisodePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ ecouter?: string }>;
+}) {
+  const [{ slug }, { ecouter }] = await Promise.all([params, searchParams]);
   const episode = await getPodcastEpisodeBySlug(slug);
   if (!episode) notFound();
 
   const [linkedArticle] = episode.linked_article_id ? await getArticlesByIds([episode.linked_article_id]) : [null];
   const episodeUrl = `${SITE_URL}/podcast/${episode.slug}`;
-  const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[episode.universe]} : ${episode.title}. ${episodeUrl}`;
-  const coverUrl = episode.cover_url || episode.linked_article_cover_url;
-  const formattedDate = new Date(episode.episode_date).toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+  const sharedEpisodeUrl = `${episodeUrl}?ecouter=1`;
+  const shareMessage = buildPodcastShareMessage({
+    universe: episode.universe,
+    title: episode.title,
+    episodeDate: episode.episode_date,
+    theme: episode.theme,
+    verseReference: linkedArticle?.verse_reference,
   });
+  const listenMode = ecouter === "1";
+  const coverUrl = episode.cover_url || episode.linked_article_cover_url;
+  const formattedDate = formatPodcastDate(episode.episode_date);
 
   return (
-    <div className={`v2-podcast-page v2-podcast-listening-page ${episode.universe}`}>
+    <div className={`v2-podcast-page v2-podcast-listening-page ${episode.universe}${listenMode ? " is-share-listen-mode" : ""}`}>
       <main className="v2-podcast-listening-stage">
         <div className="v2-wrap v2-podcast-listening-shell">
           <div className="v2-podcast-listening-topbar">
             <Link href="/podcast" className="v2-podcast-listening-back">
               <span aria-hidden="true">←</span> Bibliothèque audio
             </Link>
-            <PodcastShareActions title={episode.title} message={shareMessage} url={episodeUrl} />
+            <PodcastShareActions title={episode.title} message={shareMessage} url={sharedEpisodeUrl} />
           </div>
 
           <div className="v2-podcast-listening-layout">
-            <PodcastImmersivePlayer src={episode.audio_url} title={episode.title} coverUrl={coverUrl} />
+            <PodcastImmersivePlayer src={episode.audio_url} title={episode.title} coverUrl={coverUrl} autoPlay={listenMode} />
 
             <div className="v2-podcast-listening-copy">
               <div className="v2-podcast-listening-meta">

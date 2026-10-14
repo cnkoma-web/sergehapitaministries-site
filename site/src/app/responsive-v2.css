@@ -938,3 +938,40 @@
   .v2-podcast-listening-copy>p{margin-top:13px;font-size:14px;line-height:1.5;}
   .v2-podcast-written-link{margin-top:20px;}
 }
+
+
+/* Entrée depuis un lien partagé : écran d’écoute intégral sur tablette et mobile. */
+.v2-immersive-play-prompt{
+  margin:18px 0 -8px;
+  color:rgba(255,255,255,.86);
+  font-size:13px;
+  font-weight:750;
+  text-align:center;
+}
+@media (max-width:1024px){
+  .v2-podcast-listening-page.is-share-listen-mode .v2-podcast-listening-stage{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    min-height:100svh;
+    padding:18px 0 34px;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+  .v2-podcast-listening-page.is-share-listen-mode .v2-podcast-listening-shell{
+    display:flex;
+    min-height:calc(100svh - 52px);
+    flex-direction:column;
+  }
+  .v2-podcast-listening-page.is-share-listen-mode .v2-podcast-listening-topbar{
+    margin-bottom:14px;
+  }
+  .v2-podcast-listening-page.is-share-listen-mode .v2-podcast-listening-layout{
+    width:100%;
+    flex:1;
+    align-content:center;
+  }
+  .v2-podcast-listening-page.is-share-listen-mode .v2-immersive-artwork{
+    width:min(72vw,390px);
+  }
+}
