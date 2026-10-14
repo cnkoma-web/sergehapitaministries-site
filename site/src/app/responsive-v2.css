@@ -1130,3 +1130,16 @@
     -webkit-line-clamp:4;
   }
 }
+
+
+/* Hub Podcast mobile — partage sous le contenu, sous-titre pleine largeur. */
+@media (max-width:720px){
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .v2-podcast-card-content{
+    grid-template-columns:minmax(0,1fr);
+    gap:7px;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .podcast-share-actions{
+    justify-self:center;
+    margin-top:1px;
+  }
+}
