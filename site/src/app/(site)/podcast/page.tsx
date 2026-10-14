@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPodcastEpisodes, type PodcastUniverse } from "@/lib/content/podcast";
-import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
+import { ARTICLE_TYPE_LABEL, getArticlesByIds } from "@/lib/content/articles";
 import PodcastCardPlayer from "@/components/podcast/PodcastCardPlayer";
 import PodcastShareActions from "@/components/podcast/PodcastShareActions";
+import { buildPodcastShareMessage } from "@/lib/podcast/shareMessage";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -45,6 +46,11 @@ export default async function PodcastPage({
     : undefined;
 
   const { episodes, total } = await getPodcastEpisodes(page, PER_PAGE, universe);
+  const linkedArticleIds = episodes
+    .map((episode) => episode.linked_article_id)
+    .filter((id): id is string => Boolean(id));
+  const linkedArticles = await getArticlesByIds(linkedArticleIds);
+  const linkedArticlesById = new Map(linkedArticles.map((article) => [article.id, article]));
 
   return (
     // V2 (Lot 9, 11/09) — reproduit prototype-html/podcast/index.html §
@@ -89,7 +95,15 @@ export default async function PodcastPage({
               {episodes.map((e) => {
                 const coverUrl = e.cover_url || e.linked_article_cover_url;
                 const episodeUrl = `${SITE_URL}/podcast/${e.slug}`;
-                const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[e.universe]} : ${e.title}. ${episodeUrl}`;
+                const sharedEpisodeUrl = `${episodeUrl}?ecouter=1`;
+                const linkedArticle = e.linked_article_id ? linkedArticlesById.get(e.linked_article_id) : undefined;
+                const shareMessage = buildPodcastShareMessage({
+                  universe: e.universe,
+                  title: e.title,
+                  episodeDate: e.episode_date,
+                  theme: e.theme,
+                  verseReference: linkedArticle?.verse_reference,
+                });
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
                     <Link
@@ -117,7 +131,7 @@ export default async function PodcastPage({
                           </div>
                           {e.theme && <p>{e.theme}</p>}
                         </div>
-                        <PodcastShareActions title={e.title} message={shareMessage} url={episodeUrl} />
+                        <PodcastShareActions title={e.title} message={shareMessage} url={sharedEpisodeUrl} />
                       </div>
                     </div>
                   </article>
