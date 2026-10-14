@@ -1298,3 +1298,25 @@
     background:var(--v2-violet-deep);
   }
 }
+
+
+/* Page Podcast dédiée — ambiance propre à la couverture de chaque épisode. */
+.v2-podcast-listening-page.has-cover-environment .v2-podcast-listening-stage::before{
+  content:"";
+  position:absolute;
+  inset:-48px;
+  z-index:0;
+  background-image:
+    linear-gradient(145deg,rgba(13,11,28,.46),rgba(13,11,28,.7)),
+    var(--podcast-cover-environment);
+  background-position:center;
+  background-size:cover;
+  filter:blur(28px) saturate(.9);
+  transform:scale(1.1);
+  pointer-events:none;
+}
+.v2-podcast-page .v2-podcast-card-copy>p a{
+  color:inherit;
+  text-decoration:none;
+}
+.v2-podcast-page .v2-podcast-card-copy>p a:hover{color:var(--v2-violet-deep);}
