@@ -129,7 +129,9 @@ export default async function PodcastPage({
                           <div className="v2-podcast-card-meta">
                             <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
                           </div>
-                          {e.theme && <p>{e.theme}</p>}
+                          {e.theme && (
+                            <p><Link href={`/podcast/${e.slug}`}>{e.theme}</Link></p>
+                          )}
                         </div>
                         <PodcastShareActions title={e.title} message={shareMessage} url={sharedEpisodeUrl} />
                       </div>
