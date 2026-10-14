@@ -12,29 +12,36 @@ export default function PodcastImmersivePlayer({
   src,
   title,
   coverUrl,
+  autoPlay = false,
 }: {
   src: string;
   title: string;
   coverUrl: string | null;
+  autoPlay?: boolean;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !autoPlay) return;
     void audio.play().catch(() => {
-      // Les navigateurs mobiles peuvent bloquer l'autoplay avec son.
-      // Le grand bouton central reste alors immédiatement disponible.
+      // Les navigateurs mobiles bloquent souvent l’autoplay sonore.
+      // L’écran d’écoute reste ouvert avec une invitation explicite à lancer l’audio.
+      setAutoplayBlocked(true);
     });
-  }, []);
+  }, [autoPlay]);
 
   async function togglePlayback() {
     const audio = audioRef.current;
     if (!audio) return;
-    if (audio.paused) await audio.play();
+    if (audio.paused) {
+      await audio.play();
+      setAutoplayBlocked(false);
+    }
     else audio.pause();
   }
 
@@ -47,7 +54,7 @@ export default function PodcastImmersivePlayer({
   }
 
   return (
-    <div className="v2-immersive-player">
+    <div className={`v2-immersive-player${autoplayBlocked ? " is-awaiting-play" : ""}`}>
       <audio
         ref={audioRef}
         src={src}
@@ -67,6 +74,8 @@ export default function PodcastImmersivePlayer({
           <span aria-hidden="true">♪</span>
         )}
       </div>
+
+      {autoplayBlocked && <p className="v2-immersive-play-prompt">Appuie sur Lecture pour écouter</p>}
 
       <div className="v2-immersive-main-controls">
         <button type="button" className="v2-immersive-skip" onClick={() => seekBy(-10)} aria-label="Reculer de 10 secondes">
