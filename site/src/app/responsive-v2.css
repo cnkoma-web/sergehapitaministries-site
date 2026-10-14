@@ -1318,3 +1318,59 @@
   text-decoration:none;
 }
 .v2-podcast-page .v2-podcast-card-copy>p a:hover{color:var(--v2-violet-deep);}
+
+
+/* Podcast — menu de partage du site sur ordinateur. */
+.podcast-share-actions{position:relative;}
+.podcast-share-menu{
+  position:absolute;
+  top:calc(100% + 10px);
+  right:0;
+  z-index:30;
+  display:grid;
+  width:190px;
+  padding:7px;
+  border:1px solid rgba(38,29,68,.14);
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 18px 44px rgba(22,16,43,.2);
+}
+.podcast-share-menu::before{
+  content:"";
+  position:absolute;
+  top:-6px;
+  right:14px;
+  width:11px;
+  height:11px;
+  border-top:1px solid rgba(38,29,68,.14);
+  border-left:1px solid rgba(38,29,68,.14);
+  background:#fff;
+  transform:rotate(45deg);
+}
+.podcast-share-menu a,
+.podcast-share-menu button{
+  position:relative;
+  z-index:1;
+  display:flex;
+  width:100%;
+  min-height:39px;
+  align-items:center;
+  padding:8px 11px;
+  border:0;
+  border-radius:8px;
+  color:var(--v2-ink);
+  background:transparent;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  text-align:left;
+  cursor:pointer;
+}
+.podcast-share-menu a:hover,
+.podcast-share-menu button:hover{
+  color:var(--v2-violet-deep);
+  background:rgba(101,56,202,.08);
+}
+@media (max-width:1024px), (pointer:coarse){
+  .podcast-share-menu{display:none;}
+}
