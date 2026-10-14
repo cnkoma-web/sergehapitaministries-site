@@ -826,9 +826,26 @@
   position:relative;
   width:64px;
   height:64px;
-  font-size:39px;
 }
-.v2-immersive-skip small{position:absolute;inset:24px 0 auto;font-size:11px;font-weight:800;}
+.v2-immersive-skip svg{
+  width:52px;
+  height:52px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2.6;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v2-immersive-skip small{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding-top:1px;
+  font-size:10px;
+  font-weight:850;
+  line-height:1;
+}
 .v2-immersive-progress{
   width:100%;
   height:4px;
@@ -931,10 +948,15 @@
     margin:20px 0 17px;
   }
   .v2-immersive-toggle{width:76px;height:76px;font-size:23px;}
-  .v2-immersive-skip{width:54px;height:54px;font-size:34px;}
-  .v2-immersive-skip small{inset:21px 0 auto;font-size:10px;}
+  .v2-immersive-skip{width:54px;height:54px;}
+  .v2-immersive-skip svg{width:46px;height:46px;}
+  .v2-immersive-skip small{font-size:9px;}
   .v2-podcast-listening-copy{text-align:left;}
-  .v2-podcast-listening-copy h1{margin-top:12px;font-size:clamp(32px,9vw,46px);}
+  .v2-podcast-listening-copy h1{
+    margin-top:12px;
+    font-size:clamp(30px,8.5vw,44px);
+    line-height:1.1;
+  }
   .v2-podcast-listening-copy>p{margin-top:13px;font-size:14px;line-height:1.5;}
   .v2-podcast-written-link{margin-top:20px;}
 }
