@@ -1143,3 +1143,41 @@
     margin-top:1px;
   }
 }
+
+
+/* Hub Podcast mobile — icône de partage hors du panneau sombre. */
+@media (max-width:720px){
+  .v2-podcast-page .v2-podcast-library .v2-podcast-card{
+    position:relative;
+    padding-bottom:30px;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel{overflow:visible;}
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .podcast-share-actions{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    width:26px;
+    margin:0;
+    transform:translateX(-50%);
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .podcast-share-actions button{
+    width:26px;
+    min-width:26px;
+    height:26px;
+    min-height:26px;
+    flex-basis:26px;
+    padding:0;
+    border:0;
+    color:var(--v2-violet-deep);
+    background:transparent;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .podcast-share-actions button:hover{
+    color:var(--v2-violet);
+    border:0;
+    background:transparent;
+  }
+  .v2-podcast-page .v2-podcast-library .v2-podcast-audio-panel .podcast-share-actions svg{
+    width:16px;
+    height:16px;
+  }
+}
