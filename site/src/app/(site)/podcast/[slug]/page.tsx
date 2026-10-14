@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPodcastEpisodeBySlug } from "@/lib/content/podcast";
@@ -65,9 +66,15 @@ export default async function PodcastEpisodePage({
   const listenMode = ecouter === "1";
   const coverUrl = episode.cover_url || episode.linked_article_cover_url;
   const formattedDate = formatPodcastDate(episode.episode_date);
+  const pageStyle = coverUrl
+    ? ({ "--podcast-cover-environment": `url("${coverUrl}")` } as CSSProperties)
+    : undefined;
 
   return (
-    <div className={`v2-podcast-page v2-podcast-listening-page ${episode.universe}${listenMode ? " is-share-listen-mode" : ""}`}>
+    <div
+      className={`v2-podcast-page v2-podcast-listening-page ${episode.universe}${coverUrl ? " has-cover-environment" : ""}${listenMode ? " is-share-listen-mode" : ""}`}
+      style={pageStyle}
+    >
       <main className="v2-podcast-listening-stage">
         <div className="v2-wrap v2-podcast-listening-shell">
           <div className="v2-podcast-listening-topbar">
