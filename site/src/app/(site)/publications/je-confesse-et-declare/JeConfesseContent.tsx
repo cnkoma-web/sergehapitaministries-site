@@ -159,23 +159,19 @@ export default async function JeConfesseContent({
         </div>
       </section>
 
-      <section className="v2-jc-audio" aria-label="Version audio de la proclamation">
-        <div className="v2-wrap v2-jc-audio-inner">
-          {podcastEpisode ? (
+      {podcastEpisode && (
+        <section className="v2-jc-audio" aria-label="Version audio de la proclamation">
+          <div className="v2-wrap v2-jc-audio-inner">
             <PodcastInlinePlayButton src={podcastEpisode.audio_url} title={podcastEpisode.title} />
-          ) : (
-            <span className="v2-jc-audio-icon" aria-hidden="true">▶</span>
-          )}
-          <div>
-            <p>Version audio</p>
-            <h2>Écouter cette proclamation</h2>
-            <span>Retrouve cette proclamation dans la série Je Confesse.</span>
+            <div>
+              <p>Version audio</p>
+              <h2>Écouter cette proclamation</h2>
+              <span>Retrouve cette proclamation dans la série Je Confesse.</span>
+            </div>
+            <Link href={`/podcast/${podcastEpisode.slug}`}>Écouter le podcast →</Link>
           </div>
-          <Link href={podcastEpisode ? `/podcast/${podcastEpisode.slug}` : "/podcast?univers=jc"}>
-            {podcastEpisode ? "Écouter le podcast →" : "Découvrir la série →"}
-          </Link>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="share-zone">
         {/* Reprise Phase B renforcée (13/09) : même correction que Rosée
