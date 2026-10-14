@@ -104,15 +104,17 @@ export default async function PodcastPage({
                         </>
                       )}
                     </div>
-                    <PodcastCardPlayer src={e.audio_url} title={e.title} />
-                    <div className="v2-podcast-card-content">
-                      <div className="v2-podcast-card-copy">
-                        {e.theme && <p>{e.theme}</p>}
-                        <div className="v2-podcast-card-meta">
-                          <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
+                    <div className="v2-podcast-audio-panel">
+                      <PodcastCardPlayer src={e.audio_url} title={e.title} />
+                      <div className="v2-podcast-card-content">
+                        <div className="v2-podcast-card-copy">
+                          <div className="v2-podcast-card-meta">
+                            <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
+                          </div>
+                          {e.theme && <p>{e.theme}</p>}
                         </div>
+                        <PodcastShareActions title={e.title} message={shareMessage} url={episodeUrl} />
                       </div>
-                      <PodcastShareActions title={e.title} message={shareMessage} url={episodeUrl} />
                     </div>
                   </article>
                 );
