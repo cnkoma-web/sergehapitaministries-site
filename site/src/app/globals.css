@@ -5160,3 +5160,68 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
     transform:none;
   }
 }
+
+
+/* Podcast mobile — correctif du 14/10/2026
+   En-tête compact avec catégories défilantes, puis informations de chaque
+   épisode empilées afin d'éviter tout écrasement ou chevauchement. */
+@media (max-width:720px){
+  .v2-podcast-hero{padding:28px 0 22px;}
+  .v2-podcast-hero .v2-eyebrow{margin:0;font-size:12px;}
+  .v2-podcast-hero h1{margin-top:8px;font-size:40px;line-height:1;}
+  .v2-podcast-hero-inner>p{margin-top:10px;font-family:var(--v2-sans);font-size:14px;line-height:1.45;}
+
+  .v2-podcast-filters{
+    display:flex;
+    flex-wrap:nowrap;
+    gap:8px;
+    margin-top:16px;
+    padding:0 0 4px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .v2-podcast-filters::-webkit-scrollbar{display:none;}
+  .v2-podcast-filters a{
+    flex:0 0 auto;
+    min-height:32px;
+    padding:6px 12px;
+    font-size:10px;
+    white-space:nowrap;
+  }
+
+  .v2-podcast-library{padding-top:36px;}
+  .v2-podcast-library-head{margin-bottom:24px;}
+  .v2-podcast-library-head h2{font-size:36px;}
+  .v2-podcast-library-head p{margin-top:9px;font-size:13px;line-height:1.45;}
+
+  .v2-podcast-card-content{
+    display:flex;
+    align-items:stretch;
+    flex-direction:column;
+    gap:12px;
+    padding:18px;
+  }
+  .v2-podcast-card-copy{width:100%;min-width:0;}
+  .v2-podcast-card-copy>p{
+    width:100%;
+    overflow-wrap:anywhere;
+    font-size:15px;
+    line-height:1.5;
+  }
+  .v2-podcast-card-meta{margin-top:9px;font-size:12px;}
+  .v2-podcast-card-content>.podcast-share-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:100%;
+    padding-top:12px;
+    border-top:1px solid rgba(79,37,216,.12);
+  }
+  .v2-podcast-card-content>.podcast-share-actions a,
+  .v2-podcast-card-content>.podcast-share-actions button{
+    width:100%;
+    min-width:0;
+    min-height:42px;
+  }
+}
