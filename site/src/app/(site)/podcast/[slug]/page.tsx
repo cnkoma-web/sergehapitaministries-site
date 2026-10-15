@@ -12,6 +12,14 @@ import Footer from "@/components/layout/Footer";
 
 const SITE_URL = "https://sergehapitaministries.org";
 
+/** Les robots sociaux téléchargent cette URL sans passer par le lecteur.
+ * On leur sert une variante 1200 px, nettement plus légère que les PNG
+ * originaux parfois proches de 3 Mo, tout en gardant la pochette originale
+ * intacte dans la page d\'écoute. */
+function socialCoverUrl(source: string): string {
+  return `${SITE_URL}/_next/image?url=${encodeURIComponent(source)}&w=1200&q=72`;
+}
+
 function linkedContentHref(type: string, slug: string, articleDate: string): string {
   if (type === "rm") return `/rosee-matinale/${articleDate}`;
   if (type === "jc") return "/publications/je-confesse-et-declare";
@@ -24,7 +32,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!episode) return { title: "Podcast | Serge Hapita Ministries" };
   const title = `${episode.title} | Podcast | Serge Hapita Ministries`;
   const description = episode.theme || `${ARTICLE_TYPE_LABEL[episode.universe]} à écouter — Serge Hapita Ministries.`;
-  const image = episode.share_image_url || episode.cover_url || episode.linked_article_cover_url || undefined;
+  const originalImage = episode.share_image_url || episode.cover_url || episode.linked_article_cover_url || undefined;
+  const image = originalImage ? socialCoverUrl(originalImage) : undefined;
   return {
     title,
     description,
@@ -36,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url: `/podcast/${episode.slug}`,
       siteName: "Serge Hapita Ministries",
       locale: "fr_FR",
-      images: image ? [{ url: image }] : undefined,
+      images: image ? [{ url: image, width: 1200, height: 1200, alt: `Pochette de ${episode.title}` }] : undefined,
     },
     twitter: { card: "summary_large_image", title, description, images: image ? [image] : undefined },
   };
