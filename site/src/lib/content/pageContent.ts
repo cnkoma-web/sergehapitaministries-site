@@ -63,7 +63,7 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
     description: "Présentation de l’univers Que dit la Bible ?",
     fields: [
       { key: "title", label: "Titre", kind: "text", defaultValue: "Que dit la Bible ?" },
-      { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Des articles pour revenir au texte, comprendre ce que Dieu a réellement dit et bâtir une foi fondée sur la vérité." },
+      { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Un examen quotidien des Écritures, dont le contenu et la puissance permettent de construire la véritable image de Dieu dans la vie de ceux qui nous suivent." },
       { key: "empty_state", label: "Message si aucun article", kind: "text", defaultValue: "Les premiers articles arrivent bientôt." },
     ],
   },
@@ -74,7 +74,8 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
     description: "Présentation de l’univers La Vie Supérieure.",
     fields: [
       { key: "title", label: "Titre", kind: "text", defaultValue: "Les réalités de la vie en Christ" },
-      { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Des enseignements pour comprendre la vie reçue en Christ et apprendre à marcher dans ses réalités." },
+      { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Des enseignements approfondis consacrés à la nouvelle création, la vie de Dieu, la justice, l'identité en Christ, la connaissance spirituelle, la sagesse et l'œuvre du Saint-Esprit." },
+      { key: "motto", label: "Phrase d’accroche", kind: "textarea", defaultValue: "Une connaissance destinée à devenir l'expérience de la vie en Christ." },
       { key: "empty_state", label: "Message si aucun enseignement", kind: "text", defaultValue: "Les premiers enseignements arrivent bientôt." },
     ],
   },
@@ -106,8 +107,10 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
     publicPath: "/livres",
     description: "Présentation du catalogue de livres.",
     fields: [
+      { key: "eyebrow", label: "Sur-titre", kind: "text", defaultValue: "amDG Éditions du Royaume" },
       { key: "title", label: "Titre", kind: "text", defaultValue: "Livres" },
       { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Les ouvrages de Serge publiés sous amDG Éditions." },
+      { key: "catalog_intro", label: "Présentation du catalogue", kind: "textarea", defaultValue: "Chaque livre est un compagnon de route, un outil de transformation, un appel à vivre selon la justice du Royaume." },
       { key: "empty_state", label: "Message si aucun livre", kind: "text", defaultValue: "Le catalogue est en cours de préparation." },
     ],
   },
@@ -118,7 +121,7 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
     description: "Présentation et introduction de la bibliothèque Podcast.",
     fields: [
       { key: "title", label: "Titre", kind: "text", defaultValue: "Podcast" },
-      { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Écoutez les enseignements et proclamations de Serge Hapita Ministries." },
+      { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Je Confesse, Que dit la Bible ?, Rosée Matinale et La Vie Supérieure à écouter." },
       { key: "library_title", label: "Titre de la bibliothèque", kind: "text", defaultValue: "La bibliothèque audio" },
       { key: "library_intro", label: "Introduction de la bibliothèque", kind: "textarea", defaultValue: "Choisis un univers, retrouve un thème et lance l’écoute." },
       { key: "empty_state", label: "Message si aucun épisode", kind: "text", defaultValue: "Les premiers épisodes arrivent bientôt." },
