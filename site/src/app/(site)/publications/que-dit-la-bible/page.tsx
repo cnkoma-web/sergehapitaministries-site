@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getArticlesFeed } from "@/lib/content/articles";
+import { getPageContent } from "@/lib/content/pageContent";
 import CategoryHubFeed from "@/components/articles/CategoryHubFeed";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
@@ -29,7 +30,10 @@ export const metadata: Metadata = {
 export default async function QueDitLaBiblePage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { articles, total } = await getArticlesFeed(["qdlb"], page, PER_PAGE);
+  const [{ articles, total }, pageContent] = await Promise.all([
+    getArticlesFeed(["qdlb"], page, PER_PAGE),
+    getPageContent("que-dit-la-bible"),
+  ]);
 
   return (
     <div className="v2-category-hub-page">
@@ -37,8 +41,8 @@ export default async function QueDitLaBiblePage({ searchParams }: { searchParams
         <div className="v2-wrap v2-category-hub-hero-inner">
           <div className="v2-category-hub-mark">01</div>
           <div>
-            <h1>Que dit la Bible ?</h1>
-            <p>{description}</p>
+            <h1>{pageContent.title}</h1>
+            <p>{pageContent.intro}</p>
           </div>
         </div>
       </section>
@@ -46,7 +50,7 @@ export default async function QueDitLaBiblePage({ searchParams }: { searchParams
       <section className="v2-category-hub-feed">
         <div className="v2-wrap">
           {articles.length === 0 ? (
-            <p className="empty-state">Les premiers articles arrivent bientôt.</p>
+            <p className="empty-state">{pageContent.empty_state}</p>
           ) : (
             <CategoryHubFeed articles={articles} type="qdlb" showFeatured={page === 1} />
           )}
