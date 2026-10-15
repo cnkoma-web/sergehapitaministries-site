@@ -111,9 +111,12 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
     update.toc_keywords = parseLines(String(formData.get("toc_keywords") ?? ""));
   }
 
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), type);
+  update.podcast_episode_id = podcastEpisodeId;
   if (status) update.status = status;
 
   await supabase.from("articles").update(update).eq("id", id);
+  await syncArticlePodcastLink(supabase, id, podcastEpisodeId, type);
   await setArticleCategories(id, formData.getAll("category_ids").map(String).filter(Boolean));
 
   revalidatePath(`/admin/publications/${id}`);
@@ -199,7 +202,8 @@ export async function publishRosee(formData: FormData) {
 
   const submittedTitle = String(formData.get("title") ?? "").trim();
   const autoTitle = `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
-  const { error } = await supabase.from("articles").insert({
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "rm");
+  const { data: createdArticle, error } = await supabase.from("articles").insert({
     type: "rm",
     slug: `rm-${article_date}`,
     title: submittedTitle || autoTitle,
@@ -212,12 +216,14 @@ export async function publishRosee(formData: FormData) {
     access: "free",
     status: "published",
     reading_time_minutes: body ? computeReadingTime(body) : null,
-  });
+    podcast_episode_id: podcastEpisodeId,
+  }).select("id").single();
 
-  if (error) {
+  if (error || !createdArticle) {
     console.error("[admin/rosee-matinale] publish failed", error);
     redirect("/admin/rosee-matinale?error=publish");
   }
+  await syncArticlePodcastLink(supabase, createdArticle.id, podcastEpisodeId, "rm");
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
@@ -233,6 +239,7 @@ export async function updateRoseeEntry(formData: FormData) {
 
   const body = String(formData.get("body") ?? "").trim();
   const article_date = String(formData.get("article_date") ?? "") || undefined;
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "rm");
   const submittedTitle = String(formData.get("title") ?? "").trim();
   const autoTitle = article_date
     ? `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
@@ -250,6 +257,7 @@ export async function updateRoseeEntry(formData: FormData) {
       seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
       status: String(formData.get("status") ?? "published"),
       reading_time_minutes: body ? computeReadingTime(body) : null,
+      podcast_episode_id: podcastEpisodeId,
     })
     .eq("id", id);
 
@@ -257,6 +265,7 @@ export async function updateRoseeEntry(formData: FormData) {
     console.error("[admin/rosee-matinale] update failed", error);
     redirect(`/admin/rosee-matinale/${id}?error=save`);
   }
+  await syncArticlePodcastLink(supabase, id, podcastEpisodeId, "rm");
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
@@ -288,9 +297,12 @@ export async function deleteRoseeEntry(formData: FormData) {
 // La signature de clôture (Romains 10:10) reste un réglage global.
 // Toujours pas de champ "Titre" (titre reconstruit depuis la date). =====
 
-async function getConfessionPodcastId(
+type PodcastUniverse = "qdlb" | "vs" | "rm" | "jc";
+
+async function getArticlePodcastId(
   supabase: Awaited<ReturnType<typeof createClient>>,
-  rawValue: FormDataEntryValue | null
+  rawValue: FormDataEntryValue | null,
+  universe: PodcastUniverse
 ): Promise<string | null> {
   const id = String(rawValue ?? "").trim();
   if (!id) return null;
@@ -299,16 +311,17 @@ async function getConfessionPodcastId(
     .from("podcast_episodes")
     .select("id")
     .eq("id", id)
-    .eq("universe", "jc")
+    .eq("universe", universe)
     .maybeSingle();
-  if (error || !data) throw error ?? new Error("Épisode Je Confesse introuvable");
+  if (error || !data) throw error ?? new Error(`Épisode ${universe} introuvable`);
   return data.id;
 }
 
-async function syncConfessionPodcastLink(
+async function syncArticlePodcastLink(
   supabase: Awaited<ReturnType<typeof createClient>>,
   articleId: string,
-  podcastEpisodeId: string | null
+  podcastEpisodeId: string | null,
+  universe: PodcastUniverse
 ) {
   const { error: detachError } = await supabase
     .from("podcast_episodes")
@@ -329,7 +342,7 @@ async function syncConfessionPodcastLink(
     .from("podcast_episodes")
     .update({ linked_article_id: articleId })
     .eq("id", podcastEpisodeId)
-    .eq("universe", "jc");
+    .eq("universe", universe);
   if (linkError) throw linkError;
 }
 
@@ -341,7 +354,7 @@ export async function publishConfession(formData: FormData) {
   const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
   if (!title || !verse_reference || !verse_text || !body) redirect("/admin/je-confesse?error=missing-fields");
-  const podcastEpisodeId = await getConfessionPodcastId(supabase, formData.get("podcast_episode_id"));
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "jc");
 
   const { data: createdArticle, error } = await supabase.from("articles").insert({
     type: "jc",
@@ -365,7 +378,7 @@ export async function publishConfession(formData: FormData) {
     redirect("/admin/je-confesse?error=publish");
   }
 
-  await syncConfessionPodcastLink(supabase, createdArticle.id, podcastEpisodeId);
+  await syncArticlePodcastLink(supabase, createdArticle.id, podcastEpisodeId, "jc");
 
   revalidatePath("/admin/je-confesse");
   revalidatePath("/publications/je-confesse-et-declare");
@@ -386,7 +399,7 @@ export async function updateConfessionEntry(formData: FormData) {
   }
 
   const article_date = String(formData.get("article_date") ?? "") || undefined;
-  const podcastEpisodeId = await getConfessionPodcastId(supabase, formData.get("podcast_episode_id"));
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "jc");
 
   const { error } = await supabase
     .from("articles")
@@ -410,7 +423,7 @@ export async function updateConfessionEntry(formData: FormData) {
     redirect(`/admin/je-confesse/${id}?error=save`);
   }
 
-  await syncConfessionPodcastLink(supabase, id, podcastEpisodeId);
+  await syncArticlePodcastLink(supabase, id, podcastEpisodeId, "jc");
 
   revalidatePath("/admin/je-confesse");
   revalidatePath("/publications/je-confesse-et-declare");
