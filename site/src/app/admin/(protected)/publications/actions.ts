@@ -288,6 +288,51 @@ export async function deleteRoseeEntry(formData: FormData) {
 // La signature de clôture (Romains 10:10) reste un réglage global.
 // Toujours pas de champ "Titre" (titre reconstruit depuis la date). =====
 
+async function getConfessionPodcastId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  rawValue: FormDataEntryValue | null
+): Promise<string | null> {
+  const id = String(rawValue ?? "").trim();
+  if (!id) return null;
+
+  const { data, error } = await supabase
+    .from("podcast_episodes")
+    .select("id")
+    .eq("id", id)
+    .eq("universe", "jc")
+    .maybeSingle();
+  if (error || !data) throw error ?? new Error("Épisode Je Confesse introuvable");
+  return data.id;
+}
+
+async function syncConfessionPodcastLink(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  articleId: string,
+  podcastEpisodeId: string | null
+) {
+  const { error: detachError } = await supabase
+    .from("podcast_episodes")
+    .update({ linked_article_id: null })
+    .eq("linked_article_id", articleId);
+  if (detachError) throw detachError;
+
+  if (!podcastEpisodeId) return;
+
+  const { error: clearOtherArticleError } = await supabase
+    .from("articles")
+    .update({ podcast_episode_id: null })
+    .eq("podcast_episode_id", podcastEpisodeId)
+    .neq("id", articleId);
+  if (clearOtherArticleError) throw clearOtherArticleError;
+
+  const { error: linkError } = await supabase
+    .from("podcast_episodes")
+    .update({ linked_article_id: articleId })
+    .eq("id", podcastEpisodeId)
+    .eq("universe", "jc");
+  if (linkError) throw linkError;
+}
+
 export async function publishConfession(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
@@ -296,8 +341,9 @@ export async function publishConfession(formData: FormData) {
   const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
   if (!title || !verse_reference || !verse_text || !body) redirect("/admin/je-confesse?error=missing-fields");
+  const podcastEpisodeId = await getConfessionPodcastId(supabase, formData.get("podcast_episode_id"));
 
-  const { error } = await supabase.from("articles").insert({
+  const { data: createdArticle, error } = await supabase.from("articles").insert({
     type: "jc",
     slug: `jc-${article_date}`,
     title,
@@ -311,12 +357,15 @@ export async function publishConfession(formData: FormData) {
     access: "free",
     status: "published",
     reading_time_minutes: computeReadingTime(body),
-  });
+    podcast_episode_id: podcastEpisodeId,
+  }).select("id").single();
 
-  if (error) {
+  if (error || !createdArticle) {
     console.error("[admin/je-confesse] publish failed", error);
     redirect("/admin/je-confesse?error=publish");
   }
+
+  await syncConfessionPodcastLink(supabase, createdArticle.id, podcastEpisodeId);
 
   revalidatePath("/admin/je-confesse");
   revalidatePath("/publications/je-confesse-et-declare");
@@ -337,8 +386,9 @@ export async function updateConfessionEntry(formData: FormData) {
   }
 
   const article_date = String(formData.get("article_date") ?? "") || undefined;
+  const podcastEpisodeId = await getConfessionPodcastId(supabase, formData.get("podcast_episode_id"));
 
-  await supabase
+  const { error } = await supabase
     .from("articles")
     .update({
       article_date,
@@ -351,8 +401,16 @@ export async function updateConfessionEntry(formData: FormData) {
       seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
       status: String(formData.get("status") ?? "published"),
       reading_time_minutes: computeReadingTime(body),
+      podcast_episode_id: podcastEpisodeId,
     })
     .eq("id", id);
+
+  if (error) {
+    console.error("[admin/je-confesse] update failed", error);
+    redirect(`/admin/je-confesse/${id}?error=save`);
+  }
+
+  await syncConfessionPodcastLink(supabase, id, podcastEpisodeId);
 
   revalidatePath("/admin/je-confesse");
   revalidatePath("/publications/je-confesse-et-declare");
