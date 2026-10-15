@@ -8,6 +8,7 @@ import LikeButton from "@/components/articles/LikeButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import Pagination from "@/components/admin/Pagination";
+import ArticlePodcastSection from "@/components/podcast/ArticlePodcastSection";
 
 const SITE_URL = "https://sergehapitaministries.org";
 // Règle fixe (retour du 05/09) — 3 entrées d'archive par page.
@@ -156,6 +157,8 @@ export default function RoseeMatinaleContent({
           </div>
         </div>
       </section>
+
+      <ArticlePodcastSection articleId={current.id} podcastEpisodeId={current.podcast_episode_id} />
 
       {/* Bande de partage --purple pleine (retour du 07/09, 2e passage) —
           couleur exacte demandée, plus --lavender-deep. */}
