@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleByIdAdmin } from "@/lib/content/articles";
+import { getPodcastEpisodeOptionsForLinking } from "@/lib/content/podcast";
 import { updateRoseeEntry, deleteRoseeEntry } from "../../publications/actions";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
@@ -18,7 +19,10 @@ export default async function AdminRoseeEntryPage({
 }) {
   const { id } = await params;
   const query = await searchParams;
-  const entry = await getArticleByIdAdmin(id);
+  const [entry, podcastEpisodes] = await Promise.all([
+    getArticleByIdAdmin(id),
+    getPodcastEpisodeOptionsForLinking("rm"),
+  ]);
   if (!entry || entry.type !== "rm") notFound();
 
   const errorMessage = query.error
@@ -76,6 +80,18 @@ export default async function AdminRoseeEntryPage({
             <label>Image de couverture</label>
             <ArticleCoverField currentUrl={entry.cover_url} />
             <input type="text" name="cover_alt" defaultValue={entry.cover_alt ?? ""} placeholder="Description de l’image" className="admin-cover-alt" />
+          </div>
+          <div className="editor-field">
+            <label htmlFor="rosee-edit-podcast">Audio associé <span>(facultatif)</span></label>
+            <select id="rosee-edit-podcast" name="podcast_episode_id" defaultValue={entry.podcast_episode_id ?? ""}>
+              <option value="">Aucun audio associé</option>
+              {podcastEpisodes.map((episode) => (
+                <option key={episode.id} value={episode.id}>
+                  {episode.title} — {new Date(episode.episode_date).toLocaleDateString("fr-FR")} ({episode.status === "published" ? "publié" : "brouillon"})
+                </option>
+              ))}
+            </select>
+            <small>Le lecteur apparaît uniquement lorsque l’épisode associé est publié.</small>
           </div>
           <div className="editor-field">
             <label htmlFor="rosee-edit-seo">Mots-clés SEO <span>(séparés par des virgules)</span></label>
