@@ -11,13 +11,17 @@ import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
 const SITE_URL = "https://sergehapitaministries.org";
+const SOCIAL_IMAGE_WIDTH = 1200;
+// Next.js n'accepte que les qualités déclarées par le projet. Garder cette
+// valeur unique évite de produire une URL Open Graph invalide.
+const SOCIAL_IMAGE_QUALITY = 75;
 
 /** Les robots sociaux téléchargent cette URL sans passer par le lecteur.
  * On leur sert une variante 1200 px, nettement plus légère que les PNG
  * originaux parfois proches de 3 Mo, tout en gardant la pochette originale
  * intacte dans la page d\'écoute. */
 function socialCoverUrl(source: string): string {
-  return `${SITE_URL}/_next/image?url=${encodeURIComponent(source)}&w=1200&q=75`;
+  return `${SITE_URL}/_next/image?url=${encodeURIComponent(source)}&w=${SOCIAL_IMAGE_WIDTH}&q=${SOCIAL_IMAGE_QUALITY}`;
 }
 
 function linkedContentHref(type: string, slug: string, articleDate: string): string {
@@ -45,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url: `/podcast/${episode.slug}`,
       siteName: "Serge Hapita Ministries",
       locale: "fr_FR",
-      images: image ? [{ url: image, width: 1200, height: 1200, alt: `Pochette de ${episode.title}` }] : undefined,
+      images: image ? [{ url: image, width: SOCIAL_IMAGE_WIDTH, height: SOCIAL_IMAGE_WIDTH, alt: `Pochette de ${episode.title}` }] : undefined,
     },
     twitter: { card: "summary_large_image", title, description, images: image ? [image] : undefined },
   };
