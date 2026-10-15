@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import ContactForm from "@/components/forms/ContactForm";
+import { getPageContent } from "@/lib/content/pageContent";
 
 const title = "Contact | Serge Hapita Ministries";
 const description =
@@ -26,7 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const content = await getPageContent("contact");
   return (
     // V2 (retour du 11/09, Lot 6) — reproduit prototype-html/contact/
     // index.html § .engagement-hero/.contact-section (engagement.css).
@@ -35,16 +37,16 @@ export default function ContactPage() {
       <section className="v2-engagement-hero contact">
         <div className="v2-engagement-wrap v2-engagement-hero-inner">
           <p className="v2-eyebrow light">
-            <span /> Écrivez-nous
+            <span /> {content.eyebrow}
           </p>
-          <h1>Contact</h1>
+          <h1>{content.title}</h1>
         </div>
       </section>
 
       <section className="v2-engagement-wrap v2-contact-section">
         <div className="v2-contact-heading">
-          <h2>Parlons-en.</h2>
-          <p>Une question, un témoignage ou un message&nbsp;? Écrivez directement à Serge Hapita Ministries.</p>
+          <h2>{content.section_title}</h2>
+          <p>{content.intro}</p>
         </div>
         <ContactForm />
       </section>
