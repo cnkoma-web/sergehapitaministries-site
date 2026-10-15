@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getArticlesAdmin } from "@/lib/content/articles";
+import { getPodcastEpisodeOptionsForLinking } from "@/lib/content/podcast";
 import { publishConfession, deleteArticle } from "../publications/actions";
 import { stripHtml } from "@/lib/richtext";
 import RichTextEditor from "@/components/admin/RichTextEditor";
@@ -28,7 +29,10 @@ export default async function AdminJeConfessePage({
   const page = Math.max(1, Number(pageParam) || 1);
   const perPage = Number(perPageParam) || 5;
 
-  const { articles: entries, total } = await getArticlesAdmin(["jc"], page, perPage);
+  const [{ articles: entries, total }, podcastEpisodes] = await Promise.all([
+    getArticlesAdmin(["jc"], page, perPage),
+    getPodcastEpisodeOptionsForLinking("jc"),
+  ]);
   const today = new Date().toISOString().slice(0, 10);
   const alreadyPublishedToday = entries.some((e) => e.article_date === today);
 
@@ -71,6 +75,21 @@ export default async function AdminJeConfessePage({
           <div className="editor-field">
             <label>Proclamation (corps de la déclaration)</label>
             <RichTextEditor name="body" placeholder="Texte de la proclamation…" minHeight={200} compact />
+          </div>
+          <div className="editor-field">
+            <label>Audio associé (facultatif)</label>
+            <select name="podcast_episode_id" defaultValue="">
+              <option value="">Aucun audio associé</option>
+              {podcastEpisodes.map((episode) => (
+                <option key={episode.id} value={episode.id}>
+                  {new Date(episode.episode_date).toLocaleDateString("fr-FR")} — {episode.title}
+                  {episode.status === "draft" ? " (brouillon)" : ""}
+                </option>
+              ))}
+            </select>
+            <small>
+              Choisissez un épisode déjà créé dans Podcasts. Le bouton audio public apparaît automatiquement lorsque cet épisode est publié.
+            </small>
           </div>
           <div className="editor-field">
             <label>Mots-clés (SEO) — séparés par des virgules</label>
