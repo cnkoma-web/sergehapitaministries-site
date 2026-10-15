@@ -20,7 +20,8 @@ const SECTIONS = [
   { href: "/admin/invitations", label: "Invitations" },
   { href: "/admin/ticker", label: "Ticker" },
   { href: "/admin/stats", label: "Statistiques" },
-  { href: "/admin/textes", label: "Textes" },
+  { href: "/admin/pages", label: "Pages du site" },
+  { href: "/admin/textes", label: "Réglages textuels" },
   { href: "/admin/navigation", label: "Navigation" },
 ];
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getArticlesFeed } from "@/lib/content/articles";
+import { getPageContent } from "@/lib/content/pageContent";
 import CategoryHubFeed from "@/components/articles/CategoryHubFeed";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
@@ -28,7 +29,10 @@ export const metadata: Metadata = {
 export default async function LaVieSuperieurePage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const { articles, total } = await getArticlesFeed(["vs"], page, PER_PAGE);
+  const [{ articles, total }, pageContent] = await Promise.all([
+    getArticlesFeed(["vs"], page, PER_PAGE),
+    getPageContent("la-vie-superieure"),
+  ]);
 
   return (
     <div className="v2-category-hub-page">
@@ -37,9 +41,9 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
           <div className="v2-category-hub-mark">02</div>
           <div>
             <span className="v2-category-hub-badge">La Vie Supérieure</span>
-            <h1>Les réalités de la vie en Christ</h1>
-            <p>{description}</p>
-            <p className="v2-category-hub-motto">{motto}</p>
+            <h1>{pageContent.title}</h1>
+            <p>{pageContent.intro}</p>
+            <p className="v2-category-hub-motto">{pageContent.motto}</p>
           </div>
         </div>
       </section>
@@ -47,7 +51,7 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
       <section className="v2-category-hub-feed">
         <div className="v2-wrap">
           {articles.length === 0 ? (
-            <p className="empty-state">Les premiers enseignements arrivent bientôt.</p>
+            <p className="empty-state">{pageContent.empty_state}</p>
           ) : (
             <CategoryHubFeed articles={articles} type="vs" showFeatured={page === 1} />
           )}

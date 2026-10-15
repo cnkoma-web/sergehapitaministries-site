@@ -345,7 +345,12 @@ header{
    prototype — même rendu final, mécanisme idiomatique déjà en place sur
    ce projet). */
 .v2-mobile-menu{position:absolute;top:100%;left:0;right:0;background:#fff;border-top:1px solid var(--v2-line);box-shadow:0 20px 40px -16px rgba(23,20,45,.18);padding:8px 20px 18px;display:flex;flex-direction:column;}
-.v2-mobile-menu>a,.v2-mobile-menu>.v2-nav-dropdown>a,.v2-mobile-menu>.v2-nav-dropdown>span{padding:13px 0;border-bottom:1px solid var(--v2-line);font-size:14px;font-weight:700;color:var(--v2-ink);}
+.v2-mobile-menu>a{padding:13px 0;border-bottom:1px solid var(--v2-line);font-size:14px;font-weight:700;color:var(--v2-ink);}
+.v2-mobile-dropdown-heading{display:flex;align-items:center;border-bottom:1px solid var(--v2-line);}
+.v2-mobile-dropdown-heading>a,.v2-mobile-dropdown-heading>button:first-child{flex:1;padding:13px 0;border:0;background:none;text-align:left;font:inherit;font-size:14px;font-weight:700;color:var(--v2-ink);cursor:pointer;}
+.v2-mobile-dropdown-toggle{width:44px;align-self:stretch;border:0;background:none;color:var(--v2-violet-deep);cursor:pointer;}
+.v2-mobile-dropdown-toggle span{display:inline-block;font-size:17px;transition:transform .2s ease;}
+.v2-mobile-menu .v2-nav-dropdown.is-open .v2-mobile-dropdown-toggle span{transform:rotate(180deg);}
 .v2-mobile-menu .v2-nav-dropdown-menu{position:static;min-width:0;padding:6px 0 10px 16px;border:0;border-radius:0;background:var(--v2-violet-pale);box-shadow:none;display:block;}
 .v2-mobile-menu .v2-nav-dropdown-menu a{padding:10px 12px;font-size:14px;}
 
