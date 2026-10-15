@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getArticlesAdmin } from "@/lib/content/articles";
+import { getPodcastEpisodeOptionsForLinking } from "@/lib/content/podcast";
 import { publishRosee, deleteRoseeEntry } from "../publications/actions";
 import Pagination from "@/components/admin/Pagination";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
@@ -18,7 +19,10 @@ export default async function AdminRoseePage({
   const query = await searchParams;
   const page = Math.max(1, Number(query.page) || 1);
   const perPage = Number(query.perPage) || 5;
-  const { articles: entries, total } = await getArticlesAdmin(["rm"], page, perPage);
+  const [{ articles: entries, total }, podcastEpisodes] = await Promise.all([
+    getArticlesAdmin(["rm"], page, perPage),
+    getPodcastEpisodeOptionsForLinking("rm"),
+  ]);
   const today = new Date().toISOString().slice(0, 10);
   const alreadyPublishedToday = entries.some((entry) => entry.article_date === today);
   const successMessage = query.saved === "published"
@@ -72,6 +76,18 @@ export default async function AdminRoseePage({
             <label>Image de couverture</label>
             <ArticleCoverField currentUrl={null} />
             <input type="text" name="cover_alt" placeholder="Description de l’image" className="admin-cover-alt" />
+          </div>
+          <div className="editor-field">
+            <label htmlFor="rosee-podcast">Audio associé <span>(facultatif)</span></label>
+            <select id="rosee-podcast" name="podcast_episode_id" defaultValue="">
+              <option value="">Aucun audio associé</option>
+              {podcastEpisodes.map((episode) => (
+                <option key={episode.id} value={episode.id}>
+                  {episode.title} — {new Date(episode.episode_date).toLocaleDateString("fr-FR")} ({episode.status === "published" ? "publié" : "brouillon"})
+                </option>
+              ))}
+            </select>
+            <small>Vous pourrez aussi associer l’audio plus tard depuis cette Rosée Matinale ou depuis le podcast.</small>
           </div>
           <div className="editor-field">
             <label htmlFor="rosee-seo">Mots-clés SEO <span>(séparés par des virgules)</span></label>
