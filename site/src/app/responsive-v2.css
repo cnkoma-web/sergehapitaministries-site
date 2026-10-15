@@ -748,12 +748,15 @@
 }
 .v2-podcast-listening-shell{position:relative;z-index:1;}
 .v2-podcast-listening-topbar{
+  position:relative;
+  z-index:60;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:20px;
   margin-bottom:30px;
 }
+.v2-podcast-listening-topbar .podcast-share-menu{z-index:70;}
 .v2-podcast-listening-back{
   display:inline-flex;
   align-items:center;
