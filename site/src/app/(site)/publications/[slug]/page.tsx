@@ -18,6 +18,7 @@ import ShareCartouche from "@/components/articles/ShareCartouche";
 import LikeButton from "@/components/articles/LikeButton";
 import ViewTracker from "@/components/articles/ViewTracker";
 import RelatedArticlesSection from "@/components/articles/RelatedArticlesSection";
+import ArticlePodcastSection from "@/components/podcast/ArticlePodcastSection";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
@@ -234,7 +235,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         {/* Zone de partage --purple pleine, toujours juste après
             .entry-body-section (prototype), verrouillé ou non. */}
-        <section className="share-zone">
+        <ArticlePodcastSection articleId={article.id} podcastEpisodeId={article.podcast_episode_id} />
+
+        <ArticlePodcastSection articleId={article.id} podcastEpisodeId={article.podcast_episode_id} />
+
+      <section className="share-zone">
           <div className="content-col">
             <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} shareContent={{ intro: article.excerpt, scriptureReference: article.verse_reference, scriptureText: article.verse_text, body: article.body }} />
           </div>
