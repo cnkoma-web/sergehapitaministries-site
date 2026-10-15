@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getBooks } from "@/lib/content/books";
+import { getPageContent } from "@/lib/content/pageContent";
 import CatalogGrid from "@/components/shop/CatalogGrid";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LivresPage() {
-  const books = await getBooks();
+  const [books, pageContent] = await Promise.all([getBooks(), getPageContent("livres")]);
 
   return (
     // V2 (retour du 11/09, Lot 5) — reproduit prototype-html/livres/
@@ -37,23 +38,20 @@ export default async function LivresPage() {
               marque figée (a/m minuscules) que la maquette (.brand-case)
               préserve explicitement. */}
           <p className="v2-eyebrow light v2-brand-case">
-            <span /> amDG Éditions du Royaume
+            <span /> {pageContent.eyebrow}
           </p>
-          <h1>Livres</h1>
-          <p>Les ouvrages de Serge publiés sous amDG Éditions.</p>
+          <h1>{pageContent.title}</h1>
+          <p>{pageContent.intro}</p>
         </div>
       </section>
 
       <section className="v2-commerce-wrap">
         <div className="v2-catalog-intro">
-          <h2>
-            Chaque livre est un compagnon de route, un outil de transformation, un appel à vivre selon la{" "}
-            <em>justice du Royaume.</em>
-          </h2>
+          <h2>{pageContent.catalog_intro}</h2>
         </div>
 
         {books.length === 0 ? (
-          <p className="empty-state">Le catalogue est en cours de préparation.</p>
+          <p className="empty-state">{pageContent.empty_state}</p>
         ) : (
           <CatalogGrid books={books} />
         )}
