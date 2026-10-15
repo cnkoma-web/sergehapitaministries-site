@@ -143,6 +143,23 @@ export async function getPodcastEpisodesAdmin(
   };
 }
 
+/** Épisodes proposés dans les formulaires de liaison du CMS. Les brouillons
+ * restent visibles afin que l'association puisse être préparée avant leur
+ * publication ; le lecteur public n'apparaît qu'une fois l'épisode publié. */
+export async function getPodcastEpisodeOptionsForLinking(
+  universe: PodcastUniverse
+): Promise<Pick<AdminPodcastEpisode, "id" | "title" | "episode_date" | "status">[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("podcast_episodes")
+    .select("id, title, episode_date, status")
+    .eq("universe", universe)
+    .order("episode_date", { ascending: false })
+    .limit(200);
+  if (error || !data) return [];
+  return data;
+}
+
 export async function getPodcastEpisodeByIdAdmin(id: string): Promise<AdminPodcastEpisode | null> {
   const supabase = await createClient();
   const { data, error } = await supabase.from("podcast_episodes").select(ADMIN_COLUMNS).eq("id", id).single();
