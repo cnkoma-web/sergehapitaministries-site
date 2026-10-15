@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPageContent, getPageDefinition } from "@/lib/content/pageContent";
@@ -14,7 +15,7 @@ export default async function AdminPageContentEditor({ params }: { params: Promi
 
   return (
     <>
-      <SavedToast />
+      <Suspense fallback={null}><SavedToast /></Suspense>
       <header className="admin-page-header">
         <div>
           <Link href="/admin/pages">← Pages du site</Link>
