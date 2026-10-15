@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPodcastEpisodes, type PodcastUniverse } from "@/lib/content/podcast";
+import { getPageContent } from "@/lib/content/pageContent";
 import { ARTICLE_TYPE_LABEL, getArticlesByIds } from "@/lib/content/articles";
 import PodcastCardPlayer from "@/components/podcast/PodcastCardPlayer";
 import PodcastShareActions from "@/components/podcast/PodcastShareActions";
@@ -45,7 +46,10 @@ export default async function PodcastPage({
     ? (univers as PodcastUniverse)
     : undefined;
 
-  const { episodes, total } = await getPodcastEpisodes(page, PER_PAGE, universe);
+  const [{ episodes, total }, pageContent] = await Promise.all([
+    getPodcastEpisodes(page, PER_PAGE, universe),
+    getPageContent("podcast"),
+  ]);
   const linkedArticleIds = episodes
     .map((episode) => episode.linked_article_id)
     .filter((id): id is string => Boolean(id));
@@ -65,8 +69,8 @@ export default async function PodcastPage({
           <p className="v2-eyebrow light">
             <span /> Audio
           </p>
-          <h1>Podcast</h1>
-          <p>{description}</p>
+          <h1>{pageContent.title}</h1>
+          <p>{pageContent.intro}</p>
           <nav className="v2-podcast-filters" aria-label="Filtrer les podcasts">
             {FILTERS.map((f) => (
               <Link
@@ -84,12 +88,12 @@ export default async function PodcastPage({
       <section className="v2-podcast-library">
         <div className="v2-wrap">
           <div className="v2-podcast-library-head">
-            <h2>La bibliothèque audio</h2>
-            <p>Choisis un univers, retrouve un thème et lance l&apos;écoute.</p>
+            <h2>{pageContent.library_title}</h2>
+            <p>{pageContent.library_intro}</p>
           </div>
 
           {episodes.length === 0 ? (
-            <p className="empty-state">Les premiers épisodes arrivent bientôt.</p>
+            <p className="empty-state">{pageContent.empty_state}</p>
           ) : (
             <div className="v2-podcast-grid">
               {episodes.map((e) => {
