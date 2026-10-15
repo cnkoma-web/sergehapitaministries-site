@@ -17,7 +17,7 @@ const SITE_URL = "https://sergehapitaministries.org";
  * originaux parfois proches de 3 Mo, tout en gardant la pochette originale
  * intacte dans la page d\'écoute. */
 function socialCoverUrl(source: string): string {
-  return `${SITE_URL}/_next/image?url=${encodeURIComponent(source)}&w=1200&q=72`;
+  return `${SITE_URL}/_next/image?url=${encodeURIComponent(source)}&w=1200&q=75`;
 }
 
 function linkedContentHref(type: string, slug: string, articleDate: string): string {
