@@ -180,8 +180,9 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
           </div>
 
           <div className="editor-field">
-            <label>Mots-clés (SEO) — séparés par des virgules</label>
+            <label>Thèmes et expressions clés — séparés par des virgules</label>
             <input type="text" name="seo_keywords" defaultValue={article.seo_keywords.join(", ")} placeholder="justice, nature de Dieu" />
+            <small>Choisissez des expressions réellement traitées dans le titre, le chapeau ou le texte. Elles décrivent l’article aux moteurs sans remplacer le contenu visible.</small>
           </div>
         </aside>
 
