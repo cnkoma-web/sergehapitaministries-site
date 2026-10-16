@@ -21,6 +21,7 @@ import RelatedArticlesSection from "@/components/articles/RelatedArticlesSection
 import ArticlePodcastSection from "@/components/podcast/ArticlePodcastSection";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
+import { EditorialArticleJsonLd } from "@/components/seo/StructuredData";
 
 const SITE_URL = "https://sergehapitaministries.org";
 
@@ -89,6 +90,28 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // couper au milieu d'une balise.
   const rawBody = article.body || "";
   const paragraphs = extractParagraphs(rawBody);
+  const categoryPath =
+    article.type === "vs"
+      ? "/publications/la-vie-superieure"
+      : "/publications/que-dit-la-bible";
+  const structuredData = (
+    <EditorialArticleJsonLd
+      title={article.title}
+      description={shareExcerpt}
+      url={pageUrl}
+      publishedAt={article.article_date}
+      modifiedAt={article.updated_at}
+      section={ARTICLE_TYPE_LABEL[article.type]}
+      image={article.cover_url}
+      keywords={article.seo_keywords}
+      breadcrumbs={[
+        { name: "Accueil", url: SITE_URL },
+        { name: "Publications", url: `${SITE_URL}/publications` },
+        { name: ARTICLE_TYPE_LABEL[article.type], url: `${SITE_URL}${categoryPath}` },
+        { name: article.title, url: pageUrl },
+      ]}
+    />
+  );
 
   if (article.type === "vs") {
     // Premier droit calculé de « Mon accès » : un enseignement gratuit est
@@ -112,6 +135,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       // dans un exemple d'article déjà publié) — voir le commentaire
       // détaillé dans globals.css.
       <div className="v2-article-page vs">
+        {structuredData}
         <ViewTracker articleId={article.id} />
         <section className="article-header">
           <div className="content-col">
@@ -130,7 +154,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 lecture | vues | date), pas deux lignes séparées (correction
                 du 11/09). */}
             <div className="article-meta-line">
-              {article.author_name && <span>{article.author_name}</span>}
+              {article.author_name && (
+                <span><Link href="/de-serge">{article.author_name}</Link></span>
+              )}
               {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
               <span className="views">
                 {article.view_count} vue{article.view_count > 1 ? "s" : ""}
@@ -290,6 +316,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // .entry-meta/.entry-body/.scripture-card/.article-blessing/
     // .topic-list/.like-row/.article-extras.
     <div className="v2-article-page qdlb">
+      {structuredData}
       <ViewTracker articleId={article.id} />
       <section className="article-header">
         <div className="content-col">
@@ -315,7 +342,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               lecture | vues | date), pas deux lignes séparées (correction du
               11/09). */}
           <div className="article-meta-line">
-            {article.author_name && <span>{article.author_name}</span>}
+            {article.author_name && (
+                <span><Link href="/de-serge">{article.author_name}</Link></span>
+              )}
             {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
             <span className="views">
               {article.view_count} vue{article.view_count > 1 ? "s" : ""}
