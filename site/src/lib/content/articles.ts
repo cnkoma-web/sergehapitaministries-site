@@ -69,7 +69,7 @@ export const ARTICLE_TYPE_KICKER: Partial<Record<ArticleType, string>> = { qdlb:
 const COLUMNS =
   "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at, updated_at, podcast_episode_id";
 const ADMIN_COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at, podcast_episode_id";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at, updated_at, podcast_episode_id";
 
 export async function getPublishedArticles(type: ArticleType): Promise<Article[]> {
   const supabase = await createClient();
