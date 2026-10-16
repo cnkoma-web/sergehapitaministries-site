@@ -31,6 +31,12 @@ export function SiteIdentityJsonLd() {
               url: `${SITE_URL}/logo.png`,
             },
             founder: { "@id": `${SITE_URL}/de-serge#person` },
+            sameAs: [
+              "https://www.youtube.com/@sergehapita",
+              "https://www.instagram.com/sergehapitaministries/",
+              "https://www.tiktok.com/@sergehapitaministries",
+              "https://www.facebook.com/profile.php?id=61582211394401",
+            ],
           },
           {
             "@type": "Person",
@@ -72,6 +78,9 @@ export function EditorialArticleJsonLd({
   keywords?: string[];
   breadcrumbs: Breadcrumb[];
 }) {
+  const normalizedDescription = description
+    ? description.replace(/\\s+/g, " ").trim().slice(0, 320)
+    : undefined;
   const absoluteImage = image
     ? image.startsWith("http")
       ? image
@@ -88,7 +97,7 @@ export function EditorialArticleJsonLd({
             "@id": `${url}#article`,
             mainEntityOfPage: { "@type": "WebPage", "@id": url },
             headline: title,
-            description: description || undefined,
+            description: normalizedDescription,
             datePublished: publishedAt,
             dateModified: modifiedAt || publishedAt,
             inLanguage: "fr-FR",
