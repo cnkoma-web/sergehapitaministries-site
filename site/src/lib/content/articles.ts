@@ -36,6 +36,10 @@ export type Article = {
   // publication (cahier §6.5 : "JJ/MM/AAAA · HHhMM") à côté de la date
   // éditoriale (article_date), qui elle n'a pas de composante horaire.
   created_at: string;
+  // Horodatage réel de dernière modification — utilisé par le sitemap et
+  // les données structurées Article afin que Google distingue une mise à
+  // jour éditoriale d'une simple date de publication.
+  updated_at: string;
   // Lien optionnel vers un épisode Podcast (Lot 9, préparé au Lot 4) —
   // toujours null tant que le Lot 9 n'existe pas, aucune UI ne l'édite
   // encore.
@@ -63,7 +67,7 @@ export const ARTICLE_TYPE_INITIALS: Record<ArticleType, string> = { qdlb: "QB", 
 export const ARTICLE_TYPE_KICKER: Partial<Record<ArticleType, string>> = { qdlb: "Examen des Écritures" };
 
 const COLUMNS =
-  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at, podcast_episode_id";
+  "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, created_at, updated_at, podcast_episode_id";
 const ADMIN_COLUMNS =
   "id, type, slug, title, article_date, excerpt, verse_reference, verse_text, body, further_verses, prayer, toc_keywords, access, view_count, like_count, reading_time_minutes, cover_url, cover_alt, author_name, related_article_ids, seo_keywords, status, created_at, podcast_episode_id";
 
