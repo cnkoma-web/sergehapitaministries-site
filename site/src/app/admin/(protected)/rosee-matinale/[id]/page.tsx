@@ -94,8 +94,9 @@ export default async function AdminRoseeEntryPage({
             <small>Le lecteur apparaît uniquement lorsque l’épisode associé est publié.</small>
           </div>
           <div className="editor-field">
-            <label htmlFor="rosee-edit-seo">Mots-clés SEO <span>(séparés par des virgules)</span></label>
+            <label htmlFor="rosee-edit-seo">Thèmes et expressions clés <span>(séparés par des virgules)</span></label>
             <input id="rosee-edit-seo" type="text" name="seo_keywords" defaultValue={entry.seo_keywords.join(", ")} placeholder="repos, identité, confiance en Dieu" />
+            <small>Utilisez seulement les expressions réellement présentes dans cette Rosée Matinale.</small>
           </div>
         </section>
 
