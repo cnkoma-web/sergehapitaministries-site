@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import ViewTracker from "@/components/articles/ViewTracker";
 import JeConfesseContent from "../JeConfesseContent";
+import { EditorialArticleJsonLd } from "@/components/seo/StructuredData";
 
 // V2 (Lot 4, 11/09) — calqué sur rosee-matinale/[date]/page.tsx.
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }): Promise<Metadata> {
@@ -46,6 +47,7 @@ export default async function JeConfesseDatePage({
   if (currentIndex === -1) notFound();
 
   const current = entries[currentIndex];
+  const pageUrl = officialUrl(`/publications/je-confesse-et-declare/${date}`);
   const previous = entries[currentIndex + 1] ?? null;
   const next = entries[currentIndex - 1] ?? null;
   const archive = entries.filter((_, i) => i !== currentIndex);
@@ -54,6 +56,22 @@ export default async function JeConfesseDatePage({
 
   return (
     <>
+      <EditorialArticleJsonLd
+        title={current.title}
+        description={current.verse_text}
+        url={pageUrl}
+        publishedAt={current.article_date}
+        modifiedAt={current.updated_at}
+        section="Je Confesse"
+        image={current.cover_url}
+        keywords={current.seo_keywords}
+        breadcrumbs={[
+          { name: "Accueil", url: "https://sergehapitaministries.org" },
+          { name: "Publications", url: "https://sergehapitaministries.org/publications" },
+          { name: "Je Confesse", url: "https://sergehapitaministries.org/publications/je-confesse-et-declare" },
+          { name: current.title, url: pageUrl },
+        ]}
+      />
       <ViewTracker articleId={current.id} />
       <JeConfesseContent
         current={current}
