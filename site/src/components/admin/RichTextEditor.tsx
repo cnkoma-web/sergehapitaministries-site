@@ -137,6 +137,12 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   // Bloc <figure> actuellement en train d'être glissé (retour du 07/09) —
   // voir handleDragStart/handleDrop plus bas.
   const draggedFigureRef = useRef<HTMLElement | null>(null);
+  // Conserve la dernière sélection valide dans l’éditeur. Sur mobile et
+  // tablette, toucher un bouton de la barre déplace le focus vers ce bouton
+  // avant son onClick : window.getSelection() ne désigne alors plus le texte
+  // sélectionné et les commandes (notamment la citation mise en exergue)
+  // semblaient ne rien faire dans la barre compacte de Rosée Matinale.
+  const savedRangeRef = useRef<Range | null>(null);
   // États actifs de la sélection courante (retour du 06/09) — surligne le
   // bouton concerné pendant l'édition (gras/italique/souligné/liste), comme
   // Google Docs/Notion. Recalculé à chaque déplacement du curseur.
@@ -150,6 +156,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
       const anchor = selection.anchorNode;
       if (!anchor || !editor.contains(anchor)) return;
 
+      savedRangeRef.current = selection.getRangeAt(0).cloneRange();
       const next = new Set<string>();
       if (document.queryCommandState("bold")) next.add("bold");
       if (document.queryCommandState("italic")) next.add("italic");
@@ -175,6 +182,18 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
     if (editorRef.current) sanitize(editorRef.current);
   }, []);
 
+  function restoreEditorSelection() {
+    const editor = editorRef.current;
+    const range = savedRangeRef.current;
+    if (!editor || !range || !editor.contains(range.commonAncestorContainer)) return false;
+
+    const selection = window.getSelection();
+    if (!selection) return false;
+    selection.removeAllRanges();
+    selection.addRange(range);
+    return true;
+  }
+
   // Ne recopie QUE la valeur, sans toucher au DOM en cours d'édition — appelé à
   // chaque frappe. Le nettoyage structurel (sanitize) est destructif pour un
   // élément en train d'être édité (ex. le paragraphe vide qu'on vient de créer
@@ -195,6 +214,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   }
 
   function exec(command: string, value?: string) {
+    restoreEditorSelection();
     document.execCommand(command, false, value);
     editorRef.current?.focus();
     sanitizeAndSync();
@@ -207,6 +227,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   // le bloc plutôt qu'à la sélection). Ne travaille que sur les blocs de haut
   // niveau réellement touchés par la sélection — jamais tout l'éditeur.
   function toggleList(tag: "ul" | "ol") {
+    restoreEditorSelection();
     const editor = editorRef.current;
     const selection = window.getSelection();
     if (!editor || !selection || selection.rangeCount === 0) return;
@@ -335,6 +356,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   }
 
   function insertPullQuote() {
+    restoreEditorSelection();
     const editor = editorRef.current;
     const selection = window.getSelection();
     if (!editor || !selection || selection.rangeCount === 0) return;
@@ -348,6 +370,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
     const selectedFigure = getSelectedFigure();
     if (selectedFigure) {
       selectedFigure.remove();
+      savedRangeRef.current = null;
       sanitizeAndSync();
       return;
     }
@@ -380,6 +403,7 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
       block.parentElement?.insertBefore(figure, block.nextSibling);
     }
 
+    savedRangeRef.current = null;
     sanitizeAndSync();
   }
 
@@ -478,7 +502,10 @@ export default function RichTextEditor({ name, defaultValue, placeholder, minHei
   return (
     <div>
       <input ref={hiddenInputRef} type="hidden" name={name} defaultValue={defaultValue ?? ""} />
-      <div className={compact ? "rich-toolbar-mini" : "rich-toolbar"}>
+      <div
+        className={compact ? "rich-toolbar-mini" : "rich-toolbar"}
+        onMouseDown={(event) => event.preventDefault()}
+      >
         <button type="button" className={toolbarBtnClass} data-active={active.has("bold")} onClick={() => exec("bold")} title="Gras">
           <b>B</b>
         </button>
