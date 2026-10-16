@@ -90,8 +90,9 @@ export default async function AdminRoseePage({
             <small>Vous pourrez aussi associer l’audio plus tard depuis cette Rosée Matinale ou depuis le podcast.</small>
           </div>
           <div className="editor-field">
-            <label htmlFor="rosee-seo">Mots-clés SEO <span>(séparés par des virgules)</span></label>
+            <label htmlFor="rosee-seo">Thèmes et expressions clés <span>(séparés par des virgules)</span></label>
             <input id="rosee-seo" type="text" name="seo_keywords" placeholder="repos, identité, confiance en Dieu" />
+            <small>Utilisez seulement les expressions réellement présentes dans cette Rosée Matinale.</small>
           </div>
           <div className="admin-action-bar">
             <UnsavedChangesGuard formId="rosee-create-form" />

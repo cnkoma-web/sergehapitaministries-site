@@ -131,8 +131,9 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
           </div>
 
           <div className="editor-field" style={{ marginBottom: 0 }}>
-            <label>Mots-clés (SEO) — séparés par des virgules</label>
+            <label>Thèmes et expressions clés — séparés par des virgules</label>
             <AdminKeywordsField defaultKeywords={entry.seo_keywords} />
+            <small>Utilisez seulement les expressions réellement présentes dans cette confession.</small>
           </div>
         </div>
       </form>

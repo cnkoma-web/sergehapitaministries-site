@@ -2,76 +2,107 @@ import type { MetadataRoute } from "next";
 import { getBooks } from "@/lib/content/books";
 import { getGoodies } from "@/lib/content/goodies";
 import { getPublishedArticles } from "@/lib/content/articles";
+import { getPublishedPodcastEpisodesForSitemap } from "@/lib/content/podcast";
 
 const SITE_URL = "https://sergehapitaministries.org";
 
 const STATIC_ROUTES = [
   "",
   "/de-serge",
+  "/mission",
   "/livres",
   "/videos",
+  "/podcast",
   "/invitation",
   "/partenariat",
   "/connaitre-jesus",
   "/publications",
+  "/publications/que-dit-la-bible",
+  "/publications/la-vie-superieure",
+  "/publications/je-confesse-et-declare",
   "/rosee-matinale",
   "/boutique",
   "/contact",
-  "/compte",
   "/mentions-legales",
   "/politique-de-confidentialite",
   "/politique-de-cookies",
   "/termes-et-conditions",
-];
+] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [books, goodies, qdlb, vs, rm] = await Promise.all([
+  const [books, goodies, qdlb, vs, rm, jc, podcasts] = await Promise.all([
     getBooks(),
     getGoodies(),
     getPublishedArticles("qdlb"),
     getPublishedArticles("vs"),
     getPublishedArticles("rm"),
+    getPublishedArticles("jc"),
+    getPublishedPodcastEpisodesForSitemap(),
   ]);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((path) => ({
     url: `${SITE_URL}${path}`,
-    changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1 : 0.6,
+    changeFrequency:
+      path === "" || path === "/publications" || path === "/podcast"
+        ? "weekly"
+        : path.startsWith("/publications/") || path === "/rosee-matinale"
+          ? "daily"
+          : "monthly",
+    priority:
+      path === ""
+        ? 1
+        : path === "/publications" || path.startsWith("/publications/") || path === "/rosee-matinale"
+          ? 0.8
+          : 0.6,
   }));
 
-  const bookEntries: MetadataRoute.Sitemap = books.map((b) => ({
-    url: `${SITE_URL}/livres/${b.slug}`,
+  const bookEntries: MetadataRoute.Sitemap = books.map((book) => ({
+    url: `${SITE_URL}/livres/${book.slug}`,
     changeFrequency: "monthly",
     priority: 0.7,
   }));
 
-  const goodieEntries: MetadataRoute.Sitemap = goodies.map((g) => ({
-    url: `${SITE_URL}/boutique/${g.slug}`,
+  const goodieEntries: MetadataRoute.Sitemap = goodies.map((goodie) => ({
+    url: `${SITE_URL}/boutique/${goodie.slug}`,
     changeFrequency: "monthly",
     priority: 0.5,
   }));
 
-  // "La Vie Supérieure" gardé public dans le plan de site malgré le mur de
-  // connexion (contenu réel accessible gratuitement après création de compte,
-  // pas payant — cahier §3.5), donc légitime à indexer comme les deux autres.
-  const articleEntries: MetadataRoute.Sitemap = [...qdlb, ...vs].map((a) => ({
-    url: `${SITE_URL}/publications/${a.slug}`,
-    lastModified: a.article_date,
-    changeFrequency: "yearly",
-    priority: 0.6,
+  const articleEntries: MetadataRoute.Sitemap = [...qdlb, ...vs].map((article) => ({
+    url: `${SITE_URL}/publications/${article.slug}`,
+    lastModified: article.updated_at,
+    changeFrequency: "monthly",
+    priority: 0.75,
   }));
 
-  // Corrigé au passage (retour du 05/09, restructuration Rosée Matinale en
-  // URL par jour) — ces entrées pointaient jusqu'ici vers /publications/...,
-  // une URL qui n'a jamais existé pour cette catégorie (404 silencieux pour
-  // les moteurs de recherche) : Rosée Matinale a sa propre page dédiée
-  // (/rosee-matinale/[date]), jamais /publications/[slug].
-  const roseeEntries: MetadataRoute.Sitemap = rm.map((a) => ({
-    url: `${SITE_URL}/rosee-matinale/${a.article_date}`,
-    lastModified: a.article_date,
-    changeFrequency: "yearly",
-    priority: 0.6,
+  const roseeEntries: MetadataRoute.Sitemap = rm.map((article) => ({
+    url: `${SITE_URL}/rosee-matinale/${article.article_date}`,
+    lastModified: article.updated_at,
+    changeFrequency: "monthly",
+    priority: 0.7,
   }));
 
-  return [...staticEntries, ...bookEntries, ...goodieEntries, ...articleEntries, ...roseeEntries];
+  const confessionEntries: MetadataRoute.Sitemap = jc.map((article) => ({
+    url: `${SITE_URL}/publications/je-confesse-et-declare/${article.article_date}`,
+    lastModified: article.updated_at,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  const podcastEntries: MetadataRoute.Sitemap = podcasts.map((episode) => ({
+    url: `${SITE_URL}/podcast/${episode.slug}`,
+    lastModified: episode.updated_at || episode.episode_date,
+    changeFrequency: "monthly",
+    priority: 0.65,
+  }));
+
+  return [
+    ...staticEntries,
+    ...bookEntries,
+    ...goodieEntries,
+    ...articleEntries,
+    ...roseeEntries,
+    ...confessionEntries,
+    ...podcastEntries,
+  ];
 }

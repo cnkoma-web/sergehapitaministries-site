@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import ViewTracker from "@/components/articles/ViewTracker";
 import RoseeMatinaleContent from "../RoseeMatinaleContent";
+import { EditorialArticleJsonLd } from "@/components/seo/StructuredData";
 
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }): Promise<Metadata> {
   const { date } = await params;
@@ -50,6 +51,7 @@ export default async function RoseeMatinaleDatePage({
   if (currentIndex === -1) notFound();
 
   const current = entries[currentIndex];
+  const pageUrl = officialUrl(`/rosee-matinale/${date}`);
   // Triées du plus récent au plus ancien : l'entrée "précédente" (plus
   // ancienne) est à l'index+1, la "suivante" (plus récente) est à l'index-1.
   const previous = entries[currentIndex + 1] ?? null;
@@ -62,6 +64,22 @@ export default async function RoseeMatinaleDatePage({
 
   return (
     <>
+      <EditorialArticleJsonLd
+        title={current.title}
+        description={current.verse_text}
+        url={pageUrl}
+        publishedAt={current.article_date}
+        modifiedAt={current.updated_at}
+        section="Rosée Matinale"
+        image={current.cover_url}
+        keywords={current.seo_keywords}
+        breadcrumbs={[
+          { name: "Accueil", url: "https://sergehapitaministries.org" },
+          { name: "Publications", url: "https://sergehapitaministries.org/publications" },
+          { name: "Rosée Matinale", url: "https://sergehapitaministries.org/rosee-matinale" },
+          { name: current.title, url: pageUrl },
+        ]}
+      />
       {/* Vue comptabilisée côté client, une fois par visiteur/jour (retour
           du 06/09) — voir ViewTracker. Remplace l'ancien incrementViewCount()
           appelé pendant le rendu serveur, qui comptait aussi les
