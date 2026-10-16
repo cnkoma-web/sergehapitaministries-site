@@ -1312,7 +1312,7 @@
   background-image:var(--podcast-cover-environment);
   background-position:center;
   background-size:cover;
-  filter:blur(28px) saturate(1.28) brightness(.68);
+  filter:blur(32px) saturate(1.9) brightness(.52) contrast(1.08);
   transform:scale(1.1);
   pointer-events:none;
 }

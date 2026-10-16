@@ -8,7 +8,7 @@ function formatTime(seconds: number) {
   return `${minutes}:${Math.floor(seconds % 60).toString().padStart(2, "0")}`;
 }
 
-export default function PodcastCardPlayer({ src, title }: { src: string; title: string }) {
+export default function PodcastCardPlayer({ src, title, coverUrl }: { src: string; title: string; coverUrl?: string | null }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -22,7 +22,10 @@ export default function PodcastCardPlayer({ src, title }: { src: string; title: 
   };
 
   return (
-    <div className="v2-podcast-player-preview">
+    <div
+      className={`v2-podcast-player-preview${coverUrl ? " has-cover-color" : ""}`}
+      style={coverUrl ? { backgroundImage: `linear-gradient(rgba(16, 13, 32, .7), rgba(16, 13, 32, .82)), url(${JSON.stringify(coverUrl)})` } : undefined}
+    >
       <audio
         ref={audioRef}
         src={src}

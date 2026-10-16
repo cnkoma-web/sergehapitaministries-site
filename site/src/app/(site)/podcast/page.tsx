@@ -127,7 +127,7 @@ export default async function PodcastPage({
                       )}
                     </Link>
                     <div className="v2-podcast-audio-panel">
-                      <PodcastCardPlayer src={e.audio_url} title={e.title} />
+                      <PodcastCardPlayer src={e.audio_url} title={e.title} coverUrl={coverUrl} />
                       <div className="v2-podcast-card-content">
                         <div className="v2-podcast-card-copy">
                           <div className="v2-podcast-card-meta">

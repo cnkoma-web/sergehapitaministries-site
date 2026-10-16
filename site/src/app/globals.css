@@ -4823,6 +4823,7 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
 .v2-podcast-card-meta{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:7px;color:var(--v2-violet-deep);font-size:11.5px;font-weight:750;}
 
 .v2-podcast-player-preview{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:11px;align-items:center;margin-top:18px;padding:10px;border-radius:9px;color:#fff;background:#1d1830;}
+.v2-podcast-player-preview.has-cover-color{background-position:center;background-size:cover;}
 .v2-podcast-card>.v2-podcast-player-preview{margin-top:0;border-radius:9px;box-shadow:0 8px 18px rgba(23,20,45,.09);}
 .v2-podcast-player-preview>audio{display:none;}
 /* Lecteur compact fonctionnel : il conserve le design sombre validé tout en
