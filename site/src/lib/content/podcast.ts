@@ -78,6 +78,19 @@ export async function getPodcastEpisodes(
   };
 }
 
+export async function getPublishedPodcastEpisodesForSitemap(): Promise<
+  { slug: string; updated_at: string; episode_date: string }[]
+> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("podcast_episodes")
+    .select("slug, updated_at, episode_date")
+    .eq("status", "published")
+    .order("episode_date", { ascending: false });
+  if (error || !data) return [];
+  return data;
+}
+
 export async function getPodcastEpisodeBySlug(slug: string): Promise<PodcastEpisode | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
