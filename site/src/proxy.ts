@@ -30,10 +30,7 @@ const LEGACY_EXACT_REDIRECTS = new Map<string, string>([
 ]);
 
 const LEGACY_BOOK_REDIRECTS = new Map<string, string>([
-  [
-    "tu-deviens-ce-que-tu-connais",
-    "/livres/tu-deviens-ce-que-tu-connais",
-  ],
+  ["tu-deviens-ce-que-tu-connais", "/livres/tu-deviens-ce-que-tu-connais"],
   [
     "pourquoi-suis-je-ne-de-nouveau",
     "/livres/pourquoi-suis-je-ne-de-nouveau",
@@ -79,11 +76,24 @@ const CURRENT_PUBLIC_PATHS = new Set([
   "/videos",
 ]);
 
+const CURRENT_DYNAMIC_PREFIXES = [
+  "/boutique/",
+  "/livres/",
+  "/podcast/",
+  "/publications/",
+  "/rosee-matinale/",
+];
+
 function normalizePathname(pathname: string) {
   try {
-    return decodeURIComponent(pathname).normalize("NFC").replace(/\/$/, "") || "/";
+    return (
+      decodeURIComponent(pathname)
+        .normalize("NFC")
+        .toLocaleLowerCase("fr")
+        .replace(/\/$/, "") || "/"
+    );
   } catch {
-    return pathname.replace(/\/$/, "") || "/";
+    return pathname.toLocaleLowerCase("fr").replace(/\/$/, "") || "/";
   }
 }
 
@@ -106,7 +116,10 @@ function legacyDestination(pathname: string) {
     return "/publications";
   }
 
-  if (CURRENT_PUBLIC_PATHS.has(normalizedPath)) {
+  if (
+    CURRENT_PUBLIC_PATHS.has(normalizedPath) ||
+    CURRENT_DYNAMIC_PREFIXES.some((prefix) => normalizedPath.startsWith(prefix))
+  ) {
     return normalizedPath;
   }
 
@@ -129,7 +142,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|robots.txt|sitemap.xml).*)",
-  ],
+  matcher: "/:path*",
 };
