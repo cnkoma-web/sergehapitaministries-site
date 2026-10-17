@@ -128,13 +128,20 @@ function legacyDestination(pathname: string) {
 
 export function proxy(request: NextRequest) {
   const hostname = request.nextUrl.hostname.toLowerCase();
+  const normalizedPath = normalizePathname(request.nextUrl.pathname);
+
+  // Vercel conserve ce chemin accentué lors de la redirection de l'ancien
+  // domaine. Il doit aussi être corrigé une fois arrivé sur le domaine canonique.
+  if (normalizedPath === "/à-propos") {
+    return NextResponse.redirect(new URL("/de-serge", CANONICAL_ORIGIN), 308);
+  }
 
   if (!LEGACY_HOSTS.has(hostname)) {
     return NextResponse.next();
   }
 
   const destination = new URL(
-    legacyDestination(request.nextUrl.pathname),
+    legacyDestination(normalizedPath),
     CANONICAL_ORIGIN,
   );
 
