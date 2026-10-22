@@ -16,5 +16,6 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     // en page dédiée dans renderOgImage quand elle est fournie ; simple
     // repli sur le gabarit texte si le livre n'a pas encore de couverture.
     coverImageUrl: book?.cover_url ?? undefined,
+    variant: "book",
   });
 }
