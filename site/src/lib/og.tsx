@@ -23,6 +23,7 @@ const FALLBACK_IMAGE: Record<OgCategory, string> = {
 };
 
 let dmSerifCache: ArrayBuffer | null = null;
+let frauncesCache: ArrayBuffer | null = null;
 let manropeCache: ArrayBuffer | null = null;
 const LEGACY_UA = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
@@ -42,10 +43,25 @@ async function getDmSerifFont() {
   dmSerifCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=DM+Serif+Display");
   return dmSerifCache;
 }
+async function getFrauncesFont() {
+  if (frauncesCache) return frauncesCache;
+  frauncesCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=Fraunces:wght@600");
+  return frauncesCache;
+}
 async function getManropeFont() {
   if (manropeCache) return manropeCache;
   manropeCache = await fetchGoogleFont("https://fonts.googleapis.com/css2?family=Manrope:wght@700");
   return manropeCache;
+}
+
+async function prepareBookCover(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const image = await sharp(buffer).resize(340, 510, { fit: "cover" }).jpeg({ quality: 82 }).toBuffer();
+    return `data:image/jpeg;base64,${image.toString("base64")}`;
+  } catch { return null; }
 }
 
 async function prepareEditorialImage(url: string, width = 620): Promise<string | null> {
@@ -179,19 +195,79 @@ async function renderArticleUniverseV1(category: "qdlb" | "vs", title: string, c
   );
 }
 
+async function renderBookOgImage(
+  title: string,
+  eyebrow: string,
+  footer: string | undefined,
+  coverImageUrl: string
+) {
+  const [fraunces, manrope, cover] = await Promise.all([
+    getFrauncesFont(),
+    getManropeFont(),
+    prepareBookCover(coverImageUrl),
+  ]);
+  if (!cover) return null;
+
+  const fonts = [
+    fraunces && { name: "Fraunces", data: fraunces, style: "normal" as const, weight: 600 as const },
+    manrope && { name: "Manrope", data: manrope, style: "normal" as const, weight: 700 as const },
+  ].filter((f): f is { name: string; data: ArrayBuffer; style: "normal"; weight: 600 | 700 } => Boolean(f));
+
+  return new ImageResponse(
+    <div style={{ width: "100%", height: "100%", display: "flex", fontFamily: manrope ? "Manrope" : "sans-serif" }}>
+      <div style={{ width: 440, height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#eae6f9" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={cover} width={300} height={450} alt="" style={{ objectFit: "cover", borderRadius: 12, boxShadow: "0 30px 60px -20px rgba(27,23,48,.55)" }} />
+      </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "60px 56px", background: "linear-gradient(120deg,#2e2fe0 0%,#7b3fe4 100%)" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", marginBottom: 32 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`${SITE_URL}/logo-white.png`} width={170} height={64} alt="" style={{ objectFit: "contain" }} />
+            <div style={{ display: "flex", background: "#fff", color: "#7b3fe4", fontSize: 20, fontWeight: 700, letterSpacing: 2, padding: "9px 20px", borderRadius: 999, marginTop: 28 }}>
+              {eyebrow}
+            </div>
+            <div style={{ display: "flex", width: 90, height: 1, background: "rgba(255,255,255,.35)", marginTop: 20 }} />
+          </div>
+          <div style={{ display: "flex", color: "#fff", fontFamily: fraunces ? "Fraunces" : "sans-serif", fontWeight: 600, fontSize: title.length > 40 ? 44 : 54, lineHeight: 1.15, maxWidth: 560 }}>
+            {title}
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {footer && <div style={{ display: "flex", color: "rgba(255,255,255,.75)", fontSize: 22, marginBottom: 6 }}>{footer}</div>}
+          <div style={{ display: "flex", color: "#eae6f9", fontSize: 24, fontWeight: 700 }}>sergehapitaministries.org</div>
+        </div>
+      </div>
+    </div>,
+    { ...OG_SIZE, fonts: fonts.length ? fonts : undefined }
+  );
+}
+
 export async function renderOgImage({
   eyebrow,
   category,
   title,
   footer,
   coverImageUrl,
+  variant,
 }: {
   eyebrow?: string;
   category?: OgCategory;
   title: string;
   footer?: string;
   coverImageUrl?: string;
+  variant?: "book";
 }) {
+  if (variant === "book" && coverImageUrl) {
+    const bookImage = await renderBookOgImage(
+      title,
+      eyebrow || "Livre — amDG Éditions",
+      footer,
+      coverImageUrl
+    );
+    if (bookImage) return bookImage;
+  }
+
   if (category === "rm") return renderRoseeMatinaleV1(title, coverImageUrl);
   if (category === "jc") return renderJeConfesseV1(title, coverImageUrl);
   if (category === "qdlb" || category === "vs") return renderArticleUniverseV1(category, title, coverImageUrl);
