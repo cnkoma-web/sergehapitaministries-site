@@ -3307,6 +3307,9 @@ footer.footer--dark{
 /* Le dos contient du texte éditorial : il doit rester entièrement lisible,
    même lorsque son ratio diffère du cadre de la carte. */
 .v2-book-cover .cover-rollover .cr-back{object-fit:contain;object-position:center;}
+/* La grande carte vedette doit employer le même remplissage au recto et au
+   verso : son panneau gauche constitue un gabarit éditorial plein cadre. */
+.v2-book-card.main .v2-book-cover .cover-rollover .cr-back{object-fit:cover;}
 .v2-book-info{min-width:0;flex:1;padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
 .v2-book-card.main .v2-book-info{padding:46px 34px;justify-content:center;}
 .v2-book-info>span{color:var(--v2-violet);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
