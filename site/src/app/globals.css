@@ -3296,8 +3296,13 @@ footer.footer--dark{
 .v2-book-cover{display:block;position:relative;flex:0 0 auto;overflow:hidden;background:#161227;aspect-ratio:.665;}
 .v2-book-cover img{width:100%;height:100%;aspect-ratio:.665;object-fit:cover;transition:transform .35s ease;}
 .v2-book-card:hover .v2-book-cover img{transform:scale(1.025);}
-.v2-book-card.main .v2-book-cover{aspect-ratio:auto;}
-.v2-book-card.main .v2-book-cover img{aspect-ratio:auto;}
+/* La carte vedette est horizontale, mais son cadre de couverture ne doit pas
+   hériter de toute la hauteur de la rangée. On conserve le ratio vertical de
+   la couverture et on centre ce cadre dans sa colonne ; object-fit:contain
+   continue ainsi d'afficher le recto et le verso en entier sans créer un
+   grand panneau lavande au-dessus et au-dessous. */
+.v2-book-card.main .v2-book-cover{width:100%;aspect-ratio:.665;align-self:center;}
+.v2-book-card.main .v2-book-cover img{aspect-ratio:.665;}
 /* CoverRollover (composant partagé avec /livres) applique object-fit:contain
    par défaut (voir .cover-rollover .cr-front/.cr-back) — la maquette de la
    grille livres de l'accueil attend object-fit:cover. Surcharge locale par
