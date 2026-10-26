@@ -5,7 +5,11 @@ import { parseDailySources } from "../src/lib/content/dailySourceParser.ts";
 
 async function checked(url, init) {
   const response = await fetch(url, { ...init, signal: AbortSignal.timeout(60000) });
-  if (!response.ok) throw new Error(new URL(url).hostname + " HTTP " + response.status);
+  if (!response.ok) {
+    const detail = await response.json().catch(()=>null);
+    const message = new URL(url).hostname.endsWith("googleapis.com") ? detail?.error?.message : null;
+    throw new Error(new URL(url).hostname + " HTTP " + response.status + (message ? " : " + message : ""));
+  }
   return response.json();
 }
 let failed = false;
