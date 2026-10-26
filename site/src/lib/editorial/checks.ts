@@ -18,7 +18,8 @@ export function editorialChecks(draft: EditorialDraft): string[] {
   const words = body.split(/\s+/).filter(Boolean).length;
   if (!body) issues.push("Le corps ne contient aucun texte lisible.");
   // Les brouillons générés utilisent volontairement un sous-ensemble du CMS.
-  if (/<\/?(?!p\b|strong\b|em\b|mark\b|h2\b|blockquote\b|br\b)[a-z][^>]*>|<[a-z][^>]*\s[a-z:-]+\s*=/i.test(draft.body ?? "")) issues.push("Balise ou attribut HTML non autorisé.");
+  const tags = (draft.body ?? "").match(/<[^>]*(?:>|$)/g) ?? [];
+  if (tags.some(tag => !/^<\/?(?:p|strong|em|mark|h2|blockquote)>$|^<br\s*\/?>$/i.test(tag))) issues.push("Balise ou attribut HTML non autorisé.");
   if (draft.type === "rm") {
     if (words < 230 || words > 260) issues.push("Rosée Matinale exige 230 à 260 mots.");
     if (!/<mark>[^<]+<\/mark>/.test(draft.body)) issues.push("La phrase clé doit être surlignée.");
@@ -48,3 +49,4 @@ export function assertDraftShape(value: unknown): asserts value is EditorialDraf
   if (!Array.isArray(draft.seo_keywords) || draft.seo_keywords.length > 30 || !draft.seo_keywords.every(v => typeof v === "string")) throw new Error("Mots-clés invalides.");
   if (draft.further_verses != null && (!Array.isArray(draft.further_verses) || draft.further_verses.length > 20 || !draft.further_verses.every(v => v && typeof v.reference === "string" && typeof v.text === "string"))) throw new Error("Passages complémentaires invalides.");
 }
+

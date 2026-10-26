@@ -23,7 +23,7 @@ test("la validation est liée au texte et à sa source, indépendamment de l’o
   assert.notEqual(original,fingerprint({source_hash:"a",draft:{...draft,title:"Titre corrigé"}}));
 });
 test("les balises actives et attributs HTML bloquent la publication",()=>{
-  for(const body of ['<p onclick="alert(1)">Texte</p>','<script>alert(1)</script>',"<iframe></iframe>","<img src=x onerror=alert(1)>"]) {
+  for(const body of ['<p onclick="alert(1)">Texte</p>','<script>alert(1)</script>',"<iframe></iframe>","<img src=x onerror=alert(1)>","<p/onmouseover=alert(1)>Texte</p>","<p hidden>Texte</p>"]) {
     assert.ok(editorialChecks({...draft,body}).some(s=>s.includes("HTML")));
   }
 });
@@ -49,3 +49,4 @@ test("les réponses de modèle malformées sont rejetées avant sauvegarde",()=>
   assert.throws(()=>assertDraftShape({...draft,further_verses:[null]}));
   assert.throws(()=>assertDraftShape({...draft,seo_keywords:"a,b"}));
 });
+

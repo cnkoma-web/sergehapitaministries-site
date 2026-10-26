@@ -24,8 +24,10 @@ async function save(db: SupabaseClient, id: string, values: Record<string, unkno
   if (result.error) throw result.error;
 }
 async function compareSave(db: SupabaseClient, job: EditorialJob, values: Record<string, unknown>) {
-  const result = await db.from("editorial_jobs").update({ ...values, updated_at: new Date().toISOString() })
-    .eq("id", job.id).eq("status", job.status).eq("source_hash", job.source_hash).is("lease_token", null).select("id").single();
+  let query = db.from("editorial_jobs").update({ ...values, updated_at: new Date().toISOString() })
+    .eq("id", job.id).eq("status", job.status).eq("source_hash", job.source_hash).is("lease_token", null);
+  query = job.draft_hash ? query.eq("draft_hash", job.draft_hash) : query.is("draft_hash", null);
+  const result = await query.select("id").single();
   if (result.error) throw new Error("Le contenu est en cours de modification. Recharge la page.");
 }
 export async function collectSources(db: SupabaseClient, targetDate: string, documentText?: string) {
@@ -87,7 +89,7 @@ export async function approveJob(db: SupabaseClient, id: string, expectedHash: s
   if (issues.length) throw new Error(issues.join("\n"));
   const hash = fingerprint({ source_hash: job.source_hash, draft: job.draft });
   if (hash !== expectedHash || hash !== job.draft_hash) throw new Error("Le contenu a changé : relis la dernière version.");
-  const result = await db.from("editorial_jobs").update({ status: "approved", approved_hash: hash, approved_by: actor, approved_at: new Date().toISOString() }).eq("id", id).eq("draft_hash", hash).in("status", ["review", "approved"]).select("id").single();
+  const result = await db.from("editorial_jobs").update({ status: "approved", approved_hash: hash, approved_by: actor, approved_at: new Date().toISOString() }).eq("id", id).eq("source_hash", job.source_hash).eq("draft_hash", hash).is("lease_token", null).in("status", ["review", "approved"]).select("id").single();
   if (result.error) throw result.error;
 }
 export async function publishJob(db: SupabaseClient, id: string) {
@@ -126,3 +128,4 @@ export async function verifyJob(db: SupabaseClient, id: string) {
   await save(db, id, { verified_at: new Date().toISOString(), last_error: null });
   return { url: job.public_url, status: response.status, verified: true };
 }
+

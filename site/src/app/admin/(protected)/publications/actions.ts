@@ -118,7 +118,7 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   const { error: saveError } = await supabase.from("articles").update(update).eq("id", id);
   if (saveError) throw saveError;
   await syncArticlePodcastLink(supabase, id, podcastEpisodeId, type);
-  await setArticleCategories(id, formData.getAll("category_ids").map(String).filter(Boolean));
+  await setArticleCategories(id, formData.getAll("category_ids").map(String).filter(Boolean), supabase);
 
   revalidatePath(`/admin/publications/${id}`);
   revalidatePath("/admin/publications");
@@ -432,3 +432,4 @@ export async function updateConfessionEntry(formData: FormData) {
   revalidatePath("/publications");
   redirect(`/admin/je-confesse/${id}?saved=1`);
 }
+
