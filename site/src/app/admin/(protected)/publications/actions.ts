@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicationClient as createClient } from "@/lib/editorial/context";
 import { computeReadingTime } from "@/lib/readingTime";
 import { setArticleCategories } from "@/lib/content/categories";
 
@@ -57,7 +57,7 @@ export async function createArticle(formData: FormData) {
       type,
       title,
       slug: slugify(title) + "-" + Math.random().toString(36).slice(2, 7),
-      article_date: new Date().toISOString().slice(0, 10),
+      article_date: String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10),
       status: "draft",
     })
     .select("id")
@@ -115,7 +115,8 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   update.podcast_episode_id = podcastEpisodeId;
   if (status) update.status = status;
 
-  await supabase.from("articles").update(update).eq("id", id);
+  const { error: saveError } = await supabase.from("articles").update(update).eq("id", id);
+  if (saveError) throw saveError;
   await syncArticlePodcastLink(supabase, id, podcastEpisodeId, type);
   await setArticleCategories(id, formData.getAll("category_ids").map(String).filter(Boolean));
 

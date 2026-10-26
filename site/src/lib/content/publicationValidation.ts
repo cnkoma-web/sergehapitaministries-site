@@ -35,7 +35,7 @@ export function validatePublicationDraft(draft: PublicationDraft): ValidationIss
   required("title", "Titre");
   required("article_date", "Date");
   required("body", "Corps");
-  if (draft.article_date && !/^\d{4}-\d{2}-\d{2}$/.test(draft.article_date)) {
+  if (draft.article_date && (!/^\d{4}-\d{2}-\d{2}$/.test(draft.article_date) || !Number.isFinite(new Date(draft.article_date + "T12:00:00Z").getTime()) || new Date(draft.article_date + "T12:00:00Z").toISOString().slice(0, 10) !== draft.article_date)) {
     issues.push({ field: "article_date", message: "Date au format AAAA-MM-JJ." });
   }
 
