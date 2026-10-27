@@ -19,7 +19,7 @@ function validate(draft:EditorialDraft) {
 }
 export async function syncApprovedDrive(db:SupabaseClient, dryRun=false) {
   const started=new Date().toISOString(),token=await googleReadToken();
-  const files=await drivePublicationFiles(token);
+  const {files,driveAvailable}=await drivePublicationFiles(token);
   const outcomes:{document:string;status:string;url?:string;error?:string}[]=[];
   const today=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Paris",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   for(const file of files) {
@@ -55,7 +55,7 @@ export async function syncApprovedDrive(db:SupabaseClient, dryRun=false) {
       let article=await publishThroughCms(db,{...job,draft});
       await save({article_id:article.id});
       revalidatePath(article.path);
-      if(approval.asset) {
+      if(approval.asset && driveAvailable) {
         const response=await googleResponse("https://www.googleapis.com/drive/v3/files/"+approval.asset.id+"?alt=media",{headers:{authorization:"Bearer "+token}});
         if(Number(response.headers.get("content-length")??0)>800000)throw Error("Image supérieure à 800 Ko.");
         const reader=response.body?.getReader();if(!reader)throw Error("Image vide.");
@@ -80,9 +80,10 @@ export async function syncApprovedDrive(db:SupabaseClient, dryRun=false) {
       }
       const hash=fingerprint({source_hash:job.source_hash,draft});
       const url="https://sergehapitaministries.org"+article.path;
-      await save({draft,draft_hash:hash,approved_hash:hash,approved_by:actor,approved_at:started,article_id:article.id,public_url:url,status:"published",last_error:null,verified_at:null,lease_token:null,lease_until:null});
+      const pendingImage=Boolean(approval.asset&&!driveAvailable);
+      await save({draft,draft_hash:hash,approved_hash:hash,approved_by:pendingImage?actor+":texte":actor,approved_at:started,article_id:article.id,public_url:url,status:"published",last_error:pendingImage?"Texte publié ; image en attente d’activation de l’API Google Drive.":null,verified_at:null,lease_token:null,lease_until:null});
       for(const p of [article.path,"/","/publications","/rosee-matinale","/publications/que-dit-la-bible","/publications/je-confesse-et-declare","/sitemap.xml"])revalidatePath(p);
-      outcomes.push({document:file.name,status:"synchronisé",url});
+      outcomes.push({document:file.name,status:pendingImage?"texte synchronisé ; image en attente API Drive":"synchronisé",url});
     } catch(error) {
       const message=error instanceof Error?error.message:String((error as any)?.message??error);
       if(job&&lease)await db.from("editorial_jobs").update({status:"review",last_error:message,approved_hash:null,approved_by:null,lease_token:null,lease_until:null}).eq("id",job.id).eq("lease_token",lease);
@@ -93,5 +94,5 @@ export async function syncApprovedDrive(db:SupabaseClient, dryRun=false) {
     const r=await db.from("editorial_runs").insert({started_at:started,target_date:today,status:outcomes.some(o=>o.error)?"failed":"ok",detail:JSON.stringify(outcomes)});
     if(r.error)throw r.error;
   }
-  return {success:!outcomes.some(o=>o.error),dryRun,outcomes};
+  return {success:!outcomes.some(o=>o.error),dryRun,driveAvailable,outcomes};
 }

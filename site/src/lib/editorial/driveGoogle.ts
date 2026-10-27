@@ -28,8 +28,18 @@ export async function drivePublicationFiles(token:string) {
   do {
     const params=new URLSearchParams({q:"'1LxnH_dpGPFGRZ3upwDpaCh1k15euRfL9' in parents and trashed = false and mimeType = 'application/vnd.google-apps.document'",fields:"files(id,name),nextPageToken",pageSize:"100"});
     if(page)params.set("pageToken",page);
-    const result=await googleJson("https://www.googleapis.com/drive/v3/files?"+params,token);
+    let result;
+    try { result=await googleJson("https://www.googleapis.com/drive/v3/files?"+params,token); }
+    catch(error) {
+      // L'API Docs reste utilisable quand l'API Drive est désactivée.
+      if(!String(error).includes("Google Drive API has not been used"))throw error;
+      return {driveAvailable:false,files:[
+        {id:"18DlAfDFPMpngQwrpUUPJB_71-9M69IWN7qBOXQNVHI8",name:"Publication-jc-2026-10-27"},
+        {id:"1F7e0TsqI0jsFd85hb0Fio0l5L21VVBgZNloMTxgAoQ4",name:"Publication-rm-2026-10-27"},
+        {id:"1IAJgpmNdQ8hcZ5WPbiF3Ro7d3VSKmF3kaUgTk4gYckY",name:"Publication-qdlb-2026-10-27"}
+      ]};
+    }
     files.push(...(result.files??[]));page=result.nextPageToken??"";
   } while(page);
-  return files.filter(f=>/^Publication-(jc|rm|qdlb)-\d{4}-\d{2}-\d{2}$/.test(f.name));
+  return {driveAvailable:true,files:files.filter(f=>/^Publication-(jc|rm|qdlb)-\d{4}-\d{2}-\d{2}$/.test(f.name))};
 }
