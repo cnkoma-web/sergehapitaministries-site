@@ -89,6 +89,7 @@ export async function replaceDraft(db: SupabaseClient, id: string, draft: Editor
 export async function approveJob(db: SupabaseClient, id: string, expectedHash: string, actor: string) {
   const job = await getJob(db, id);
   if (!job.draft || !["review", "approved"].includes(job.status)) throw new Error("Brouillon non prêt à valider.");
+  if(job.article_date>="2026-10-28"&&!job.draft.editorial_audit)throw Error("Analyse, enrichissement et conformité aux références requis.");
   const issues = allChecks(job.draft, job.source);
   if (issues.length) throw new Error(issues.join("\n"));
   const hash = fingerprint({ source_hash: job.source_hash, draft: job.draft });
@@ -100,6 +101,7 @@ export async function publishJob(db: SupabaseClient, id: string) {
   const job = await getJob(db, id);
   if (job.status === "published") return job;
   if (!job.draft || job.status !== "approved" || !job.approved_by || job.approved_hash !== job.draft_hash || fingerprint({ source_hash: job.source_hash, draft: job.draft }) !== job.approved_hash) throw new Error("Validation explicite de cette version requise.");
+  if(job.article_date>="2026-10-28"&&!job.draft.editorial_audit)throw Error("Analyse, enrichissement et conformité aux références requis.");
   const issues = allChecks(job.draft, job.source);
   if (issues.length) throw new Error(issues.join("\n"));
   const lease = crypto.randomUUID();
