@@ -3,17 +3,19 @@ import { googleReadToken,googleJson,googleResponse } from "./driveGoogle";
 import type { EditorialJob } from "./types";
 const PUBLISHED_FOLDER="1LxnH_dpGPFGRZ3upwDpaCh1k15euRfL9";
 const plain=(s:string)=>s.replace(/<[^>]*>/g,"").replace(/&nbsp;|&#160;/g," ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").trim();
-export async function archivePublishedDraft(job:EditorialJob){
+export async function archivePublishedDraft(job:EditorialJob, overwrite=false){
   if(job.status!=="published"||!job.draft)throw Error("L’archive attend la publication effective.");
   const token=await googleReadToken(true),name="Publication-"+job.type+"-"+job.article_date;
   const q=new URLSearchParams({q:"'"+PUBLISHED_FOLDER+"' in parents and trashed = false and name = '"+name+"'",fields:"files(id,name)",pageSize:"10"});
   const found=await googleJson("https://www.googleapis.com/drive/v3/files?"+q,token);
   if(found.files?.length>1)throw Error("Archive Drive en double : "+name);
   let id=found.files?.[0]?.id;
+  let previousEnd=1;
   if(id){
     // Une archive existante est préservée, y compris les corrections ultérieures.
     const existing=await googleJson("https://docs.googleapis.com/v1/documents/"+id,token);
-    if((existing.body?.content??[]).some((p:any)=>(p.paragraph?.elements??[]).some((e:any)=>e.textRun?.content?.trim())))return id;
+    previousEnd=Math.max(1,...(existing.body?.content??[]).map((p:any)=>(p.endIndex??1)-1));
+    if(!overwrite&&(existing.body?.content??[]).some((p:any)=>(p.paragraph?.elements??[]).some((e:any)=>e.textRun?.content?.trim())))return id;
   }else{
     const params=new URLSearchParams({q:"trashed = false and name = 'PréparationPublication-"+job.type+"-"+job.article_date+"' and mimeType = 'application/vnd.google-apps.document'",fields:"files(id,parents)",pageSize:"10"});
     const reserved=await googleJson("https://www.googleapis.com/drive/v3/files?"+params,token);
@@ -32,7 +34,7 @@ export async function archivePublishedDraft(job:EditorialJob){
   rows.push({text:"Préparation éditoriale",style:"HEADING_1"},{text:"Date : "+d.article_date+". Rubrique : "+d.type+"."},{text:"État : publié automatiquement à la date prévue. URL : "+job.public_url},{text:"Mots-clés : "+d.seo_keywords.join(", ")},{text:"Publication automatique : ordre permanent de Serge Hapita du 27 octobre 2026."});
   if(d.image_drive_file_id)rows.push({text:"Image : https://drive.google.com/file/d/"+d.image_drive_file_id+"/view"},{text:"Texte alternatif : "+d.cover_alt},{text:"Poids image : "+d.image_bytes+" octets."});
   const text=rows.map(r=>r.text+"\n").join("");
-  const requests:any[]=[{insertText:{location:{index:1},text}},{updateParagraphStyle:{range:{startIndex:1,endIndex:1+text.length},paragraphStyle:{spaceBelow:{magnitude:6,unit:"PT"}},fields:"spaceBelow"}}];
+  const requests:any[]=[...(previousEnd>1?[{deleteContentRange:{range:{startIndex:1,endIndex:previousEnd}}}]:[]),{insertText:{location:{index:1},text}},{updateParagraphStyle:{range:{startIndex:1,endIndex:1+text.length},paragraphStyle:{spaceBelow:{magnitude:6,unit:"PT"}},fields:"spaceBelow"}}];
   let start=1;
   for(const row of rows){
     const range={startIndex:start,endIndex:start+row.text.length};
