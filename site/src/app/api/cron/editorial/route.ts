@@ -24,12 +24,18 @@ export async function GET(request: Request) {
       if (attempt.data?.length) await prepareJob(db, job.id);
     }
     const unverified = await db.from("editorial_jobs").select("id").eq("status", "published").is("verified_at", null).limit(3);
-    for (const row of unverified.data ?? []) await verifyJob(db, row.id);
+    // Une vérification d’archive reste indépendante de la préparation du lendemain.
+    const verificationErrors: string[] = [];
+    for (const row of unverified.data ?? []) {
+      try { await verifyJob(db, row.id); }
+      catch(error) { verificationErrors.push(row.id+": "+(error instanceof Error ? error.message : "Vérification interrompue")); }
+    }
     await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: "ok", detail: job ? "Préparation " + job.id : "File déjà traitée" });
-    return Response.json({ success: true, date: clock.targetDate, prepared: job?.id ?? null });
+    return Response.json({ success: true, date: clock.targetDate, prepared: job?.id ?? null, verificationErrors });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Collecte interrompue.";
     await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: "failed", detail: message });
     return Response.json({ success: false, error: message }, { status: 503 });
   }
 }
+
