@@ -27,8 +27,9 @@ export function editorialChecks(draft: EditorialDraft, source?: string): string[
   }
   if (draft.type === "qdlb") {
     if (/<h[1-6]\b/i.test(draft.body)) issues.push("Que dit la Bible ? ne comporte pas de titres de sections.");
-    const sourceWords = source?.trim().split(/\s+/).filter(Boolean).length ?? 0;
-    if (sourceWords && words > Math.floor(sourceWords * 1.1)) issues.push("Le développement dépasse de plus de 10 % la source.");
+    const normalize=(s:string)=>plainText(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+    if(draft.verse_text && normalize(body).includes(normalize(draft.verse_text)))issues.push("Le verset d’ouverture doit figurer uniquement dans son champ dédié.");
+    if(draft.prayer && normalize(body).includes(normalize(draft.prayer)))issues.push("La prière doit figurer uniquement dans son champ dédié.");
   }
   if (draft.type === "qdlb" && !(draft.further_verses?.length)) issues.push("Les passages pour aller plus loin sont obligatoires.");
   if (draft.type === "jc" && (draft.excerpt || draft.author_name)) issues.push("Je Confesse ne comporte ni chapeau ni auteur.");
@@ -56,4 +57,5 @@ export function assertDraftShape(value: unknown): asserts value is EditorialDraf
   if (!Array.isArray(draft.seo_keywords) || draft.seo_keywords.length > 30 || !draft.seo_keywords.every(v => typeof v === "string")) throw new Error("Mots-clés invalides.");
   if (draft.further_verses != null && (!Array.isArray(draft.further_verses) || draft.further_verses.length > 20 || !draft.further_verses.every(v => v && typeof v.reference === "string" && typeof v.text === "string"))) throw new Error("Passages complémentaires invalides.");
 }
+
 
