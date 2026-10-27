@@ -31,7 +31,7 @@ async function compareSave(db: SupabaseClient, job: EditorialJob, values: Record
   if (result.error) throw new Error("Le contenu est en cours de modification. Recharge la page.");
 }
 export async function collectSources(db: SupabaseClient, targetDate: string, documentText?: string) {
-  const doc = documentText === undefined ? await collectGoogleDocument() : { text: documentText, revision: "manual-import" };
+  const doc = documentText === undefined ? await collectGoogleDocument(targetDate) : { text: documentText, revision: "manual-import" };
   const sources = parseDailySources(doc.text, targetDate);
   if (sources.missing.length) throw new Error("Sources manquantes pour " + targetDate + " : " + sources.missing.join(", "));
   for (const type of ["qdlb", "rm", "jc"] as const) {
@@ -66,7 +66,11 @@ export async function prepareJob(db: SupabaseClient, id: string) {
     let draft = job.draft ?? await writeDraft(job);
     await save(db, id, { draft, last_error: null }, lease);
     // Les images sont conçues séparément après validation du texte final.
-    const issues = allChecks(draft, job.source);
+    let issues = allChecks(draft, job.source);
+    for(let correction=0;issues.length&&correction<2;correction++) {
+      draft=await writeDraft({...job,draft},"Corriger exclusivement ces contrôles, en conservant la fidélité à la source :\n"+issues.join("\n"));
+      issues=allChecks(draft,job.source);
+    }
     await save(db, id, { draft, draft_hash: fingerprint({ source_hash: job.source_hash, draft }), approved_hash: null, approved_by: null, approved_at: null, status: issues.length ? "blocked" : "review", last_error: issues.join("\n") || null, lease_token: null, lease_until: null }, lease);
   } catch (error) {
     await save(db, id, { status: "failed", last_error: error instanceof Error ? error.message : "Préparation interrompue", lease_token: null, lease_until: null }, lease);
