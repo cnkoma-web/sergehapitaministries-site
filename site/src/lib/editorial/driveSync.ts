@@ -28,7 +28,7 @@ export async function syncApprovedDrive(db:SupabaseClient, dryRun=false) {
     try {
       const doc=await googleJson(docsUrl(file.id),token);
       const approval=readDriveApproval(doc,file.name);
-      if(!approval.approved) {outcomes.push({document:file.name,status:"validation attendue"});continue;}
+      if(!approval.approved) {outcomes.push({document:file.name,status:"aucune nouvelle synchronisation demandée"});continue;}
       validate(approval.draft);
       const found=await db.from("editorial_jobs").select("*").eq("type",approval.draft.type).eq("article_date",approval.draft.article_date).maybeSingle();
       if(found.error)throw found.error;

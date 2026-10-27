@@ -1,6 +1,7 @@
 {
   "crons": [
     { "path": "/api/cron/editorial", "schedule": "0,10,20,30,40,50 21,22 * * *" },
-    { "path": "/api/cron/drive", "schedule": "*/10 * * * *" }
+    { "path": "/api/cron/drive", "schedule": "*/10 * * * *" },
+    { "path": "/api/cron/publish", "schedule": "0,5,10,20 22,23 * * *" }
   ]
 }

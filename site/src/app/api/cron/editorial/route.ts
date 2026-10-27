@@ -15,23 +15,16 @@ export async function GET(request: Request) {
     // Une relance ne réécrit jamais un brouillon revu ou approuvé.
     await db.from("editorial_jobs").update({ status: "failed", last_error: "Préparation interrompue ; reprise possible.", lease_token: null, lease_until: null }).eq("status", "writing").lt("lease_until", started);
     await collectSources(db, clock.targetDate);
-    const result = await db.from("editorial_jobs").select("id,attempts").eq("article_date", clock.targetDate).in("status", ["collected", "failed"]).lt("attempts", 3).order("type").limit(1);
+    const result = await db.from("editorial_jobs").select("id,attempts").eq("article_date", clock.targetDate).in("status", ["collected", "failed"]).lt("attempts", 3).order("type").limit(3);
     if (result.error) throw result.error;
-    const job = result.data?.[0];
-    if (job) {
+    const prepared:string[]=[];
+    for (const job of result.data??[]) {
       const attempt = await db.from("editorial_jobs").update({ attempts: job.attempts + 1 }).eq("id", job.id).eq("attempts", job.attempts).select("id");
       if (attempt.error) throw attempt.error;
-      if (attempt.data?.length) await prepareJob(db, job.id);
+      if (attempt.data?.length) { await prepareJob(db, job.id); prepared.push(job.id); }
     }
-    const unverified = await db.from("editorial_jobs").select("id").eq("status", "published").is("verified_at", null).limit(3);
-    // Une vérification d’archive reste indépendante de la préparation du lendemain.
-    const verificationErrors: string[] = [];
-    for (const row of unverified.data ?? []) {
-      try { await verifyJob(db, row.id); }
-      catch(error) { verificationErrors.push(row.id+": "+(error instanceof Error ? error.message : "Vérification interrompue")); }
-    }
-    await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: "ok", detail: job ? "Préparation " + job.id : "File déjà traitée" });
-    return Response.json({ success: true, date: clock.targetDate, prepared: job?.id ?? null, verificationErrors });
+    await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: "ok", detail: prepared.length ? "Préparation " + prepared.join(", ") : "File déjà traitée" });
+    return Response.json({ success: true, date: clock.targetDate, prepared });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Collecte interrompue.";
     await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: "failed", detail: message });

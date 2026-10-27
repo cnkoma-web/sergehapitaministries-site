@@ -1,13 +1,14 @@
 import "server-only";
 import { createSign } from "node:crypto";
 
-export async function googleReadToken() {
+export async function googleReadToken(write=false) {
   const raw=process.env.EDITORIAL_GOOGLE_SERVICE_ACCOUNT_JSON ?? process.env.GA_SERVICE_ACCOUNT_JSON;
   if (!raw) throw Error("Compte de collecte Google absent.");
   const account=JSON.parse(raw);
   if (!account.client_email || !account.private_key) throw Error("Compte de collecte Google incomplet.");
   const now=Math.floor(Date.now()/1000), enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
-  const claim=enc({alg:"RS256",typ:"JWT"})+"."+enc({iss:account.client_email,scope:"https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly",aud:"https://oauth2.googleapis.com/token",iat:now,exp:now+3600});
+  const scope=write?"https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/documents":"https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/documents.readonly";
+  const claim=enc({alg:"RS256",typ:"JWT"})+"."+enc({iss:account.client_email,scope,aud:"https://oauth2.googleapis.com/token",iat:now,exp:now+3600});
   const assertion=claim+"."+createSign("RSA-SHA256").update(claim).sign(account.private_key,"base64url");
   const response=await googleResponse("https://oauth2.googleapis.com/token",{method:"POST",body:new URLSearchParams({grant_type:"urn:ietf:params:oauth:grant-type:jwt-bearer",assertion})});
   return (await response.json()).access_token as string;
