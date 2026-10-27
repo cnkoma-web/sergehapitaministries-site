@@ -1,4 +1,7 @@
 import "server-only";
+import { createServiceRoleClient } from "@/lib/supabase/serviceRole";
+import { runEditorialPipeline, REFERENCE_CUTOFF } from "./editorialPipeline";
+import { editorialChecks } from "./checks";
 import { assertDraftShape, fingerprint } from "./checks";
 import { publicationJpeg } from "./imageEncoding";
 import { googleReadToken, googleJson, googleResponse } from "./driveGoogle";
@@ -63,18 +66,17 @@ export async function writeDraft(job: EditorialJob, corrections?: string): Promi
   const token=await googleReadToken();
   const official=await googleJson("https://docs.googleapis.com/v1/documents/1em2mGsG90Trx5aod8uLlQxkvx4f3cPtML03oYERbbQk?includeTabsContent=true",token);
   const currentRules=docParagraphs(official).map(p=>p.text).join("\n");
-  const response = await gateway("chat/completions", {
-    model: process.env.EDITORIAL_TEXT_MODEL ?? "openai/gpt-5-mini",
-    messages: [{ role: "system", content: RULES + "\nRègles officielles actualisées :\n" + currentRules }, { role: "user", content: JSON.stringify({ type: job.type, date: job.article_date, source: job.source, corrections: corrections ?? null, previous_draft: corrections ? job.draft : null }) }],
-    response_format: { type: "json_object" }, max_completion_tokens: 10000,
-  });
-  const content = response.choices?.[0]?.message?.content;
-  if (typeof content !== "string") throw new Error("Le moteur de rédaction n'a pas renvoyé de texte.");
-  const draft = JSON.parse(content);
-  assertDraftShape(draft);
-  delete draft.cover_url; delete draft.image_bytes; delete draft.image_width; delete draft.image_height;
-  if (draft.type !== job.type || draft.article_date !== job.article_date || typeof draft.body !== "string" || !Array.isArray(draft.seo_keywords)) throw new Error("Réponse de rédaction invalide.");
-  return draft;
+  const db=createServiceRoleClient();
+  const result=await db.from("articles").select("id,article_date,title,body,excerpt,verse_text,verse_reference,prayer,further_verses").eq("type",job.type).eq("status","published").lt("article_date",REFERENCE_CUTOFF).order("article_date",{ascending:false}).limit(5);
+  if(result.error)throw result.error;
+  return runEditorialPipeline(job,result.data??[],RULES+"\nRègles officielles actualisées :\n"+currentRules,{
+    async ask(system,input){
+      const response=await gateway("chat/completions",{model:process.env.EDITORIAL_TEXT_MODEL??"openai/gpt-5-mini",reasoning_effort:"low",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_object"},max_completion_tokens:14000});
+      const content=response.choices?.[0]?.message?.content;if(typeof content!=="string")throw Error("Réponse du moteur éditorial absente.");return JSON.parse(content);
+    },
+    async record(stage,detail){const r=await db.from("editorial_runs").insert({started_at:new Date().toISOString(),target_date:job.article_date,status:"ok",detail:JSON.stringify({job_id:job.id,type:job.type,stage,detail})});if(r.error)throw r.error;},
+    validate:draft=>editorialChecks(draft,job.source),
+  },corrections);
 }
 export async function illustrate(db: SupabaseClient, job: EditorialJob, draft: EditorialDraft) {
   const token=await googleReadToken(true);
