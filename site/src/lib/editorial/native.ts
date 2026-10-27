@@ -62,3 +62,37 @@ export async function publishThroughCms(db: SupabaseClient, job: EditorialJob) {
   if (existing && (article.id !== existing.id || (previousSlug && article.slug !== previousSlug))) throw new Error("Identifiant ou URL modifié.");
   return { id: article.id, path: job.type === "rm" ? "/rosee-matinale/" + job.article_date : job.type === "jc" ? "/publications/je-confesse-et-declare/" + job.article_date : "/publications/" + article.slug };
 }
+
+/** Prépare Rosée dans son éditeur natif pendant que son visuel attend validation. */
+export async function stageRoseeThroughCms(db: SupabaseClient, job: EditorialJob) {
+  if (job.type !== "rm" || !job.draft || ["writing", "publishing", "published"].includes(job.status)) throw new Error("Brouillon Rosée non disponible.");
+  const draft = job.draft;
+  if (draft.type !== "rm" || draft.article_date !== job.article_date || !draft.title || !draft.body || !draft.verse_text) throw new Error("Brouillon Rosée incomplet.");
+  const rows = await db.from("articles").select("*").eq("article_date", job.article_date).eq("type", "rm");
+  if (rows.error) throw rows.error;
+  if ((rows.data?.length ?? 0) > 1) throw new Error("Plusieurs Rosées correspondent à cette date.");
+  let existing = rows.data?.[0];
+  if (job.article_id && existing?.id !== job.article_id) throw new Error("L'identité de l'article a changé.");
+  if (existing?.status === "published") throw new Error("La Rosée publiée doit conserver son statut.");
+  const previousSlug = existing?.slug;
+  const form = new FormData();
+  for (const key of ["title", "article_date", "body", "verse_text", "cover_url", "cover_alt"] as const) form.set(key, String(draft[key] ?? ""));
+  form.set("type", "rm"); form.set("status", "draft");
+  form.set("seo_keywords", draft.seo_keywords.join(", "));
+  form.set("podcast_episode_id", existing?.podcast_episode_id ?? "");
+  await withPublicationClient(db, async () => {
+    if (!existing) {
+      const destination = await invoke(createArticle, form);
+      const id = destination?.match(/\/admin\/publications\/([0-9a-f-]{36})/)?.[1];
+      if (!id) throw new Error("Le CMS n'a pas confirmé le brouillon Rosée.");
+      existing = { id };
+    }
+    form.set("id", existing.id);
+    await invoke(updateRoseeEntry, form);
+  });
+  const saved = await db.from("articles").select("*").eq("id", existing!.id).single();
+  if (saved.error) throw saved.error;
+  if (saved.data.status !== "draft" || saved.data.body !== draft.body || saved.data.title !== draft.title || saved.data.verse_text !== draft.verse_text || saved.data.article_date !== job.article_date || saved.data.type !== "rm" || (previousSlug && saved.data.slug !== previousSlug)) throw new Error("La relecture du brouillon Rosée a échoué.");
+  return { id: saved.data.id, status: "draft", path: "/admin/rosee-matinale/" + saved.data.id };
+}
+

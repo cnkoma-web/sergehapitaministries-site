@@ -2,6 +2,7 @@ import { configuration } from "@/lib/editorial/providers";
 import { validBearer, editorialAccess } from "@/lib/editorial/access";
 import { collectSources, prepareJob, replaceDraft, approveJob, publishJob, verifyJob } from "@/lib/editorial/workflow";
 import { isEditorialDate } from "@/lib/content/dailySourceParser";
+import { stageRoseeThroughCms } from "@/lib/editorial/native";
 export const runtime = "nodejs";
 export const maxDuration = 600;
 
@@ -28,6 +29,15 @@ export async function POST(request: Request) {
     if (result.error) return Response.json({ error: "Travail introuvable." }, { status: 404 });
     if (input.action === "prepare") return Response.json({ job: await prepareJob(db, input.id) });
     if (input.action === "replace") { await replaceDraft(db, input.id, input.draft); return Response.json({ saved: true }); }
+    if (input.action === "stage") {
+      if (process.env.VERCEL_ENV !== "production") throw new Error("Préparation CMS autorisée uniquement en production.");
+      const job = await db.from("editorial_jobs").select("*").eq("id", input.id).eq("article_date", input.date).single();
+      if (job.error) throw job.error;
+      const article = await stageRoseeThroughCms(db, job.data);
+      const linked = await db.from("editorial_jobs").update({ article_id: article.id }).eq("id", input.id).eq("draft_hash", job.data.draft_hash).select("id").single();
+      if (linked.error) throw linked.error;
+      return Response.json({ article });
+    }
     if (input.action === "approve") {
       if (input.confirmSource !== true || input.confirmBible !== true || input.confirmImage !== true) throw new Error("Confirmer la fidélité à la source, les versets et le visuel.");
       await approveJob(db, input.id, input.hash, actor); return Response.json({ approved: true });
@@ -43,3 +53,4 @@ export async function POST(request: Request) {
     return Response.json({ error: message }, { status: /Accès|Opérateur/.test(message) ? 403 : 422 });
   }
 }
+

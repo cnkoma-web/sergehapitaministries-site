@@ -12,7 +12,7 @@ export function fingerprint(value: unknown): string {
 export function plainText(html: string) {
   return html.replace(/<[^>]*>/g, " ").replace(/&nbsp;|&#160;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
 }
-export function editorialChecks(draft: EditorialDraft): string[] {
+export function editorialChecks(draft: EditorialDraft, source?: string): string[] {
   const issues: string[] = [];
   const body = plainText(draft.body ?? "");
   const words = body.split(/\s+/).filter(Boolean).length;
@@ -25,7 +25,11 @@ export function editorialChecks(draft: EditorialDraft): string[] {
     if (!/<mark>[^<]+<\/mark>/.test(draft.body)) issues.push("La phrase clé doit être surlignée.");
     if ((draft.verse_text?.match(/[.!?](?:\s|$)/g) ?? []).length !== 2) issues.push("Le chapeau Rosée Matinale comporte deux phrases.");
   }
-  if (draft.type === "qdlb" && (draft.body.match(/<p>/g) ?? []).length !== 3 && (draft.body.match(/<p>/g) ?? []).length !== 2) issues.push("Que dit la Bible ? comporte deux ou trois paragraphes.");
+  if (draft.type === "qdlb") {
+    if (/<h[1-6]\b/i.test(draft.body)) issues.push("Que dit la Bible ? ne comporte pas de titres de sections.");
+    const sourceWords = source?.trim().split(/\s+/).filter(Boolean).length ?? 0;
+    if (sourceWords && words > Math.floor(sourceWords * 1.1)) issues.push("Le développement dépasse de plus de 10 % la source.");
+  }
   if (draft.type === "qdlb" && !(draft.further_verses?.length)) issues.push("Les passages pour aller plus loin sont obligatoires.");
   if (draft.type === "jc" && (draft.excerpt || draft.author_name)) issues.push("Je Confesse ne comporte ni chapeau ni auteur.");
   const keywords = Array.isArray(draft.seo_keywords) ? draft.seo_keywords.filter(v => typeof v === "string" && v.trim()) : [];

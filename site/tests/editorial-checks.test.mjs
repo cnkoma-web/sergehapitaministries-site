@@ -50,3 +50,12 @@ test("les réponses de modèle malformées sont rejetées avant sauvegarde",()=>
   assert.throws(()=>assertDraftShape({...draft,seo_keywords:"a,b"}));
 });
 
+test("QDLB respecte la limite de 10 % sans imposer un nombre de paragraphes",()=>{
+  const source=Array(100).fill("source").join(" ");
+  const body="<p>"+Array(110).fill("mot").join(" ")+"</p>";
+  assert.deepEqual(editorialChecks({...draft,body},source),[]);
+  assert.ok(editorialChecks({...draft,body:body.replace("</p>"," mot</p>")},source).some(s=>s.includes("10 %")));
+  assert.deepEqual(editorialChecks({...draft,body:"<p>Phrase.</p>".repeat(6)},source),[]);
+  assert.ok(editorialChecks({...draft,body:"<h2>Section</h2>"+body},source).some(s=>s.includes("titres de sections")));
+});
+

@@ -1,0 +1,172 @@
+{
+  "date": "2026-10-27",
+  "approval": "Publication des textes traduits autorisée par Serge Hapita ; images JC et QDLB validées dans la conversation ; Rosée reste en brouillon sans visuel.",
+  "items": [
+    {
+      "type": "jc",
+      "sourceDocumentId": "1lWc0Im2zSQc9rIwqt0F0Qm2flOfq8XVp0d3K_Q62Mf0",
+      "sourceSha256": "3bd32539c83b8faa3f51dedabfa713ffd21e89950e1a7dc11a2eaeb81807ee10",
+      "publish": true,
+      "asset": {
+        "path": "public/editorial/2026-10-27/jc.png",
+        "sha256": "bba29fc069523c0bcce12cc4e8d3abddd8045b257e16e6907b925368056be440"
+      },
+      "draft": {
+        "type": "jc",
+        "title": "Sur mon chemin, il n’y a pas de mort",
+        "article_date": "2026-10-27",
+        "verse_reference": "Romains 8:2",
+        "verse_text": "En effet, la loi de l’esprit de vie en Jésus-Christ m’a affranchi de la loi du péché et de la mort.",
+        "excerpt": null,
+        "prayer": null,
+        "author_name": null,
+        "further_verses": [],
+        "cover_alt": "Chemin lumineux bordé d’une végétation abondante",
+        "image_bytes": 3322548,
+        "image_width": 1672,
+        "image_height": 941,
+        "image_prompt": "Chemin de vie lumineux dans une végétation luxuriante — image validée par Serge Hapita.",
+        "seo_keywords": [
+          "Je Confesse",
+          "confession de foi",
+          "Romains 8:2",
+          "Esprit de vie",
+          "vie éternelle",
+          "vie en Christ",
+          "victoire en Jésus-Christ",
+          "affranchi du péché",
+          "affranchi de la mort",
+          "identité en Christ",
+          "nouvelle naissance",
+          "vie divine",
+          "Saint-Esprit",
+          "Parole de Dieu",
+          "vie indestructible",
+          "chemin de la vie",
+          "justice en Christ",
+          "conscience de la vie éternelle",
+          "victoire sur la peur",
+          "Serge Hapita Ministries",
+          "confession quotidienne",
+          "domination en Christ"
+        ],
+        "body": "<p>Aujourd’hui, je confesse et je déclare que je suis passé de la condition humaine à la vie éternelle, car la loi de l’Esprit de vie en Jésus-Christ m’a affranchi de la loi du péché et de la mort. Sur mon chemin, il n’y a pas de mort ! Je marche uniquement sur le chemin de la vie. Mes finances, mes affaires, mon travail et ma santé sont soustraits à son emprise. Quelles que soient les influences destructrices à l’œuvre dans le monde, je suis préservé de leur pouvoir. La mort a cessé d’agir en moi. Je n’appartiens pas à son domaine.</p><p>Je suis sans crainte, car Jésus a paralysé la mort et l’a entièrement vaincue. Il m’a donné la victoire. J’étais en lui et, avec lui, j’ai triomphé de la mort et du tombeau. J’ai reçu une vie indestructible, supérieure à la vie humaine ordinaire. J’ai été transporté du domaine de la mort dans celui de la vie ! Sur mon chemin, il n’y a ni mort ni ténèbres : la vie de Dieu est en moi. Je refuse donc d’accueillir ce qui appartient aux ténèbres. Je vis selon la loi de l’Esprit de vie, et dans ce domaine, seule la vie gouverne. Alléluia !</p><p>Ma vie nouvelle vient de la Parole de Dieu ; elle est pure et demeure éternellement. Le Saint-Esprit parcourt mon corps, l’inonde de la vie divine et le débarrasse de toute infirmité. L’ancienne vie, soumise à la maladie, a été remplacée par la vie de Dieu. Je crois cette vérité et je vis selon elle. La loi de l’Esprit de vie en Jésus-Christ m’a affranchi du péché et de la mort. Je marche dans la conscience de la vie éternelle, de la victoire, de la domination et de la justice. La peur, la condamnation, la maladie et la mort n’ont aucune place en moi, au nom de Jésus. Amen.</p>",
+        "cover_url": "https://sergehapitaministries.org/editorial/2026-10-27/jc.png"
+      }
+    },
+    {
+      "type": "qdlb",
+      "sourceDocumentId": "1L4l4s7zCFDmXHBfw53rTXYU0XVGV5nHVYjji5rtx52w",
+      "sourceSha256": "64bf09f5001804230e98792c92570b314477731d20a413b69fef1b2483399947",
+      "publish": true,
+      "asset": {
+        "path": "public/editorial/2026-10-27/qdlb.png",
+        "sha256": "a63c83f5b814f267aafdcd1e4c3c659fabb1f5c012164abde93e2674d6ec5063"
+      },
+      "draft": {
+        "type": "qdlb",
+        "title": "Une union divine révélée",
+        "article_date": "2026-10-27",
+        "verse_reference": "1 Corinthiens 6:17",
+        "verse_text": "Mais celui qui s’attache au Seigneur est avec lui un seul esprit.",
+        "excerpt": "La nouvelle naissance nous introduit dans une union inséparable avec le Seigneur. Cette réalité éclaire notre nature, notre croissance et notre manière de vivre.",
+        "author_name": "Serge Hapita",
+        "cover_alt": "Silhouette humaine unie à une grande silhouette lumineuse",
+        "image_bytes": 1742494,
+        "image_width": 1672,
+        "image_height": 941,
+        "image_prompt": "Une silhouette humaine entièrement dans une silhouette lumineuse évoquant le Saint-Esprit — composition explicitement choisie et validée par Serge Hapita.",
+        "prayer": "Que tu es grand, Seigneur ! Merci de m’avoir uni à toi par Jésus-Christ. Mes pensées, mes paroles et mes actes s’accordent avec ta nature divine en moi. Je suis rempli des attributs propres à ta nature et à ta vie. Aujourd’hui, je manifeste ta sagesse, ton excellence, ta victoire et ta gloire, au nom de Jésus. Amen.",
+        "further_verses": [
+          {
+            "reference": "2 Pierre 1:4",
+            "text": "lesquelles nous assurent de sa part les plus grandes et les plus précieuses promesses, afin que par elles vous deveniez participants de la nature divine, en fuyant la corruption qui existe dans le monde par la convoitise,"
+          },
+          {
+            "reference": "Colossiens 1:26-27",
+            "text": "le mystère caché de tout temps et dans tous les âges, mais révélé maintenant à ses saints, à qui Dieu a voulu faire connaître quelle est la glorieuse richesse de ce mystère parmi les païens, savoir: Christ en vous, l’espérance de la gloire."
+          },
+          {
+            "reference": "Jean 17:21-23",
+            "text": "afin que tous soient un, comme toi, Père, tu es en moi, et comme je suis en toi, afin qu’eux aussi soient un en nous, pour que le monde croie que tu m’as envoyé. Je leur ai donné la gloire que tu m’as donnée, afin qu’ils soient un comme nous sommes un, - moi en eux, et toi en moi, -afin qu’ils soient parfaitement un, et que le monde connaisse que tu m’as envoyé et que tu les as aimés comme tu m’as aimé."
+          },
+          {
+            "reference": "Éphésiens 5:30",
+            "text": "parce que nous sommes membres de son corps."
+          }
+        ],
+        "seo_keywords": [
+          "Que dit la Bible",
+          "union avec Christ",
+          "1 Corinthiens 6:17",
+          "un seul esprit",
+          "nouvelle naissance",
+          "nature divine",
+          "2 Pierre 1:4",
+          "participants de la nature divine",
+          "identité chrétienne",
+          "nouvelle création",
+          "Saint-Esprit",
+          "vie de Dieu",
+          "Christ en vous",
+          "Colossiens 1:27",
+          "Jean 17",
+          "Éphésiens 5:30",
+          "croissance spirituelle",
+          "connaissance de Christ",
+          "vie en Christ",
+          "union inséparable",
+          "Serge Hapita",
+          "Serge Hapita Ministries"
+        ],
+        "body": "<p>Dès la nouvelle naissance, nous sommes introduits dans une union inséparable avec le Seigneur. La Bible ne décrit ni une aide extérieure ni une association à distance : « Mais celui qui s’attache au Seigneur est avec lui un seul esprit. » Il s’agit d’un seul esprit inséparable, et non de deux esprits essayant de travailler ensemble.</p><p>Voilà la réalité de la nouvelle création : l’Esprit de Dieu s’est uni à notre esprit. Cela dépasse la religion. Pierre précise qu’à travers les plus grandes et les plus précieuses promesses de Dieu, nous devenons « participants de la nature divine » (2 Pierre 1:4).</p><p>L’expression grecque koinōnoi theias physeōs désigne ceux qui participent à la nature divine, qui en partagent la vie. Quelle révélation ! Par la naissance naturelle, nous sommes entrés dans l’humanité. En Jésus-Christ, nous sommes devenus participants de la nature de Dieu, membres de la communauté céleste.</p><p>Cela ne signifie pas que nous connaissons immédiatement, par expérience, tout ce que Dieu connaît. Nous possédons pourtant pleinement cette nature, comme un enfant possède pleinement la nature humaine avant sa maturité physique et intellectuelle. À cinq mois, il ne marche ni ne s’exprime comme un adulte ; il est tout aussi humain que ses parents.</p><p>En Christ, nous grandissons donc dans la connaissance et l’expression de notre nature divine. Pierre écrit : « Mais croissez dans la grâce et dans la connaissance de notre Seigneur et Sauveur Jésus-Christ. » (2 Pierre 3:18.) La croissance concerne la connaissance, la compréhension et la manifestation. La vie divine est déjà pleinement présente en nous.</p><p>Refusons de nous voir faibles, ordinaires ou simplement humains. Une vie supérieure nous habite : celle de Dieu. Que nos pensées, nos paroles et nos actes s’accordent avec notre nature, notre origine et notre identité divines. Nous sommes un avec le Seigneur, remplis des attributs propres à sa nature et à sa vie. Gloire à Dieu !</p>",
+        "cover_url": "https://sergehapitaministries.org/editorial/2026-10-27/qdlb.png"
+      }
+    },
+    {
+      "type": "rm",
+      "sourceDocumentId": "1p223GGSuSTuf78EfoNzGe-6Ftvu6PFTILVsmpjhuCNg",
+      "sourceSha256": "9feae8546feefae88ac2517e2c4adb46f8e320ca8abad8232022a1db8aab7aba",
+      "publish": false,
+      "asset": null,
+      "draft": {
+        "type": "rm",
+        "title": "Le choix de la louange",
+        "article_date": "2026-10-27",
+        "verse_text": "Une remarque ou une difficulté peut peser sur toute une journée. Pourtant, au milieu de ce qui nous atteint, un choix nous appartient encore.",
+        "verse_reference": null,
+        "excerpt": null,
+        "prayer": null,
+        "author_name": null,
+        "further_verses": [],
+        "cover_alt": null,
+        "image_prompt": "Visuel à choisir après validation du texte Rosée Matinale.",
+        "seo_keywords": [
+          "Rosée Matinale",
+          "louange",
+          "choisir de louer Dieu",
+          "liberté de choisir",
+          "foi en Dieu",
+          "attitude chrétienne",
+          "regard des autres",
+          "opinion des autres",
+          "confiance en Dieu",
+          "joie spirituelle",
+          "Parole de Dieu",
+          "expression de foi",
+          "louer dans les difficultés",
+          "bonté de Dieu",
+          "instruction divine",
+          "méditation quotidienne",
+          "choix personnel",
+          "vie chrétienne",
+          "réponse de foi",
+          "louange quotidienne",
+          "Serge Hapita Ministries",
+          "pensée du jour"
+        ],
+        "body": "<p>Dieu nous a créés avec la capacité de choisir. Ce pouvoir s’exerce jusque dans notre manière de traverser les circonstances. Nous pouvons choisir de louer le Seigneur, même lorsque la situation reste difficile ou que le regard des autres nous blesse. Cette liberté reçue de Dieu nous permet de décider de notre attitude devant lui.</p><p>L’opinion d’une personne peut prendre beaucoup de place dans nos pensées. À force de la laisser gouverner notre comportement, nous finissons parfois par perdre notre joie et par garder le silence devant Dieu. Une parole entendue devient alors le centre de notre journée, et notre louange semble suspendue à l’approbation de quelqu’un.</p><p>Pourtant, Dieu nous a donné le choix. Il ne nous force pas à le louer, et Satan ne peut pas nous imposer une décision. Même au cœur d’une situation pénible, nous pouvons tourner notre attention vers le Seigneur et ouvrir notre bouche pour célébrer sa bonté. Nous pouvons reprendre la place de celui qui choisit, au lieu d’abandonner cette décision aux circonstances.</p><p>Choisir son instruction, c’est accueillir ce qui nous fait vivre. Sa Parole éclaire notre réponse et nous invite à lui faire confiance. <mark>La louange exprime précisément cette foi : nous reconnaissons qui Dieu est et nous lui donnons gloire au milieu de ce que nous traversons.</mark></p><p>Notre louange n’a pas à attendre que les regards changent ou que tout s’arrange. Nous pouvons choisir de louer aujourd’hui. Cette réponse de foi peut transformer la situation.</p>"
+      }
+    }
+  ]
+}

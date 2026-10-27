@@ -9,8 +9,8 @@ import { publishThroughCms } from "./native";
 import type { EditorialJob, EditorialDraft } from "./types";
 
 const ORIGIN = "https://sergehapitaministries.org";
-export function allChecks(draft: EditorialDraft): string[] {
-  return [...validatePublicationDraft(draft).map(issue => issue.message), ...editorialChecks(draft)];
+export function allChecks(draft: EditorialDraft, source?: string): string[] {
+  return [...validatePublicationDraft(draft).map(issue => issue.message), ...editorialChecks(draft, source)];
 }
 async function getJob(db: SupabaseClient, id: string) {
   const result = await db.from("editorial_jobs").select("*").eq("id", id).single();
@@ -66,7 +66,7 @@ export async function prepareJob(db: SupabaseClient, id: string) {
     let draft = job.draft ?? await writeDraft(job);
     await save(db, id, { draft, last_error: null }, lease);
     if (!draft.cover_url) draft = await illustrate(db, job, draft);
-    const issues = allChecks(draft);
+    const issues = allChecks(draft, job.source);
     await save(db, id, { draft, draft_hash: fingerprint({ source_hash: job.source_hash, draft }), approved_hash: null, approved_by: null, approved_at: null, status: issues.length ? "blocked" : "review", last_error: issues.join("\n") || null, lease_token: null, lease_until: null }, lease);
   } catch (error) {
     await save(db, id, { status: "failed", last_error: error instanceof Error ? error.message : "Préparation interrompue", lease_token: null, lease_until: null }, lease);
@@ -79,13 +79,13 @@ export async function replaceDraft(db: SupabaseClient, id: string, draft: Editor
   const job = await getJob(db, id);
   if (["publishing", "published", "writing"].includes(job.status)) throw new Error("Ce contenu est en cours de traitement ou déjà publié.");
   if (draft.type !== job.type || draft.article_date !== job.article_date) throw new Error("Date et rubrique doivent être conservées.");
-  const issues = allChecks(draft);
+  const issues = allChecks(draft, job.source);
   await compareSave(db, job, { draft, draft_hash: fingerprint({ source_hash: job.source_hash, draft }), approved_hash: null, approved_by: null, approved_at: null, status: issues.length ? "blocked" : "review", last_error: issues.join("\n") || null });
 }
 export async function approveJob(db: SupabaseClient, id: string, expectedHash: string, actor: string) {
   const job = await getJob(db, id);
   if (!job.draft || !["review", "approved"].includes(job.status)) throw new Error("Brouillon non prêt à valider.");
-  const issues = allChecks(job.draft);
+  const issues = allChecks(job.draft, job.source);
   if (issues.length) throw new Error(issues.join("\n"));
   const hash = fingerprint({ source_hash: job.source_hash, draft: job.draft });
   if (hash !== expectedHash || hash !== job.draft_hash) throw new Error("Le contenu a changé : relis la dernière version.");
@@ -96,7 +96,7 @@ export async function publishJob(db: SupabaseClient, id: string) {
   const job = await getJob(db, id);
   if (job.status === "published") return job;
   if (!job.draft || job.status !== "approved" || !job.approved_by || job.approved_hash !== job.draft_hash || fingerprint({ source_hash: job.source_hash, draft: job.draft }) !== job.approved_hash) throw new Error("Validation explicite de cette version requise.");
-  const issues = allChecks(job.draft);
+  const issues = allChecks(job.draft, job.source);
   if (issues.length) throw new Error(issues.join("\n"));
   const lease = crypto.randomUUID();
   const result = await db.from("editorial_jobs").update({ status: "publishing", lease_token: lease, lease_until: new Date(Date.now() + 5 * 60_000).toISOString() }).eq("id", id).eq("status", "approved").eq("approved_hash", job.approved_hash).select("id").single();
