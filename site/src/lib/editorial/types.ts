@@ -5,6 +5,8 @@ export type EditorialDraft = PublicationDraft & {
   image_bytes?: number;
   image_width?: number;
   image_height?: number;
+  image_drive_file_id?: string;
+  image_source_hash?: string;
 };
 export type EditorialJob = {
   id: string;
@@ -23,3 +25,4 @@ export type EditorialJob = {
   verified_at: string | null;
   lease_token: string | null;
 };
+

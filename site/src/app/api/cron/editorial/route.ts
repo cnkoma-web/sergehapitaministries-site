@@ -1,7 +1,8 @@
 import { validBearer } from "@/lib/editorial/access";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { editorialClock } from "@/lib/content/editorialClock";
-import { collectSources, prepareJob, verifyJob } from "@/lib/editorial/workflow";
+import { collectSources, prepareJob } from "@/lib/editorial/workflow";
+import { prepareImages } from "@/lib/editorial/prepareImages";
 export const runtime = "nodejs";
 export const maxDuration = 600;
 export async function GET(request: Request) {
@@ -23,8 +24,9 @@ export async function GET(request: Request) {
       if (attempt.error) throw attempt.error;
       if (attempt.data?.length) { await prepareJob(db, job.id); prepared.push(job.id); }
     }
-    await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: "ok", detail: prepared.length ? "Préparation " + prepared.join(", ") : "File déjà traitée" });
-    return Response.json({ success: true, date: clock.targetDate, prepared });
+    const images=await prepareImages(db,clock.targetDate);
+    await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: images.success?"ok":"failed", detail: JSON.stringify({prepared,images}) });
+    return Response.json({ success: images.success, date: clock.targetDate, prepared, images },{status:images.success?200:503});
   } catch (error) {
     const message = error instanceof Error ? error.message : "Collecte interrompue.";
     await db.from("editorial_runs").insert({ started_at: started, target_date: clock.targetDate, status: "failed", detail: message });

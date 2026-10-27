@@ -27,6 +27,7 @@ export async function archivePublishedDraft(job:EditorialJob){
   if(d.further_verses?.length){rows.push({text:"Pour aller plus loin",style:"HEADING_1"});for(const v of d.further_verses)rows.push({text:v.reference+" — "+v.text});}
   if(d.author_name)rows.push({text:d.author_name});
   rows.push({text:"Préparation éditoriale",style:"HEADING_1"},{text:"Date : "+d.article_date+". Rubrique : "+d.type+"."},{text:"État : publié automatiquement à la date prévue. URL : "+job.public_url},{text:"Mots-clés : "+d.seo_keywords.join(", ")},{text:"Publication automatique : ordre permanent de Serge Hapita du 27 octobre 2026."});
+  if(d.image_drive_file_id)rows.push({text:"Image : https://drive.google.com/file/d/"+d.image_drive_file_id+"/view"},{text:"Texte alternatif : "+d.cover_alt},{text:"Poids image : "+d.image_bytes+" octets."});
   const text=rows.map(r=>r.text+"\n").join("");
   const requests:any[]=[{insertText:{location:{index:1},text}},{updateParagraphStyle:{range:{startIndex:1,endIndex:1+text.length},paragraphStyle:{spaceBelow:{magnitude:6,unit:"PT"}},fields:"spaceBelow"}}];
   let start=1;
