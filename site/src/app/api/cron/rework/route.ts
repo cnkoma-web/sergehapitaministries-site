@@ -16,6 +16,7 @@ export async function POST(request:Request){
   let current=job;
   if(!job.draft?.editorial_audit){
    const draft=await writeDraft(job,'Reprise expressément demandée par Serge Hapita le 28 octobre. Refaire analyse, traduction fidèle, enrichissement selon modèles avant le 20 octobre et contrôle. Conserver le titre existant.');
+   draft.title=job.draft?.title??draft.title;
    // Les images déjà prêtes illustrent les mêmes sources et restent associées à la reprise.
    for(const key of ['cover_url','cover_alt','image_bytes','image_width','image_height','image_drive_file_id','image_source_hash'] as const)(draft as any)[key]=(job.draft as any)?.[key];
    const issues=allChecks(draft,job.source);if(issues.length)throw Error(issues.join('\n'));
@@ -27,7 +28,11 @@ export async function POST(request:Request){
    current=await publishJob(db,current.id);
   }
   const archive=await archivePublishedDraft(current,true);
-  const verified=await verifyJob(db,current.id);
-  return Response.json({success:true,type,url:verified.url,archive,audit:current.draft?.editorial_audit});
+  const origin=new URL(request.url).origin;
+  if(origin==="http://127.0.0.1:3217"){
+   const page=await fetch(origin+new URL(current.public_url!).pathname,{cache:"no-store"});
+   if(!page.ok)throw Error("Page locale indisponible après reprise.");
+  }else await verifyJob(db,current.id);
+  return Response.json({success:true,type,url:current.public_url,archive,audit:current.draft?.editorial_audit});
  }catch(e){return Response.json({success:false,type,error:e instanceof Error?e.message:String(e)},{status:503});}
 }
