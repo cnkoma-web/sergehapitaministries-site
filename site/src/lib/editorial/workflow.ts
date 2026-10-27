@@ -77,7 +77,7 @@ export async function prepareJob(db: SupabaseClient, id: string) {
 export async function replaceDraft(db: SupabaseClient, id: string, draft: EditorialDraft) {
   assertDraftShape(draft);
   const job = await getJob(db, id);
-  if (["publishing", "published", "writing"].includes(job.status)) throw new Error("Ce contenu est en cours de traitement ou déjà publié.");
+  if (["publishing", "writing"].includes(job.status)) throw new Error("Ce contenu est en cours de traitement.");
   if (draft.type !== job.type || draft.article_date !== job.article_date) throw new Error("Date et rubrique doivent être conservées.");
   const issues = allChecks(draft, job.source);
   await compareSave(db, job, { draft, draft_hash: fingerprint({ source_hash: job.source_hash, draft }), approved_hash: null, approved_by: null, approved_at: null, status: issues.length ? "blocked" : "review", last_error: issues.join("\n") || null });

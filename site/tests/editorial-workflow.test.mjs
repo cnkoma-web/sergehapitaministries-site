@@ -75,3 +75,9 @@ test("une source incomplète n'entraîne aucune écriture partielle",async()=>{
   await assert.rejects(()=>collectSources(db,"2026-10-26","LUNDI 26 OCTOBRE 2026\n1/ QUE DIT LA BIBLE?\nTexte"),/Sources manquantes/);
   assert.deepEqual(db.rows,before);
 });
+
+test("une correction validable conserve l’article déjà publié et annule l’ancienne approbation",async()=>{
+ const db=database();db.rows[0].status="published";db.rows[0].article_id="article-existant";
+ await replaceDraft(db,"job",{...draft,title:"Correction à relire"});
+ assert.equal(db.rows[0].article_id,"article-existant");assert.equal(db.rows[0].status,"review");assert.equal(db.rows[0].approved_hash,null);
+});
