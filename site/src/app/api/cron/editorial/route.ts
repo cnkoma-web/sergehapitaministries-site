@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     // Une relance ne réécrit jamais un brouillon revu ou approuvé.
     await db.from("editorial_jobs").update({ status: "failed", last_error: "Préparation interrompue ; reprise possible.", lease_token: null, lease_until: null }).eq("status", "writing").lt("lease_until", started);
     await collectSources(db, clock.targetDate);
-    const result = await db.from("editorial_jobs").select("id,attempts").eq("article_date", clock.targetDate).in("status", ["collected", "failed"]).lt("attempts", 3).order("type").limit(3);
+    const result = await db.from("editorial_jobs").select("id,attempts").eq("article_date", clock.targetDate).in("status", ["collected", "failed"]).lt("attempts", 3).order("type").limit(1);
     if (result.error) throw result.error;
     const prepared:string[]=[];
     for (const job of result.data??[]) {
