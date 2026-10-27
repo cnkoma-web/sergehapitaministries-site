@@ -15,7 +15,10 @@ export async function archivePublishedDraft(job:EditorialJob){
     const existing=await googleJson("https://docs.googleapis.com/v1/documents/"+id,token);
     if((existing.body?.content??[]).some((p:any)=>(p.paragraph?.elements??[]).some((e:any)=>e.textRun?.content?.trim())))return id;
   }else{
-    const r=await googleResponse("https://www.googleapis.com/drive/v3/files",{method:"POST",headers:{authorization:"Bearer "+token,"content-type":"application/json"},body:JSON.stringify({name,mimeType:"application/vnd.google-apps.document",parents:[PUBLISHED_FOLDER]})});id=(await r.json()).id;
+    const params=new URLSearchParams({q:"trashed = false and name = 'PréparationPublication-"+job.type+"-"+job.article_date+"' and mimeType = 'application/vnd.google-apps.document'",fields:"files(id,parents)",pageSize:"10"});
+    const reserved=await googleJson("https://www.googleapis.com/drive/v3/files?"+params,token);
+    if(reserved.files?.length!==1)throw Error("Document d’archive utilisateur attendu pour "+job.type+" "+job.article_date);
+    id=reserved.files[0].id;
   }
   const d=job.draft,rows:{text:string;html?:string;style?:string;bold?:boolean;italic?:boolean}[]=[{text:d.title,style:"TITLE"}];
   if(d.type==="rm")rows.push({text:d.verse_text??"",bold:true});
@@ -43,5 +46,11 @@ export async function archivePublishedDraft(job:EditorialJob){
     start+=row.text.length+1;
   }
   await googleResponse("https://docs.googleapis.com/v1/documents/"+id+":batchUpdate",{method:"POST",headers:{authorization:"Bearer "+token,"content-type":"application/json"},body:JSON.stringify({requests})});
+  const metadata=await googleJson("https://www.googleapis.com/drive/v3/files/"+id+"?fields=parents,name",token);
+  if(metadata.name!==name||!metadata.parents?.includes(PUBLISHED_FOLDER)){
+    const params=new URLSearchParams({addParents:PUBLISHED_FOLDER});
+    const previous=(metadata.parents??[]).filter((p:string)=>p!==PUBLISHED_FOLDER);if(previous.length)params.set("removeParents",previous.join(","));
+    await googleResponse("https://www.googleapis.com/drive/v3/files/"+id+"?"+params,{method:"PATCH",headers:{authorization:"Bearer "+token,"content-type":"application/json"},body:JSON.stringify({name})});
+  }
   return id as string;
 }
