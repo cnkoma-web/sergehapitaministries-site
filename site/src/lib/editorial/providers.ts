@@ -1,6 +1,6 @@
 import "server-only";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRole";
-import { runEditorialPipeline, REFERENCE_CUTOFF } from "./editorialPipeline";
+import { runEditorialPipeline, REFERENCE_CUTOFF, stageSchema } from "./editorialPipeline";
 import { editorialChecks } from "./checks";
 import { assertDraftShape, fingerprint } from "./checks";
 import { publicationJpeg } from "./imageEncoding";
@@ -70,8 +70,8 @@ export async function writeDraft(job: EditorialJob, corrections?: string): Promi
   const result=await db.from("articles").select("id,article_date,title,body,excerpt,verse_text,verse_reference,prayer,further_verses").eq("type",job.type).eq("status","published").lt("article_date",REFERENCE_CUTOFF).order("article_date",{ascending:false}).limit(5);
   if(result.error)throw result.error;
   return runEditorialPipeline(job,result.data??[],RULES+"\nRègles officielles actualisées :\n"+currentRules,{
-    async ask(system,input){
-      const response=await gateway("chat/completions",{model:process.env.EDITORIAL_TEXT_MODEL??"openai/gpt-5-mini",reasoning_effort:"low",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_object"},max_completion_tokens:14000});
+    async ask(system,input,stage){
+      const response=await gateway("chat/completions",{model:process.env.EDITORIAL_PIPELINE_MODEL??"openai/gpt-5.4",reasoning_effort:"medium",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_schema",json_schema:{name:stage??"editorial_draft",strict:true,schema:stageSchema(stage??"enrichment")}},max_completion_tokens:14000});
       const content=response.choices?.[0]?.message?.content;if(typeof content!=="string")throw Error("Réponse du moteur éditorial absente.");return JSON.parse(content);
     },
     async record(stage,detail){const r=await db.from("editorial_runs").insert({started_at:new Date().toISOString(),target_date:job.article_date,status:"ok",detail:JSON.stringify({job_id:job.id,type:job.type,stage,detail})});if(r.error)throw r.error;},
