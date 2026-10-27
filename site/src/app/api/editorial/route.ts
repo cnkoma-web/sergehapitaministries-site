@@ -39,7 +39,9 @@ export async function POST(request: Request) {
       return Response.json({ article });
     }
     if (input.action === "approve") {
-      if (input.confirmSource !== true || input.confirmBible !== true || input.confirmImage !== true) throw new Error("Confirmer la fidélité à la source, les versets et le visuel.");
+      const approvalJob = await db.from("editorial_jobs").select("draft").eq("id", input.id).single();
+      if (approvalJob.error) throw approvalJob.error;
+      if (input.confirmSource !== true || input.confirmBible !== true || (approvalJob.data.draft?.cover_url && input.confirmImage !== true)) throw new Error("Confirmer le texte et le visuel lorsqu’il est présent.");
       await approveJob(db, input.id, input.hash, actor); return Response.json({ approved: true });
     }
     if (input.action === "publish") {

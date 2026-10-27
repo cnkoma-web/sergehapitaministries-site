@@ -14,7 +14,7 @@ if(manifest.date!=="2026-10-27" || manifest.items.length!==3) throw Error("Manif
 for(const item of manifest.items){
   assertDraftShape(item.draft);
   if(item.draft.article_date!==manifest.date || item.draft.type!==item.type)throw Error("Identité du contenu invalide");
-  if(item.publish && !["jc","qdlb"].includes(item.type))throw Error("Publication non autorisée");
+  if(item.publish && !["jc","qdlb","rm"].includes(item.type))throw Error("Publication non autorisée");
   if(item.asset && sha(await readFile(item.asset.path))!==item.asset.sha256)throw Error("Le visuel validé a changé : "+item.type);
   if(item.publish){const issues=[...validatePublicationDraft(item.draft),...editorialChecks(item.draft)];if(issues.length)throw Error(JSON.stringify(issues));}
 }
@@ -85,7 +85,7 @@ try{
       console.log("[publication27] Rosée enregistrée en brouillon natif : "+result.article.id);
       continue;
     }
-    await action("approve",{id:job.id,hash:job.draft_hash,confirmSource:true,confirmBible:true,confirmImage:true});
+    await action("approve",{id:job.id,hash:job.draft_hash,confirmSource:true,confirmBible:true,confirmImage:false});
     const result=await action("publish",{id:job.id});
     console.log("[publication27] Publié par le CMS natif : "+item.type+" "+result.job.public_url);
   }

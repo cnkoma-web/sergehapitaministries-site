@@ -34,9 +34,12 @@ export function editorialChecks(draft: EditorialDraft, source?: string): string[
   if (draft.type === "jc" && (draft.excerpt || draft.author_name)) issues.push("Je Confesse ne comporte ni chapeau ni auteur.");
   const keywords = Array.isArray(draft.seo_keywords) ? draft.seo_keywords.filter(v => typeof v === "string" && v.trim()) : [];
   if (new Set(keywords.map(v => v.toLowerCase().trim())).size < 20 || keywords.length > 25) issues.push("Prévoir 20 à 25 mots-clés distincts.");
-  if (!draft.cover_url || !draft.cover_alt?.trim()) issues.push("Image et texte alternatif obligatoires.");
-  if ((draft.image_bytes ?? 0) < 1_500_000 || (draft.image_bytes ?? 0) > 5 * 1024 * 1024) issues.push("Le fichier image doit peser entre 1,5 Mo et 5 Mo.");
-  if ((draft.image_width ?? 0) < 1200 || (draft.image_height ?? 0) < 675 || Math.abs((draft.image_width ?? 0) / (draft.image_height || 1) - 16 / 9) > 0.02) issues.push("Image paysage 16:9, au minimum 1200 × 675.");
+  // Le texte peut être publié avant la conception du visuel (décision du 27/10).
+  if (draft.cover_url) {
+    if (!draft.cover_alt?.trim()) issues.push("Texte alternatif obligatoire.");
+    if (!(draft.image_bytes && draft.image_bytes <= 800_000)) issues.push("Le fichier image ne doit pas dépasser 800 Ko.");
+    if ((draft.image_width ?? 0) < 1200 || (draft.image_height ?? 0) < 675 || Math.abs((draft.image_width ?? 0) / (draft.image_height || 1) - 16 / 9) > 0.02) issues.push("Image paysage 16:9, au minimum 1200 × 675.");
+  }
   return issues;
 }
 

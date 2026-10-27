@@ -13,7 +13,7 @@ registerHooks({resolve(specifier, context, next) {
 }});
 const {replaceDraft,approveJob,publishJob,collectSources} = await import("../src/lib/editorial/workflow.ts");
 const {fingerprint} = await import("../src/lib/editorial/checks.ts");
-const draft={type:"qdlb",title:"La vie",article_date:"2026-10-26",body:"<p>Premier paragraphe.</p><p>Second paragraphe.</p>",excerpt:"Chapeau.",verse_text:"Je suis le cep, vous êtes les sarments.",verse_reference:"Jean 15:5",author_name:"Serge Hapita",further_verses:[{reference:"Jean 15:5",text:"Je suis le cep, vous êtes les sarments."}],seo_keywords:Array.from({length:20},(_,i)=>"mot "+i),image_prompt:"Un paysage",cover_url:"https://example.test/paysage.png",cover_alt:"Un paysage",image_bytes:2000000,image_width:1920,image_height:1080};
+const draft={type:"qdlb",title:"La vie",article_date:"2026-10-26",body:"<p>Premier paragraphe.</p><p>Second paragraphe.</p>",excerpt:"Chapeau.",verse_text:"Je suis le cep, vous êtes les sarments.",verse_reference:"Jean 15:5",author_name:"Serge Hapita",further_verses:[{reference:"Jean 15:5",text:"Je suis le cep, vous êtes les sarments."}],seo_keywords:Array.from({length:20},(_,i)=>"mot "+i),image_prompt:"Un paysage",cover_url:"https://example.test/paysage.png",cover_alt:"Un paysage",image_bytes:600000,image_width:1920,image_height:1080};
 function database() {
   const hash=fingerprint({source_hash:"source",draft});
   const db={rows:[{id:"job",type:"qdlb",article_date:"2026-10-26",source_hash:"source",draft:structuredClone(draft),draft_hash:hash,status:"approved",approved_hash:hash,approved_by:"admin",approved_at:"2026-10-26T10:00:00Z",lease_token:null}],beforeUpdate:null};
