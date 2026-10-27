@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { parseDailySources } from "@/lib/content/dailySourceParser";
 import { validatePublicationDraft } from "@/lib/content/publicationValidation";
 import { fingerprint, editorialChecks, plainText, assertDraftShape } from "./checks";
-import { collectGoogleDocument, writeDraft, illustrate } from "./providers";
+import { collectGoogleDocument, writeDraft } from "./providers";
 import { publishThroughCms } from "./native";
 import type { EditorialJob, EditorialDraft } from "./types";
 
@@ -65,7 +65,7 @@ export async function prepareJob(db: SupabaseClient, id: string) {
   try {
     let draft = job.draft ?? await writeDraft(job);
     await save(db, id, { draft, last_error: null }, lease);
-    if (!draft.cover_url) draft = await illustrate(db, job, draft);
+    // Les images sont conçues séparément après validation du texte final.
     const issues = allChecks(draft, job.source);
     await save(db, id, { draft, draft_hash: fingerprint({ source_hash: job.source_hash, draft }), approved_hash: null, approved_by: null, approved_at: null, status: issues.length ? "blocked" : "review", last_error: issues.join("\n") || null, lease_token: null, lease_until: null }, lease);
   } catch (error) {
@@ -120,12 +120,13 @@ export async function verifyJob(db: SupabaseClient, id: string) {
   const html = await response.text();
   const text = plainText(html).replace(/&#x27;|&#39;|&apos;/g, "'").replace(/&quot;/g, '"');
   const expected = plainText(job.draft!.body).slice(0, 100);
-  const imagePresent = Boolean(job.draft?.cover_url && (html.includes(job.draft.cover_url) || html.includes(encodeURIComponent(job.draft.cover_url))));
-  if (!response.ok || !text.includes(expected) || !imagePresent || !html.includes('property="og:image"') || !html.includes('rel="canonical"')) {
+  const imagePresent = !job.draft?.cover_url || html.includes(job.draft.cover_url) || html.includes(encodeURIComponent(job.draft.cover_url));
+  if (!response.ok || !text.includes(expected) || !imagePresent || (job.draft?.cover_url && !html.includes('property="og:image"')) || !html.includes('rel="canonical"')) {
     await save(db, id, { last_error: "Vérification publique en échec (HTTP, texte, image ou métadonnées).", verified_at: null });
     throw new Error("Vérification publique en échec.");
   }
   await save(db, id, { verified_at: new Date().toISOString(), last_error: null });
   return { url: job.public_url, status: response.status, verified: true };
 }
+
 
