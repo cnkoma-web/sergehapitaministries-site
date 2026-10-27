@@ -1,5 +1,6 @@
 import type { PublicationDraft } from "@/lib/content/publicationValidation";
 export type EditorialDraft = PublicationDraft & {
+  editorial_audit?: { version:string; profile:{minimum:number;maximum:number;target:number;reference_ids:string[];reference_dates:string[];reference_words:number[];cutoff:string}; body_words:number; analysis:unknown;review:unknown;source_hash:string;content_hash:string;completed_at:string };
   seo_keywords: string[];
   image_prompt: string;
   image_bytes?: number;
