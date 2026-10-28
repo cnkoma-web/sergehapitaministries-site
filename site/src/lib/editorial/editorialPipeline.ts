@@ -32,10 +32,12 @@ export const VERIFIED_LSG:Record<string,string>={
  'jean316':"Car Dieu a tant aimé le monde qu’il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu’il ait la vie éternelle.",
  'esaie122':"Voici, Dieu est ma délivrance, Je serai plein de confiance, et je ne craindrai rien; Car l’Éternel, l’Éternel est ma force et le sujet de mes louanges; C’est lui qui m’a sauvé.",
  '2timothee17':"Car ce n’est pas un esprit de timidité que Dieu nous a donné, mais un esprit de force, d’amour et de sagesse.",
+ '1corinthiens29':"Mais, comme il est écrit, ce sont des choses que l’œil n’a point vues, que l’oreille n’a point entendues, et qui ne sont point montées au cœur de l’homme, des choses que Dieu a préparées pour ceux qui l’aiment.",
  '2corinthiens98':"Et Dieu peut vous combler de toutes sortes de grâces, afin que, possédant toujours en toutes choses de quoi satisfaire à tous vos besoins, vous ayez encore en abondance pour toute bonne œuvre."
 };
 const verseKey=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/psaumes/g,'psaume').replace(/isaie/g,'esaie').replace(/[^a-z0-9]/g,'');
 export function normalizeCitations(draft:EditorialDraft){
+ draft.body=draft.body.replace(/\\+(?=["\'])/g,'');
  // Une citation reprise dans un bloc conserve un seul emplacement dans le développement.
  const quotes=[...draft.body.matchAll(/<blockquote>([\s\S]*?)<\/blockquote>/g)].map(m=>m[1].trim());
  for(const quote of quotes)draft.body=draft.body.replace(/<p>([\s\S]*?)<\/p>/g,(_all,inner)=>{const clean=inner.replace(quote,'').trim();return clean?'<p>'+clean+'</p>':'';});
@@ -47,9 +49,11 @@ export function normalizeCitations(draft:EditorialDraft){
 const christianTerms=(html:string)=>html.split(/(«[^»]*»|“[^”]*”|<blockquote>[\s\S]*?<\/blockquote>)/g).map((part,i)=>i%2?part:part.replace(/\bcroyants?\b/gi,w=>w[0]===w[0].toUpperCase()?(w.toLowerCase().endsWith('s')?'Chrétiens':'Chrétien'):(w.endsWith('s')?'chrétiens':'chrétien'))).join('');
 async function polishStyle(draft:EditorialDraft,deps:PipelineDependencies,attempt:number){
  draft.body=christianTerms(draft.body);
- const badParagraphs=[...draft.body.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(m=>m[0]).filter(p=>editorialChecks({...draft,body:p}).some(e=>e.startsWith('Écriture affirmative')));
+ const opening=plainText(draft.body.match(/<p>([\s\S]*?)<\/p>/)?.[1]??draft.body);
+ const preserveGeneralVoice=draft.type==='qdlb'&&!/\bje\s|\bj['’]/i.test(opening);
+ const badParagraphs=[...draft.body.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(m=>m[0]).filter(p=>editorialChecks({...draft,body:p}).some(e=>e.startsWith('Écriture affirmative'))||(preserveGeneralVoice&&/\bje\s|\bj['’]/i.test(plainText(p))));
  if(badParagraphs.length){
-  const polish=await deps.ask("Réécris chaque paragraphe dans un style directement affirmatif. Supprime les détours n’est pas…, ne signifie pas…, ne… pas… mais, non… mais. Énonce immédiatement la pensée positive. Conserve le sens et toute la richesse, les phrases déjà conformes, les références, les citations bibliques exactes et les balises HTML. Employer chrétien. JSON {paragraphes:[{index,revision}]} avec les index fournis. Aucune autre tâche.",{paragraphes:badParagraphs.map((html,index)=>({index,html}))},'affirmative');
+  const polish=await deps.ask("Réécris chaque paragraphe dans un style directement affirmatif. Supprime les détours n’est pas…, ne signifie pas…, ne… pas… mais, non… mais. Énonce immédiatement la pensée positive. Conserve le sens et toute la richesse, les phrases déjà conformes, les références, les citations bibliques exactes et les balises HTML. Employer chrétien. Conserve la personne grammaticale du début de texte fourni ; pour un enseignement général, remplacer les passages de confession personnelle par cette même voix narrative. JSON {paragraphes:[{index,revision}]} avec les index fournis. Aucune autre tâche.",{rubrique:draft.type,debut_du_texte:opening,paragraphes:badParagraphs.map((html,index)=>({index,html}))},'affirmative');
   if(!Array.isArray(polish.paragraphes))throw Error('Correction affirmative absente.');
   for(const [index,original] of badParagraphs.entries()){const match=polish.paragraphes.find((p:any)=>p.index===index);if(!match||typeof match.revision!=='string'||!match.revision.startsWith('<p>'))throw Error('Correction affirmative incomplète.');draft.body=draft.body.replace(original,match.revision);}
   await deps.record('3-style-affirmatif',{attempt,paragraphes:polish.paragraphes});
@@ -61,12 +65,13 @@ const obj=(properties:Record<string,unknown>)=>({type:'object',properties,requir
 export function stageSchema(stage:string,type?:string,date?:string){
  if(stage==='analysis')return obj({idee_centrale:str,progression_source:strings,verites_et_passages:strings,exemples_source:strings,priere_source:nullable,caracteristiques_references:strings,modeles_etudies:{type:'array',items:obj({id:str,date:str,titre:str,construction_chapeau:str,progression_et_profondeur:str,traits_de_style:str,exemple_court:str})},plan_enrichissement:strings,risques_deformation:strings});
  if(stage==='translation')return obj({texte_traduit:str,priere_traduite:nullable,passages_bibliques:{type:'array',items:obj({reference:str,text:str})}});
+ if(stage==='chapeau')return obj({chapeau:str});
  if(stage==='extension')return obj({body:str});
  if(stage==='affirmative')return obj({paragraphes:{type:'array',items:obj({index:{type:'integer'},revision:str})}});
  if(stage==='review')return obj({passed:{type:'boolean'},criteria:obj(Object.fromEntries(criteria.map(k=>[k,obj({passed:{type:'boolean'},justification:str})]))),issues:strings});
  return obj({type:type?{type:'string',enum:[type]}:{type:'string',enum:['qdlb','rm','jc']},title:str,article_date:date?{type:'string',enum:[date]}:str,body:str,verse_text:nullable,verse_reference:nullable,excerpt:nullable,prayer:nullable,further_verses:{type:'array',items:obj({reference:str,text:str})},author_name:nullable,seo_keywords:strings,cover_alt:str,image_prompt:str});
 }
-export type PipelineDependencies={ initialAnalysis?:any; initialTranslation?:any; ask:(system:string,input:unknown,stage?:string)=>Promise<any>; record:(stage:string,detail:unknown)=>Promise<void>; validate:(draft:EditorialDraft)=>string[] };
+export type PipelineDependencies={ initialAnalysis?:any; initialTranslation?:any; initialDraft?:EditorialDraft; ask:(system:string,input:unknown,stage?:string)=>Promise<any>; record:(stage:string,detail:unknown)=>Promise<void>; validate:(draft:EditorialDraft)=>string[] };
 export async function runEditorialPipeline(job:EditorialJob,references:Reference[],rules:string,deps:PipelineDependencies,corrections?:string):Promise<EditorialDraft>{
  const profile=referenceProfile(job.type,references);
  let previousDraft=job.draft;
@@ -87,8 +92,9 @@ export async function runEditorialPipeline(job:EditorialJob,references:Reference
  await deps.record('2-traduction',{translation});
  let feedback=corrections??'';
  for(let attempt=0;attempt<4;attempt++){
- const raw=await deps.ask(base+'\n'+draftSchema+'\nÉTAPE 3 — ENRICHISSEMENT ET RÉDACTION. Renvoie uniquement l’objet brouillon demandé dans les règles, avec tous ses champs. Exploite l’analyse et la traduction, puis travaille la profondeur, les transitions, les explications et les appuis bibliques comme les références. Respecte la fourchette profile.minimum à profile.maximum de mots dans body, vise profile.target. Applique exclusivement la spécificité de la rubrique fournie. Commence chaque paragraphe directement par ce qui est affirmé. Bannir hors citations exactes : n’est pas, ne signifie pas, il ne s’agit pas, non… mais, ne… pas… mais. Employer chrétien. Phrases affirmatives directes ; termes grecs en em ; aucune invention de témoignage ou doctrine. Conserve le titre lors de cette reprise du 28. Pour une correction, travaille à partir de previous_draft, conserve tout ce qui est déjà conforme, applique chaque point de feedback et ajoute réellement le développement manquant. Avant de répondre, développe suffisamment le texte pour atteindre réellement la cible de mots. Corrections impératives pour cette tentative : '+feedback,{...context,analysis,translation,previous_draft:previousDraft,feedback},'enrichment');
+ const raw=attempt===0&&deps.initialDraft?structuredClone(deps.initialDraft):await deps.ask(base+'\n'+draftSchema+'\nÉTAPE 3 — ENRICHISSEMENT ET RÉDACTION. Renvoie uniquement l’objet brouillon demandé dans les règles, avec tous ses champs. Exploite l’analyse et la traduction, puis travaille la profondeur, les transitions, les explications et les appuis bibliques comme les références. Respecte la fourchette profile.minimum à profile.maximum de mots dans body, vise profile.target. Applique exclusivement la spécificité de la rubrique fournie. Commence chaque paragraphe directement par ce qui est affirmé. Bannir hors citations exactes : n’est pas, ne signifie pas, il ne s’agit pas, non… mais, ne… pas… mais. Employer chrétien. Phrases affirmatives directes ; termes grecs en em ; aucune invention de témoignage ou doctrine. Conserve le titre lors de cette reprise du 28. Pour une correction, travaille à partir de previous_draft, conserve tout ce qui est déjà conforme, applique chaque point de feedback et ajoute réellement le développement manquant. Avant de répondre, développe suffisamment le texte pour atteindre réellement la cible de mots. Corrections impératives pour cette tentative : '+feedback,{...context,analysis,translation,previous_draft:previousDraft,feedback},'enrichment');
  assertDraftShape(raw);const draft=raw as EditorialDraft;
+ delete draft.editorial_audit;
  delete draft.cover_url;delete draft.image_bytes;delete draft.image_width;delete draft.image_height;
  if(draft.type!==job.type||draft.article_date!==job.article_date)throw Error('Date ou rubrique modifiée.');
  normalizeCitations(draft);await polishStyle(draft,deps,attempt);
@@ -96,11 +102,17 @@ export async function runEditorialPipeline(job:EditorialJob,references:Reference
  // Un complément conserve le développement conforme au lieu de recommencer sa rédaction.
  for(let extension=0;count<profile.minimum&&extension<3;extension++){
   const missing=profile.target-count;
-  const extra=await deps.ask("Tu enrichis un texte existant en français. Produis EXCLUSIVEMENT un ou deux nouveaux paragraphes HTML p qui approfondissent précisément une idée de la source encore insuffisamment expliquée. Conserve la rubrique et l’analyse. Écriture directement affirmative, employer chrétien. Évite toute répétition des idées déjà développées, toute nouvelle conclusion et toute invention de témoignage ou doctrine. Le texte existant sera conservé intégralement : renvoie seulement le complément dans le JSON {body:string}. Respecte les bornes additional_words_min et additional_words_max. Pour RM, développe uniquement l’idée centrale retenue. Pour JC, écris exclusivement en confession à la première personne.",{rubrique:job.type,source:job.source,analysis,existing_body:draft.body,additional_words_min:Math.max(30,missing),additional_words_max:profile.maximum-count},'extension');
+  const extra=await deps.ask("Tu enrichis un texte existant en français. Produis EXCLUSIVEMENT un ou deux nouveaux paragraphes HTML p qui approfondissent précisément une idée de la source encore insuffisamment expliquée. Conserve la rubrique et l’analyse. Écriture directement affirmative, employer chrétien. Évite toute répétition des idées déjà développées, toute nouvelle conclusion et toute invention de témoignage ou doctrine. Le texte existant sera conservé intégralement : renvoie seulement le complément dans le JSON {body:string}. Respecte les bornes additional_words_min et additional_words_max. Conserve la personne grammaticale et le ton du développement existant. "+(job.type==='rm'?'Développe uniquement l’idée centrale retenue.':job.type==='jc'?'Écris exclusivement en confession à la première personne.':'Maintiens la voix d’un enseignement général, sans passer à une confession en je.'),{rubrique:job.type,source:job.source,analysis,existing_body:draft.body,additional_words_min:Math.max(30,missing),additional_words_max:profile.maximum-count},'extension');
   if(typeof extra.body!=='string'||wordCount(extra.body)<10)throw Error('Complément d’enrichissement insuffisant.');
   const end=draft.body.lastIndexOf('<p>');draft.body=end>0?draft.body.slice(0,end)+extra.body+'\n'+draft.body.slice(end):draft.body+'\n'+extra.body;
   await polishStyle(draft,deps,attempt);count=wordCount(draft.body);
   await deps.record('3-enrichissement-complement',{attempt,extension,body_words:count,complement:extra.body});
+ }
+ if(draft.type!=='jc'){
+  const intro=await deps.ask("Rédige un chapeau de deux phrases pour cette publication. Commence par une observation concrète ou une situation reconnaissable liée au sujet, puis fais émerger son enjeu et l’envie de poursuivre. Garde la conclusion et l’idée principale pour le développement. Évite les questions artificielles, les formules générales interchangeables et les citations bibliques. Aucune phrase reprise du développement. Ton direct, vivant, phrases affirmatives. 25 à 45 mots environ. Renvoie uniquement le JSON {chapeau:string}.",{rubrique:draft.type,source:job.source,idee_centrale:analysis.idee_centrale,body:draft.body},'chapeau');
+  if(typeof intro.chapeau!=='string'||intro.chapeau.trim().length<35)throw Error('Chapeau éditorial incomplet.');
+  if(draft.type==='rm')draft.verse_text=intro.chapeau;else draft.excerpt=intro.chapeau;
+  await deps.record('3-chapeau',{attempt,chapeau:intro.chapeau});
  }
  const mechanical=deps.validate(draft);
  if(count<profile.minimum||count>profile.maximum)mechanical.push(`Corps : ${count} mots ; attendu ${profile.minimum}–${profile.maximum}, cible ${profile.target}.`);
