@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getCartItemsForMerge, mergeCartItemsIntoCurrentUser } from "@/lib/cart/actions";
+import { linkPreparedAnonymousOrdersToCurrentAccount, prepareAnonymousOrderTransfer } from "@/lib/orders/actions";
 import SocialAuthButtons from "./SocialAuthButtons";
+import PasswordInput from "./PasswordInput";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 type Tab = "login" | "signup";
 
@@ -27,7 +29,17 @@ function signupErrorMessage(code: string | undefined, fallbackMessage: string): 
   }
 }
 
-export default function AuthTabs({ initialTab }: { initialTab: Tab }) {
+type SocialProviders = { google: boolean; facebook: boolean };
+
+export default function AuthTabs({
+  initialTab,
+  socialProviders,
+  oauthError,
+}: {
+  initialTab: Tab;
+  socialProviders: SocialProviders;
+  oauthError?: boolean;
+}) {
   const [tab, setTab] = useState<Tab>(initialTab);
 
   return (
@@ -60,62 +72,76 @@ export default function AuthTabs({ initialTab }: { initialTab: Tab }) {
         </button>
       </div>
 
-      {tab === "login" ? <LoginForm /> : <SignupForm />}
+      {tab === "login" ? (
+        <LoginForm socialProviders={socialProviders} oauthError={oauthError} />
+      ) : (
+        <SignupForm socialProviders={socialProviders} />
+      )}
     </>
   );
 }
 
-function LoginForm() {
+function LoginForm({ socialProviders, oauthError }: { socialProviders: SocialProviders; oauthError?: boolean }) {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    oauthError ? "La connexion sociale n’a pas abouti. Réessayez ou utilisez votre adresse e-mail." : null
+  );
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    if (!captchaToken) {
+      setError("La vérification de sécurité est encore en cours. Réessayez dans un instant.");
+      return;
+    }
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const supabase = createClient();
 
-    // Capturé pendant que la session est encore l'éventuelle session anonyme
-    // (Phase 5) — signInWithPassword la remplace par la vraie session ensuite,
-    // le panier anonyme redeviendrait sinon inaccessible (RLS).
-    const anonymousCartItems = await getCartItemsForMerge();
+    try {
+      await prepareAnonymousOrderTransfer();
+    } catch (transferPreparationError) {
+      console.error("[compte] Préparation des données anonymes impossible :", transferPreparationError);
+    }
 
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: String(formData.get("email")),
       password: String(formData.get("password")),
+      options: { captchaToken },
     });
 
-    setLoading(false);
     if (signInError) {
+      setLoading(false);
+      setCaptchaToken("");
+      setCaptchaReset((value) => value + 1);
       setError("E-mail ou mot de passe incorrect.");
       return;
     }
 
-    if (anonymousCartItems.length > 0) {
-      await mergeCartItemsIntoCurrentUser(anonymousCartItems);
-    }
+    try {
+      const orderLinkResult = await linkPreparedAnonymousOrdersToCurrentAccount();
+      if (orderLinkResult.error) {
+        setLoading(false);
+        setError("La connexion a réussi, mais votre commande n'a pas encore pu être rattachée. Réessayez une fois.");
+        return;
+      }
 
-    router.push("/mon-compte");
-    router.refresh();
+      setLoading(false);
+      router.push(orderLinkResult.linked > 0 ? "/mon-compte?section=commandes" : "/mon-compte");
+      router.refresh();
+    } catch (transferError) {
+      console.error("[compte] Rattachement après connexion impossible :", transferError);
+      setLoading(false);
+      setError("La connexion a réussi, mais votre commande n'a pas encore pu être rattachée. Réessayez une fois.");
+    }
   }
 
   return (
     <form id="login-pane" role="tabpanel" aria-label="Se connecter" className="account-form" onSubmit={handleSubmit}>
-      {/* .oauth-choice AJOUTÉ (chantier Compte, reprise) : § de la maquette,
-          un seul conteneur pour les boutons ET le séparateur — éclaté
-          jusqu'ici en 2 blocs distincts (.social-auth + .account-divider
-          sibling). Texte du séparateur corrigé ("ou avec votre adresse
-          e-mail", jamais "ou par e-mail"). */}
-      <div className="oauth-choice">
-        <SocialAuthButtons />
-        <div className="account-divider">
-          <span>ou avec votre adresse e-mail</span>
-        </div>
-      </div>
-
       {error && <div className="admin-error">{error}</div>}
 
       <label className="field-label" htmlFor="login-email">
@@ -126,27 +152,43 @@ function LoginForm() {
       <label className="field-label" htmlFor="login-password">
         Mot de passe *
       </label>
-      <input id="login-password" name="password" type="password" required autoComplete="current-password" />
+      <PasswordInput id="login-password" name="password" required autoComplete="current-password" />
 
       <a href="/compte/mot-de-passe-oublie" className="forgot">
         Mot de passe oublié ?
       </a>
 
-      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
+      <TurnstileWidget action="signin" name={false} onToken={setCaptchaToken} resetSignal={captchaReset} />
+
+      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading || !captchaToken}>
         {loading ? "Connexion…" : "Se connecter →"}
       </button>
+
+      <div className="oauth-choice">
+        <div className="account-divider">
+          <span>ou continuer avec</span>
+        </div>
+        <SocialAuthButtons enabled={socialProviders} />
+      </div>
     </form>
   );
 }
 
-function SignupForm() {
+function SignupForm({ socialProviders }: { socialProviders: SocialProviders }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+
+    if (!captchaToken) {
+      setError("La vérification de sécurité est encore en cours. Réessayez dans un instant.");
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const password = String(formData.get("password"));
@@ -160,36 +202,54 @@ function SignupForm() {
     setLoading(true);
     const supabase = createClient();
     const email = String(formData.get("email"));
-    const first_name = String(formData.get("first_name"));
-    const last_name = String(formData.get("last_name"));
+    const first_name = String(formData.get("first_name")).trim();
+    const last_name = String(formData.get("last_name")).trim();
 
     const {
       data: { session: existingSession },
     } = await supabase.auth.getSession();
 
-    // Un visiteur non connecté a déjà une session anonyme (CartSessionBootstrap,
-    // Phase 5) : on la convertit en compte permanent plutôt que d'en créer un
-    // nouveau, pour que son panier le suive automatiquement — même identifiant
-    // technique conservé de bout en bout.
-    const isAnonymousUpgrade = existingSession?.user?.is_anonymous === true;
+    // La conversion directe updateUser d'une session anonyme contournerait la
+    // protection CAPTCHA de l'endpoint signup. On conserve donc la preuve de
+    // la session anonyme, puis on crée un compte neuf protégé ; panier et
+    // commandes seront rattachés après ouverture de la session réelle.
+    if (existingSession?.user?.is_anonymous) {
+      try {
+        await prepareAnonymousOrderTransfer({ maxAgeSeconds: 24 * 60 * 60 });
+        await supabase.auth.signOut({ scope: "local" });
+      } catch (transferPreparationError) {
+        console.error("[compte] Préparation des données anonymes impossible :", transferPreparationError);
+        setLoading(false);
+        setCaptchaToken("");
+        setCaptchaReset((value) => value + 1);
+        setError("Vos données en cours n'ont pas pu être sécurisées. Actualisez la page avant de créer le compte.");
+        return;
+      }
+    }
 
-    const { data, error: signUpError } = isAnonymousUpgrade
-      ? await supabase.auth.updateUser({ email, password, data: { first_name, last_name } })
-      : await supabase.auth.signUp({ email, password, options: { data: { first_name, last_name } } });
-
-    setLoading(false);
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { first_name, last_name }, captchaToken },
+    });
 
     if (signUpError) {
+      setLoading(false);
+      setCaptchaToken("");
+      setCaptchaReset((value) => value + 1);
       setError(signupErrorMessage(signUpError.code, signUpError.message));
       return;
     }
 
-    // Upgrade anonyme : la session existante reste valide immédiatement (même si
-    // l'e-mail doit encore être confirmé) — inscription classique : une session
-    // n'est renvoyée que si la confirmation par e-mail est désactivée.
-    const hasImmediateSession = isAnonymousUpgrade || ("session" in data && Boolean(data.session));
-    if (hasImmediateSession) {
-      router.push("/mon-compte");
+    setLoading(false);
+
+    if (data.session) {
+      const transfer = await linkPreparedAnonymousOrdersToCurrentAccount();
+      if (transfer.error) {
+        setError("Le compte a bien été créé, mais vos données en cours n'ont pas encore pu être rattachées.");
+        return;
+      }
+      router.push(transfer.linked > 0 ? "/mon-compte?section=commandes" : "/mon-compte");
       router.refresh();
       return;
     }
@@ -202,18 +262,6 @@ function SignupForm() {
 
   return (
     <form id="signup-pane" role="tabpanel" aria-label="Créer un compte" className="account-form" onSubmit={handleSubmit}>
-      {/* .oauth-choice AJOUTÉ (chantier Compte, reprise) : § de la maquette,
-          un seul conteneur pour les boutons ET le séparateur — éclaté
-          jusqu'ici en 2 blocs distincts (.social-auth + .account-divider
-          sibling). Texte du séparateur corrigé ("ou avec votre adresse
-          e-mail", jamais "ou par e-mail"). */}
-      <div className="oauth-choice">
-        <SocialAuthButtons />
-        <div className="account-divider">
-          <span>ou avec votre adresse e-mail</span>
-        </div>
-      </div>
-
       {error && <div className="admin-error">{error}</div>}
 
       <label className="field-label" htmlFor="signup-first-name">
@@ -234,12 +282,12 @@ function SignupForm() {
       <label className="field-label" htmlFor="signup-password">
         Mot de passe *
       </label>
-      <input id="signup-password" name="password" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordInput id="signup-password" name="password" required minLength={8} autoComplete="new-password" />
 
       <label className="field-label" htmlFor="signup-password-confirm">
         Confirmer le mot de passe *
       </label>
-      <input id="signup-password-confirm" name="password_confirm" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordInput id="signup-password-confirm" name="password_confirm" required minLength={8} autoComplete="new-password" />
 
       <label className="consent">
         <input type="checkbox" required />
@@ -249,9 +297,18 @@ function SignupForm() {
         </span>
       </label>
 
-      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading}>
+      <TurnstileWidget action="signup" name={false} onToken={setCaptchaToken} resetSignal={captchaReset} />
+
+      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={loading || !captchaToken}>
         {loading ? "Création…" : "Créer mon compte →"}
       </button>
+
+      <div className="oauth-choice">
+        <div className="account-divider">
+          <span>ou continuer avec</span>
+        </div>
+        <SocialAuthButtons enabled={socialProviders} />
+      </div>
     </form>
   );
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import { redirect } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
+import { getPageContent } from "@/lib/content/pageContent";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import ViewTracker from "@/components/articles/ViewTracker";
@@ -21,13 +23,14 @@ export async function generateMetadata(): Promise<Metadata> {
   // retour du 05/09, restructuration en URL par jour). L'image de partage
   // générée par opengraph-image.tsx reflète donc, elle aussi, toujours
   // aujourd'hui — cohérent avec le sens de cette URL fixe et permanente.
+  const socialImage = await socialImageUrl(`/rosee-matinale/opengraph-image`);
   return {
     title,
     description,
     keywords: current?.seo_keywords && current.seo_keywords.length > 0 ? current.seo_keywords : undefined,
-    alternates: { canonical: "/rosee-matinale" },
-    openGraph: { type: "website", title, description, url: "/rosee-matinale", siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: officialUrl("/rosee-matinale") },
+    openGraph: { type: "website", title, description, url: officialUrl("/rosee-matinale"), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [socialImage] },
+    twitter: { card: "summary_large_image", title, description, images: [socialImage] },
   };
 }
 
@@ -46,20 +49,23 @@ export default async function RoseeMatinalePage({
     redirect(`/rosee-matinale/${date}${archivePage ? `?archivePage=${archivePage}` : ""}`);
   }
 
-  const entries = await getPublishedArticles("rm"); // triées du plus récent au plus ancien
+  const [entries, pageContent] = await Promise.all([
+    getPublishedArticles("rm"),
+    getPageContent("rosee-matinale"),
+  ]); // triées du plus récent au plus ancien
 
   if (entries.length === 0) {
     return (
       <>
         <section className="util-hero">
           <div className="wrap">
-            <h1>Rosée Matinale</h1>
-            <p>Une nouvelle pensée chaque jour.</p>
+            <h1>{pageContent.title}</h1>
+            <p>{pageContent.intro}</p>
           </div>
         </section>
         <section className="section">
           <div className="wrap" style={{ textAlign: "center" }}>
-            <p className="empty-state">La première entrée arrive bientôt.</p>
+            <p className="empty-state">{pageContent.empty_state}</p>
           </div>
         </section>
         <Newsletter />

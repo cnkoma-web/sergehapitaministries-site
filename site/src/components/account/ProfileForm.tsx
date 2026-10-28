@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import PasswordInput from "@/components/account/PasswordInput";
 
 type Props = {
   userId: string;
@@ -30,23 +31,21 @@ export default function ProfileForm({ userId, initialFirstName, initialLastName,
 
     const supabase = createClient();
 
-    // last_name AJOUTÉ (chantier /mon-compte, reprise) : § .profile-form
-    // "Nom" de la maquette — donnée réelle déjà en base (profiles.last_name,
-    // migration 20260824030000) avec le GRANT UPDATE déjà accordé à
-    // authenticated, jamais exposée par ce formulaire jusqu'ici.
-    if (firstName || lastName) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({ first_name: firstName, last_name: lastName })
-        .eq("id", userId);
-      if (profileError) {
-        setError("Impossible de mettre à jour vos informations.");
-        setLoading(false);
-        return;
-      }
+    const { data: updatedProfile, error: profileError } = await supabase
+      .from("profiles")
+      .update({ first_name: firstName || null, last_name: lastName || null })
+      .eq("id", userId)
+      .select("id")
+      .maybeSingle();
+    if (profileError || !updatedProfile) {
+      setError("Impossible de mettre à jour vos informations.");
+      setLoading(false);
+      return;
     }
 
-    const authUpdates: { email?: string; password?: string } = {};
+    const authUpdates: { email?: string; password?: string; data: { first_name: string; last_name: string } } = {
+      data: { first_name: firstName, last_name: lastName },
+    };
     if (email && email !== initialEmail) authUpdates.email = email;
     if (newPassword) authUpdates.password = newPassword;
 
@@ -70,37 +69,40 @@ export default function ProfileForm({ userId, initialFirstName, initialLastName,
 
   return (
     <form className="profile-form" onSubmit={handleSubmit}>
-      {error && <div className="admin-error">{error}</div>}
-      {success && <div className="admin-error" style={{ background: "#E3F5E9", color: "#1F8A4C" }}>{success}</div>}
+      {error ? <div className="admin-error v2-profile-feedback">{error}</div> : null}
+      {success ? (
+        <div className="admin-error v2-profile-feedback" style={{ background: "#E3F5E9", color: "#1F8A4C" }}>
+          {success}
+        </div>
+      ) : null}
 
-      <label htmlFor="profile-first-name">Prénom</label>
-      <input id="profile-first-name" name="first_name" type="text" defaultValue={initialFirstName} />
+      <div className="v2-profile-field">
+        <label htmlFor="profile-first-name">Prénom</label>
+        <input id="profile-first-name" name="first_name" type="text" defaultValue={initialFirstName} />
+      </div>
 
-      <label htmlFor="profile-last-name">Nom</label>
-      <input id="profile-last-name" name="last_name" type="text" defaultValue={initialLastName} />
+      <div className="v2-profile-field">
+        <label htmlFor="profile-last-name">Nom</label>
+        <input id="profile-last-name" name="last_name" type="text" defaultValue={initialLastName} />
+      </div>
 
-      {/* Pleine largeur (chantier /mon-compte, reprise) : § .profile-form
-          label:last-of-type de la maquette ne vise que le DERNIER label
-          (Email, dans une grille à 3 champs) — avec le champ mot de passe
-          ajouté ici (fonction réelle dépassant la maquette), Email et mot
-          de passe portent désormais explicitement cette même règle. */}
-      <label htmlFor="profile-email" className="v2-profile-form-full">
-        E-mail
-      </label>
-      <input id="profile-email" name="email" type="email" defaultValue={initialEmail} className="v2-profile-form-full" />
+      <div className="v2-profile-field v2-profile-form-full">
+        <label htmlFor="profile-email">E-mail</label>
+        <input id="profile-email" name="email" type="email" defaultValue={initialEmail} />
+      </div>
 
-      <label htmlFor="profile-password" className="v2-profile-form-full">
-        Nouveau mot de passe <span style={{ fontWeight: 400, color: "var(--v2-muted)" }}>(laisser vide pour ne pas changer)</span>
-      </label>
-      <input
-        id="profile-password"
-        name="password"
-        type="password"
-        minLength={8}
-        autoComplete="new-password"
-        ref={passwordRef}
-        className="v2-profile-form-full"
-      />
+      <div className="v2-profile-field v2-profile-form-full">
+        <label htmlFor="profile-password">
+          Nouveau mot de passe <span style={{ fontWeight: 400, color: "var(--v2-muted)" }}>(laisser vide pour ne pas changer)</span>
+        </label>
+        <PasswordInput
+          id="profile-password"
+          name="password"
+          minLength={8}
+          autoComplete="new-password"
+          inputRef={passwordRef}
+        />
+      </div>
 
       <button type="submit" disabled={loading}>
         {loading ? "Enregistrement…" : "Enregistrer →"}

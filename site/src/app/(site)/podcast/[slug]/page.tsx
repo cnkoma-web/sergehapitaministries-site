@@ -1,17 +1,29 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPodcastEpisodeBySlug } from "@/lib/content/podcast";
 import { getArticlesByIds, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
+import PodcastImmersivePlayer from "@/components/podcast/PodcastImmersivePlayer";
 import PodcastShareActions from "@/components/podcast/PodcastShareActions";
+import { buildPodcastShareMessage, formatPodcastDate } from "@/lib/podcast/shareMessage";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 
 const SITE_URL = "https://sergehapitaministries.org";
+const SOCIAL_IMAGE_WIDTH = 1200;
+// Next.js n'accepte que les qualités déclarées par le projet. Garder cette
+// valeur unique évite de produire une URL Open Graph invalide.
+const SOCIAL_IMAGE_QUALITY = 75;
 
-// Lien vers le contenu écrit associé (cahier §Lot 9) — chaque type
-// d'article a sa propre route, pas un seul gabarit /publications/[slug]
-// pour tous (Rosée Matinale et Je Confesse ont chacun leur route dédiée).
+/** Les robots sociaux téléchargent cette URL sans passer par le lecteur.
+ * On leur sert une variante 1200 px, nettement plus légère que les PNG
+ * originaux parfois proches de 3 Mo, tout en gardant la pochette originale
+ * intacte dans la page d\'écoute. */
+function socialCoverUrl(source: string): string {
+  return `${SITE_URL}/_next/image?url=${encodeURIComponent(source)}&w=${SOCIAL_IMAGE_WIDTH}&q=${SOCIAL_IMAGE_QUALITY}`;
+}
+
 function linkedContentHref(type: string, slug: string, articleDate: string): string {
   if (type === "rm") return `/rosee-matinale/${articleDate}`;
   if (type === "jc") return "/publications/je-confesse-et-declare";
@@ -24,56 +36,89 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!episode) return { title: "Podcast | Serge Hapita Ministries" };
   const title = `${episode.title} | Podcast | Serge Hapita Ministries`;
   const description = episode.theme || `${ARTICLE_TYPE_LABEL[episode.universe]} à écouter — Serge Hapita Ministries.`;
+  const originalImage = episode.share_image_url || episode.cover_url || episode.linked_article_cover_url || undefined;
+  const image = originalImage ? socialCoverUrl(originalImage) : undefined;
   return {
     title,
     description,
     alternates: { canonical: `/podcast/${episode.slug}` },
-    openGraph: { type: "website", title, description, url: `/podcast/${episode.slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: {
+      type: "website",
+      title,
+      description,
+      url: `/podcast/${episode.slug}`,
+      siteName: "Serge Hapita Ministries",
+      locale: "fr_FR",
+      images: image ? [{ url: image, width: SOCIAL_IMAGE_WIDTH, height: SOCIAL_IMAGE_WIDTH, alt: `Pochette de ${episode.title}` }] : undefined,
+    },
+    twitter: { card: "summary_large_image", title, description, images: image ? [image] : undefined },
   };
 }
 
-export default async function PodcastEpisodePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function PodcastEpisodePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ ecouter?: string }>;
+}) {
+  const [{ slug }, { ecouter }] = await Promise.all([params, searchParams]);
   const episode = await getPodcastEpisodeBySlug(slug);
   if (!episode) notFound();
 
   const [linkedArticle] = episode.linked_article_id ? await getArticlesByIds([episode.linked_article_id]) : [null];
   const episodeUrl = `${SITE_URL}/podcast/${episode.slug}`;
-  const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[episode.universe]} : ${episode.title}. ${episodeUrl}`;
+  const sharedEpisodeUrl = `${episodeUrl}?ecouter=1`;
+  const shareMessage = buildPodcastShareMessage({
+    universe: episode.universe,
+    title: episode.title,
+    episodeDate: episode.episode_date,
+    theme: episode.theme,
+    verseReference: linkedArticle?.verse_reference,
+  });
+  const listenMode = ecouter === "1";
+  const coverUrl = episode.cover_url || episode.linked_article_cover_url;
+  const formattedDate = formatPodcastDate(episode.episode_date);
+  const pageStyle = coverUrl
+    ? ({ "--podcast-cover-environment": `url("${coverUrl}")` } as CSSProperties)
+    : undefined;
 
   return (
-    // V2 (Lot 9, 11/09) — pas de maquette dédiée pour la fiche détail dans
-    // le dossier (la maquette ne montre que la bibliothèque avec ses
-    // cartes) : gabarit cohérent avec le reste du site (même héros sombre
-    // que .v2-article-page), à signaler si Serge souhaite un écran dédié.
-    <div className="v2-podcast-page">
-      <section className="v2-podcast-detail-hero">
-        <div className="v2-wrap">
-          <span className={`feed-badge ${episode.universe}`}>{ARTICLE_TYPE_LABEL[episode.universe]}</span>
-          <h1>{episode.title}</h1>
-          {episode.theme && <p>{episode.theme}</p>}
-        </div>
-      </section>
+    <div
+      className={`v2-podcast-page v2-podcast-listening-page ${episode.universe}${coverUrl ? " has-cover-environment" : ""}${listenMode ? " is-share-listen-mode" : ""}`}
+      style={pageStyle}
+    >
+      <main className="v2-podcast-listening-stage">
+        <div className="v2-wrap v2-podcast-listening-shell">
+          <div className="v2-podcast-listening-topbar">
+            <Link href="/podcast" className="v2-podcast-listening-back">
+              <span aria-hidden="true">←</span> Bibliothèque audio
+            </Link>
+            <PodcastShareActions title={episode.title} message={shareMessage} url={sharedEpisodeUrl} />
+          </div>
 
-      <section className="v2-podcast-detail-body">
-        <div className="v2-wrap v2-podcast-detail-player">
-          <audio className="v2-podcast-audio" controls src={episode.audio_url} preload="none">
-            <track kind="captions" />
-          </audio>
+          <div className="v2-podcast-listening-layout">
+            <PodcastImmersivePlayer src={episode.audio_url} title={episode.title} coverUrl={coverUrl} autoPlay={listenMode} />
 
-          <div className="v2-podcast-card-bottom">
-            {linkedArticle ? (
-              <Link href={linkedContentHref(linkedArticle.type, linkedArticle.slug, linkedArticle.article_date)} className="v2-podcast-detail-link">
-                Lire le contenu écrit associé →
-              </Link>
-            ) : (
-              <span />
-            )}
-            <PodcastShareActions title={episode.title} message={shareMessage} url={episodeUrl} />
+            <div className="v2-podcast-listening-copy">
+              <div className="v2-podcast-listening-meta">
+                <span>{ARTICLE_TYPE_LABEL[episode.universe]}</span>
+                <time dateTime={episode.episode_date}>{formattedDate}</time>
+              </div>
+              <h1>{episode.title}</h1>
+              {episode.theme && <p>{episode.theme}</p>}
+              {linkedArticle && (
+                <Link
+                  href={linkedContentHref(linkedArticle.type, linkedArticle.slug, linkedArticle.article_date)}
+                  className="v2-podcast-written-link"
+                >
+                  Lire le contenu écrit associé <span aria-hidden="true">→</span>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
-      </section>
+      </main>
 
       <Newsletter />
       <Footer variant="light" />

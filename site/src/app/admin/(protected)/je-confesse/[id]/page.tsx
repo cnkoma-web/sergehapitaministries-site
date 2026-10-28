@@ -2,20 +2,28 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArticleByIdAdmin } from "@/lib/content/articles";
+import { getJeConfesseSettings } from "@/lib/content/interfaceTexts";
+import { getPodcastEpisodeOptionsForLinking } from "@/lib/content/podcast";
 import { updateConfessionEntry, deleteArticle } from "../../publications/actions";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import SavedToast from "@/components/admin/SavedToast";
+import AdminSubmitButton from "@/components/admin/AdminSubmitButton";
+import AdminKeywordsField from "@/components/admin/AdminKeywordsField";
 
 // V2 (Lot 4, 11/09 — corrigé le 11/09 après relecture de la maquette) —
 // calqué sur admin/rosee-matinale/[id]/page.tsx (voir le commentaire
 // détaillé dans publications/actions.ts pour les différences volontaires
-// avec Rosée Matinale). Le verset d'en-tête et la signature de clôture
-// sont des réglages globaux (/admin/textes), jamais édités ici.
+// avec Rosée Matinale). Le passage biblique d'en-tête est propre à
+// chaque confession ; seule la signature de clôture reste globale.
 export default async function AdminJeConfesseEntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const entry = await getArticleByIdAdmin(id);
   if (!entry || entry.type !== "jc") notFound();
+  const [settings, podcastEpisodes] = await Promise.all([
+    getJeConfesseSettings(),
+    getPodcastEpisodeOptionsForLinking("jc"),
+  ]);
 
   return (
     <>
@@ -35,9 +43,7 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
             <button type="submit" form="delete-confession-form" className="btn-danger">
               Supprimer
             </button>
-            <button type="submit" className="admin-btn-primary">
-              Enregistrer
-            </button>
+            <AdminSubmitButton pendingLabel="Enregistrement…">Enregistrer</AdminSubmitButton>
           </div>
         </div>
 
@@ -59,6 +65,39 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
           </div>
 
           <div className="editor-field">
+            <label>Titre de la confession</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={entry.title}
+              placeholder="Ex. : Je marche dans la victoire"
+              required
+            />
+          </div>
+
+          <div className="editor-field">
+            <label>Référence biblique</label>
+            <input
+              type="text"
+              name="verse_reference"
+              defaultValue={entry.verse_reference?.trim() || settings.verseReference}
+              placeholder="Ex. : Romains 8:37"
+              required
+            />
+          </div>
+
+          <div className="editor-field">
+            <label>Passage biblique</label>
+            <textarea
+              name="verse_text"
+              rows={4}
+              defaultValue={entry.verse_text?.trim() || settings.verseText}
+              placeholder="Saisissez le texte du passage biblique…"
+              required
+            />
+          </div>
+
+          <div className="editor-field">
             <label>Image de couverture</label>
             <ArticleCoverField currentUrl={entry.cover_url} />
             <input
@@ -75,14 +114,26 @@ export default async function AdminJeConfesseEntryPage({ params }: { params: Pro
             <RichTextEditor key={entry.id} name="body" defaultValue={entry.body} placeholder="Texte de la proclamation…" minHeight={200} compact />
           </div>
 
+          <div className="editor-field">
+            <label>Audio associé (facultatif)</label>
+            <select name="podcast_episode_id" defaultValue={entry.podcast_episode_id ?? ""}>
+              <option value="">Aucun audio associé</option>
+              {podcastEpisodes.map((episode) => (
+                <option key={episode.id} value={episode.id}>
+                  {new Date(episode.episode_date).toLocaleDateString("fr-FR")} — {episode.title}
+                  {episode.status === "draft" ? " (brouillon)" : ""}
+                </option>
+              ))}
+            </select>
+            <small>
+              Choisissez un épisode déjà créé dans Podcasts. Le bouton audio public apparaît automatiquement lorsque cet épisode est publié.
+            </small>
+          </div>
+
           <div className="editor-field" style={{ marginBottom: 0 }}>
-            <label>Mots-clés (SEO) — séparés par des virgules</label>
-            <input
-              type="text"
-              name="seo_keywords"
-              defaultValue={entry.seo_keywords.join(", ")}
-              placeholder="identité, victoire, confession"
-            />
+            <label>Thèmes et expressions clés — séparés par des virgules</label>
+            <AdminKeywordsField defaultKeywords={entry.seo_keywords} />
+            <small>Utilisez seulement les expressions réellement présentes dans cette confession.</small>
           </div>
         </div>
       </form>

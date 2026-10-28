@@ -8,6 +8,7 @@ import {
   buildPlainBookShareMessage,
   SHARE_BLOCK_INVITE,
   type ShareCategory,
+  type PublicationShareContent,
 } from "@/lib/share";
 
 // Icônes SVG réelles pour chaque plateforme (jamais d'emoji ni de lettre
@@ -43,6 +44,7 @@ export default function ShareCartouche({
   category,
   articleDate,
   excerpt,
+  shareContent,
   bookDescription,
   invite,
   platformOrder,
@@ -77,6 +79,7 @@ export default function ShareCartouche({
   // publications n'en ont pas (repli déjà géré par l'appelant, voir
   // publications/[slug]/page.tsx).
   excerpt?: string;
+  shareContent?: PublicationShareContent;
   // Description du livre, débarrassée de son HTML par l'appelant (voir
   // livres/[slug]/page.tsx) — jamais utilisé en même temps que category.
   bookDescription?: string;
@@ -88,15 +91,17 @@ export default function ShareCartouche({
   let formattedMessage: string;
   let plainMessage: string;
   if (category) {
-    formattedMessage = buildShareMessage({ category, title, articleDate: articleDate ?? "", excerpt, url });
-    plainMessage = buildPlainShareMessage({ category, title, articleDate: articleDate ?? "", excerpt, url });
+    formattedMessage = buildShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, articleDate, url });
+    plainMessage = buildPlainShareMessage({ category, title, content: shareContent ?? { intro: excerpt }, articleDate, url });
   } else if (bookDescription) {
     formattedMessage = buildBookShareMessage({ title, description: bookDescription, url });
     plainMessage = buildPlainBookShareMessage({ title, description: bookDescription, url });
   } else {
     formattedMessage = plainMessage = `${title} - ${url}`;
   }
-  const encodedFormattedMessage = encodeURIComponent(formattedMessage);
+  // Test WhatsApp mobile : le message éditorial court conserve l'URL
+  // canonique en dernière position, conformément au parcours de lecture.
+  const encodedWhatsappMessage = encodeURIComponent(formattedMessage);
   const encodedPlainMessage = encodeURIComponent(plainMessage);
 
   // Pictogrammes (retour validation humaine, 13/09) : glyphes exacts de
@@ -111,7 +116,7 @@ export default function ShareCartouche({
       <a
         key="whatsapp"
         className="share-icon"
-        href={`https://api.whatsapp.com/send?text=${encodedFormattedMessage}`}
+        href={`https://wa.me/?text=${encodedWhatsappMessage}`}
         target="_blank"
         rel="noopener"
         aria-label="WhatsApp"

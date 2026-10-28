@@ -2,6 +2,8 @@
 
 import { useTransition } from "react";
 import { submitContactForm } from "@/lib/forms/actions";
+import BotTrapFields from "@/components/security/BotTrapFields";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 // STRUCTURE corrigée (lot de finition, 16/09) : § .contact-form/.field de
 // la maquette (prototype-html/contact/index.html + engagement.css) —
@@ -19,9 +21,7 @@ export default function ContactForm() {
     <form
       className="contact-form"
       action={(formData) => {
-        startTransition(() => {
-          submitContactForm(formData);
-        });
+        startTransition(() => submitContactForm(formData));
       }}
     >
       <div className="field">
@@ -51,6 +51,9 @@ export default function ContactForm() {
           <a href="/politique-de-confidentialite">politique de confidentialité</a>.
         </span>
       </label>
+
+      <BotTrapFields />
+      <TurnstileWidget action="contact" />
 
       <button type="submit" className="v2-primary-submit" disabled={isPending}>
         {isPending ? "Envoi…" : "Envoyer le message →"}

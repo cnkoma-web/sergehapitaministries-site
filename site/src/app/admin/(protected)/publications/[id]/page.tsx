@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getArticleByIdAdmin, getArticleOptionsForLinking, ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import { getCategories, getCategoryIdsForArticle } from "@/lib/content/categories";
+import { getPodcastEpisodeOptionsForLinking } from "@/lib/content/podcast";
 import { updateArticle, publishArticle, deleteArticle } from "../actions";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import RichTextEditor from "@/components/admin/RichTextEditor";
@@ -20,10 +21,11 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
   if (!article) notFound();
   if (article.type === "rm") redirect(`/admin/rosee-matinale/${id}`);
 
-  const [linkOptions, allCategories, selectedCategoryIds] = await Promise.all([
+  const [linkOptions, allCategories, selectedCategoryIds, podcastEpisodes] = await Promise.all([
     getArticleOptionsForLinking(article.id),
     getCategories(),
     getCategoryIdsForArticle(article.id),
+    getPodcastEpisodeOptionsForLinking(article.type === "vs" ? "vs" : "qdlb"),
   ]);
 
   return (
@@ -133,13 +135,25 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
           )}
 
           {article.type === "vs" && (
-            <div className="editor-field">
-              <label>Accès</label>
-              <select name="access" defaultValue={article.access}>
-                <option value="free">Gratuit (compte requis)</option>
-                <option value="paid">Payant (à activer plus tard)</option>
-              </select>
-            </div>
+            <>
+              <div className="editor-field">
+                <label>Accès</label>
+                <select name="access" defaultValue={article.access}>
+                  <option value="free">Gratuit (compte requis)</option>
+                  <option value="paid">Payant (à activer plus tard)</option>
+                </select>
+              </div>
+              <div className="editor-field">
+                <label>Ce que la suite aborde</label>
+                <textarea
+                  name="toc_keywords"
+                  defaultValue={article.toc_keywords.join("\n")}
+                  rows={7}
+                  placeholder="Un point par ligne"
+                />
+                <small>Un point par ligne. Cette liste présente la suite de l&apos;article avant l&apos;accès au texte complet.</small>
+              </div>
+            </>
           )}
 
           <div className="editor-field">
@@ -153,8 +167,22 @@ export default async function AdminArticleDetailPage({ params }: { params: Promi
           </div>
 
           <div className="editor-field">
-            <label>Mots-clés (SEO) — séparés par des virgules</label>
+            <label htmlFor="article-podcast">Audio associé <span>(facultatif)</span></label>
+            <select id="article-podcast" name="podcast_episode_id" defaultValue={article.podcast_episode_id ?? ""}>
+              <option value="">Aucun audio associé</option>
+              {podcastEpisodes.map((episode) => (
+                <option key={episode.id} value={episode.id}>
+                  {episode.title} — {new Date(episode.episode_date).toLocaleDateString("fr-FR")} ({episode.status === "published" ? "publié" : "brouillon"})
+                </option>
+              ))}
+            </select>
+            <small>Le lecteur apparaît sur la publication uniquement lorsque l’épisode associé est publié.</small>
+          </div>
+
+          <div className="editor-field">
+            <label>Thèmes et expressions clés — séparés par des virgules</label>
             <input type="text" name="seo_keywords" defaultValue={article.seo_keywords.join(", ")} placeholder="justice, nature de Dieu" />
+            <small>Choisissez des expressions réellement traitées dans le titre, le chapeau ou le texte. Elles décrivent l’article aux moteurs sans remplacer le contenu visible.</small>
           </div>
         </aside>
 

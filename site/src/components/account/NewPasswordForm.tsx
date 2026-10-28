@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import PasswordInput from "@/components/account/PasswordInput";
 
 // Cette page est atteinte via le lien envoyé par e-mail (resetPasswordForEmail),
 // mais la session de récupération est désormais établie AVANT d'arriver ici —
@@ -91,9 +92,9 @@ export default function NewPasswordForm() {
     <form id="new-password-form" className="v2-account-flow-form" onSubmit={handleSubmit}>
       {error && <div className="admin-error">{error}</div>}
       <label htmlFor="new-password">Nouveau mot de passe</label>
-      <input id="new-password" name="password" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordInput id="new-password" name="password" required minLength={8} autoComplete="new-password" />
       <label htmlFor="new-password-confirm">Confirmation du mot de passe</label>
-      <input id="new-password-confirm" name="password_confirm" type="password" required minLength={8} autoComplete="new-password" />
+      <PasswordInput id="new-password-confirm" name="password_confirm" required minLength={8} autoComplete="new-password" />
       <ul className="v2-password-rules">
         <li>Au moins 8 caractères</li>
         <li>Les deux saisies doivent être identiques</li>

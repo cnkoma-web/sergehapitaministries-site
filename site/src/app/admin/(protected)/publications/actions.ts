@@ -38,6 +38,13 @@ function parseTags(raw: string): string[] {
     .filter(Boolean);
 }
 
+function parseLines(raw: string): string[] {
+  return raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
 export async function createArticle(formData: FormData) {
   const supabase = await createClient();
   const title = String(formData.get("title") ?? "Nouvel article").trim() || "Nouvel article";
@@ -101,11 +108,15 @@ async function saveArticle(formData: FormData, status?: "draft" | "published") {
   }
   if (type === "vs") {
     update.access = String(formData.get("access") ?? "free");
+    update.toc_keywords = parseLines(String(formData.get("toc_keywords") ?? ""));
   }
 
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), type);
+  update.podcast_episode_id = podcastEpisodeId;
   if (status) update.status = status;
 
   await supabase.from("articles").update(update).eq("id", id);
+  await syncArticlePodcastLink(supabase, id, podcastEpisodeId, type);
   await setArticleCategories(id, formData.getAll("category_ids").map(String).filter(Boolean));
 
   revalidatePath(`/admin/publications/${id}`);
@@ -186,22 +197,13 @@ export async function publishRosee(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
   const verse_text = String(formData.get("verse_text") ?? "").trim();
-  // Plus de paragraphsToHtml ici (retour du 07/09) — ce champ vient
-  // désormais du même RichTextEditor que l'écran d'édition (retour du
-  // 07/09, unification des deux éditeurs), qui produit déjà du HTML tout
-  // fait via son propre champ caché, pas du texte brut à convertir en
-  // paragraphes comme le faisait l'ancien <textarea> simple.
   const body = String(formData.get("body") ?? "").trim();
-  if (!verse_text) return;
+  if (!verse_text) redirect("/admin/rosee-matinale?error=missing-fields");
 
-  // Champ "Titre" (retour du 07/09) — optionnel : laissé vide, on retombe
-  // sur l'ancien comportement (titre reconstruit depuis la date), utilisé
-  // ailleurs sur le site (liste "Articles similaires", message de partage)
-  // tant que Serge n'a pas renseigné un vrai titre pour cette entrée.
   const submittedTitle = String(formData.get("title") ?? "").trim();
   const autoTitle = `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
-
-  await supabase.from("articles").insert({
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "rm");
+  const { data: createdArticle, error } = await supabase.from("articles").insert({
     type: "rm",
     slug: `rm-${article_date}`,
     title: submittedTitle || autoTitle,
@@ -214,37 +216,36 @@ export async function publishRosee(formData: FormData) {
     access: "free",
     status: "published",
     reading_time_minutes: body ? computeReadingTime(body) : null,
-  });
+    podcast_episode_id: podcastEpisodeId,
+  }).select("id").single();
 
+  if (error || !createdArticle) {
+    console.error("[admin/rosee-matinale] publish failed", error);
+    redirect("/admin/rosee-matinale?error=publish");
+  }
+  await syncArticlePodcastLink(supabase, createdArticle.id, podcastEpisodeId, "rm");
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
   revalidatePath("/publications");
+  redirect("/admin/rosee-matinale?saved=published");
 }
 
-/** Édition d'une entrée Rosée Matinale existante — écran dédié, séparé de
- * l'éditeur d'article générique (Que Dit la Bible / La Vie Supérieure) qui a
- * des champs sans rapport pour ce format (thèmes, articles similaires...) —
- * mais garde couverture + mots-clés SEO, utiles ici aussi (cahier §3.2 + §1.5). */
 export async function updateRoseeEntry(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
   const verse_text = String(formData.get("verse_text") ?? "").trim();
-  if (!id || !verse_text) return;
+  if (!id || !verse_text) redirect(`/admin/rosee-matinale/${id}?error=missing-fields`);
 
   const body = String(formData.get("body") ?? "").trim();
   const article_date = String(formData.get("article_date") ?? "") || undefined;
-
-  // Champ "Titre" (retour du 07/09) — même règle qu'à la création : vide,
-  // le titre continue de se reconstruire depuis la date (comportement
-  // d'origine, avant ce champ) ; rempli, il prend le dessus et n'est plus
-  // écrasé par un changement de date ultérieur.
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "rm");
   const submittedTitle = String(formData.get("title") ?? "").trim();
   const autoTitle = article_date
     ? `Rosée Matinale — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
     : undefined;
 
-  await supabase
+  const { error } = await supabase
     .from("articles")
     .update({
       article_date,
@@ -256,43 +257,112 @@ export async function updateRoseeEntry(formData: FormData) {
       seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
       status: String(formData.get("status") ?? "published"),
       reading_time_minutes: body ? computeReadingTime(body) : null,
+      podcast_episode_id: podcastEpisodeId,
     })
     .eq("id", id);
 
+  if (error) {
+    console.error("[admin/rosee-matinale] update failed", error);
+    redirect(`/admin/rosee-matinale/${id}?error=save`);
+  }
+  await syncArticlePodcastLink(supabase, id, podcastEpisodeId, "rm");
   revalidatePath("/admin/rosee-matinale");
   revalidatePath("/rosee-matinale");
   revalidatePath("/");
   revalidatePath("/publications");
-  // Reste sur l'écran d'édition (retour du 05/09) — voir le commentaire
-  // équivalent sur updateArticle ci-dessus.
   redirect(`/admin/rosee-matinale/${id}?saved=1`);
+}
+
+export async function deleteRoseeEntry(formData: FormData) {
+  const supabase = await createClient();
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/admin/rosee-matinale?error=delete");
+
+  const { error } = await supabase.from("articles").delete().eq("id", id).eq("type", "rm");
+  if (error) {
+    console.error("[admin/rosee-matinale] delete failed", error);
+    redirect("/admin/rosee-matinale?error=delete");
+  }
+  revalidatePath("/admin/rosee-matinale");
+  revalidatePath("/rosee-matinale");
+  revalidatePath("/");
+  revalidatePath("/publications");
+  redirect("/admin/rosee-matinale?saved=deleted");
 }
 
 // ===== Je Confesse (Lot 4, 11/09 — corrigé le 11/09 après relecture de la
 // maquette) — même principe exact que Rosée Matinale ci-dessus : publication
-// rapide de l'entrée du jour + écran d'édition dédié. Correction impérative
-// (retour du 11/09) : le verset d'en-tête (Proverbes 18:20) et la signature
-// de clôture (Romains 10:10) sont FIXES pour toute la rubrique — réglages
-// globaux (interface_texts, § getJeConfesseSettings dans interfaceTexts.ts),
-// jamais un champ par proclamation. Seuls deux champs varient par
-// proclamation : l'image de couverture (comme Rosée Matinale) et le corps
-// de la déclaration (obligatoire, contrairement à Rosée Matinale où il est
-// facultatif). Toujours pas de champ "Titre" (titre reconstruit depuis la
-// date, jamais éditorial). =====
+// rapide de l'entrée du jour + écran d'édition dédié. Le passage biblique
+// d'en-tête (texte + référence) varie désormais selon chaque confession.
+// La signature de clôture (Romains 10:10) reste un réglage global.
+// Toujours pas de champ "Titre" (titre reconstruit depuis la date). =====
+
+type PodcastUniverse = "qdlb" | "vs" | "rm" | "jc";
+
+async function getArticlePodcastId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  rawValue: FormDataEntryValue | null,
+  universe: PodcastUniverse
+): Promise<string | null> {
+  const id = String(rawValue ?? "").trim();
+  if (!id) return null;
+
+  const { data, error } = await supabase
+    .from("podcast_episodes")
+    .select("id")
+    .eq("id", id)
+    .eq("universe", universe)
+    .maybeSingle();
+  if (error || !data) throw error ?? new Error(`Épisode ${universe} introuvable`);
+  return data.id;
+}
+
+async function syncArticlePodcastLink(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  articleId: string,
+  podcastEpisodeId: string | null,
+  universe: PodcastUniverse
+) {
+  const { error: detachError } = await supabase
+    .from("podcast_episodes")
+    .update({ linked_article_id: null })
+    .eq("linked_article_id", articleId);
+  if (detachError) throw detachError;
+
+  if (!podcastEpisodeId) return;
+
+  const { error: clearOtherArticleError } = await supabase
+    .from("articles")
+    .update({ podcast_episode_id: null })
+    .eq("podcast_episode_id", podcastEpisodeId)
+    .neq("id", articleId);
+  if (clearOtherArticleError) throw clearOtherArticleError;
+
+  const { error: linkError } = await supabase
+    .from("podcast_episodes")
+    .update({ linked_article_id: articleId })
+    .eq("id", podcastEpisodeId)
+    .eq("universe", universe);
+  if (linkError) throw linkError;
+}
 
 export async function publishConfession(formData: FormData) {
   const supabase = await createClient();
   const article_date = String(formData.get("article_date") ?? "") || new Date().toISOString().slice(0, 10);
+  const title = String(formData.get("title") ?? "").trim();
+  const verse_reference = String(formData.get("verse_reference") ?? "").trim();
+  const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!body) return;
+  if (!title || !verse_reference || !verse_text || !body) redirect("/admin/je-confesse?error=missing-fields");
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "jc");
 
-  const title = `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
-
-  await supabase.from("articles").insert({
+  const { data: createdArticle, error } = await supabase.from("articles").insert({
     type: "jc",
     slug: `jc-${article_date}`,
     title,
     article_date,
+    verse_reference,
+    verse_text,
     body,
     cover_url: String(formData.get("cover_url") ?? "").trim() || null,
     cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,
@@ -300,38 +370,60 @@ export async function publishConfession(formData: FormData) {
     access: "free",
     status: "published",
     reading_time_minutes: computeReadingTime(body),
-  });
+    podcast_episode_id: podcastEpisodeId,
+  }).select("id").single();
+
+  if (error || !createdArticle) {
+    console.error("[admin/je-confesse] publish failed", error);
+    redirect("/admin/je-confesse?error=publish");
+  }
+
+  await syncArticlePodcastLink(supabase, createdArticle.id, podcastEpisodeId, "jc");
 
   revalidatePath("/admin/je-confesse");
   revalidatePath("/publications/je-confesse-et-declare");
   revalidatePath("/");
   revalidatePath("/publications");
+  redirect("/admin/je-confesse?saved=published");
 }
 
 export async function updateConfessionEntry(formData: FormData) {
   const supabase = await createClient();
   const id = String(formData.get("id"));
+  const title = String(formData.get("title") ?? "").trim();
+  const verse_reference = String(formData.get("verse_reference") ?? "").trim();
+  const verse_text = String(formData.get("verse_text") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
-  if (!id || !body) return;
+  if (!id || !title || !verse_reference || !verse_text || !body) {
+    redirect(`/admin/je-confesse/${id}?error=missing-fields`);
+  }
 
   const article_date = String(formData.get("article_date") ?? "") || undefined;
-  const title = article_date
-    ? `Je Confesse — ${new Date(article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`
-    : undefined;
+  const podcastEpisodeId = await getArticlePodcastId(supabase, formData.get("podcast_episode_id"), "jc");
 
-  await supabase
+  const { error } = await supabase
     .from("articles")
     .update({
       article_date,
       title,
+      verse_reference,
+      verse_text,
       body,
       cover_url: String(formData.get("cover_url") ?? "").trim() || null,
       cover_alt: String(formData.get("cover_alt") ?? "").trim() || null,
       seo_keywords: parseTags(String(formData.get("seo_keywords") ?? "")),
       status: String(formData.get("status") ?? "published"),
       reading_time_minutes: computeReadingTime(body),
+      podcast_episode_id: podcastEpisodeId,
     })
     .eq("id", id);
+
+  if (error) {
+    console.error("[admin/je-confesse] update failed", error);
+    redirect(`/admin/je-confesse/${id}?error=save`);
+  }
+
+  await syncArticlePodcastLink(supabase, id, podcastEpisodeId, "jc");
 
   revalidatePath("/admin/je-confesse");
   revalidatePath("/publications/je-confesse-et-declare");

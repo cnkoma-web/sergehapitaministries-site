@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import { notFound } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import ViewTracker from "@/components/articles/ViewTracker";
 import JeConfesseContent from "../JeConfesseContent";
+import { EditorialArticleJsonLd } from "@/components/seo/StructuredData";
 
 // V2 (Lot 4, 11/09) — calqué sur rosee-matinale/[date]/page.tsx.
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }): Promise<Metadata> {
@@ -12,20 +14,22 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
   if (!current) return {};
   const title = `${current.title} | Serge Hapita Ministries`;
   const description = current.verse_text || "La proclamation du jour — Je Confesse.";
+  const socialImage = await socialImageUrl(`/publications/je-confesse-et-declare/${date}/opengraph-image`);
   return {
     title,
     description,
     keywords: current.seo_keywords.length > 0 ? current.seo_keywords : undefined,
-    alternates: { canonical: `/publications/je-confesse-et-declare/${date}` },
+    alternates: { canonical: officialUrl(`/publications/je-confesse-et-declare/${date}`) },
     openGraph: {
       type: "website",
       title,
       description,
-      url: `/publications/je-confesse-et-declare/${date}`,
+      url: officialUrl(`/publications/je-confesse-et-declare/${date}`),
       siteName: "Serge Hapita Ministries",
       locale: "fr_FR",
+      images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }],
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", title, description, images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }] },
   };
 }
 
@@ -43,6 +47,7 @@ export default async function JeConfesseDatePage({
   if (currentIndex === -1) notFound();
 
   const current = entries[currentIndex];
+  const pageUrl = officialUrl(`/publications/je-confesse-et-declare/${date}`);
   const previous = entries[currentIndex + 1] ?? null;
   const next = entries[currentIndex - 1] ?? null;
   const archive = entries.filter((_, i) => i !== currentIndex);
@@ -51,6 +56,22 @@ export default async function JeConfesseDatePage({
 
   return (
     <>
+      <EditorialArticleJsonLd
+        title={current.title}
+        description={current.verse_text}
+        url={pageUrl}
+        publishedAt={current.article_date}
+        modifiedAt={current.updated_at}
+        section="Je Confesse"
+        image={current.cover_url}
+        keywords={current.seo_keywords}
+        breadcrumbs={[
+          { name: "Accueil", url: "https://sergehapitaministries.org" },
+          { name: "Publications", url: "https://sergehapitaministries.org/publications" },
+          { name: "Je Confesse", url: "https://sergehapitaministries.org/publications/je-confesse-et-declare" },
+          { name: current.title, url: pageUrl },
+        ]}
+      />
       <ViewTracker articleId={current.id} />
       <JeConfesseContent
         current={current}

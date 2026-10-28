@@ -9,6 +9,8 @@ import LikeButton from "@/components/articles/LikeButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import Pagination from "@/components/admin/Pagination";
+import { getPodcastEpisodeForArticle } from "@/lib/content/podcast";
+import PodcastInlinePlayButton from "@/components/podcast/PodcastInlinePlayButton";
 
 const SITE_URL = "https://sergehapitaministries.org";
 // Même règle que Rosée Matinale (retour du 05/09) — 3 entrées d'archive par page.
@@ -25,17 +27,15 @@ function dayHref(date: string): string {
 // RoseeMatinaleContent.tsx (même principe : rendu partagé entre la route
 // "aujourd'hui" et la route par jour de l'archive).
 //
-// Correction impérative du 11/09 : le verset d'en-tête (Proverbes 18:20)
-// et la signature de clôture (Romains 10:10) sont FIXES pour toute la
-// rubrique — réglages globaux (getJeConfesseSettings, interface_texts),
-// jamais un champ par proclamation. Seuls varient par proclamation :
-// l'image de couverture (affichée en filigrane à 30% d'opacité dans le
-// héros, jamais un portrait par défaut) et le corps de la déclaration.
+// Le passage biblique d'en-tête varie selon chaque confession. Les
+// réglages globaux historiques servent de repli aux anciennes entrées qui
+// ne possèdent pas encore leurs propres valeurs. La signature de clôture
+// reste commune à toute la rubrique.
 //
 // Section "Version audio" (§ .confession-audio, restaurée le 13/09 après
 // validation humaine) : /podcast/ (Lot 9) existe désormais — voir le
-// commentaire détaillé dans globals.css § .v2-jc-audio. Lien réel vers le
-// filtre Podcast/Je Confesse, jamais un lecteur statique factice.
+// commentaire détaillé dans globals.css § .v2-jc-audio. Lorsqu'un épisode
+// est associé, la commande lit directement son fichier audio.
 export default async function JeConfesseContent({
   current,
   previous,
@@ -56,7 +56,12 @@ export default async function JeConfesseContent({
   const pageUrl = `${SITE_URL}${dayHref(current.article_date)}`;
   const paragraphs = extractParagraphs(current.body || "");
   const archivePaged = archive.slice((archivePageNum - 1) * ARCHIVE_PER_PAGE, archivePageNum * ARCHIVE_PER_PAGE);
-  const settings = await getJeConfesseSettings();
+  const [settings, podcastEpisode] = await Promise.all([
+    getJeConfesseSettings(),
+    getPodcastEpisodeForArticle(current.id, current.podcast_episode_id),
+  ]);
+  const verseText = current.verse_text?.trim() || settings.verseText;
+  const verseReference = current.verse_reference?.trim() || settings.verseReference;
 
   return (
     <div className="v2-rm-page v2-jc-page">
@@ -72,16 +77,27 @@ export default async function JeConfesseContent({
               gabarit, pas tapé par Serge, jamais nbspBeforeClosingGuillemet
               ici (elle ne traite qu'un " »" déjà présent dans le texte,
               pas un guillemet ajouté séparément juste après). */}
-          <h1>
-            « {settings.verseText}
-            {" "}» <cite>{settings.verseReference}</cite>
-          </h1>
           <div className="v2-jc-hero-context">
             <span className="v2-jc-badge">Je Confesse</span>
             <time className="v2-jc-date">
-              {new Date(current.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+              {new Date(current.created_at).toLocaleDateString("fr-FR", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </time>
             <ArticleMeta viewCount={current.view_count} readingTimeMinutes={current.reading_time_minutes} />
+          </div>
+          <div className="v2-jc-hero-reading">
+            <h1 className="v2-jc-title">{current.title}</h1>
+            <p className="v2-jc-hero-intro">Parce qu&apos;il est écrit :</p>
+            <blockquote className="v2-jc-scripture">
+              « {verseText}
+              {" "}» <cite>{verseReference}</cite>
+            </blockquote>
           </div>
         </div>
       </section>
@@ -143,17 +159,19 @@ export default async function JeConfesseContent({
         </div>
       </section>
 
-      <section className="v2-jc-audio" aria-label="Version audio de la proclamation">
-        <div className="v2-wrap v2-jc-audio-inner">
-          <span className="v2-jc-audio-icon" aria-hidden="true">▶</span>
-          <div>
-            <p>Version audio</p>
-            <h2>Écouter cette proclamation</h2>
-            <span>Retrouve cette proclamation dans la série Je Confesse.</span>
+      {podcastEpisode && (
+        <section className="v2-jc-audio" aria-label="Version audio de la proclamation">
+          <div className="v2-wrap v2-jc-audio-inner">
+            <PodcastInlinePlayButton src={podcastEpisode.audio_url} title={podcastEpisode.title} />
+            <div>
+              <p>Version audio</p>
+              <h2>Écouter cette proclamation</h2>
+              <span>Retrouve cette proclamation dans la série Je Confesse.</span>
+            </div>
+            <Link href={`/podcast/${podcastEpisode.slug}`}>Écouter le podcast →</Link>
           </div>
-          <Link href="/podcast?univers=jc">Découvrir la série →</Link>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="share-zone">
         {/* Reprise Phase B renforcée (13/09) : même correction que Rosée
@@ -167,11 +185,10 @@ export default async function JeConfesseContent({
             category="jc"
             articleDate={current.article_date}
             excerpt={current.body ? stripHtml(current.body) : undefined}
+            shareContent={{ intro: current.excerpt, scriptureReference: verseReference, scriptureText: verseText, body: current.body }}
           />
         </div>
       </section>
-
-      <RelatedArticlesSection articles={relatedArticles} includeWeekday />
 
       <section className="rm-archive" id="archive">
         <div className="wrap">
@@ -192,7 +209,7 @@ export default async function JeConfesseContent({
                 {archivePaged.map((entry) => (
                   <Link href={dayHref(entry.article_date)} className="rm-item" key={entry.id}>
                     <div className="date">{new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</div>
-                    <div className="excerpt">{stripHtml(entry.body ?? "").slice(0, 140)}</div>
+                    <div className="excerpt">{entry.title}</div>
                   </Link>
                 ))}
               </div>
@@ -210,8 +227,11 @@ export default async function JeConfesseContent({
         </div>
       </section>
 
+      <RelatedArticlesSection articles={relatedArticles} includeWeekday />
+
       <Newsletter />
       <Footer variant="light" />
     </div>
   );
 }
+

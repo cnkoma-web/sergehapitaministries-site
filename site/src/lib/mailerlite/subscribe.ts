@@ -1,10 +1,14 @@
 "use server";
 
+import { allowSubmission } from "@/lib/security/rateLimit";
+import { verifyHumanForm } from "@/lib/security/turnstile";
+import { PublicFormError, validEmail } from "@/lib/security/validation";
+
 // Inscription à la newsletter "ParoleDeViePourVous" via l'API MailerLite (compte
 // existant de Serge, réutilisé — cahier §Partie 5 point 8). Tant que
 // MAILERLITE_API_KEY / MAILERLITE_GROUP_ID ne sont pas configurées, l'inscription
 // échoue proprement (message honnête côté formulaire) plutôt que de simuler un succès.
-export async function subscribeToNewsletter(email: string): Promise<{ ok: boolean; error?: string }> {
+export async function subscribeToNewsletter(formData: FormData): Promise<{ ok: boolean; error?: string }> {
   const apiKey = process.env.MAILERLITE_API_KEY;
   const groupId = process.env.MAILERLITE_GROUP_ID;
 
@@ -13,7 +17,23 @@ export async function subscribeToNewsletter(email: string): Promise<{ ok: boolea
     return { ok: false, error: "not-configured" };
   }
 
-  if (!email || !email.includes("@")) {
+  if (!(await verifyHumanForm(formData, "newsletter"))) {
+    return { ok: false, error: "security-failed" };
+  }
+
+  let email: string;
+  try {
+    email = validEmail(formData);
+  } catch (error) {
+    if (error instanceof PublicFormError) return { ok: false, error: "invalid-email" };
+    throw error;
+  }
+
+  if (!(await allowSubmission({ scope: "newsletter", limit: 3, windowSeconds: 3600, identity: email }))) {
+    return { ok: false, error: "rate-limited" };
+  }
+
+  if (!email) {
     return { ok: false, error: "invalid-email" };
   }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -17,8 +18,10 @@ import ShareCartouche from "@/components/articles/ShareCartouche";
 import LikeButton from "@/components/articles/LikeButton";
 import ViewTracker from "@/components/articles/ViewTracker";
 import RelatedArticlesSection from "@/components/articles/RelatedArticlesSection";
+import ArticlePodcastSection from "@/components/podcast/ArticlePodcastSection";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
+import { EditorialArticleJsonLd } from "@/components/seo/StructuredData";
 
 const SITE_URL = "https://sergehapitaministries.org";
 
@@ -46,13 +49,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // toujours à la bonne taille, avec la capsule de catégorie) devient la
   // seule source — Next.js la prend automatiquement via la convention de
   // fichier, sans qu'on ait besoin de la référencer ici.
+  const socialImage = await socialImageUrl(`/publications/${slug}/opengraph-image`);
   return {
     title,
     description,
     keywords: article.seo_keywords.length > 0 ? article.seo_keywords : undefined,
-    alternates: { canonical: `/publications/${slug}` },
-    openGraph: { type: "article", title, description, url: `/publications/${slug}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: officialUrl(`/publications/${slug}`) },
+    openGraph: { type: "article", title, description, url: officialUrl(`/publications/${slug}`), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }] },
+    twitter: { card: "summary_large_image", title, description, images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }] },
   };
 }
 
@@ -86,12 +90,37 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // couper au milieu d'une balise.
   const rawBody = article.body || "";
   const paragraphs = extractParagraphs(rawBody);
+  const categoryPath =
+    article.type === "vs"
+      ? "/publications/la-vie-superieure"
+      : "/publications/que-dit-la-bible";
+  const structuredData = (
+    <EditorialArticleJsonLd
+      title={article.title}
+      description={shareExcerpt}
+      url={pageUrl}
+      publishedAt={article.article_date}
+      modifiedAt={article.updated_at}
+      section={ARTICLE_TYPE_LABEL[article.type]}
+      image={article.cover_url}
+      keywords={article.seo_keywords}
+      breadcrumbs={[
+        { name: "Accueil", url: SITE_URL },
+        { name: "Publications", url: `${SITE_URL}/publications` },
+        { name: ARTICLE_TYPE_LABEL[article.type], url: `${SITE_URL}${categoryPath}` },
+        { name: article.title, url: pageUrl },
+      ]}
+    />
+  );
 
   if (article.type === "vs") {
-    // Gating (cahier §3.5) : le corps complet n'est renvoyé au client que si
-    // l'utilisateur est connecté — c'est un mur d'accès éditorial, pas un
-    // chiffrement (voir commentaire de la policy RLS `articles`).
-    const unlocked = isRealUser(user);
+    // Premier droit calculé de « Mon accès » : un enseignement gratuit est
+    // déverrouillé pour un compte réel. Un contenu marqué « paid » reste
+    // fermé tant que les droits accordés par événement ne sont pas raccordés.
+    // Ce mur reste éditorial : la policy RLS publique de `articles` n'est pas
+    // une protection adaptée à un futur contenu confidentiel ou payant.
+    const hasRealAccount = isRealUser(user);
+    const unlocked = hasRealAccount && article.access === "free";
     // Bouton "J'aime" (retour du 05/09) — réservé aux comptes connectés ici,
     // même barrière que la lecture elle-même. Lu au chargement pour savoir
     // si CE compte a déjà aimé cet article, sans attendre un clic.
@@ -106,6 +135,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       // dans un exemple d'article déjà publié) — voir le commentaire
       // détaillé dans globals.css.
       <div className="v2-article-page vs">
+        {structuredData}
         <ViewTracker articleId={article.id} />
         <section className="article-header">
           <div className="content-col">
@@ -124,7 +154,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 lecture | vues | date), pas deux lignes séparées (correction
                 du 11/09). */}
             <div className="article-meta-line">
-              {article.author_name && <span>{article.author_name}</span>}
+              {article.author_name && (
+                <span><Link href="/de-serge">{article.author_name}</Link></span>
+              )}
               {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
               <span className="views">
                 {article.view_count} vue{article.view_count > 1 ? "s" : ""}
@@ -181,14 +213,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <div className="content-col">
                 <div className="gate-box">
                   <div className="lock">🔒</div>
-                  <h3>La suite est réservée aux membres</h3>
+                  <h3>{article.access === "paid" ? "Cet accès n’est pas actif" : "La suite est réservée aux membres"}</h3>
                   <p>
-                    L&apos;article complet est accessible gratuitement aux personnes disposant
-                    d&apos;un compte sur ce site.
+                    {article.access === "paid"
+                      ? "Cet enseignement nécessite un accès attribué à votre compte."
+                      : "L’article complet est accessible gratuitement aux personnes disposant d’un compte sur ce site."}
                   </p>
                   <div className="gate-actions">
-                    <Link href="/compte?tab=signup" className="btn btn-primary">Créer un compte →</Link>
-                    <Link href="/compte" className="btn btn-outline">Se connecter</Link>
+                    {!hasRealAccount ? (
+                      <>
+                        <Link href="/compte?tab=signup" className="btn btn-primary">Créer un compte →</Link>
+                        <Link href="/compte" className="btn btn-outline">Se connecter</Link>
+                      </>
+                    ) : (
+                      <Link href="/mon-compte?section=acces" className="btn btn-primary">Voir Mon accès →</Link>
+                    )}
                   </div>
                 </div>
 
@@ -222,9 +261,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         {/* Zone de partage --purple pleine, toujours juste après
             .entry-body-section (prototype), verrouillé ou non. */}
-        <section className="share-zone">
+        <ArticlePodcastSection articleId={article.id} podcastEpisodeId={article.podcast_episode_id} />
+
+        <ArticlePodcastSection articleId={article.id} podcastEpisodeId={article.podcast_episode_id} />
+
+      <section className="share-zone">
           <div className="content-col">
-            <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
+            <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} shareContent={{ intro: article.excerpt, scriptureReference: article.verse_reference, scriptureText: article.verse_text, body: article.body }} />
           </div>
         </section>
 
@@ -273,6 +316,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // .entry-meta/.entry-body/.scripture-card/.article-blessing/
     // .topic-list/.like-row/.article-extras.
     <div className="v2-article-page qdlb">
+      {structuredData}
       <ViewTracker articleId={article.id} />
       <section className="article-header">
         <div className="content-col">
@@ -298,7 +342,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               lecture | vues | date), pas deux lignes séparées (correction du
               11/09). */}
           <div className="article-meta-line">
-            {article.author_name && <span>{article.author_name}</span>}
+            {article.author_name && (
+                <span><Link href="/de-serge">{article.author_name}</Link></span>
+              )}
             {article.reading_time_minutes && <span>{article.reading_time_minutes} min de lecture</span>}
             <span className="views">
               {article.view_count} vue{article.view_count > 1 ? "s" : ""}
@@ -422,7 +468,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           design inchangé, seul l'emplacement change. */}
       <section className="share-zone">
         <div className="content-col">
-          <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} />
+          <ShareCartouche title={article.title} url={pageUrl} category={article.type} articleDate={article.article_date} excerpt={shareExcerpt} shareContent={{ intro: article.excerpt, scriptureReference: article.verse_reference, scriptureText: article.verse_text, body: article.body }} />
         </div>
       </section>
 

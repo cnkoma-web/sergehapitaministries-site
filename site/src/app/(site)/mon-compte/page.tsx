@@ -12,7 +12,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function MonComptePage() {
+type AccountSection = "apercu" | "commandes" | "profil" | "acces" | "avis";
+
+const ACCOUNT_SECTIONS = new Set<AccountSection>(["apercu", "commandes", "profil", "acces", "avis"]);
+
+export default async function MonComptePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ section?: string }>;
+}) {
+  const { section: requestedSection } = await searchParams;
+  const initialSection: AccountSection = ACCOUNT_SECTIONS.has(requestedSection as AccountSection)
+    ? (requestedSection as AccountSection)
+    : "apercu";
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,7 +32,7 @@ export default async function MonComptePage() {
   if (!isRealUser(user)) redirect("/compte?tab=login");
 
   const [{ data: profile }, vsArticles, { data: reviews }, { data: orders }] = await Promise.all([
-    supabase.from("profiles").select("first_name, last_name").eq("id", user.id).single(),
+    supabase.from("profiles").select("first_name, last_name").eq("id", user.id).maybeSingle(),
     getPublishedArticles("vs"),
     supabase
       .from("reviews")
@@ -29,8 +41,8 @@ export default async function MonComptePage() {
       .order("created_at", { ascending: false }),
     supabase
       .from("orders")
-      .select("id, status, subtotal_cents, shipping_cents, total_cents, created_at, order_items(title_snapshot, quantity, unit_price_cents)")
-      .eq("user_id", user.id)
+      .select("id, status, subtotal_cents, shipping_cents, total_cents, created_at, fulfillment_status, confirmed_at, preparing_at, shipped_at, delivered_at, tracking_carrier, tracking_number, tracking_url, order_items(title_snapshot, quantity, unit_price_cents)")
+      .or(`user_id.eq.${user.id},account_user_id.eq.${user.id}`)
       .order("created_at", { ascending: false }),
   ]);
 
@@ -41,6 +53,14 @@ export default async function MonComptePage() {
     shippingCents: o.shipping_cents,
     totalCents: o.total_cents,
     createdAt: o.created_at,
+    fulfillmentStatus: o.fulfillment_status,
+    confirmedAt: o.confirmed_at,
+    preparingAt: o.preparing_at,
+    shippedAt: o.shipped_at,
+    deliveredAt: o.delivered_at,
+    trackingCarrier: o.tracking_carrier,
+    trackingNumber: o.tracking_number,
+    trackingUrl: o.tracking_url,
     items: (Array.isArray(o.order_items) ? o.order_items : []).map((i) => ({
       label: `${i.title_snapshot} ×${i.quantity}`,
       priceCents: i.unit_price_cents * i.quantity,
@@ -80,13 +100,17 @@ export default async function MonComptePage() {
           <SignOutLink />
         </div>
         <DashTabs
+          key={initialSection}
           userId={user.id}
-          firstName={profile?.first_name ?? ""}
-          lastName={profile?.last_name ?? ""}
+          firstName={profile?.first_name ?? String(user.user_metadata?.first_name ?? "")}
+          lastName={profile?.last_name ?? String(user.user_metadata?.last_name ?? "")}
           email={user.email ?? ""}
-          vsArticles={vsArticles.map((a) => ({ slug: a.slug, title: a.title }))}
+          vsArticles={vsArticles
+            .filter((article) => article.access === "free")
+            .map((article) => ({ slug: article.slug, title: article.title }))}
           reviews={myReviews}
           orders={myOrders}
+          initialSection={initialSection}
         />
       </div>
 

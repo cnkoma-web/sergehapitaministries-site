@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { linkPreparedAnonymousOrdersToCurrentAccount } from "@/lib/orders/actions";
 
 // Confirmation des liens envoyés par e-mail (retour du 06/09, généralisé le
 // 11/09 pour le Lot 7) — les gabarits Supabase (Authentication → Email
@@ -49,6 +50,13 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
     if (!error) {
+      if (type === "signup") {
+        try {
+          await linkPreparedAnonymousOrdersToCurrentAccount();
+        } catch (transferError) {
+          console.error("[signup] Transfert des données anonymes impossible :", transferError);
+        }
+      }
       redirectTo.pathname = next;
       return NextResponse.redirect(redirectTo);
     }

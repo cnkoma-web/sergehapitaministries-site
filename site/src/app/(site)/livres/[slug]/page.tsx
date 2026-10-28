@@ -21,7 +21,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const book = await getBookBySlug(slug);
   if (!book) return {};
   const title = `${book.title} | Serge Hapita Ministries`;
-  const description = book.description || `${book.title}, un livre de ${book.author}.`;
+  // Les plateformes de partage attendent du texte brut dans og:description.
+  // Le CMS stocke la description en HTML riche : on conserve exactement son
+  // contenu rédactionnel, mais on retire les balises avant de l'exposer.
+  const description = book.description
+    ? stripHtml(book.description).replace(/\s+/g, " ").trim()
+    : `${book.title}, un livre de ${book.author}.`;
   return {
     title,
     description,
@@ -241,7 +246,7 @@ export default async function LivreDetailPage({ params }: { params: Promise<{ sl
           {book.description ? (
             // L'admin (seul auteur possible de ce HTML, is_admin() en base) est la
             // seule source de ce contenu — voir RichTextEditor pour la frontière de confiance.
-            <div dangerouslySetInnerHTML={{ __html: book.description }} />
+            <div className="product-desc-copy" dangerouslySetInnerHTML={{ __html: book.description }} />
           ) : (
             <p>Description complète à venir.</p>
           )}

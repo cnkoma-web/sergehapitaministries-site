@@ -18,7 +18,8 @@ export default async function AdminPodcastPage({
 }) {
   const { page: pageParam, perPage: perPageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const perPage = Number(perPageParam) || 20;
+  const requestedPerPage = Number(perPageParam);
+  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
 
   const { episodes, total } = await getPodcastEpisodesAdmin(page, perPage);
 
@@ -89,7 +90,7 @@ export default async function AdminPodcastPage({
           </div>
         ))}
       </div>
-      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/podcast" />}
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/podcast" perPageOptions={[5, 7]} />}
     </>
   );
 }

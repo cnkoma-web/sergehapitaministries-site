@@ -11,6 +11,20 @@ export default function PodcastCoverField({ currentUrl }: { currentUrl: string |
     <>
       <input type="hidden" name="cover_url" value={url ?? ""} />
       <ImageUploader bucket="podcast-covers" currentUrl={url} onUploaded={(publicUrl) => setUrl(publicUrl)} />
+      {url && (
+        <button
+          type="button"
+          className="admin-btn-ghost"
+          onClick={() => setUrl(null)}
+          style={{ marginTop: 10 }}
+        >
+          Supprimer la vignette
+        </button>
+      )}
+      <small className="admin-image-help" style={{ display: "block", marginTop: 8 }}>
+        Sans vignette propre, l’image du contenu écrit associé sera utilisée automatiquement.
+      </small>
     </>
   );
 }
+

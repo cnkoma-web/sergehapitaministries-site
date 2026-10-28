@@ -8,6 +8,7 @@ import LikeButton from "@/components/articles/LikeButton";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import Pagination from "@/components/admin/Pagination";
+import ArticlePodcastSection from "@/components/podcast/ArticlePodcastSection";
 
 const SITE_URL = "https://sergehapitaministries.org";
 // Règle fixe (retour du 05/09) — 3 entrées d'archive par page.
@@ -157,6 +158,8 @@ export default function RoseeMatinaleContent({
         </div>
       </section>
 
+      <ArticlePodcastSection articleId={current.id} podcastEpisodeId={current.podcast_episode_id} />
+
       {/* Bande de partage --purple pleine (retour du 07/09, 2e passage) —
           couleur exacte demandée, plus --lavender-deep. */}
       <section className="share-zone">
@@ -178,6 +181,7 @@ export default function RoseeMatinaleContent({
             category="rm"
             articleDate={current.article_date}
             excerpt={current.verse_text ?? undefined}
+            shareContent={{ intro: current.verse_text, body: current.body }}
           />
         </div>
       </section>
@@ -189,8 +193,6 @@ export default function RoseeMatinaleContent({
           --lavender pâle (.related-articles), juste après la zone de
           partage --lavender-deep ci-dessus (2e passage, 07/09) — les deux
           teintes de lavande restent bien distinctes l'une de l'autre. */}
-      <RelatedArticlesSection articles={relatedArticles} includeWeekday />
-
       <section className="rm-archive" id="archive">
         <div className="wrap">
           <h2>Rosées matinales précédentes</h2>
@@ -222,6 +224,8 @@ export default function RoseeMatinaleContent({
           )}
         </div>
       </section>
+
+      <RelatedArticlesSection articles={relatedArticles} includeWeekday />
 
       <Newsletter />
       <Footer variant="light" />

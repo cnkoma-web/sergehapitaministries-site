@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPodcastEpisodes, type PodcastUniverse } from "@/lib/content/podcast";
-import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
+import { getPageContent } from "@/lib/content/pageContent";
+import { ARTICLE_TYPE_LABEL, getArticlesByIds } from "@/lib/content/articles";
+import PodcastCardPlayer from "@/components/podcast/PodcastCardPlayer";
 import PodcastShareActions from "@/components/podcast/PodcastShareActions";
+import { buildPodcastShareMessage } from "@/lib/podcast/shareMessage";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -43,7 +46,15 @@ export default async function PodcastPage({
     ? (univers as PodcastUniverse)
     : undefined;
 
-  const { episodes, total } = await getPodcastEpisodes(page, PER_PAGE, universe);
+  const [{ episodes, total }, pageContent] = await Promise.all([
+    getPodcastEpisodes(page, PER_PAGE, universe),
+    getPageContent("podcast"),
+  ]);
+  const linkedArticleIds = episodes
+    .map((episode) => episode.linked_article_id)
+    .filter((id): id is string => Boolean(id));
+  const linkedArticles = await getArticlesByIds(linkedArticleIds);
+  const linkedArticlesById = new Map(linkedArticles.map((article) => [article.id, article]));
 
   return (
     // V2 (Lot 9, 11/09) — reproduit prototype-html/podcast/index.html §
@@ -58,8 +69,8 @@ export default async function PodcastPage({
           <p className="v2-eyebrow light">
             <span /> Audio
           </p>
-          <h1>Podcast</h1>
-          <p>{description}</p>
+          <h1>{pageContent.title}</h1>
+          <p>{pageContent.intro}</p>
           <nav className="v2-podcast-filters" aria-label="Filtrer les podcasts">
             {FILTERS.map((f) => (
               <Link
@@ -77,56 +88,56 @@ export default async function PodcastPage({
       <section className="v2-podcast-library">
         <div className="v2-wrap">
           <div className="v2-podcast-library-head">
-            <h2>La bibliothèque audio</h2>
-            <p>Choisis un univers, retrouve un thème et lance l&apos;écoute.</p>
+            <h2>{pageContent.library_title}</h2>
+            <p>{pageContent.library_intro}</p>
           </div>
 
           {episodes.length === 0 ? (
-            <p className="empty-state">Les premiers épisodes arrivent bientôt.</p>
+            <p className="empty-state">{pageContent.empty_state}</p>
           ) : (
             <div className="v2-podcast-grid">
               {episodes.map((e) => {
+                const coverUrl = e.cover_url || e.linked_article_cover_url;
                 const episodeUrl = `${SITE_URL}/podcast/${e.slug}`;
-                const shareMessage = `Serge Hapita partage avec toi ${ARTICLE_TYPE_LABEL[e.universe]} : ${e.title}. ${episodeUrl}`;
+                const sharedEpisodeUrl = `${episodeUrl}?ecouter=1`;
+                const linkedArticle = e.linked_article_id ? linkedArticlesById.get(e.linked_article_id) : undefined;
+                const shareMessage = buildPodcastShareMessage({
+                  universe: e.universe,
+                  title: e.title,
+                  episodeDate: e.episode_date,
+                  theme: e.theme,
+                  verseReference: linkedArticle?.verse_reference,
+                });
                 return (
                   <article className={`v2-podcast-card ${e.universe}`} key={e.id}>
-                    <div className="v2-podcast-share-card" aria-label={`Aperçu de la carte de partage ${ARTICLE_TYPE_LABEL[e.universe]}`}>
-                      {e.cover_url && (
-                        // eslint-disable-next-line @next/next/no-img-element -- fond décoratif en aplat de couleur, jamais l'image principale du contenu.
-                        <img src={e.cover_url} alt="" />
+                    <Link
+                      href={`/podcast/${e.slug}`}
+                      className="v2-podcast-share-card"
+                      aria-label={`Ouvrir la page d’écoute de ${e.title}`}
+                    >
+                      {coverUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- URL publique issue du CMS.
+                        <img src={coverUrl} alt={`Pochette de ${e.title}`} />
+                      ) : (
+                        <>
+                          <span>{ARTICLE_TYPE_LABEL[e.universe]}</span>
+                          <strong>{e.title}</strong>
+                          <small>Serge Hapita Ministries</small>
+                        </>
                       )}
-                      <span>{ARTICLE_TYPE_LABEL[e.universe]}</span>
-                      <strong>{e.title}</strong>
-                      <small>Serge Hapita Ministries</small>
-                    </div>
-                    <div className="v2-podcast-card-content">
-                      <span className={`feed-badge ${e.universe}`}>{ARTICLE_TYPE_LABEL[e.universe]}</span>
-                      <h3>
-                        <Link href={`/podcast/${e.slug}`}>{e.title}</Link>
-                      </h3>
-                      {e.theme && <p>{e.theme}</p>}
-                      <div className="v2-podcast-card-meta">
-                        <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
-                        {e.duration_seconds ? <span>{Math.round(e.duration_seconds / 60)} min</span> : null}
-                      </div>
-                      <div className="v2-podcast-player-preview" aria-label="Aperçu du lecteur audio">
-                        <span className="v2-podcast-play" aria-hidden="true">
-                          ▶
-                        </span>
-                        <div className="v2-podcast-progress">
-                          <span />
+                    </Link>
+                    <div className="v2-podcast-audio-panel">
+                      <PodcastCardPlayer src={e.audio_url} title={e.title} coverUrl={coverUrl} />
+                      <div className="v2-podcast-card-content">
+                        <div className="v2-podcast-card-copy">
+                          <div className="v2-podcast-card-meta">
+                            <span>{new Date(e.episode_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
+                          </div>
+                          {e.theme && (
+                            <p><Link href={`/podcast/${e.slug}`}>{e.theme}</Link></p>
+                          )}
                         </div>
-                        <time>{e.duration_seconds ? `${Math.round(e.duration_seconds / 60)}:00` : "0:00"}</time>
-                      </div>
-                      <div className="v2-podcast-card-bottom">
-                        {e.linked_article_id ? (
-                          <Link href={`/podcast/${e.slug}`} className="v2-podcast-detail-link">
-                            Écouter l&apos;épisode →
-                          </Link>
-                        ) : (
-                          <Link href={`/podcast/${e.slug}`}>Écouter l&apos;épisode →</Link>
-                        )}
-                        <PodcastShareActions title={e.title} message={shareMessage} url={episodeUrl} />
+                        <PodcastShareActions title={e.title} message={shareMessage} url={sharedEpisodeUrl} />
                       </div>
                     </div>
                   </article>
@@ -155,3 +166,4 @@ export default async function PodcastPage({
     </div>
   );
 }
+

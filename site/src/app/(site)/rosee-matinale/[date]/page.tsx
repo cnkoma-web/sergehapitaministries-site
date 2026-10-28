@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import { notFound } from "next/navigation";
 import { getPublishedArticles, getLatestNonRoseeArticles } from "@/lib/content/articles";
 import ViewTracker from "@/components/articles/ViewTracker";
 import RoseeMatinaleContent from "../RoseeMatinaleContent";
+import { EditorialArticleJsonLd } from "@/components/seo/StructuredData";
 
 export async function generateMetadata({ params }: { params: Promise<{ date: string }> }): Promise<Metadata> {
   const { date } = await params;
@@ -16,6 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
   // du navigateur/le partage sur les réseaux le montraient).
   const title = `${current.title} | Serge Hapita Ministries`;
   const description = current.verse_text || "Une nouvelle pensée chaque jour, directement inspirée de la Parole.";
+  const socialImage = await socialImageUrl(`/rosee-matinale/${date}/opengraph-image`);
   return {
     title,
     description,
@@ -24,9 +27,9 @@ export async function generateMetadata({ params }: { params: Promise<{ date: str
     // entrée de l'archive a désormais sa propre adresse permanente, donc sa
     // propre image de partage générée (voir opengraph-image.tsx ici), enfin
     // fidèle au jour réellement partagé.
-    alternates: { canonical: `/rosee-matinale/${date}` },
-    openGraph: { type: "website", title, description, url: `/rosee-matinale/${date}`, siteName: "Serge Hapita Ministries", locale: "fr_FR" },
-    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: officialUrl(`/rosee-matinale/${date}`) },
+    openGraph: { type: "website", title, description, url: officialUrl(`/rosee-matinale/${date}`), siteName: "Serge Hapita Ministries", locale: "fr_FR", images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }] },
+    twitter: { card: "summary_large_image", title, description, images: [{ url: socialImage, width: 1200, height: 630, type: "image/jpeg" }] },
   };
 }
 
@@ -48,6 +51,7 @@ export default async function RoseeMatinaleDatePage({
   if (currentIndex === -1) notFound();
 
   const current = entries[currentIndex];
+  const pageUrl = officialUrl(`/rosee-matinale/${date}`);
   // Triées du plus récent au plus ancien : l'entrée "précédente" (plus
   // ancienne) est à l'index+1, la "suivante" (plus récente) est à l'index-1.
   const previous = entries[currentIndex + 1] ?? null;
@@ -60,6 +64,22 @@ export default async function RoseeMatinaleDatePage({
 
   return (
     <>
+      <EditorialArticleJsonLd
+        title={current.title}
+        description={current.verse_text}
+        url={pageUrl}
+        publishedAt={current.article_date}
+        modifiedAt={current.updated_at}
+        section="Rosée Matinale"
+        image={current.cover_url}
+        keywords={current.seo_keywords}
+        breadcrumbs={[
+          { name: "Accueil", url: "https://sergehapitaministries.org" },
+          { name: "Publications", url: "https://sergehapitaministries.org/publications" },
+          { name: "Rosée Matinale", url: "https://sergehapitaministries.org/rosee-matinale" },
+          { name: current.title, url: pageUrl },
+        ]}
+      />
       {/* Vue comptabilisée côté client, une fois par visiteur/jour (retour
           du 06/09) — voir ViewTracker. Remplace l'ancien incrementViewCount()
           appelé pendant le rendu serveur, qui comptait aussi les

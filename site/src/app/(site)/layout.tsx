@@ -3,6 +3,7 @@ import Topbar from "@/components/layout/Topbar";
 import Header from "@/components/layout/Header";
 import CartSessionBootstrap from "@/components/cart/CartSessionBootstrap";
 import ScrollToTop from "@/components/layout/ScrollToTop";
+import { SiteIdentityJsonLd } from "@/components/seo/StructuredData";
 
 // Chrome commun aux pages publiques du site (header/ticker/nav — cahier §1.2).
 // Volontairement séparé du layout racine pour que /admin ait sa propre interface
@@ -10,6 +11,7 @@ import ScrollToTop from "@/components/layout/ScrollToTop";
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <SiteIdentityJsonLd />
       {/* Retour en haut de page à chaque navigation interne (retour du
           07/09) — voir ScrollToTop.tsx pour la cause exacte : ce layout
           n'est jamais démonté d'une page publique à l'autre. */}

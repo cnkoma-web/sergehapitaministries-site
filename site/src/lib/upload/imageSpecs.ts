@@ -53,17 +53,29 @@ export const IMAGE_SPECS: Record<ImageBucket, ImageSpec> = {
   },
 };
 
-export function readImageDimensions(file: File): Promise<{ width: number; height: number }> {
+export async function readImageDimensions(file: File): Promise<{ width: number; height: number }> {
+  if ("createImageBitmap" in window) {
+    try {
+      const bitmap = await createImageBitmap(file);
+      const dimensions = { width: bitmap.width, height: bitmap.height };
+      bitmap.close();
+      return dimensions;
+    } catch {
+      // Certains navigateurs mobiles décodent mieux via un élément Image.
+    }
+  }
+
   return new Promise((resolve, reject) => {
     const objectUrl = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
-      resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      const dimensions = { width: img.naturalWidth, height: img.naturalHeight };
       URL.revokeObjectURL(objectUrl);
+      resolve(dimensions);
     };
     img.onerror = () => {
       URL.revokeObjectURL(objectUrl);
-      reject(new Error("Impossible de lire ce fichier comme une image."));
+      reject(new Error("Impossible de lire cette image sur cet appareil."));
     };
     img.src = objectUrl;
   });

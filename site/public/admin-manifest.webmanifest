@@ -1,0 +1,26 @@
+{
+  "name": "SHM Admin",
+  "short_name": "SHM Admin",
+  "description": "Administration de Serge Hapita Ministries",
+  "id": "/admin",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#f8f7fb",
+  "theme_color": "#4f25d8",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

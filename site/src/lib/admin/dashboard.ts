@@ -81,7 +81,11 @@ export async function getTodoCounts(): Promise<TodoCounts> {
   const [{ count: pendingReviews }, { count: ordersToShip }, { count: unhandledInvitations }, { count: unreadContact }, { count: failedOrders }, { count: failedDonations }] =
     await Promise.all([
       supabase.from("reviews").select("id", { count: "exact", head: true }).eq("status", "pending"),
-      supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "paid").eq("shipped", false),
+      supabase
+        .from("orders")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "paid")
+        .in("fulfillment_status", ["confirmed", "preparing"]),
       supabase.from("invitation_submissions").select("id", { count: "exact", head: true }).eq("handled", false),
       supabase.from("contact_submissions").select("id", { count: "exact", head: true }).eq("read", false),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "failed"),

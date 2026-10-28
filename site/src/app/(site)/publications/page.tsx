@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getArticlesFeed } from "@/lib/content/articles";
 import { getInterfaceTexts } from "@/lib/content/interfaceTexts";
+import { getPageContent } from "@/lib/content/pageContent";
 import PublicationFeedItem from "@/components/articles/PublicationFeedItem";
 import Pagination from "@/components/admin/Pagination";
 import Newsletter from "@/components/layout/Newsletter";
@@ -39,11 +40,12 @@ export default async function PublicationsPage({
   // deux autres portes d'entrée dédiées, comme sur l'accueil, pas une
   // liste des jours précédents (l'archive complète de chacune reste sur
   // sa propre page).
-  const [qbVs, rmToday, jcToday, texts] = await Promise.all([
+  const [qbVs, rmToday, jcToday, texts, pageContent] = await Promise.all([
     getArticlesFeed(["qdlb", "vs"], page, PER_PAGE),
     getArticlesFeed(["rm"], 1, 1),
     getArticlesFeed(["jc"], 1, 1),
     getInterfaceTexts(),
+    getPageContent("publications"),
   ]);
   const todayRosee = rmToday.articles[0] ?? null;
   const todayConfession = jcToday.articles[0] ?? null;
@@ -64,27 +66,27 @@ export default async function PublicationsPage({
           repris mot pour mot de la maquette. */}
       <section className="v2-pub-hero">
         <div className="v2-wrap v2-pub-hero-inner">
-          <h1>Publications</h1>
+          <h1>{pageContent.title}</h1>
           <div className="v2-pub-hero-side">
             <nav className="v2-pub-hero-links" aria-label="Catégories de publications">
               <Link href="/publications/que-dit-la-bible">
-                <small>Examiner</small>
+                <small>{pageContent.qdlb_kicker}</small>
                 <strong>Que dit la Bible ?</strong>
               </Link>
               <Link href="/publications/la-vie-superieure">
-                <small>Approfondir</small>
+                <small>{pageContent.vs_kicker}</small>
                 <strong>La Vie Supérieure</strong>
               </Link>
               <Link href="/rosee-matinale">
-                <small>Commencer le jour</small>
+                <small>{pageContent.rm_kicker}</small>
                 <strong>Rosée Matinale</strong>
               </Link>
               <Link href="/publications/je-confesse-et-declare">
-                <small>Proclamer</small>
+                <small>{pageContent.jc_kicker}</small>
                 <strong>Je Confesse</strong>
               </Link>
             </nav>
-            <p className="v2-pub-hero-copy">{description}</p>
+            <p className="v2-pub-hero-copy">{pageContent.intro}</p>
           </div>
         </div>
       </section>
@@ -95,7 +97,7 @@ export default async function PublicationsPage({
       <section className="feed-section">
         <div className="content-col">
           {qbVs.articles.length === 0 ? (
-            <p className="empty-state">Les premières publications arrivent bientôt.</p>
+            <p className="empty-state">{pageContent.empty_state}</p>
           ) : (
             <div className="feed-list">
               {qbVs.articles.map((a) => (

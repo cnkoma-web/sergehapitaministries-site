@@ -60,7 +60,7 @@
 .v2-wrap{width:min(1180px,calc(100% - 48px));margin-inline:auto;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{overflow-x:hidden;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;scroll-padding-top:90px;}
 /* Empêche le gonflement automatique de la taille du texte de Safari iOS sur
    certains petits blocs (retour du 05/09) — cause probable d'un retour à la
    ligne des liens "Lire la suite"/"Découvrir" visible seulement sur
@@ -250,7 +250,11 @@ header{
    font-family, donc tout héritait silencieusement de body{font-family:
    'Manrope',sans-serif} (l'ancien système) au lieu de --v2-sans (Inter) —
    700 en Manrope n'a pas le même rendu visuel que 650-700 en Inter. */
-.v2-site-header{position:relative;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--v2-line);font-family:var(--v2-sans);}
+/* Header public sticky (26/09/2026) — le bandeau réseau/ticker qui le précède
+   reste dans le flux normal. Le header ne s'accroche qu'une fois arrivé en
+   haut du viewport. Fond volontairement opaque pour que le contenu défilant
+   ne transparaisse jamais sous la navigation. */
+.v2-site-header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid var(--v2-line);font-family:var(--v2-sans);}
 .v2-network-bar{background:var(--v2-ink);color:rgba(255,255,255,.83);font-size:13px;letter-spacing:.02em;font-family:var(--v2-sans);line-height:1.6;}
 .v2-network-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:34px;padding-block:7px;}
 .v2-partner-nav{display:flex;align-items:center;gap:14px;white-space:nowrap;}
@@ -341,7 +345,12 @@ header{
    prototype — même rendu final, mécanisme idiomatique déjà en place sur
    ce projet). */
 .v2-mobile-menu{position:absolute;top:100%;left:0;right:0;background:#fff;border-top:1px solid var(--v2-line);box-shadow:0 20px 40px -16px rgba(23,20,45,.18);padding:8px 20px 18px;display:flex;flex-direction:column;}
-.v2-mobile-menu>a,.v2-mobile-menu>.v2-nav-dropdown>a,.v2-mobile-menu>.v2-nav-dropdown>span{padding:13px 0;border-bottom:1px solid var(--v2-line);font-size:14px;font-weight:700;color:var(--v2-ink);}
+.v2-mobile-menu>a{padding:13px 0;border-bottom:1px solid var(--v2-line);font-size:14px;font-weight:700;color:var(--v2-ink);}
+.v2-mobile-dropdown-heading{display:flex;align-items:center;border-bottom:1px solid var(--v2-line);}
+.v2-mobile-dropdown-heading>a,.v2-mobile-dropdown-heading>button:first-child{flex:1;padding:13px 0;border:0;background:none;text-align:left;font:inherit;font-size:14px;font-weight:700;color:var(--v2-ink);cursor:pointer;}
+.v2-mobile-dropdown-toggle{width:44px;align-self:stretch;border:0;background:none;color:var(--v2-violet-deep);cursor:pointer;}
+.v2-mobile-dropdown-toggle span{display:inline-block;font-size:17px;transition:transform .2s ease;}
+.v2-mobile-menu .v2-nav-dropdown.is-open .v2-mobile-dropdown-toggle span{transform:rotate(180deg);}
 .v2-mobile-menu .v2-nav-dropdown-menu{position:static;min-width:0;padding:6px 0 10px 16px;border:0;border-radius:0;background:var(--v2-violet-pale);box-shadow:none;display:block;}
 .v2-mobile-menu .v2-nav-dropdown-menu a{padding:10px 12px;font-size:14px;}
 
@@ -351,6 +360,7 @@ header{
   .v2-menu-button{display:inline-grid;place-items:center;}
 }
 @media (max-width:720px){
+  html{scroll-padding-top:74px;}
   /* Écart réel corrigé (Accueil, Section 01 — Header/nav, protocole
      atomique mobile) : le prototype (styles.css) réduit .wrap à
      min(100% - 32px,1180px) sous 720px — mesuré ici 343px à 375px de
@@ -2873,7 +2883,7 @@ footer.footer--dark{
    publications.css § .rm-hero/.rm-hero .category-badge/.rm-hero-date/
    .rm-hero-meta/.rm-chapeau blockquote/.entry-body > p/.rm-nav-days. */
 .v2-rm-page .rm-photo-hero{min-height:560px;align-items:center;isolation:isolate;overflow:hidden;padding:80px 0;color:#fff;background-color:#221940;background-position:center;background-size:cover;}
-.v2-rm-page .rm-photo-hero::after{z-index:-1;background:linear-gradient(90deg,rgba(18,13,38,.9),rgba(24,15,48,.72) 50%,rgba(23,15,44,.55));}
+.v2-rm-page .rm-photo-hero::after{z-index:-1;background:linear-gradient(90deg,rgba(18,13,38,.8),rgba(24,15,48,.62) 50%,rgba(23,15,44,.45));}
 .v2-rm-page .rm-photo-hero>.wrap{width:min(860px,calc(100% - 48px));max-width:860px;margin-inline:auto;padding:0;text-align:center;}
 /* .rm-hero h1 (prototype) : Georgia, 36.5px, 600, 1.12, -.025em (mobile 24.5px) */
 .v2-rm-page .rm-photo-hero .entry-title{margin:0 auto 25px;font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
@@ -2899,7 +2909,7 @@ footer.footer--dark{
 .v2-rm-page .rm-quote-wrap{max-width:min(880px,calc(100% - 48px));}
 .v2-rm-page .rm-quote-mark{color:var(--v2-violet);opacity:1;font-family:var(--v2-serif);font-style:italic;font-weight:500;font-size:72px;line-height:.8;}
 /* .rm-chapeau blockquote (prototype) : Georgia, clamp(25px,3.3vw,39px), 500, italique, 1.4, centré (mobile 25px fixe) */
-.v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-weight:500;font-style:italic;line-height:1.4;text-align:center;}
+.v2-rm-page .rm-quote-text{color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(20px,calc(3.3vw - 4px),35px);font-weight:500;font-style:italic;line-height:1.4;text-align:center;}
 /* .entry-body > p (prototype) : Georgia, 19px, 1.9 — le composant fixait ces
    deux dernières valeurs en style inline (16.5px/1.85, voir
    RoseeMatinaleContent.tsx) : un style inline gagne toujours sur n'importe
@@ -3257,7 +3267,9 @@ footer.footer--dark{
 .v2-past-event b{color:var(--v2-violet);}
 
 /* --- Dernières parutions --- */
-.v2-books-section{padding-block:120px 135px;font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);}
+.v2-books-section{padding-block:120px 130px;font-family:var(--v2-sans);line-height:1.6;color:var(--v2-ink);}
+.v2-books-section + .v2-events-section{padding-top:0;}
+@media(max-width:720px){.v2-books-section{padding-bottom:48px;}}
 /* Même contournement local que pour [07] (voir plus haut) — h1..h4{color:
    var(--ink)} (ancien token) l'emporte sur l'héritage, .v2-section-heading
    étant partagé avec [05]/[07]. */
@@ -3265,7 +3277,7 @@ footer.footer--dark{
 .v2-books-section .v2-section-heading h2 em{color:var(--v2-violet);font-weight:500;}
 .v2-catalogue-link{justify-self:end;font-size:14px;font-weight:800;}
 .v2-books-grid{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:24px;align-items:stretch;}
-.v2-book-card{border:1px solid var(--v2-line);background:#fff;min-width:0;}
+.v2-book-card{display:flex;flex-direction:column;border:1px solid var(--v2-line);background:#fff;min-width:0;}
 .v2-book-card.main{display:grid;grid-template-columns:1.08fr .92fr;background:var(--v2-ink);color:#fff;}
 /* Dans la maquette, .book-cover (un <a> resté display:inline) laisse le
    height:100% de son img se résoudre à travers lui jusqu'à .book-card (696px,
@@ -3281,7 +3293,7 @@ footer.footer--dark{
    remplissage total quirky de la maquette — écart mineur et volontaire,
    signalé au référentiel comme CONTRÔLE MANUEL REQUIS plutôt que corrigé
    à l'identique. */
-.v2-book-cover{display:block;position:relative;overflow:hidden;background:#161227;aspect-ratio:.665;}
+.v2-book-cover{display:block;position:relative;flex:0 0 auto;overflow:hidden;background:#161227;aspect-ratio:.665;}
 .v2-book-cover img{width:100%;height:100%;aspect-ratio:.665;object-fit:cover;transition:transform .35s ease;}
 .v2-book-card:hover .v2-book-cover img{transform:scale(1.025);}
 .v2-book-card.main .v2-book-cover{aspect-ratio:auto;}
@@ -3291,9 +3303,14 @@ footer.footer--dark{
    grille livres de l'accueil attend object-fit:cover. Surcharge locale par
    spécificité (3 classes), sans toucher à la règle partagée ni au composant,
    pour ne pas affecter /livres ou /livres/[slug] (hors de ce lot). */
-.v2-book-cover .cover-rollover .cr-front,
-.v2-book-cover .cover-rollover .cr-back{object-fit:cover;}
-.v2-book-info{padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
+.v2-book-cover .cover-rollover .cr-front{object-fit:cover;}
+/* Le dos contient du texte éditorial : il doit rester entièrement lisible,
+   même lorsque son ratio diffère du cadre de la carte. */
+.v2-book-cover .cover-rollover .cr-back{object-fit:contain;object-position:center;}
+/* La grande carte vedette doit employer le même remplissage au recto et au
+   verso : son panneau gauche constitue un gabarit éditorial plein cadre. */
+.v2-book-card.main .v2-book-cover .cover-rollover .cr-back{object-fit:cover;}
+.v2-book-info{min-width:0;flex:1;padding:26px 24px 30px;display:flex;flex-direction:column;align-items:start;}
 .v2-book-card.main .v2-book-info{padding:46px 34px;justify-content:center;}
 .v2-book-info>span{color:var(--v2-violet);font-size:12px;font-weight:850;text-transform:uppercase;letter-spacing:.1em;}
 .v2-book-card.main .v2-book-info>span{color:#cbb8ff;}
@@ -3336,7 +3353,7 @@ footer.footer--dark{
   /* .jesus-intro h3/.category-number (prototype, media 720px) */
   .v2-jesus-intro h3{font-size:31px;}
   .v2-jesus-intro{padding:32px 24px;}
-  .v2-jesus-gateway{padding-block:95px;}
+  .v2-jesus-gateway{padding-block:48px 95px;}
   .v2-jesus-stage{border-radius:15px;}
   .v2-jesus-video-frame{min-height:205px;}
   /* Même écart de marge qu'aux autres sections (16px de chaque côté sous
@@ -3423,11 +3440,14 @@ footer.footer--dark{
    visiblement trop faible. */
 .v2-jc-hero{position:relative;min-height:560px;display:flex;align-items:center;isolation:isolate;overflow:hidden;padding:80px 0;color:#fff;background:linear-gradient(135deg,#17122d 0%,#37205f 52%,#7452ad 100%);}
 .v2-jc-hero-image{position:absolute;z-index:-2;inset:0;background-size:cover;background-position:center;opacity:.3;}
-.v2-jc-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(20,14,40,.78),rgba(76,49,124,.28),rgba(23,15,44,.48));}
+.v2-jc-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(20,14,40,.68),rgba(76,49,124,.18),rgba(23,15,44,.38));}
 .v2-jc-hero-copy{position:relative;max-width:860px;margin:0 auto;text-align:center;}
-.v2-jc-hero h1{margin:0 auto 25px;color:#fff;font-family:var(--v2-serif);font-size:36.5px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
-.v2-jc-hero h1 cite{font-family:var(--v2-sans);font-size:.55em;font-style:normal;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.62);}
-.v2-jc-hero-context{width:min(600px,100%);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.34);}
+.v2-jc-hero-context{width:min(600px,100%);margin:0 auto 28px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.34);}
+.v2-jc-hero-reading{width:min(820px,100%);margin:0 auto;}
+.v2-jc-title{margin:0 auto 24px;color:#fff;font-family:var(--v2-serif);font-size:34px;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
+.v2-jc-hero-intro{margin:0 auto 12px;color:rgba(255,255,255,.86);font-family:var(--v2-sans);font-size:15px;font-weight:600;letter-spacing:.02em;}
+.v2-jc-scripture{margin:0 auto;color:#fff;font-family:var(--v2-serif);font-size:32px;font-style:normal;font-weight:600;line-height:1.12;letter-spacing:-.025em;}
+.v2-jc-scripture cite{font-family:var(--v2-sans);font-size:15px;font-style:normal;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.62);}
 /* .rm-hero .category-badge (prototype, s'applique aussi à .confess-hero) :
    24px, pas 22px — écart trouvé (retour du 11/09, audit typographique). */
 /* Bug réel corrigé (validation humaine, 13/09) : la vraie pastille de la
@@ -3445,7 +3465,7 @@ footer.footer--dark{
 .v2-jc-body-html{margin-bottom:20px;color:#343044;font-family:var(--v2-serif);font-size:19px;line-height:1.9;}
 /* .confess-signature (maquette) : bordures haut/bas manquantes ici. */
 .v2-jc-chapeau{padding:54px 0;background:#f3edff;border-top:1px solid rgba(79,37,216,.12);border-bottom:1px solid rgba(79,37,216,.12);}
-.v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(25px,3.3vw,39px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
+.v2-jc-chapeau blockquote{width:min(880px,calc(100% - 48px));margin:0 auto;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(23.5px,3.18vw,37.5px);font-style:italic;font-weight:500;line-height:1.4;text-align:center;}
 .v2-jc-chapeau cite{display:block;margin-top:18px;color:#4f25d8;font-family:var(--v2-sans);font-size:12px;font-style:normal;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
 
 /* Bug réel corrigé (validation humaine, 13/09) : .like-block (composant
@@ -3476,7 +3496,10 @@ footer.footer--dark{
    seulement un filtre par query param, la vraie fonction équivalente). */
 .v2-jc-audio{padding:25px 0;color:#fff;background:#1d1830;}
 .v2-jc-audio-inner{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:20px;align-items:center;}
-.v2-jc-audio-icon{width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.28);border-radius:50%;color:#fff;background:rgba(255,255,255,.07);font-size:17px;}
+.v2-jc-audio-icon{width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.28);border-radius:50%;color:#fff;background:rgba(255,255,255,.07);font-family:var(--v2-sans);font-size:17px;cursor:pointer;}
+button.v2-jc-audio-icon:hover{background:rgba(255,255,255,.15);}
+button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3px;}
+.v2-jc-audio-icon>audio{display:none;}
 .v2-jc-audio-inner p{margin:0 0 4px;color:#cdbdf3;font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;}
 .v2-jc-audio-inner h2{margin:0 0 5px;color:#fff;font-family:var(--v2-serif);font-size:24px;font-weight:600;}
 .v2-jc-audio-inner div>span{color:rgba(255,255,255,.62);font-size:13px;}
@@ -3518,7 +3541,9 @@ footer.footer--dark{
   .v2-confession-card{grid-template-columns:1fr;text-align:center;}
 }
 @media (max-width:720px){
-  .v2-jc-hero h1{font-size:24.5px;}
+  .v2-jc-title{font-size:22px;}
+  .v2-jc-scripture{font-size:20px;}
+  .v2-jc-scripture cite{font-size:15px;}
   .v2-jc-body-html{font-size:18px;line-height:1.82;}
   /* .rm-hero .category-badge (prototype, media 720px) : 20px */
   .v2-jc-badge{font-size:20px;}
@@ -3595,7 +3620,7 @@ footer.footer--dark{
 
 /* --- Introduction catalogue --- */
 .v2-catalog-intro{max-width:850px;padding-block:66px 42px;}
-.v2-catalog-intro h2{max-width:720px;margin:0;font-family:var(--v2-serif);font-size:clamp(35px,5vw,57px);font-weight:500;line-height:1.09;letter-spacing:-.035em;}
+.v2-catalog-intro h2{max-width:720px;margin:0;font-family:var(--v2-serif);font-size:clamp(32px,calc(5vw - 3px),54px);font-weight:500;line-height:1.09;letter-spacing:-.035em;}
 /* BUG RÉEL CORRIGÉ (audit Hub Livres, 14/09) : "font-style:normal" ici
    annulait à tort l'italique par défaut du <em> — la règle maquette
    (.catalog-intro h2 em) ne déclare AUCUN font-style, laissant l'italique
@@ -3622,8 +3647,10 @@ footer.footer--dark{
    existait déjà pour ce même piège sur la fiche vedette de l'accueil
    (.v2-book-cover .cover-rollover ...), jamais répliqué ici — mesuré
    object-fit:"contain" au lieu de "cover" sur les cartes du catalogue. */
-.v2-catalog-cover .cover-rollover .cr-front,
-.v2-catalog-cover .cover-rollover .cr-back{object-fit:cover;}
+.v2-catalog-cover .cover-rollover .cr-front{object-fit:cover;}
+/* La quatrième de couverture ne doit jamais être rognée : contrairement au
+   recto décoratif, son contenu textuel prime sur le remplissage du cadre. */
+.v2-catalog-cover .cover-rollover .cr-back{object-fit:contain;object-position:center;}
 .v2-catalog-card-body{flex:1;display:flex;flex-direction:column;align-items:flex-start;padding:23px 20px 21px;}
 /* line-height:1.6 ajouté (audit Hub Livres, 14/09) : même mécanisme que
    .v2-catalog-price ci-dessus — mesuré 16px (10×1.6) sur la maquette contre
@@ -3936,7 +3963,7 @@ footer.footer--dark{
    exhaustif, invisible à une simple lecture de couleur/police. */
 .v2-product-page .product-desc h2{position:sticky;top:28px;margin:0;color:#fff;font-family:var(--v2-serif);font-size:clamp(40px,5vw,61px);font-weight:500;line-height:1.05;letter-spacing:-.04em;}
 .v2-product-page .product-desc>.v2-commerce-wrap>div:last-child{max-width:730px;}
-.v2-product-page .product-desc p{margin:0 0 22px;color:rgba(255,255,255,.72);font-family:var(--v2-serif);font-size:19px;line-height:1.78;}
+.v2-product-page .product-desc p{margin:0 0 22px;color:rgba(255,255,255,.72);font-family:var(--v2-serif);font-size:18px;line-height:1.78;}
 /* BUG RÉEL CORRIGÉ (reprise après validation humaine, 14/09) : le premier
    paragraphe réel de ce livre (books.description) est stocké en
    "<b>...</b><p>...</p>" — le texte d'ouverture n'est PAS enveloppé dans
@@ -3958,8 +3985,8 @@ footer.footer--dark{
    Georgia comme la maquette (§ .book-description-copy p, dont hérite
    implicitement son premier <p><strong>). Écart réel démontré (police
    réellement chargée vérifiée, pas seulement la valeur CSS). */
-.v2-product-page .product-desc p:first-child,
-.v2-product-page .product-desc b:first-child{display:block;margin:0 0 22px;color:#fff;font-family:var(--v2-serif);font-size:24px;line-height:1.58;}
+.v2-product-page .product-desc .product-desc-copy>p:first-child,
+.v2-product-page .product-desc .product-desc-copy>b:first-child{display:block;margin:0 0 22px;color:#fff;font-family:var(--v2-serif);font-size:24px;line-height:1.58;}
 /* Contenu riche (RichTextEditor, admin) injecté ici — mêmes garde-fous que
    partout ailleurs sur fond sombre (h1-h4 globaux + liens explicitement
    recolorés, jamais laissés hériter). */
@@ -4297,26 +4324,32 @@ footer.footer--dark{
 .v2-compte-page .account-pane h2{margin:0 0 8px;font-family:var(--v2-serif);font-size:35px;font-weight:600;}
 .v2-compte-page .account-form{display:grid;gap:14px;}
 .v2-compte-page .account-form .field-label{color:var(--v2-ink-soft);font-size:12px;font-weight:800;}
-.v2-compte-page .account-form input{width:100%;height:49px;padding-inline:14px;border:1px solid var(--v2-line);border-radius:6px;outline:0;font-family:inherit;}
-.v2-compte-page .account-form input:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);}
+.v2-compte-page .account-form input:not([type="checkbox"]){width:100%;height:49px;padding-inline:14px;border:1px solid var(--v2-line);border-radius:6px;outline:0;font-family:inherit;}
+.v2-compte-page .account-form input:not([type="checkbox"]):focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);}
+.password-input-wrap{position:relative;display:grid;width:100%;}
+.password-input-wrap input{grid-area:1/1;width:100%;padding-right:54px!important;}
+.password-visibility-toggle{position:relative;z-index:1;grid-area:1/1;align-self:center;justify-self:end;right:auto;top:auto;width:41px!important;height:41px!important;min-height:0!important;display:grid!important;place-items:center;padding:0!important;margin:0 5px 0 0!important;border:0!important;border-radius:5px!important;color:var(--v2-muted,var(--ink-soft))!important;background:transparent!important;cursor:pointer;transform:none;}
+.password-visibility-toggle:hover{color:var(--v2-violet-deep,var(--purple))!important;background:#f8f6ff!important;}
+.password-visibility-toggle:focus-visible{outline:3px solid rgba(109,49,242,.18);outline-offset:1px;}
+.password-visibility-toggle svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .v2-compte-page .account-form .forgot{display:block;margin-top:-4px;color:var(--v2-violet-deep);font-size:12px;font-weight:750;}
 .v2-compte-page .account-form .consent{display:flex;gap:10px;align-items:flex-start;color:var(--v2-muted);font-size:12px;line-height:1.5;}
+.v2-compte-page .account-form .consent input[type="checkbox"]{appearance:auto;width:auto;height:auto;margin:2px 0 0;padding:0;flex:0 0 auto;accent-color:var(--v2-violet-deep);}
 .v2-compte-page .account-form .consent a{color:var(--v2-violet-deep);}
 .v2-compte-page .account-form button.btn{min-height:50px;margin-top:4px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-weight:800;cursor:pointer;font-family:inherit;}
 .v2-compte-page .admin-error{margin:0;padding:12px 14px;border-radius:6px;background:#fdeceb;color:#b3261e;font-size:13px;}
-/* .oauth-choice/.oauth-buttons (chantier Compte, reprise) : § réels de la
-   maquette — un seul conteneur pour les boutons ET le séparateur (jamais
-   .social-auth + .account-divider éclatés), boutons CÔTE À CÔTE (2
-   colonnes, jamais empilés). */
-.v2-compte-page .oauth-choice{margin-bottom:28px;}
+/* OAuth reste visuellement secondaire : le formulaire e-mail est présenté
+   d'abord, puis les deux fournisseurs sous une séparation compacte. */
+.v2-compte-page .oauth-choice{margin-top:10px;}
 .v2-compte-page .oauth-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.v2-compte-page .social-btn{min-height:47px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);background:#fff;font-size:12px;font-weight:800;cursor:not-allowed;opacity:.6;}
+.v2-compte-page .social-btn{min-height:43px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--v2-line);border-radius:6px;color:var(--v2-ink);background:#fff;font-size:12px;font-weight:800;cursor:pointer;opacity:1;}
+.v2-compte-page .social-btn:hover:not(:disabled){border-color:var(--v2-violet);background:#fbfaff;}
+.v2-compte-page .social-btn:focus-visible{outline:3px solid rgba(109,49,242,.18);outline-offset:2px;}
+.v2-compte-page .social-btn:disabled{cursor:not-allowed;opacity:.55;}
 .v2-compte-page .account-soon{margin-top:10px;color:var(--v2-muted);font-size:11px;text-align:center;}
-.v2-compte-page .account-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0 0;color:var(--v2-muted);font-size:12px;}
+.v2-compte-page .oauth-error{margin-top:10px;}
+.v2-compte-page .account-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:4px 0 13px;color:var(--v2-muted);font-size:12px;}
 .v2-compte-page .account-divider::before,.v2-compte-page .account-divider::after{content:"";flex:1;height:1px;background:var(--v2-line);}
-@media (max-width:640px){
-  .v2-compte-page .oauth-buttons{grid-template-columns:1fr;}
-}
 
 /* --- Mon espace (tableau de bord) — cible les classes réelles
    DashTabs.tsx. --- */
@@ -4369,10 +4402,12 @@ footer.footer--dark{
    (le CSS pré-V2 de .profile-form, plus haut dans ce fichier, ne pose
    qu'un style d'input/label en colonne unique). */
 .v2-dashboard-page .profile-form{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:28px;}
+.v2-dashboard-page .profile-form .v2-profile-field{display:flex;min-width:0;flex-direction:column;}
 .v2-dashboard-page .profile-form label{margin:0;color:var(--v2-ink-soft);font-size:12px;font-weight:800;}
 .v2-dashboard-page .profile-form input{width:100%;max-width:none;height:48px;margin:6px 0 0;padding-inline:13px;border:1px solid var(--v2-line);border-radius:6px;font-family:inherit;font-size:16px;}
 .v2-dashboard-page .profile-form .v2-profile-form-full{grid-column:1/-1;}
-.v2-dashboard-page .profile-form button{width:fit-content;min-height:46px;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;}
+.v2-dashboard-page .profile-form .v2-profile-feedback{grid-column:1/-1;margin:0;}
+.v2-dashboard-page .profile-form>button[type="submit"]{width:fit-content;min-height:46px;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;}
 
 @media (max-width:980px){
   .v2-product-page .product-grid{grid-template-columns:minmax(250px,.7fr) minmax(0,1.3fr);gap:40px;}
@@ -4396,6 +4431,7 @@ footer.footer--dark{
   .v2-compte-page .account-card{grid-template-columns:1fr;}
   .v2-dashboard-page .dashboard-grid{grid-template-columns:1fr;}
   .v2-dashboard-page .dashboard-tabs{position:static;grid-auto-flow:column;overflow-x:auto;}
+  .v2-dashboard-page .profile-form{grid-template-columns:1fr;}
 }
 @media (max-width:720px){
   .v2-product-page .v2-breadcrumbs-hero{padding-block:26px;}
@@ -4511,7 +4547,7 @@ footer.footer--dark{
    d'intitulé d'étape (bien plus petit qu'un titre de page dans une colonne
    de 190px) plutôt que de reprendre son clamp(36px,5vw,54px) intégral. */
 .v2-invitation-page .form-section-heading h2{margin:0;padding:4px 0 0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:25px;font-weight:500;line-height:1.2;text-transform:none;letter-spacing:normal;}
-.v2-invitation-page .form-fields{display:grid;gap:18px;}
+.v2-invitation-page .form-fields{display:grid;width:100%;max-width:680px;min-width:0;gap:18px;}
 .v2-invitation-page .field{line-height:1.6;}
 .v2-invitation-page .field-label{display:block;margin-bottom:8px;color:var(--v2-ink-soft);font-size:13px;font-weight:750;}
 .v2-invitation-page .optional-tag{color:var(--v2-muted);font-size:11px;font-weight:500;}
@@ -4538,6 +4574,8 @@ footer.footer--dark{
 .v2-invitation-page .consent-label{display:flex;align-items:flex-start;gap:10px;margin:0 0 20px;color:var(--v2-muted);font-size:12px;line-height:1.6;}
 .v2-invitation-page .consent-label input{width:auto;margin:3px 0 0;accent-color:var(--v2-violet-deep);}
 .v2-invitation-page .consent-label a{color:var(--v2-violet-deep);text-decoration:underline;}
+.v2-invitation-page .inv-submit-row .consent-label,
+.v2-invitation-page .inv-submit-row .btn.btn-primary{max-width:680px;}
 .v2-invitation-page .btn.btn-primary{width:100%;min-height:54px;border:0;border-radius:7px;color:#fff;background:linear-gradient(135deg,#4e2cff,#8b35ee);box-shadow:0 13px 28px rgba(79,37,216,.22);font-weight:800;}
 
 /* --- Partenariat --- */
@@ -4671,7 +4709,7 @@ footer.footer--dark{
 .v2-account-flow-form label{color:var(--v2-ink-soft);font-size:12px;font-weight:800;}
 .v2-account-flow-form input{width:100%;min-height:50px;padding-inline:14px;border:1px solid var(--v2-line);border-radius:6px;outline:0;font-family:inherit;}
 .v2-account-flow-form input:focus{border-color:var(--v2-violet);box-shadow:0 0 0 3px rgba(109,49,242,.1);}
-.v2-account-flow-form button{min-height:50px;display:inline-flex;align-items:center;justify-content:center;margin-top:7px;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;}
+.v2-account-flow-form>button[type="submit"]{min-height:50px;display:inline-flex;align-items:center;justify-content:center;margin-top:7px;padding-inline:18px;border:0;border-radius:6px;color:#fff;background:var(--v2-violet-deep);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;}
 /* .v2-password-rules (chantier Compte, reprise) : § <ul class="password-
    rules"> de la maquette, entièrement absente jusqu'ici. */
 .v2-password-rules{margin:12px 0 0;padding-left:18px;color:var(--v2-muted);font-size:11px;line-height:1.6;}
@@ -4748,16 +4786,16 @@ footer.footer--dark{
 .v2-podcast-filters a:hover,.v2-podcast-filters a.active{color:var(--v2-ink);border-color:#fff;background:#fff;}
 
 .v2-podcast-library{padding:60px 0 84px;background:#f4f1ff;}
-.v2-podcast-library-head{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:26px;}
+.v2-podcast-library-head{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:40px;}
 .v2-podcast-library-head h2{margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(34px,4vw,46px);font-weight:500;line-height:1;}
 .v2-podcast-library-head p{margin:0 0 3px;color:var(--v2-muted);font-size:14px;}
 
-.v2-podcast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
-.v2-podcast-card{display:grid;grid-template-columns:152px minmax(0,1fr);overflow:hidden;border:1px solid rgba(79,37,216,.14);border-radius:12px;background:#fff;box-shadow:0 12px 28px rgba(23,20,45,.07);}
+.v2-podcast-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+.v2-podcast-card{display:flex;min-width:0;flex-direction:column;gap:12px;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none;}
 
-.v2-podcast-share-card{position:relative;min-height:286px;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 16px;color:#fff;background:radial-gradient(circle at 82% 16%,rgba(169,133,255,.52),transparent 27%),linear-gradient(145deg,#17142d,#362267);}
-.v2-podcast-share-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;}
-.v2-podcast-share-card::before{content:"▶";position:relative;width:42px;height:42px;display:grid;place-items:center;margin-bottom:auto;padding-left:2px;border:1px solid rgba(255,255,255,.4);border-radius:50%;background:rgba(255,255,255,.08);font-size:12px;}
+.v2-podcast-share-card{position:relative;width:100%;aspect-ratio:1 / 1;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:24px;border:1px solid rgba(79,37,216,.18);border-radius:12px;color:#fff;background:radial-gradient(circle at 82% 16%,rgba(169,133,255,.52),transparent 27%),linear-gradient(145deg,#17142d,#362267);}
+.v2-podcast-share-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;background:#1d1830;}
+.v2-podcast-share-card::before{display:none;}
 .v2-podcast-share-card>span,.v2-podcast-share-card>strong,.v2-podcast-share-card>small{position:relative;}
 .v2-podcast-share-card>span{margin-bottom:9px;color:#d9ccff;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;}
 .v2-podcast-share-card strong{max-width:145px;color:#fff;font-family:var(--v2-serif);font-size:23px;font-weight:600;line-height:1.02;}
@@ -4770,7 +4808,7 @@ footer.footer--dark{
 .v2-podcast-card.rm .v2-podcast-share-card{background:radial-gradient(circle at 80% 18%,rgba(255,255,255,.16),transparent 25%),linear-gradient(145deg,#5f3aaf,#7b3fe4);}
 .v2-podcast-card.vs .v2-podcast-share-card{background:radial-gradient(circle at 82% 16%,rgba(111,80,193,.52),transparent 27%),linear-gradient(145deg,#151229,#29204d);}
 
-.v2-podcast-card-content{display:flex;flex-direction:column;padding:20px 20px 18px;}
+.v2-podcast-card-content{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px 15px;border:1px solid rgba(79,37,216,.12);border-radius:9px;background:#fff;box-shadow:0 8px 18px rgba(23,20,45,.06);}
 /* .feed-badge (globals.css §L624) n'a pas de width:fit-content contrairement
    à son équivalent .category-badge du prototype — jamais remarqué ailleurs
    sur le site car toujours placé dans un conteneur flex en ligne
@@ -4783,20 +4821,24 @@ footer.footer--dark{
 .v2-podcast-card-content>.feed-badge{align-self:flex-start;width:fit-content;}
 .v2-podcast-card-content h3{margin:13px 0 8px;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(24px,2.1vw,30px);font-weight:500;line-height:1.05;letter-spacing:-.025em;}
 .v2-podcast-card-content h3 a:hover{color:var(--v2-violet-deep);}
-.v2-podcast-card-content>p{margin:0;max-width:690px;color:var(--v2-muted);font-size:14px;line-height:1.52;}
-.v2-podcast-card-meta{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:12px;color:var(--v2-violet-deep);font-size:12px;font-weight:750;}
+.v2-podcast-card-copy{min-width:0;}
+.v2-podcast-card-copy>p{margin:0;color:var(--v2-ink-soft);font-size:13.5px;font-weight:600;line-height:1.45;}
+.v2-podcast-card-meta{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:7px;color:var(--v2-violet-deep);font-size:11.5px;font-weight:750;}
 
 .v2-podcast-player-preview{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:11px;align-items:center;margin-top:18px;padding:10px;border-radius:9px;color:#fff;background:#1d1830;}
-/* Style corrigé (lot de finition, 16/09) : § .podcast-play.is-disabled de
-   la maquette — cet aperçu du Hub est purement décoratif (aria-hidden,
-   aucun onClick réel ; la lecture réelle a lieu sur la fiche épisode via
-   un vrai <audio controls>) — jamais le violet plein/curseur pointer d'un
-   bouton réellement actif, qui laissait croire à tort qu'un clic ferait
-   quelque chose ici. */
-.v2-podcast-play{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;color:rgba(255,255,255,.7);background:rgba(255,255,255,.12);font-size:13px;border:0;}
-.v2-podcast-progress{height:3px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.22);}
-.v2-podcast-progress span{width:0;height:100%;display:block;background:#b995ff;}
-.v2-podcast-player-preview>time{color:rgba(255,255,255,.66);font-size:12px;}
+.v2-podcast-player-preview.has-cover-color{background-position:center;background-size:cover;}
+.v2-podcast-card>.v2-podcast-player-preview{margin-top:0;border-radius:9px;box-shadow:0 8px 18px rgba(23,20,45,.09);}
+.v2-podcast-player-preview>audio{display:none;}
+/* Lecteur compact fonctionnel : il conserve le design sombre validé tout en
+   pilotant le véritable fichier audio et en permettant la navigation. */
+.v2-podcast-play{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;color:#fff;background:rgba(255,255,255,.14);font-family:var(--v2-sans);font-size:12px;font-weight:800;border:0;cursor:pointer;}
+.v2-podcast-play:hover{background:rgba(255,255,255,.22);}
+.v2-podcast-play:focus-visible{outline:2px solid #b995ff;outline-offset:2px;}
+.v2-podcast-progress{width:100%;height:3px;margin:0;appearance:none;-webkit-appearance:none;border:0;border-radius:99px;background:rgba(255,255,255,.22);cursor:pointer;}
+.v2-podcast-progress::-webkit-slider-thumb{width:12px;height:12px;-webkit-appearance:none;border:0;border-radius:50%;background:#b995ff;}
+.v2-podcast-progress::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;background:#b995ff;}
+.v2-podcast-progress::-moz-range-progress{height:3px;border-radius:99px;background:#b995ff;}
+.v2-podcast-player-preview>time{color:rgba(255,255,255,.72);font-size:12px;white-space:nowrap;}
 
 .v2-podcast-card-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;}
 .v2-podcast-card-bottom>a{color:var(--v2-violet-deep);font-size:12px;font-weight:800;white-space:nowrap;}
@@ -4828,20 +4870,21 @@ footer.footer--dark{
 .v2-podcast-detail-link{color:var(--v2-violet-deep);font-weight:700;}
 
 @media (max-width:980px){
-  .v2-podcast-grid{grid-template-columns:1fr;}
-  .v2-podcast-card{grid-template-columns:190px minmax(0,1fr);}
+  .v2-podcast-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 @media (max-width:720px){
   .v2-podcast-hero{padding:56px 0 46px;}
   .v2-podcast-hero h1{font-size:48px;}
   .v2-podcast-filters{margin-top:19px;}
   .v2-podcast-library{padding:44px 0 60px;}
-  .v2-podcast-library-head{display:block;margin-bottom:22px;}
+  .v2-podcast-library-head{display:block;margin-bottom:30px;}
   .v2-podcast-library-head p{margin-top:13px;}
-  .v2-podcast-card{grid-template-columns:1fr;}
-  .v2-podcast-share-card{min-height:180px;padding:20px;}
+  .v2-podcast-grid{grid-template-columns:1fr;}
+  .v2-podcast-share-card{padding:20px;}
   .v2-podcast-share-card strong{max-width:290px;font-size:25px;}
-  .v2-podcast-card-content{padding:21px 19px 22px;}
+  .v2-podcast-card-content{padding:13px 16px 14px;}
+  .v2-podcast-card-content>.podcast-share-actions{width:auto;flex:0 0 auto;}
+  .v2-podcast-card-content>.podcast-share-actions a,.v2-podcast-card-content>.podcast-share-actions button{flex:0 0 auto;}
   .v2-podcast-card-content h3{font-size:27px;}
   .v2-podcast-card-bottom{align-items:flex-start;flex-direction:column;}
   .podcast-share-actions{width:100%;}
@@ -4945,4 +4988,245 @@ footer.footer--dark{
   .v2-category-hub-feed .category-article.featured p{padding-left:15px;font-size:17px;}
   .v2-category-hub-feed .category-article h2{margin:18px 0 10px;font-size:27px;}
   .v2-category-hub-feed .category-article p{font-size:16px;}
+}
+
+/* ============================================================
+   CHANTIER 3 — suivi de commande
+   Paiement et traitement logistique restent volontairement
+   distincts dans l'administration comme dans l'espace client.
+   ============================================================ */
+.order-admin-row{grid-template-columns:110px minmax(230px,2fr) 90px 130px 145px 105px 72px;}
+.order-admin-reference{font-size:13px;font-weight:800;color:var(--purple);}
+.order-admin-open{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;}
+.fulfillment-badge{display:inline-flex;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:750;background:#ede9fe;color:#5b21b6;}
+.fulfillment-badge.fulfillment-none{background:#f1f5f9;color:#64748b;}
+.fulfillment-badge.fulfillment-shipped,.fulfillment-badge.fulfillment-delivered{background:#dcfce7;color:#166534;}
+
+.admin-back-link{display:inline-flex;margin-bottom:20px;color:var(--purple);font-size:13px;font-weight:750;text-decoration:none;}
+.admin-kicker{margin:0 0 3px;color:var(--ink-soft);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.order-detail-header{align-items:flex-end;margin-bottom:24px;}
+.order-detail-header h2{margin:0;}
+.order-detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.72fr);gap:20px;align-items:start;}
+.order-detail-card{padding:24px;border:1px solid var(--line);border-radius:12px;background:#fff;}
+.order-detail-card h3{margin:0 0 20px;font-family:Georgia,serif;font-size:20px;}
+.fulfillment-timeline{display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:0;list-style:none;}
+.fulfillment-timeline li{position:relative;display:grid;justify-items:center;gap:6px;color:var(--ink-soft);text-align:center;}
+.fulfillment-timeline li>div{display:grid;justify-items:center;gap:3px;min-width:0;}
+.fulfillment-timeline li::before{content:"";position:absolute;top:8px;right:50%;width:100%;height:2px;background:var(--line);}
+.fulfillment-timeline li:first-child::before{display:none;}
+.fulfillment-timeline li.is-complete::before{background:var(--purple);}
+.fulfillment-dot{position:relative;z-index:1;width:18px;height:18px;border:3px solid #fff;border-radius:50%;background:var(--line);box-shadow:0 0 0 1px var(--line);}
+.fulfillment-timeline li.is-complete .fulfillment-dot{background:var(--purple);box-shadow:0 0 0 1px var(--purple);}
+.fulfillment-timeline strong{font-size:12px;line-height:1.35;color:inherit;}
+.fulfillment-timeline li.is-complete strong{color:var(--ink);}
+.fulfillment-timeline small{font-size:10.5px;line-height:1.4;}
+.order-advance-form{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid var(--line);}
+.order-advance-form p,.order-complete-message{margin:0;color:var(--ink-soft);font-size:13px;}
+.order-shipping-fields{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.order-shipping-fields label{display:grid;gap:5px;color:var(--ink-soft);font-size:12px;font-weight:700;}
+.order-shipping-fields label:last-child{grid-column:1/-1;}
+.order-shipping-fields input{width:100%;height:42px;padding:0 11px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);}
+.order-tracking-form{display:grid;gap:13px;}
+.order-tracking-form label{display:grid;gap:5px;color:var(--ink-soft);font-size:12px;font-weight:700;}
+.order-tracking-form input{width:100%;height:42px;padding:0 11px;border:1px solid var(--line);border-radius:7px;font:inherit;color:var(--ink);}
+.order-tracking-form .admin-btn-sm{justify-self:start;}
+.order-detail-help{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.55;}
+.order-email-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+.order-detail-list{display:grid;gap:14px;margin:0;}
+.order-detail-list div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;}
+.order-detail-list dt{color:var(--ink-soft);font-size:12px;font-weight:750;}
+.order-detail-list dd{margin:0;font-size:13px;line-height:1.55;overflow-wrap:anywhere;}
+.order-detail-items{display:grid;gap:8px;}
+.order-detail-items>div{display:flex;justify-content:space-between;gap:18px;font-size:13px;}
+.order-detail-items small{display:block;margin-top:2px;color:var(--ink-soft);}
+.order-detail-items .muted{color:var(--ink-soft);}
+.order-detail-items .total{margin-top:6px;padding-top:10px;border-top:1px solid var(--line);font-size:14px;}
+.order-detail-meta{margin:18px 0 0;color:var(--ink-soft);font-size:11px;line-height:1.5;}
+
+.v2-dashboard-page .account-fulfillment{margin-top:18px;padding:18px;border-radius:9px;background:#f8f6ff;}
+.v2-dashboard-page .account-fulfillment ol{display:grid;grid-template-columns:repeat(4,1fr);margin:0;padding:0;list-style:none;}
+.v2-dashboard-page .account-fulfillment li{position:relative;display:grid;justify-items:center;gap:5px;color:var(--v2-muted);text-align:center;}
+.v2-dashboard-page .account-fulfillment li::before{content:"";position:absolute;top:7px;right:50%;width:100%;height:2px;background:var(--v2-line);}
+.v2-dashboard-page .account-fulfillment li:first-child::before{display:none;}
+.v2-dashboard-page .account-fulfillment li.is-complete::before{background:var(--v2-violet-deep);}
+.v2-dashboard-page .account-fulfillment li>span{position:relative;z-index:1;width:16px;height:16px;border:3px solid #f8f6ff;border-radius:50%;background:var(--v2-line);box-shadow:0 0 0 1px var(--v2-line);}
+.v2-dashboard-page .account-fulfillment li.is-complete>span{background:var(--v2-violet-deep);box-shadow:0 0 0 1px var(--v2-violet-deep);}
+.v2-dashboard-page .account-fulfillment li strong{font-size:11px;}
+.v2-dashboard-page .account-fulfillment li small{font-size:10px;}
+.v2-dashboard-page .account-tracking{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:18px;padding-top:14px;border-top:1px solid var(--v2-line);font-size:12px;}
+.v2-dashboard-page .account-tracking strong{width:100%;color:var(--v2-ink);}
+.v2-dashboard-page .account-tracking span{color:var(--v2-muted);}
+.v2-dashboard-page .account-tracking a{color:var(--v2-violet-deep);font-weight:800;}
+.v2-dashboard-page .order-status-group{display:grid;justify-items:end;gap:5px;text-align:right;}
+.v2-dashboard-page .order-status.secondary{color:var(--v2-muted);font-size:10.5px;}
+
+@media (max-width:1100px){
+  .order-admin-table{overflow-x:auto;}
+  .order-admin-row{min-width:1050px;}
+  .order-detail-grid{grid-template-columns:1fr;}
+}
+@media (max-width:720px){
+  .admin-main{padding-inline:18px;}
+  .fulfillment-timeline,.v2-dashboard-page .account-fulfillment ol{grid-template-columns:1fr;gap:12px;}
+  .fulfillment-timeline li,.v2-dashboard-page .account-fulfillment li{grid-template-columns:22px 1fr;justify-items:start;text-align:left;}
+  .fulfillment-timeline li::before,.v2-dashboard-page .account-fulfillment li::before{top:-12px;left:8px;width:2px;height:24px;}
+  .fulfillment-timeline li>div{justify-items:start;}
+  .v2-dashboard-page .account-fulfillment li strong,.v2-dashboard-page .account-fulfillment li small{grid-column:2;}
+  .v2-dashboard-page .account-fulfillment li>span{grid-row:1 / span 2;}
+  .order-detail-list div{grid-template-columns:1fr;gap:3px;}
+  .order-shipping-fields{grid-template-columns:1fr;}
+  .order-shipping-fields label:last-child{grid-column:auto;}
+  .v2-dashboard-page .order-status-group{justify-items:start;text-align:left;}
+}
+
+
+/* ============================================================
+   PAGES TEMPORAIRES — Boutique, Vidéos et Podcast
+   ============================================================ */
+.v2-construction-page{min-height:100vh;background:var(--v2-paper);}
+.v2-construction-main{position:relative;isolation:isolate;min-height:680px;display:grid;place-items:center;overflow:hidden;padding:88px 24px 104px;background:
+  linear-gradient(145deg,rgba(238,232,255,.94),rgba(251,250,255,.96) 42%,rgba(255,255,255,.98)),
+  radial-gradient(circle at 20% 20%,rgba(109,49,242,.18),transparent 34%);
+}
+.v2-construction-main::before{content:"";position:absolute;z-index:-1;inset:0;opacity:.42;background-image:linear-gradient(rgba(79,37,216,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(79,37,216,.08) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,transparent,#000 24%,#000 74%,transparent);}
+.v2-construction-glow{position:absolute;z-index:-1;border-radius:999px;filter:blur(4px);pointer-events:none;}
+.v2-construction-glow-one{width:420px;height:420px;top:-210px;right:-80px;background:rgba(109,49,242,.13);}
+.v2-construction-glow-two{width:320px;height:320px;bottom:-190px;left:-70px;background:rgba(46,47,224,.1);}
+.v2-construction-card{position:relative;width:min(100%,760px);overflow:hidden;padding:62px 70px 58px;border:1px solid rgba(79,37,216,.14);border-radius:18px;background:rgba(255,255,255,.88);box-shadow:0 30px 90px rgba(23,20,45,.13);text-align:center;backdrop-filter:blur(10px);}
+.v2-construction-mark{position:absolute;top:50%;left:50%;color:rgba(79,37,216,.045);font-family:var(--v2-serif);font-size:clamp(150px,25vw,250px);font-weight:700;line-height:1;letter-spacing:-.1em;transform:translate(-52%,-50%);white-space:nowrap;pointer-events:none;}
+.v2-construction-logo{position:relative;width:166px;height:auto;margin:0 auto 36px;object-fit:contain;}
+.v2-construction-eyebrow{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 17px;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:12px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;}
+.v2-construction-eyebrow span{width:27px;height:2px;background:var(--v2-violet);}
+.v2-construction-card h1{position:relative;margin:0;color:var(--v2-ink);font-family:var(--v2-serif);font-size:clamp(43px,7vw,70px);font-weight:500;line-height:1.02;letter-spacing:-.035em;}
+.v2-construction-status{position:relative;margin:16px 0 0;color:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:15px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;}
+.v2-construction-rule{position:relative;width:112px;height:1px;margin:29px auto;background:var(--v2-line);}
+.v2-construction-rule span{position:absolute;top:-3px;left:50%;width:7px;height:7px;border-radius:50%;background:var(--v2-violet);transform:translateX(-50%);}
+.v2-construction-message{position:relative;margin:0;color:var(--v2-muted);font-family:var(--v2-serif);font-size:19px;line-height:1.72;}
+.v2-construction-link{position:relative;display:inline-flex;align-items:center;gap:10px;margin-top:35px;padding:13px 19px;border:1px solid var(--v2-violet-deep);border-radius:7px;color:#fff;background:var(--v2-violet-deep);font-family:var(--v2-sans);font-size:13px;font-weight:800;transition:transform .2s ease,box-shadow .2s ease;}
+.v2-construction-link:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(79,37,216,.22);}
+.v2-construction-link:focus-visible{outline:3px solid rgba(109,49,242,.25);outline-offset:4px;}
+@media (max-width:720px){
+  .v2-construction-main{min-height:590px;padding:58px 18px 72px;}
+  .v2-construction-card{padding:46px 24px 43px;border-radius:14px;}
+  .v2-construction-logo{width:145px;margin-bottom:31px;}
+  .v2-construction-card h1{font-size:43px;}
+  .v2-construction-status{font-size:12px;}
+  .v2-construction-message{font-size:17px;}
+  .v2-construction-mark{font-size:145px;}
+}
+
+.v2-construction-message strong{display:block;margin-top:14px;color:#7f5bd6;font-family:var(--v2-serif);font-weight:700;}
+
+
+/* Accueil V2 — alignement Sites v40 : verrouille l'écart mobile entre
+   Dernières parutions et Rencontres et conférences après toutes les règles
+   historiques afin que la cascade ne puisse pas rétablir l'ancien retrait. */
+@media (max-width:720px){
+  .v2-home .v2-books-section{padding-bottom:48px;}
+  .v2-home .v2-books-section + .v2-events-section{padding-top:0;}
+}
+
+
+/* Le mode contain laisse volontairement respirer l'image. Le fond visible
+   reprend la teinte lavande claire du site, jamais l'ancien cadre noir. */
+.v2-book-cover,
+.v2-catalog-cover,
+.v2-product-page .product-cover,
+.v2-book-cover .cover-rollover,
+.v2-catalog-cover .cover-rollover,
+.v2-product-page .product-cover .cover-rollover{
+  background:#f3f0fb;
+}
+
+/* CORRECTION COUVERTURES — affichage intégral, sans rognage.
+   Les règles historiques de l'accueil, du catalogue et de la fiche livre
+   imposaient ponctuellement object-fit:cover puis un zoom au survol.
+   Cette règle finale harmonise les trois emplacements : l'image complète
+   reste dans le cadre sans marge artificielle et sans déformation. */
+.v2-catalog-cover .cover-rollover .cr-front,
+.v2-catalog-cover .cover-rollover .cr-back,
+.v2-product-page .product-cover .cover-rollover .cr-front,
+.v2-product-page .product-cover .cover-rollover .cr-back{
+  inset:0;
+  width:100%;
+  height:100%;
+  aspect-ratio:auto;
+  object-fit:contain;
+  object-position:center;
+  transform:none;
+}
+.v2-product-page .cover-rollover:focus-within .cr-front,
+.v2-product-page .cover-rollover:focus-within .cr-back{
+  transform:none;
+}
+@media (hover:hover) and (pointer:fine){
+  .v2-product-page .cover-rollover:hover .cr-front,
+  .v2-product-page .cover-rollover:hover .cr-back{
+    transform:none;
+  }
+}
+
+
+/* Podcast mobile — correctif du 14/10/2026
+   En-tête compact avec catégories défilantes, puis informations de chaque
+   épisode empilées afin d'éviter tout écrasement ou chevauchement. */
+@media (max-width:720px){
+  .v2-podcast-hero{padding:28px 0 22px;}
+  .v2-podcast-hero .v2-eyebrow{margin:0;font-size:12px;}
+  .v2-podcast-hero h1{margin-top:8px;font-size:40px;line-height:1;}
+  .v2-podcast-hero-inner>p{margin-top:10px;font-family:var(--v2-sans);font-size:14px;line-height:1.45;}
+
+  .v2-podcast-filters{
+    display:flex;
+    flex-wrap:nowrap;
+    gap:8px;
+    margin-top:16px;
+    padding:0 0 4px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .v2-podcast-filters::-webkit-scrollbar{display:none;}
+  .v2-podcast-filters a{
+    flex:0 0 auto;
+    min-height:32px;
+    padding:6px 12px;
+    font-size:10px;
+    white-space:nowrap;
+  }
+
+  .v2-podcast-library{padding-top:36px;}
+  .v2-podcast-library-head{margin-bottom:24px;}
+  .v2-podcast-library-head h2{font-size:36px;}
+  .v2-podcast-library-head p{margin-top:9px;font-size:13px;line-height:1.45;}
+
+  .v2-podcast-card-content{
+    display:flex;
+    align-items:stretch;
+    flex-direction:column;
+    gap:12px;
+    padding:18px;
+  }
+  .v2-podcast-card-copy{width:100%;min-width:0;}
+  .v2-podcast-card-copy>p{
+    width:100%;
+    overflow-wrap:anywhere;
+    font-size:15px;
+    line-height:1.5;
+  }
+  .v2-podcast-card-meta{margin-top:9px;font-size:12px;}
+  .v2-podcast-card-content>.podcast-share-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:100%;
+    padding-top:12px;
+    border-top:1px solid rgba(79,37,216,.12);
+  }
+  .v2-podcast-card-content>.podcast-share-actions a,
+  .v2-podcast-card-content>.podcast-share-actions button{
+    width:100%;
+    min-width:0;
+    min-height:42px;
+  }
 }

@@ -3,13 +3,25 @@
 import { useState } from "react";
 import { isDropdown, type NavItem } from "@/lib/content/navTypes";
 
-// V2 (retour du 11/09, Lot 1) — même mécanisme React qu'avant (panneau
-// déroulant listant tous les liens, y compris les sous-menus à plat),
-// habillage seul changé (.v2-mobile-menu). `nav` reste chargé côté serveur
-// (Header) et transmis en prop — les libellés viennent toujours de la base
-// (table nav_items).
 export default function MobileNav({ nav }: { nav: NavItem[] }) {
   const [open, setOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  function closeMenu() {
+    setOpen(false);
+    setOpenDropdown(null);
+  }
+
+  function toggleMenu() {
+    setOpen((current) => {
+      if (current) setOpenDropdown(null);
+      return !current;
+    });
+  }
+
+  function toggleDropdown(label: string) {
+    setOpenDropdown((current) => (current === label ? null : label));
+  }
 
   return (
     <>
@@ -17,7 +29,7 @@ export default function MobileNav({ nav }: { nav: NavItem[] }) {
         className="v2-icon-button v2-menu-button"
         aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggleMenu}
       >
         {open ? "✕" : "☰"}
       </button>
@@ -25,26 +37,42 @@ export default function MobileNav({ nav }: { nav: NavItem[] }) {
         <nav className="v2-mobile-menu" aria-label="Navigation mobile">
           {nav.map((item) =>
             isDropdown(item) ? (
-              <div key={item.label} className="v2-nav-dropdown">
-                {item.href ? (
-                  <a href={item.href} onClick={() => setOpen(false)}>
-                    {item.label} <span aria-hidden="true">⌄</span>
-                  </a>
-                ) : (
-                  <span>
-                    {item.label} <span aria-hidden="true">⌄</span>
-                  </span>
-                )}
-                <div className="v2-nav-dropdown-menu">
-                  {item.links.map((link) => (
-                    <a key={link.href} href={link.href} onClick={() => setOpen(false)}>
-                      {link.label}
+              <div
+                key={item.label}
+                className={`v2-nav-dropdown${openDropdown === item.label ? " is-open" : ""}`}
+              >
+                <div className="v2-mobile-dropdown-heading">
+                  {item.href ? (
+                    <a href={item.href} onClick={closeMenu}>
+                      {item.label}
                     </a>
-                  ))}
+                  ) : (
+                    <button type="button" onClick={() => toggleDropdown(item.label)}>
+                      {item.label}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="v2-mobile-dropdown-toggle"
+                    aria-label={`${openDropdown === item.label ? "Fermer" : "Ouvrir"} le sous-menu ${item.label}`}
+                    aria-expanded={openDropdown === item.label}
+                    onClick={() => toggleDropdown(item.label)}
+                  >
+                    <span aria-hidden="true">⌄</span>
+                  </button>
                 </div>
+                {openDropdown === item.label && (
+                  <div className="v2-nav-dropdown-menu">
+                    {item.links.map((link) => (
+                      <a key={link.href} href={link.href} onClick={closeMenu}>
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             ) : (
-              <a key={item.href} href={item.href} onClick={() => setOpen(false)}>
+              <a key={item.href} href={item.href} onClick={closeMenu}>
                 {item.label}
               </a>
             )

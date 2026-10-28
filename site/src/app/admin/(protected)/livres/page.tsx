@@ -14,7 +14,8 @@ export default async function AdminLivresPage({
 }) {
   const { page: pageParam, perPage: perPageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
-  const perPage = Number(perPageParam) || 20;
+  const requestedPerPage = Number(perPageParam);
+  const perPage = [5, 7].includes(requestedPerPage) ? requestedPerPage : 5;
 
   const { books, total } = await getBooksAdmin(page, perPage);
 
@@ -75,7 +76,7 @@ export default async function AdminLivresPage({
         ))}
       </div>
 
-      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/livres" />}
+      {total > 0 && <Pagination page={page} perPage={perPage} total={total} basePath="/admin/livres" perPageOptions={[5, 7]} />}
 
       <div className="admin-note">
         Cliquer sur un livre ouvre sa fiche complète (galerie d&apos;images, prix, description,

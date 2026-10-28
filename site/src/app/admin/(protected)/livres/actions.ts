@@ -13,6 +13,7 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
+
 /** Le statut "précommande" reste un simple champ, sans position d'affichage
  * séparée (cahier §6.4 : corrige une proposition précédente qui compliquait
  * les choses). "active" (booléen historique) reste synchronisé pour ne rien

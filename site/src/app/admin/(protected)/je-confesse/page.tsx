@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { getArticlesAdmin } from "@/lib/content/articles";
+import { getPodcastEpisodeOptionsForLinking } from "@/lib/content/podcast";
 import { publishConfession, deleteArticle } from "../publications/actions";
 import { stripHtml } from "@/lib/richtext";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import ArticleCoverField from "@/components/admin/ArticleCoverField";
 import Pagination from "@/components/admin/Pagination";
+import AdminSubmitButton from "@/components/admin/AdminSubmitButton";
+import AdminKeywordsField from "@/components/admin/AdminKeywordsField";
 
 const STATUS_LABEL: Record<string, string> = { draft: "Brouillon", published: "Publié" };
 const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "actif" };
@@ -14,25 +17,31 @@ const STATUS_CLASS: Record<string, string> = { draft: "masque", published: "acti
 // principe exact : publier bascule automatiquement l'ancienne entrée en
 // archive, pas de bouton séparé). Différences volontaires avec Rosée
 // Matinale (voir le commentaire détaillé dans publications/actions.ts) :
-// pas de champ Titre, corps obligatoire (pas facultatif). Le verset d'en-
-// tête et la signature de clôture sont des réglages globaux de la rubrique
-// (/admin/textes, clés je_confesse.*), jamais un champ ici.
+// pas de champ Titre, corps obligatoire (pas facultatif). Le passage
+// biblique d'en-tête varie désormais selon chaque confession ; seule la
+// signature de clôture reste un réglage global de la rubrique.
 export default async function AdminJeConfessePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; perPage?: string }>;
+  searchParams: Promise<{ page?: string; perPage?: string; saved?: string; error?: string }>;
 }) {
-  const { page: pageParam, perPage: perPageParam } = await searchParams;
+  const { page: pageParam, perPage: perPageParam, saved, error } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const perPage = Number(perPageParam) || 5;
 
-  const { articles: entries, total } = await getArticlesAdmin(["jc"], page, perPage);
+  const [{ articles: entries, total }, podcastEpisodes] = await Promise.all([
+    getArticlesAdmin(["jc"], page, perPage),
+    getPodcastEpisodeOptionsForLinking("jc"),
+  ]);
   const today = new Date().toISOString().slice(0, 10);
   const alreadyPublishedToday = entries.some((e) => e.article_date === today);
 
   return (
     <>
       <h1>Je Confesse</h1>
+      {saved === "published" && <p className="admin-feedback success" role="status">La confession a bien été publiée. L’éditeur est prêt pour une nouvelle saisie.</p>}
+      {error === "missing-fields" && <p className="admin-feedback error" role="alert">Le titre, le passage biblique, sa référence et la proclamation sont obligatoires.</p>}
+      {error === "publish" && <p className="admin-feedback error" role="alert">La publication a échoué. Aucune donnée n’a été masquée : réessayez ou signalez le problème.</p>}
       <p className="admin-lede">
         Publier une nouvelle entrée bascule automatiquement l&apos;ancienne en archive — pas de
         bouton séparé, c&apos;est juste la plus récente entrée par date. L&apos;archive complète se
@@ -47,6 +56,18 @@ export default async function AdminJeConfessePage({
             <input name="article_date" type="date" defaultValue={today} required />
           </div>
           <div className="editor-field">
+            <label>Titre de la confession</label>
+            <input name="title" type="text" placeholder="Ex. : Je marche dans la victoire" required />
+          </div>
+          <div className="editor-field">
+            <label>Référence biblique</label>
+            <input name="verse_reference" type="text" placeholder="Ex. : Romains 8:37" required />
+          </div>
+          <div className="editor-field">
+            <label>Passage biblique</label>
+            <textarea name="verse_text" rows={4} placeholder="Saisissez le texte du passage biblique…" required />
+          </div>
+          <div className="editor-field">
             <label>Image de couverture</label>
             <ArticleCoverField currentUrl={null} />
             <input type="text" name="cover_alt" placeholder="Texte alternatif (description de l'image)" style={{ marginTop: 8 }} />
@@ -56,12 +77,25 @@ export default async function AdminJeConfessePage({
             <RichTextEditor name="body" placeholder="Texte de la proclamation…" minHeight={200} compact />
           </div>
           <div className="editor-field">
-            <label>Mots-clés (SEO) — séparés par des virgules</label>
-            <input type="text" name="seo_keywords" placeholder="identité, victoire, confession" />
+            <label>Audio associé (facultatif)</label>
+            <select name="podcast_episode_id" defaultValue="">
+              <option value="">Aucun audio associé</option>
+              {podcastEpisodes.map((episode) => (
+                <option key={episode.id} value={episode.id}>
+                  {new Date(episode.episode_date).toLocaleDateString("fr-FR")} — {episode.title}
+                  {episode.status === "draft" ? " (brouillon)" : ""}
+                </option>
+              ))}
+            </select>
+            <small>
+              Choisissez un épisode déjà créé dans Podcasts. Le bouton audio public apparaît automatiquement lorsque cet épisode est publié.
+            </small>
           </div>
-          <button type="submit" className="admin-btn-primary">
-            Publier
-          </button>
+          <div className="editor-field">
+            <label>Mots-clés (SEO) — séparés par des virgules</label>
+            <AdminKeywordsField />
+          </div>
+          <AdminSubmitButton pendingLabel="Publication…">Publier</AdminSubmitButton>
         </form>
       </div>
 

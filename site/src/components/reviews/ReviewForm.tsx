@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { submitReview } from "@/lib/reviews/actions";
+import BotTrapFields from "@/components/security/BotTrapFields";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
-type Props = { bookId?: string; goodieId?: string };
+type Props = { bookId?: string; goodieId?: string; initialAuthorName?: string };
 
 // Bouton "Envoyer mon avis" (jamais "Publier") — la publication passe par
 // modération, jamais instantanée (cahier §3.3).
-export default function ReviewForm({ bookId, goodieId }: Props) {
+export default function ReviewForm({ bookId, goodieId, initialAuthorName = "" }: Props) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,23 +23,15 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const { error: insertError } = await supabase.from("reviews").insert({
-      book_id: bookId ?? null,
-      goodie_id: goodieId ?? null,
-      user_id: user?.id ?? null,
-      author_name: String(formData.get("author_name") ?? "").trim() || null,
-      rating: rating || null,
-      body: String(formData.get("body") ?? "").trim() || null,
-    });
+    formData.set("book_id", bookId ?? "");
+    formData.set("goodie_id", goodieId ?? "");
+    formData.set("rating", String(rating));
+    const result = await submitReview(formData);
 
     setLoading(false);
-    if (insertError) {
-      setError("Impossible d'envoyer votre avis pour le moment. Réessayez plus tard.");
+    if (!result.ok) {
+      setError(result.error);
+      setCaptchaReset((value) => value + 1);
       return;
     }
     setSent(true);
@@ -67,7 +62,7 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
     <form className="review-form" onSubmit={handleSubmit}>
       {error && <div className="admin-error">{error}</div>}
       <label htmlFor="review-name">Votre nom</label>
-      <input id="review-name" type="text" name="author_name" />
+      <input id="review-name" type="text" name="author_name" defaultValue={initialAuthorName} />
       {/* STRUCTURE corrigée (SECTION 08, lot dédié 15/09) : le <div>
           enveloppant précédemment ce label + .star-input n'existe pas dans
           la maquette (tous les champs sont des enfants DIRECTS et à plat
@@ -93,6 +88,8 @@ export default function ReviewForm({ bookId, goodieId }: Props) {
       </div>
       <label htmlFor="review-body">Votre avis</label>
       <textarea id="review-body" name="body" />
+      <BotTrapFields />
+      <TurnstileWidget action="review" resetSignal={captchaReset} />
       <button type="submit" disabled={loading}>
         {loading ? "Envoi…" : "Envoyer mon avis →"}
       </button>

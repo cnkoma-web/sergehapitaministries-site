@@ -2,6 +2,8 @@
 
 import { useTransition } from "react";
 import { submitInvitationForm } from "@/lib/forms/actions";
+import BotTrapFields from "@/components/security/BotTrapFields";
+import TurnstileWidget from "@/components/security/TurnstileWidget";
 
 export default function InvitationForm() {
   const [isPending, startTransition] = useTransition();
@@ -10,9 +12,7 @@ export default function InvitationForm() {
     <form
       className="invitation-form"
       action={(formData) => {
-        startTransition(() => {
-          submitInvitationForm(formData);
-        });
+        startTransition(() => submitInvitationForm(formData));
       }}
     >
       {/* RECTIFICATION (14/09, 2e retour) : la reprise précédente avait
@@ -133,7 +133,7 @@ export default function InvitationForm() {
       <div className="inv-form-section">
         <div className="form-section-heading">
           <span>04</span>
-          <h2>Informations complémentaires</h2>
+          <h2>Compléments d&apos;infos</h2>
         </div>
         <div className="form-fields">
           <div className="field">
@@ -179,6 +179,9 @@ export default function InvitationForm() {
             <a href="/termes-et-conditions">conditions</a>, que nous vous invitons à lire avant.
           </span>
         </label>
+
+        <BotTrapFields />
+        <TurnstileWidget action="invitation" />
 
         <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }} disabled={isPending}>
           {isPending ? "Envoi…" : "Envoyer la demande →"}

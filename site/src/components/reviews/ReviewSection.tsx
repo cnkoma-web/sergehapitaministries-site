@@ -1,6 +1,8 @@
 import { getReviewSummary, getApprovedReviews } from "@/lib/content/reviews";
 import Stars from "./Stars";
 import ReviewForm from "./ReviewForm";
+import { createClient } from "@/lib/supabase/server";
+import { isRealUser } from "@/lib/supabase/realUser";
 
 type Props = { bookId?: string; goodieId?: string; variant?: "book" | "goodie" };
 
@@ -17,7 +19,24 @@ type Props = { bookId?: string; goodieId?: string; variant?: "book" | "goodie" }
 // fiche Livre restent identiques, propriété par propriété.
 export default async function ReviewSection({ bookId, goodieId, variant = "book" }: Props) {
   const target = { bookId, goodieId };
-  const [summary, reviews] = await Promise.all([getReviewSummary(target), getApprovedReviews(target)]);
+  const supabase = await createClient();
+  const [summary, reviews, { data: { user } }] = await Promise.all([
+    getReviewSummary(target),
+    getApprovedReviews(target),
+    supabase.auth.getUser(),
+  ]);
+
+  let initialAuthorName = "";
+  if (isRealUser(user)) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("first_name, last_name")
+      .eq("id", user.id)
+      .maybeSingle();
+    const firstName = profile?.first_name ?? String(user.user_metadata?.first_name ?? "");
+    const lastName = profile?.last_name ?? String(user.user_metadata?.last_name ?? "");
+    initialAuthorName = [firstName, lastName].filter(Boolean).join(" ");
+  }
 
   if (variant === "goodie") {
     return (
@@ -49,7 +68,7 @@ export default async function ReviewSection({ bookId, goodieId, variant = "book"
             </div>
           )}
 
-          <ReviewForm bookId={bookId} goodieId={goodieId} />
+          <ReviewForm bookId={bookId} goodieId={goodieId} initialAuthorName={initialAuthorName} />
         </div>
       </section>
     );
@@ -111,7 +130,7 @@ export default async function ReviewSection({ bookId, goodieId, variant = "book"
           </div>
         )}
 
-        <ReviewForm bookId={bookId} goodieId={goodieId} />
+        <ReviewForm bookId={bookId} goodieId={goodieId} initialAuthorName={initialAuthorName} />
       </div>
     </section>
   );
