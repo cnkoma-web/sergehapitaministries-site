@@ -57,10 +57,13 @@ export async function findOrCreateCategory(name: string): Promise<Category | nul
   return data;
 }
 
-export async function setArticleCategories(articleId: string, categoryIds: string[]): Promise<void> {
-  const supabase = await createClient();
-  await supabase.from("article_categories").delete().eq("article_id", articleId);
+export async function setArticleCategories(articleId: string, categoryIds: string[], client?: Awaited<ReturnType<typeof createClient>>): Promise<void> {
+  const supabase = client ?? await createClient();
+  const { error: deleteError } = await supabase.from("article_categories").delete().eq("article_id", articleId);
+  if (deleteError) throw deleteError;
   if (categoryIds.length > 0) {
-    await supabase.from("article_categories").insert(categoryIds.map((category_id) => ({ article_id: articleId, category_id })));
+    const { error: insertError } = await supabase.from("article_categories").insert(categoryIds.map((category_id) => ({ article_id: articleId, category_id })));
+    if (insertError) throw insertError;
   }
 }
+
