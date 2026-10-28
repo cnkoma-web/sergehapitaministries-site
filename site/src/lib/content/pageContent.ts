@@ -66,7 +66,8 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
       { key: "life_action", label: "Vie Supérieure — lien", kind: "text", section: "Univers de publication", defaultValue: "Entrer dans l'enseignement →" },
 
       { key: "books_eyebrow", label: "Sur-titre", kind: "text", section: "Livres", defaultValue: "amDG Éditions" },
-      { key: "books_title", label: "Titre", kind: "text", section: "Livres", defaultValue: "Dernières parutions" },
+      { key: "books_title_prefix", label: "Titre — début", kind: "text", section: "Livres", defaultValue: "Dernières" },
+      { key: "books_title_emphasis", label: "Titre — mot accentué", kind: "text", section: "Livres", defaultValue: "parutions" },
       { key: "books_action", label: "Lien catalogue", kind: "text", section: "Livres", defaultValue: "Voir tout le catalogue →" },
       { key: "events_eyebrow", label: "Sur-titre", kind: "text", section: "Agenda", defaultValue: "Agenda" },
       { key: "events_title", label: "Titre", kind: "text", section: "Agenda", defaultValue: "Rencontres et conférences" },
