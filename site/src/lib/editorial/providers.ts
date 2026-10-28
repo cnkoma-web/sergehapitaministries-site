@@ -77,7 +77,7 @@ export async function writeDraft(job: EditorialJob, corrections?: string): Promi
   const previousTranslation=checkpoints.find(r=>r.stage==="2-traduction"&&typeof r.detail?.translation?.texte_traduit==="string");
   let pipelineModel=process.env.EDITORIAL_PIPELINE_MODEL??"openai/gpt-5.4-mini";
   return runEditorialPipeline(job,refs,RULES+"\nRègles officielles actualisées :\n"+currentRules,{
-    initialAnalysis:previousAnalysis?.detail?.analysis,initialTranslation:previousTranslation?.detail?.translation,
+    initialAnalysis:previousAnalysis?.detail?.analysis,initialTranslation:previousTranslation?.detail?.translation,initialDraft:job.draft?.editorial_audit?.source_hash===job.source_hash?job.draft:undefined,
     async ask(system,input,stage){
       const invoke=()=>gateway("chat/completions",{model:pipelineModel,reasoning_effort:"medium",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_schema",json_schema:{name:stage??"editorial_draft",strict:true,schema:stageSchema(stage??"enrichment",job.type,job.article_date)}},max_completion_tokens:14000});
       let response;try{response=await invoke();}catch(e){if(!process.env.EDITORIAL_PIPELINE_MODEL&&String(e).includes("HTTP 403")){pipelineModel=process.env.EDITORIAL_TEXT_MODEL??"openai/gpt-5-mini";response=await invoke();}else throw e;}
