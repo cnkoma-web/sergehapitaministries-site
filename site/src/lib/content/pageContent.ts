@@ -3,8 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 export type PageContentField = {
   key: string;
   label: string;
-  kind: "text" | "textarea";
+  kind: "text" | "textarea" | "richtext";
   defaultValue: string;
+  section?: string;
+  help?: string;
+  placeholder?: string;
+  rows?: number;
+  minHeight?: number;
+  compact?: boolean;
 };
 
 export type PageContentDefinition = {
