@@ -9,6 +9,7 @@ import { getNextEvent, getPastEvents, formatEventDateRange } from "@/lib/content
 import CoverRollover from "@/components/shop/CoverRollover";
 import PublisherLink from "@/components/shop/PublisherLink";
 import HomeLatestPublications from "@/components/home/HomeLatestPublications";
+import { getPageContent } from "@/lib/content/pageContent";
 
 const title = "Serge Hapita Ministries — Révéler Christ au croyant";
 const description =
@@ -42,12 +43,13 @@ const SOCIAL_HANDLE: Record<string, string> = {
 };
 
 export default async function HomePage() {
-  const [books, stats, socialLinks, nextEvent, pastEvents] = await Promise.all([
+  const [books, stats, socialLinks, nextEvent, pastEvents, content] = await Promise.all([
     getBooks(),
     getActiveStats(),
     getSocialLinks(),
     getNextEvent(),
     getPastEvents(2), // 2 événements passés (cahier/maquette § .past-events).
+    getPageContent("accueil"),
   ]);
 
   const latestBooks = books.slice(0, 3);
@@ -68,30 +70,27 @@ export default async function HomePage() {
         <div className="v2-wrap v2-home-hero-inner">
           <div className="v2-home-hero-copy">
             <p className="v2-eyebrow light">
-              <span /> Porter le salut de Christ jusqu&apos;aux extrémités de la terre
+              <span /> {content.hero_eyebrow}
             </p>
             <h1>
-              Révéler Christ.
+              {content.hero_line_1}
               <br />
-              Affermir le chrétien.
+              {content.hero_line_2}
               <br />
-              <em>Manifester le Royaume.</em>
+              <em>{content.hero_line_3}</em>
             </h1>
             <p className="v2-home-hero-text">
               <span className="v2-home-hero-summary">
-                Serge Hapita est un prophète de la révélation et de la conscience filiale. Son ministère porte une
-                onction qui ravive la foi, restaure la communion avec Dieu le Père et la conscience de
-                l&apos;identité de fils. Quand il partage la Parole, c&apos;est une rencontre avec l&apos;Esprit : la
-                vie se manifeste, l&apos;esprit se réveille, la foi se met à l&apos;œuvre.
+                {content.hero_summary}
               </span>{" "}
-              <Link href="/mission">Lire davantage</Link>
+              <Link href="/mission">{content.hero_more}</Link>
             </p>
             <div className="v2-home-hero-actions">
               <Link href="/connaitre-jesus" className="v2-button v2-button-primary">
-                Je désire connaître Jésus <span>→</span>
+                {content.hero_jesus_action} <span>→</span>
               </Link>
               <Link href="/invitation" className="v2-button v2-button-ghost">
-                J&apos;invite Serge <span>↗</span>
+                {content.hero_invite_action} <span>↗</span>
               </Link>
             </div>
           </div>
@@ -110,11 +109,11 @@ export default async function HomePage() {
           <div className="v2-section-heading">
             <div>
               <p className="v2-eyebrow">
-                <span /> La porte vers la vie
+                <span /> {content.jesus_eyebrow}
               </p>
-              <h2>Connaître Jésus</h2>
+              <h2>{content.jesus_title}</h2>
             </div>
-            <p>Découvrez pourquoi Jésus est venu, ce qu&apos;il a accompli et la vie qu&apos;il offre aujourd&apos;hui à celui qui croit en lui.</p>
+            <p>{content.jesus_intro}</p>
           </div>
 
           <div className="v2-jesus-stage">
@@ -124,14 +123,13 @@ export default async function HomePage() {
               <span className="play" aria-hidden="true">▶</span>
             </Link>
             <div className="v2-jesus-intro">
-              <p className="micro-label">Une histoire incroyable. Et pourtant…</p>
-              <h3>Pourquoi Jésus est-il venu ?</h3>
+              <p className="micro-label">{content.jesus_micro}</p>
+              <h3>{content.jesus_question}</h3>
               <p>
-                Il y a presque deux mille ans, Jésus de Nazareth est venu porter le salut, révéler le Père et donner
-                la vie éternelle à quiconque croit.
+                {content.jesus_text}
               </p>
               <Link href="/connaitre-jesus" className="v2-button v2-button-primary">
-                Entrer dans cet univers <span>→</span>
+                {content.jesus_action} <span>→</span>
               </Link>
             </div>
           </div>
@@ -139,22 +137,22 @@ export default async function HomePage() {
           <div className="v2-jesus-topics" aria-label="Découvrir Jésus">
             <Link href="/connaitre-jesus#naissance">
               <span>01</span>
-              <strong>Sa naissance miraculeuse</strong>
+              <strong>{content.jesus_topic_1}</strong>
               <b>→</b>
             </Link>
             <Link href="/connaitre-jesus#oeuvre">
               <span>02</span>
-              <strong>Sa mission et ses œuvres</strong>
+              <strong>{content.jesus_topic_2}</strong>
               <b>→</b>
             </Link>
             <Link href="/connaitre-jesus#resurrection">
               <span>03</span>
-              <strong>Sa mort et sa résurrection</strong>
+              <strong>{content.jesus_topic_3}</strong>
               <b>→</b>
             </Link>
             <Link href="/connaitre-jesus#recevoir">
               <span>04</span>
-              <strong>Recevoir la vie en Jésus</strong>
+              <strong>{content.jesus_topic_4}</strong>
               <b>→</b>
             </Link>
           </div>
@@ -170,11 +168,11 @@ export default async function HomePage() {
           <div className="v2-dark-heading">
             <div>
               <p className="v2-eyebrow light">
-                <span /> Quatre expressions de la Parole
+                <span /> {content.publications_eyebrow}
               </p>
-              <h2>Une Parole pour chaque besoin</h2>
+              <h2>{content.publications_title}</h2>
             </div>
-            <Link href="/publications">Toutes les publications →</Link>
+            <Link href="/publications">{content.publications_action}</Link>
           </div>
 
           <div className="v2-category-grid">
@@ -182,37 +180,37 @@ export default async function HomePage() {
               <div className="v2-category-number">01</div>
               <div className="v2-category-copy">
                 <p className="v2-category-name">Rosée Matinale</p>
-                <h3>Mieux penser, mieux choisir et mieux vivre.</h3>
-                <p>Des pensées courtes et percutantes qui apportent sagesse, recul et inspiration pour la vie quotidienne.</p>
+                <h3>{content.dew_title}</h3>
+                <p>{content.dew_text}</p>
               </div>
-              <Link href="/rosee-matinale">Lire la pensée du jour →</Link>
+              <Link href="/rosee-matinale">{content.dew_action}</Link>
             </article>
             <article className="v2-category-card bible">
               <div className="v2-category-number">02</div>
               <div className="v2-category-copy">
                 <p className="v2-category-name">Que dit la Bible ?</p>
-                <h3>Dieu a dit, alors nous disons aussi</h3>
-                <p>Un examen quotidien des Écritures pour construire la véritable connaissance de Dieu dans la vie de ceux qui nous suivent.</p>
+                <h3>{content.bible_title}</h3>
+                <p>{content.bible_text}</p>
               </div>
-              <Link href="/publications/que-dit-la-bible">Examiner les Écritures →</Link>
+              <Link href="/publications/que-dit-la-bible">{content.bible_action}</Link>
             </article>
             <article className="v2-category-card confess">
               <div className="v2-category-number">03</div>
               <div className="v2-category-copy">
                 <p className="v2-category-name">Je Confesse</p>
-                <h3>La Parole de Dieu dans votre bouche.</h3>
-                <p>Des déclarations et des proclamations fondées sur la Parole de Dieu, à affirmer avec foi sur votre vie.</p>
+                <h3>{content.confess_title}</h3>
+                <p>{content.confess_text}</p>
               </div>
-              <Link href="/publications/je-confesse-et-declare">Découvrir Je Confesse →</Link>
+              <Link href="/publications/je-confesse-et-declare">{content.confess_action}</Link>
             </article>
             <article className="v2-category-card life">
               <div className="v2-category-number">04</div>
               <div className="v2-category-copy">
                 <p className="v2-category-name">La Vie Supérieure</p>
-                <h3>Une connaissance destinée à devenir l&apos;expérience de la vie en Christ.</h3>
-                <p>Des enseignements approfondis consacrés aux réalités de la nouvelle création et à leur manifestation dans la vie du chrétien.</p>
+                <h3>{content.life_title}</h3>
+                <p>{content.life_text}</p>
               </div>
-              <Link href="/publications/la-vie-superieure">Entrer dans l&apos;enseignement →</Link>
+              <Link href="/publications/la-vie-superieure">{content.life_action}</Link>
             </article>
           </div>
         </div>
@@ -222,14 +220,14 @@ export default async function HomePage() {
         <div className="v2-section-heading">
           <div>
             <p className="v2-eyebrow v2-brand-case">
-              <span /> amDG Éditions
+              <span /> {content.books_eyebrow}
             </p>
             <h2>
               Dernières <em>parutions</em>
             </h2>
           </div>
           <Link href="/livres" className="v2-catalogue-link">
-            Voir tout le catalogue →
+            {content.books_action}
           </Link>
         </div>
         {latestBooks.length === 0 ? (
@@ -277,11 +275,11 @@ export default async function HomePage() {
           <div className="v2-section-heading">
             <div>
               <p className="v2-eyebrow">
-                <span /> Agenda
+                <span /> {content.events_eyebrow}
               </p>
-              <h2>Rencontres et conférences</h2>
+              <h2>{content.events_title}</h2>
             </div>
-            <p>Retrouvez les prochains rendez-vous du ministère et revivez les événements qui ont marqué La Vie Supérieure.</p>
+            <p>{content.events_intro}</p>
           </div>
 
           <div className="v2-events-grid">
@@ -358,15 +356,14 @@ export default async function HomePage() {
         <div className="v2-wrap v2-support-grid">
           <div className="v2-support-copy">
             <p className="v2-eyebrow light">
-              <span /> Soutenir
+              <span /> {content.support_eyebrow}
             </p>
-            <h2>Associez-vous à cette œuvre du Royaume de Dieu</h2>
+            <h2>{content.support_title}</h2>
             <p>
-              Depuis des générations, la Parole de Dieu apporte la guérison, le salut et la lumière dans la vie de
-              milliers de personnes. Votre générosité permet à cette œuvre de poursuivre sa mission.
+              {content.support_text}
             </p>
             <Link href="/partenariat" className="v2-button v2-button-light">
-              Devenir semeur de la Parole <span>→</span>
+              {content.support_action} <span>→</span>
             </Link>
           </div>
           <div className="v2-support-points">
@@ -398,7 +395,7 @@ export default async function HomePage() {
       <section className="v2-community-section v2-wrap">
         <div className="v2-community-title">
           <p className="v2-eyebrow">
-            <span /> Rester connecté
+            <span /> {content.community_eyebrow}
           </p>
           <h2>
             La Parole continue
