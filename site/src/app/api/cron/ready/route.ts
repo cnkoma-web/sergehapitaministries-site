@@ -12,12 +12,3 @@ export async function GET(request:Request){
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return Response.json({error:'Date invalide'},{status:400});
  try{const r=await publishReadyDrive(createServiceRoleClient(),date,dryRun);return Response.json(r,{status:r.success?200:503});}catch(e){return Response.json({success:false,error:e instanceof Error?e.message:String(e)},{status:503});}
 }
-
-export async function POST(request:Request){
- if(!validBearer(request,process.env.CRON_SECRET))return Response.json({error:'Unauthorized'},{status:401});
- if(process.env.VERCEL_ENV!=='production')return Response.json({skipped:'preview'});
- const {date,type}=await request.json();
- // Reprise immédiate expressément demandée, limitée au document concerné.
- if(date!=='2026-10-28'||type!=='qdlb')return Response.json({error:'Reprise immédiate limitée à Que dit la Bible du 28 octobre.'},{status:400});
- try{const r=await publishReadyDrive(createServiceRoleClient(),date,false,type);return Response.json(r,{status:r.success?200:503});}catch(e){return Response.json({success:false,error:e instanceof Error?e.message:String(e)},{status:503});}
-}
