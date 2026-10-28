@@ -69,9 +69,11 @@ export async function writeDraft(job: EditorialJob, corrections?: string): Promi
   const db=createServiceRoleClient();
   const result=await db.from("articles").select("id,article_date,title,body,excerpt,verse_text,verse_reference,prayer,further_verses").eq("type",job.type).eq("status","published").lt("article_date",REFERENCE_CUTOFF).order("article_date",{ascending:false}).limit(5);
   if(result.error)throw result.error;
+  let pipelineModel=process.env.EDITORIAL_PIPELINE_MODEL??"openai/gpt-5.4-mini";
   return runEditorialPipeline(job,result.data??[],RULES+"\nRègles officielles actualisées :\n"+currentRules,{
     async ask(system,input,stage){
-      const response=await gateway("chat/completions",{model:process.env.EDITORIAL_PIPELINE_MODEL??process.env.EDITORIAL_TEXT_MODEL??"openai/gpt-5-mini",reasoning_effort:"medium",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_schema",json_schema:{name:stage??"editorial_draft",strict:true,schema:stageSchema(stage??"enrichment")}},max_completion_tokens:14000});
+      const invoke=()=>gateway("chat/completions",{model:pipelineModel,reasoning_effort:"medium",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_schema",json_schema:{name:stage??"editorial_draft",strict:true,schema:stageSchema(stage??"enrichment")}},max_completion_tokens:14000});
+      let response;try{response=await invoke();}catch(e){if(!process.env.EDITORIAL_PIPELINE_MODEL&&String(e).includes("HTTP 403")){pipelineModel=process.env.EDITORIAL_TEXT_MODEL??"openai/gpt-5-mini";response=await invoke();}else throw e;}
       const content=response.choices?.[0]?.message?.content;if(typeof content!=="string")throw Error("Réponse du moteur éditorial absente.");return JSON.parse(content);
     },
     async record(stage,detail){const r=await db.from("editorial_runs").insert({started_at:new Date().toISOString(),target_date:job.article_date,status:"ok",detail:JSON.stringify({job_id:job.id,type:job.type,stage,detail})});if(r.error)throw r.error;},
