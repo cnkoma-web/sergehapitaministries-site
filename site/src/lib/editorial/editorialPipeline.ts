@@ -24,11 +24,44 @@ export function applicableRules(rules:string,type:string){
  return kept.join('\n');
 }
 const criteria=['fidelite_source','analyse_appliquee','enrichissement','conformite_references','specificites_rubrique','citations_exactes','priere_fidele','style_affirmatif','structure_sans_doublons'];
+// Louis Segond 1910, domaine public : ebible.org/fraLSG (chapitres vérifiés).
+export const VERIFIED_LSG:Record<string,string>={
+ 'psaume271':"L’Éternel est ma lumière et mon salut: De qui aurais-je crainte? L’Éternel est le soutien de ma vie: De qui aurais-je peur?",
+ 'hebreux725':"C’est aussi pour cela qu’il peut sauver parfaitement ceux qui s’approchent de Dieu par lui, étant toujours vivant pour intercéder en leur faveur.",
+ 'apocalypse18':"Je suis l’alpha et l’oméga, dit le Seigneur Dieu, celui qui est, qui était, et qui vient, le Tout-Puissant.",
+ 'jean316':"Car Dieu a tant aimé le monde qu’il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu’il ait la vie éternelle.",
+ 'esaie122':"Voici, Dieu est ma délivrance, Je serai plein de confiance, et je ne craindrai rien; Car l’Éternel, l’Éternel est ma force et le sujet de mes louanges; C’est lui qui m’a sauvé.",
+ '2timothee17':"Car ce n’est pas un esprit de timidité que Dieu nous a donné, mais un esprit de force, d’amour et de sagesse.",
+ '2corinthiens98':"Et Dieu peut vous combler de toutes sortes de grâces, afin que, possédant toujours en toutes choses de quoi satisfaire à tous vos besoins, vous ayez encore en abondance pour toute bonne œuvre."
+};
+const verseKey=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/psaumes/g,'psaume').replace(/isaie/g,'esaie').replace(/[^a-z0-9]/g,'');
+export function normalizeCitations(draft:EditorialDraft){
+ // Une citation reprise dans un bloc conserve un seul emplacement dans le développement.
+ const quotes=[...draft.body.matchAll(/<blockquote>([\s\S]*?)<\/blockquote>/g)].map(m=>m[1].trim());
+ for(const quote of quotes)draft.body=draft.body.replace(/<p>([\s\S]*?)<\/p>/g,(_all,inner)=>{const clean=inner.replace(quote,'').trim();return clean?'<p>'+clean+'</p>':'';});
+ if(draft.verse_reference&&VERIFIED_LSG[verseKey(draft.verse_reference)])draft.verse_text=VERIFIED_LSG[verseKey(draft.verse_reference)];
+ for(const v of draft.further_verses??[]){const exact=VERIFIED_LSG[verseKey(v.reference)];if(exact)v.text=exact;}
+ draft.body=draft.body.replace(/<blockquote>([\s\S]*?)<\/blockquote>\s*<p>\s*\(([^)]+)\)\s*<\/p>/g,(all,quote,reference)=>{const exact=VERIFIED_LSG[verseKey(reference)];return exact?'<blockquote>« '+exact+' » ('+reference+')</blockquote>':all;});
+ draft.body=draft.body.replace(/«[^»]*»\s*\(([^)]+)\)/g,(all,reference)=>{const exact=VERIFIED_LSG[verseKey(reference)];return exact?'« '+exact+' » ('+reference+')':all;});
+}
+const christianTerms=(html:string)=>html.split(/(«[^»]*»|“[^”]*”|<blockquote>[\s\S]*?<\/blockquote>)/g).map((part,i)=>i%2?part:part.replace(/\bcroyants?\b/gi,w=>w[0]===w[0].toUpperCase()?(w.toLowerCase().endsWith('s')?'Chrétiens':'Chrétien'):(w.endsWith('s')?'chrétiens':'chrétien'))).join('');
+async function polishStyle(draft:EditorialDraft,deps:PipelineDependencies,attempt:number){
+ draft.body=christianTerms(draft.body);
+ const badParagraphs=[...draft.body.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(m=>m[0]).filter(p=>editorialChecks({...draft,body:p}).some(e=>e.startsWith('Écriture affirmative')));
+ if(badParagraphs.length){
+  const polish=await deps.ask("Réécris chaque paragraphe dans un style directement affirmatif. Supprime les détours n’est pas…, ne signifie pas…, ne… pas… mais, non… mais. Énonce immédiatement la pensée positive. Conserve le sens et toute la richesse, les phrases déjà conformes, les références, les citations bibliques exactes et les balises HTML. Employer chrétien. JSON {paragraphes:[{index,revision}]} avec les index fournis. Aucune autre tâche.",{paragraphes:badParagraphs.map((html,index)=>({index,html}))},'affirmative');
+  if(!Array.isArray(polish.paragraphes))throw Error('Correction affirmative absente.');
+  for(const [index,original] of badParagraphs.entries()){const match=polish.paragraphes.find((p:any)=>p.index===index);if(!match||typeof match.revision!=='string'||!match.revision.startsWith('<p>'))throw Error('Correction affirmative incomplète.');draft.body=draft.body.replace(original,match.revision);}
+  await deps.record('3-style-affirmatif',{attempt,paragraphes:polish.paragraphes});
+ }
+ draft.body=christianTerms(draft.body);normalizeCitations(draft);
+}
 const str={type:'string'},nullable={type:['string','null']},strings={type:'array',items:str};
 const obj=(properties:Record<string,unknown>)=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 export function stageSchema(stage:string){
  if(stage==='analysis')return obj({idee_centrale:str,progression_source:strings,verites_et_passages:strings,exemples_source:strings,priere_source:nullable,caracteristiques_references:strings,modeles_etudies:{type:'array',items:obj({id:str,date:str,titre:str,construction_chapeau:str,progression_et_profondeur:str,traits_de_style:str,exemple_court:str})},plan_enrichissement:strings,risques_deformation:strings});
  if(stage==='translation')return obj({texte_traduit:str,priere_traduite:nullable,passages_bibliques:{type:'array',items:obj({reference:str,text:str})}});
+ if(stage==='extension')return obj({body:str});
  if(stage==='affirmative')return obj({paragraphes:{type:'array',items:obj({index:{type:'integer'},revision:str})}});
  if(stage==='review')return obj({passed:{type:'boolean'},criteria:obj(Object.fromEntries(criteria.map(k=>[k,obj({passed:{type:'boolean'},justification:str})]))),issues:strings});
  return obj({type:str,title:str,article_date:str,body:str,verse_text:nullable,verse_reference:nullable,excerpt:nullable,prayer:nullable,further_verses:{type:'array',items:obj({reference:str,text:str})},author_name:nullable,seo_keywords:strings,cover_alt:str,image_prompt:str});
@@ -37,7 +70,7 @@ export type PipelineDependencies={ ask:(system:string,input:unknown,stage?:strin
 export async function runEditorialPipeline(job:EditorialJob,references:Reference[],rules:string,deps:PipelineDependencies,corrections?:string):Promise<EditorialDraft>{
  const profile=referenceProfile(job.type,references);
  let previousDraft=job.draft;
- const context={rubrique:job.type,date:job.article_date,source:job.source,references,profile,corrections};
+ const context={rubrique:job.type,date:job.article_date,source:job.source,references,profile,corrections,passages_lsg_verifies:VERIFIED_LSG};
  rules=applicableRules(rules,job.type);
  const specificity=job.type==='qdlb'?`Rubrique UNIQUE : QUE DIT LA BIBLE (qdlb). Chapeau dans excerpt. Verset d’ouverture exclusivement dans verse_text et verse_reference. Développement body de ${profile.minimum} à ${profile.maximum} mots, cible ${profile.target}, avec explications approfondies de la pensée source et appuis bibliques précis. Prière dans prayer, fidèlement traduite. Deux passages pertinents dans further_verses. Auteur Serge Hapita. Le body commence par le développement. Un enseignement développé, à la troisième personne ou avec nous/tu selon le propos. Conserver toute la progression. Appuyer les vérités, expliquer leur sens et leurs implications présentes dans la source. Aucune obligation de deux phrases pour ce chapeau.`:job.type==='rm'?'Rubrique UNIQUE : ROSÉE MATINALE (rm). Une seule idée analysée et développée en 230–260 mots dans body. Chapeau de deux phrases exclusivement dans verse_text. Aucun verset d’ouverture ni référence biblique de tête. Phrase clé en mark. Aucun auteur, excerpt, prayer. Progression concrète, accessible et vivante.':`Rubrique UNIQUE : JE CONFESSE (jc). Confession intégrale à la première personne. Ouverture Aujourd’hui, je confesse et je déclare… Fidélité aux déclarations de la source, formulation affirmative et articulation fluide enrichie selon les modèles. Fourchette de référence ${profile.minimum}–${profile.maximum} mots, cible ${profile.target}. Aucun chapeau, auteur ni prière séparée. Verset et référence dans les champs dédiés.`;
  const draftSchema=rules.match(/Renvoie uniquement un objet JSON :[^\n]*/)?.[0]??'';
@@ -58,18 +91,17 @@ export async function runEditorialPipeline(job:EditorialJob,references:Reference
  assertDraftShape(raw);const draft=raw as EditorialDraft;
  delete draft.cover_url;delete draft.image_bytes;delete draft.image_width;delete draft.image_height;
  if(draft.type!==job.type||draft.article_date!==job.article_date)throw Error('Date ou rubrique modifiée.');
- // Corriger les phrases de style séparément, sans réintroduire les modèles dans cette consigne ciblée.
- const christianTerms=(html:string)=>html.split(/(«[^»]*»|“[^”]*”|<blockquote>[\s\S]*?<\/blockquote>)/g).map((part,i)=>i%2?part:part.replace(/\bcroyants?\b/gi,w=>w[0]===w[0].toUpperCase()?(w.toLowerCase().endsWith('s')?'Chrétiens':'Chrétien'):(w.endsWith('s')?'chrétiens':'chrétien'))).join('');
- draft.body=christianTerms(draft.body);
- const badParagraphs=[...draft.body.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(m=>m[0]).filter(p=>editorialChecks({...draft,body:p}).some(e=>e.startsWith('Écriture affirmative')));
- if(badParagraphs.length){
-  const polish=await deps.ask("Réécris chaque paragraphe fourni dans un style directement affirmatif, en français. Supprime les détours n’est pas…, ne signifie pas…, ne… pas… mais, non… mais. Énonce immédiatement la pensée positive. Conserve intégralement le sens, la richesse, les références et les citations bibliques exactes, les balises HTML et les italiques. Employer chrétien. Renvoie uniquement le JSON {paragraphes:[{index,revision}]}, en conservant les index fournis. Aucune autre tâche.",{paragraphes:badParagraphs.map((html,index)=>({index,html}))},'affirmative');
-  if(!Array.isArray(polish.paragraphes))throw Error('Correction affirmative absente.');
-  for(const [index,original] of badParagraphs.entries()){const match=polish.paragraphes.find((p:any)=>p.index===index);if(!match||typeof match.revision!=='string'||!match.revision.startsWith('<p>'))throw Error('Correction affirmative incomplète.');draft.body=draft.body.replace(original,match.revision);}
-  await deps.record('3-style-affirmatif',{attempt,paragraphes:polish.paragraphes});
+ normalizeCitations(draft);await polishStyle(draft,deps,attempt);
+ let count=wordCount(draft.body);
+ // Un complément conserve le développement conforme au lieu de recommencer sa rédaction.
+ for(let extension=0;count<profile.minimum&&extension<3;extension++){
+  const missing=profile.target-count;
+  const extra=await deps.ask("Tu enrichis un texte existant en français. Produis EXCLUSIVEMENT un ou deux nouveaux paragraphes HTML p qui approfondissent précisément une idée de la source encore insuffisamment expliquée. Conserve la rubrique et l’analyse. Écriture directement affirmative, employer chrétien. Évite toute répétition des idées déjà développées, toute nouvelle conclusion et toute invention de témoignage ou doctrine. Le texte existant sera conservé intégralement : renvoie seulement le complément dans le JSON {body:string}. Respecte les bornes additional_words_min et additional_words_max. Pour RM, développe uniquement l’idée centrale retenue. Pour JC, écris exclusivement en confession à la première personne.",{rubrique:job.type,source:job.source,analysis,existing_body:draft.body,additional_words_min:Math.max(30,missing),additional_words_max:profile.maximum-count},'extension');
+  if(typeof extra.body!=='string'||wordCount(extra.body)<10)throw Error('Complément d’enrichissement insuffisant.');
+  const end=draft.body.lastIndexOf('<p>');draft.body=end>0?draft.body.slice(0,end)+extra.body+'\n'+draft.body.slice(end):draft.body+'\n'+extra.body;
+  await polishStyle(draft,deps,attempt);count=wordCount(draft.body);
+  await deps.record('3-enrichissement-complement',{attempt,extension,body_words:count,complement:extra.body});
  }
- draft.body=christianTerms(draft.body);
- const count=wordCount(draft.body);
  const mechanical=deps.validate(draft);
  if(count<profile.minimum||count>profile.maximum)mechanical.push(`Corps : ${count} mots ; attendu ${profile.minimum}–${profile.maximum}, cible ${profile.target}.`);
  await deps.record('3-enrichissement',{attempt,body_words:count,draft,mechanical});
@@ -77,7 +109,7 @@ export async function runEditorialPipeline(job:EditorialJob,references:Reference
   await deps.record('4-conformite',{attempt,passed:false,mechanical_precheck:true,issues:mechanical});
   previousDraft=draft;feedback=JSON.stringify({issues:mechanical,objectif_mots:profile.target,mots_actuels:count,ajouter_au_moins:Math.max(0,profile.target-count)*2,instruction:'Corriger tous les écarts. Conserver le texte déjà enrichi et développer précisément les idées de la source pour atteindre la cible. Les tournures négatives de justification sont interdites.'});continue;
  }
- const review=await deps.ask(base+'\nÉTAPE 4 — CONTRÔLE INDÉPENDANT DE CONFORMITÉ. Compare précisément brouillon, source, traduction, analyse et publications du SITE dans references. Le critère conformite_references évalue la profondeur, la construction et le style par comparaison aux publications du site étudiées : justifie avec leurs titres ou dates et des éléments du brouillon. Les versets bibliques relèvent séparément de citations_exactes. Vérifie une vraie élaboration et une progression comparable aux modèles, et chaque spécificité de rubrique. Une traduction abrégée ne satisfait pas enrichissement. Applique exclusivement les exigences de la rubrique traitée rappelées dans la consigne Rubrique UNIQUE. Contrôle le français, les citations bibliques exactes, la fidélité de la prière, les termes grecs, les formulations affirmatives, l’absence de verset d’ouverture ou prière répétés dans body. Retourne JSON {passed:boolean,criteria:{'+criteria.map(k=>k+':{passed:boolean,justification:string}').join(',')+'},issues:string[]}. Chaque justification doit citer un élément concret du texte examiné. Toute faiblesse substantielle exige une correction.',{...context,analysis,translation,draft,mechanical},'review');
+ const review=await deps.ask(base+'\nÉTAPE 4 — CONTRÔLE INDÉPENDANT DE CONFORMITÉ. Compare précisément brouillon, source, traduction, analyse et publications du SITE dans references. Le critère conformite_references évalue la profondeur, la construction et le style par comparaison aux publications du site étudiées : justifie avec leurs titres ou dates et des éléments du brouillon. Les versets bibliques relèvent séparément de citations_exactes. Vérifie une vraie élaboration et une progression comparable aux modèles, et chaque spécificité de rubrique. Une traduction abrégée ne satisfait pas enrichissement. Applique exclusivement les exigences de la rubrique traitée rappelées dans la consigne Rubrique UNIQUE. Contrôle le français, les citations bibliques exactes, la fidélité de la prière, les termes grecs, les formulations affirmatives, l’absence de verset d’ouverture ou prière répétés dans body. Retourne JSON {passed:boolean,criteria:{'+criteria.map(k=>k+':{passed:boolean,justification:string}').join(',')+'},issues:string[]}. Chaque justification doit citer un élément concret du texte examiné. Toute faiblesse substantielle exige une correction. issues contient exclusivement des erreurs actuelles et avérées qui empêchent la conformité ; exclure les conseils facultatifs et les demandes de vérification ultérieure. Les textes de passages_lsg_verifies sont vérifiés dans l’édition Louis Segond 1910 et font autorité pour ces références. Vérifie également toute citation répétée dans le développement.',{...context,analysis,translation,draft,mechanical},'review');
  const incomplete=criteria.some(k=>review.criteria?.[k]?.passed!==true||typeof review.criteria?.[k]?.justification!=='string'||review.criteria[k].justification.length<15);
  const issues=[...mechanical,...(Array.isArray(review.issues)?review.issues:['Rapport de conformité incomplet.'])];
  const passed=review.passed===true&&!incomplete&&issues.length===0;
