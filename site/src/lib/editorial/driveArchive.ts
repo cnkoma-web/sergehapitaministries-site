@@ -26,7 +26,7 @@ export async function archivePublishedDraft(job:EditorialJob, overwrite=false){
   if(d.type==="rm")rows.push({text:d.verse_text??"",bold:true});
   if(d.type==="qdlb")rows.push({text:d.excerpt??"",bold:true});
   if(d.type!=="rm")rows.push({text:"« "+d.verse_text+" » — "+d.verse_reference,italic:true});
-  const paragraphs=[...d.body.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(m=>m[1]);
+  const paragraphs=[...d.body.matchAll(/<(p|blockquote)>([\s\S]*?)<\/\1>/g)].map(m=>m[2]);
   for(const html of paragraphs.length?paragraphs:[d.body])rows.push({text:plain(html),html});
   if(d.prayer)rows.push({text:plain(d.prayer)});
   if(d.further_verses?.length){rows.push({text:"Pour aller plus loin",style:"HEADING_1"});for(const v of d.further_verses)rows.push({text:v.reference+" — "+v.text});}
