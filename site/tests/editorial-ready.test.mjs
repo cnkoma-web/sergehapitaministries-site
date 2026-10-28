@@ -13,11 +13,21 @@ test('Rosée et Je Confesse gardent leurs champs dédiés',()=>{
 const rm=readReadyPublication(makeDoc(['Titre','Une phrase. Deux phrases.','Corps final.']),'Publication-rm-2026-10-29');assert.equal(rm.verse_text,'Une phrase. Deux phrases.');assert.equal(rm.body,'<p>Corps final.</p>');
 const jc=readReadyPublication(makeDoc(['Titre','« Verset » — Jean 3:16','Je confesse le texte préparé.']),'Publication-jc-2026-10-29');assert.equal(jc.verse_reference,'Jean 3:16');assert.equal(jc.author_name,null);
 });
-test('première exécution le 29 octobre à 23 h Paris et passage heure été/hiver',()=>{
-assert.equal(readyWindow(new Date('2026-10-28T22:00:00Z')).due,false);assert.equal(readyWindow(new Date('2026-10-29T22:00:00Z')).due,true);assert.equal(readyWindow(new Date('2026-10-29T23:00:00Z')).due,false);assert.equal(readyWindow(new Date('2027-06-29T21:00:00Z')).due,true);assert.equal(readyWindow(new Date('2026-10-29T22:00:00Z')).date,'2026-10-29');
+test('publication à minuit Paris, date locale et passage heure été/hiver',()=>{
+assert.equal(readyWindow(new Date('2026-10-27T23:00:00Z')).due,false);
+assert.equal(readyWindow(new Date('2026-10-28T22:00:00Z')).due,false);
+assert.equal(readyWindow(new Date('2026-10-28T23:00:00Z')).due,true);
+assert.equal(readyWindow(new Date('2026-10-28T23:00:00Z')).date,'2026-10-29');
+assert.equal(readyWindow(new Date('2027-06-28T22:00:00Z')).due,true);
+assert.equal(readyWindow(new Date('2027-06-28T22:00:00Z')).date,'2027-06-29');
+assert.equal(readyWindow(new Date('2027-06-28T23:00:00Z')).due,false);
+assert.equal(readyWindow(new Date('2027-03-27T23:00:00Z')).due,true);
+assert.equal(readyWindow(new Date('2027-03-28T22:00:00Z')).due,true);
+assert.equal(readyWindow(new Date('2027-10-30T22:00:00Z')).due,true);
+assert.equal(readyWindow(new Date('2027-10-31T23:00:00Z')).due,true);
 });
 test('les anciens chemins sont retirés et un seul déclenchement métier est programmé',async()=>{
-const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));assert.deepEqual(config.crons,[{path:'/api/cron/ready',schedule:'0 21,22 * * *'}]);
+const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));assert.deepEqual(config.crons,[{path:'/api/cron/ready',schedule:'0 22,23 * * *'}]);
 for(const name of ['editorial','images','publish','drive']){const route=await readFile(new URL('../src/app/api/cron/'+name+'/route.ts',import.meta.url),'utf8');assert.ok(route.includes('retired:true'));assert.ok(!route.includes('prepareJob'));}
 const processor=await readFile(new URL('../src/lib/editorial/readyPublication.ts',import.meta.url),'utf8');assert.ok(!processor.includes('writeDraft'));assert.ok(!processor.includes('illustrate('));assert.ok(processor.includes('publishThroughCms'));assert.ok(!processor.includes('1K28hMeY'));
 });

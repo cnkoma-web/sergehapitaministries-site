@@ -31,5 +31,5 @@ export function readReadyPublication(doc:any,name:string):EditorialDraft{
 }
 export function readyWindow(now=new Date()){
  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'}).formatToParts(now),get=(k:string)=>parts.find(p=>p.type===k)!.value;
- const date=get('year')+'-'+get('month')+'-'+get('day');return{date,due:date>='2026-10-29'&&get('hour')==='23'};
+ const date=get('year')+'-'+get('month')+'-'+get('day');return{date,due:date>='2026-10-29'&&get('hour')==='00'};
 }
