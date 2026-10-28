@@ -56,10 +56,13 @@ export default async function MissionPage() {
             <span>01</span>
             <p>{content.mandate_label}</p>
           </div>
-          <div
-            className="v2-mission-copy v2-mission-opening-copy"
-            dangerouslySetInnerHTML={{ __html: content.mandate_body }}
-          />
+          <div className="v2-mission-copy v2-mission-opening-copy">
+            <blockquote className="v2-mission-lead">
+              {content.mandate_quote}
+              <cite>{content.mandate_reference}</cite>
+            </blockquote>
+            <div dangerouslySetInnerHTML={{ __html: content.mandate_body }} />
+          </div>
         </div>
         <figure className="v2-wrap v2-mission-wide-image">
           {/* eslint-disable-next-line @next/next/no-img-element */}
