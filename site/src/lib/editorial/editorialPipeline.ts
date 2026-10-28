@@ -1,5 +1,5 @@
 import type { EditorialDraft, EditorialJob } from './types';
-import { plainText, assertDraftShape, fingerprint } from './checks';
+import { plainText, assertDraftShape, fingerprint, editorialChecks } from './checks';
 export const REFERENCE_CUTOFF = '2026-10-20';
 export type Reference = { id:string; article_date:string; title:string; body:string; excerpt?:string; verse_text?:string; verse_reference?:string; prayer?:string; further_verses?:unknown };
 export const wordCount=(text:string)=>plainText(text).split(/\s+/).filter(Boolean).length;
@@ -29,6 +29,7 @@ const obj=(properties:Record<string,unknown>)=>({type:'object',properties,requir
 export function stageSchema(stage:string){
  if(stage==='analysis')return obj({idee_centrale:str,progression_source:strings,verites_et_passages:strings,exemples_source:strings,priere_source:nullable,caracteristiques_references:strings,modeles_etudies:{type:'array',items:obj({id:str,date:str,titre:str,construction_chapeau:str,progression_et_profondeur:str,traits_de_style:str,exemple_court:str})},plan_enrichissement:strings,risques_deformation:strings});
  if(stage==='translation')return obj({texte_traduit:str,priere_traduite:nullable,passages_bibliques:{type:'array',items:obj({reference:str,text:str})}});
+ if(stage==='affirmative')return obj({paragraphes:{type:'array',items:obj({index:{type:'integer'},revision:str})}});
  if(stage==='review')return obj({passed:{type:'boolean'},criteria:obj(Object.fromEntries(criteria.map(k=>[k,obj({passed:{type:'boolean'},justification:str})]))),issues:strings});
  return obj({type:str,title:str,article_date:str,body:str,verse_text:nullable,verse_reference:nullable,excerpt:nullable,prayer:nullable,further_verses:{type:'array',items:obj({reference:str,text:str})},author_name:nullable,seo_keywords:strings,cover_alt:str,image_prompt:str});
 }
@@ -57,10 +58,23 @@ export async function runEditorialPipeline(job:EditorialJob,references:Reference
  assertDraftShape(raw);const draft=raw as EditorialDraft;
  delete draft.cover_url;delete draft.image_bytes;delete draft.image_width;delete draft.image_height;
  if(draft.type!==job.type||draft.article_date!==job.article_date)throw Error('Date ou rubrique modifiée.');
+ // Corriger les phrases de style séparément, sans réintroduire les modèles dans cette consigne ciblée.
+ draft.body=draft.body.split(/(«[^»]*»|“[^”]*”|<blockquote>[\s\S]*?<\/blockquote>)/g).map((part,i)=>i%2?part:part.replace(/\bcroyants?\b/gi,w=>w[0]===w[0].toUpperCase()?(w.toLowerCase().endsWith('s')?'Chrétiens':'Chrétien'):(w.endsWith('s')?'chrétiens':'chrétien'))).join('');
+ const badParagraphs=[...draft.body.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(m=>m[0]).filter(p=>editorialChecks({...draft,body:p}).some(e=>e.startsWith('Écriture affirmative')));
+ if(badParagraphs.length){
+  const polish=await deps.ask("Réécris chaque paragraphe fourni dans un style directement affirmatif, en français. Supprime les détours n’est pas…, ne signifie pas…, ne… pas… mais, non… mais. Énonce immédiatement la pensée positive. Conserve intégralement le sens, la richesse, les références et les citations bibliques exactes, les balises HTML et les italiques. Employer chrétien. Renvoie uniquement le JSON {paragraphes:[{index,revision}]}, en conservant les index fournis. Aucune autre tâche.",{paragraphes:badParagraphs.map((html,index)=>({index,html}))},'affirmative');
+  if(!Array.isArray(polish.paragraphes))throw Error('Correction affirmative absente.');
+  for(const [index,original] of badParagraphs.entries()){const match=polish.paragraphes.find((p:any)=>p.index===index);if(!match||typeof match.revision!=='string'||!match.revision.startsWith('<p>'))throw Error('Correction affirmative incomplète.');draft.body=draft.body.replace(original,match.revision);}
+  await deps.record('3-style-affirmatif',{attempt,paragraphes:polish.paragraphes});
+ }
  const count=wordCount(draft.body);
  const mechanical=deps.validate(draft);
  if(count<profile.minimum||count>profile.maximum)mechanical.push(`Corps : ${count} mots ; attendu ${profile.minimum}–${profile.maximum}, cible ${profile.target}.`);
  await deps.record('3-enrichissement',{attempt,body_words:count,draft,mechanical});
+ if(mechanical.length){
+  await deps.record('4-conformite',{attempt,passed:false,mechanical_precheck:true,issues:mechanical});
+  previousDraft=draft;feedback=JSON.stringify({issues:mechanical,objectif_mots:profile.target,mots_actuels:count,ajouter_au_moins:Math.max(0,profile.target-count),instruction:'Corriger tous les écarts. Conserver le texte déjà enrichi et développer précisément les idées de la source pour atteindre la cible. Les tournures négatives de justification sont interdites.'});continue;
+ }
  const review=await deps.ask(base+'\nÉTAPE 4 — CONTRÔLE INDÉPENDANT DE CONFORMITÉ. Compare précisément brouillon, source, traduction, analyse et publications du SITE dans references. Le critère conformite_references évalue la profondeur, la construction et le style par comparaison aux publications du site étudiées : justifie avec leurs titres ou dates et des éléments du brouillon. Les versets bibliques relèvent séparément de citations_exactes. Vérifie une vraie élaboration et une progression comparable aux modèles, et chaque spécificité de rubrique. Une traduction abrégée ne satisfait pas enrichissement. Applique exclusivement les exigences de la rubrique traitée rappelées dans la consigne Rubrique UNIQUE. Contrôle le français, les citations bibliques exactes, la fidélité de la prière, les termes grecs, les formulations affirmatives, l’absence de verset d’ouverture ou prière répétés dans body. Retourne JSON {passed:boolean,criteria:{'+criteria.map(k=>k+':{passed:boolean,justification:string}').join(',')+'},issues:string[]}. Chaque justification doit citer un élément concret du texte examiné. Toute faiblesse substantielle exige une correction.',{...context,analysis,translation,draft,mechanical},'review');
  const incomplete=criteria.some(k=>review.criteria?.[k]?.passed!==true||typeof review.criteria?.[k]?.justification!=='string'||review.criteria[k].justification.length<15);
  const issues=[...mechanical,...(Array.isArray(review.issues)?review.issues:['Rapport de conformité incomplet.'])];
