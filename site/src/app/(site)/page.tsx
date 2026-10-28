@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import Link from "next/link";
 import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
@@ -223,7 +224,7 @@ export default async function HomePage() {
               <span /> {content.books_eyebrow}
             </p>
             <h2>
-              Dernières <em>parutions</em>
+              {content.books_title_prefix} <em>{content.books_title_emphasis}</em>
             </h2>
           </div>
           <Link href="/livres" className="v2-catalogue-link">
@@ -398,9 +399,12 @@ export default async function HomePage() {
             <span /> {content.community_eyebrow}
           </p>
           <h2>
-            La Parole continue
-            <br />
-            au fil de la semaine.
+            {content.community_title.split("\n").map((line, index) => (
+              <Fragment key={line}>
+                {index > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
           </h2>
         </div>
         <div className="v2-social-list">
