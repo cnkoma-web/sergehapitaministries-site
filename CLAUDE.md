@@ -16,6 +16,21 @@ build payant, y compris pour un SHA déjà construit. Ces règles s'appliquent �
 les sessions, sur ce dépôt comme sur les autres projets de l'équipe (ne-de-dieu,
 secupass, secupass-tfp-aps…).
 
+## Méthode de travail retenue (décision de Serge, 28 oct. 2026 — valable pour tous les outils)
+1. Tout se fait d'abord en local : modifications, essais, ajustements. Rien n'est envoyé
+   à GitHub ni à Vercel pendant le travail.
+2. Serge vérifie en local : de préférence sur son propre ordinateur (site ouvert dans son
+   navigateur) ; à défaut, Claude lui envoie des captures de chaque page touchée
+   (téléphone, tablette, ordinateur) et des étapes des parcours modifiés.
+3. On ajuste jusqu'à l'accord explicite de Serge.
+4. Seulement quand l'ensemble des travaux est validé : un seul envoi.
+5. Si nécessaire, une seule version d'essai Vercel avant la mise en production, pour une
+   vérification sur un vrai téléphone.
+6. Données : en local, uniquement des données de test ou de démonstration. Jamais la
+   base réelle, jamais de vrai paiement ni de vraie commande.
+7. Parler à Serge en langage simple, sans jargon technique.
+- Ici (sessions Claude seulement) : `npm run dev` dans `site/`.
+
 ## 1. Un seul push par lot de travail
 - Travailler en commits locaux ; pousser **une fois**, quand le lot est terminé et vérifié.
 - Ne jamais pousser après chaque petite correction, ni « pour voir le rendu ».
