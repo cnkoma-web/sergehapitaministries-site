@@ -16,6 +16,10 @@ export function editorialChecks(draft: EditorialDraft, source?: string): string[
   const issues: string[] = [];
   const body = plainText(draft.body ?? "");
   const words = body.split(/\s+/).filter(Boolean).length;
+  const narration=body.replace(/«[^»]*»|“[^”]*”|"[^"]*"/g,"");
+  const detour=narration.match(/\bn['’]est pas\b|\bne (?:s['’]agit|signifie|désigne|décrit|se limite|se résume|constitue)[^.!?]{0,50}\bpas\b|\bne[^.!?;]{0,80}\bpas[^.!?;]{0,80}\bmais\b|\bnon[^.!?;]{0,60}\bmais\b/i);
+  if(detour)issues.push("Écriture affirmative obligatoire : réécrire le détour négatif « "+detour[0]+" ». Affirmer directement la pensée utile.");
+  if(/\bcroyants?\b/i.test(narration))issues.push("Employer chrétien à la place de croyant hors citations bibliques exactes.");
   if (!body) issues.push("Le corps ne contient aucun texte lisible.");
   // Les brouillons générés utilisent volontairement un sous-ensemble du CMS.
   const tags = (draft.body ?? "").match(/<[^>]*(?:>|$)/g) ?? [];
