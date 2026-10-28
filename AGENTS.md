@@ -9,5 +9,5 @@ Lire `docs/deployment-workflow.md` avant toute publication, modification de pipe
 - Aucun déclencheur ponctuel ajouté puis retiré dans le code ou le cron. Utiliser le CMS existant, sans reconstruire le site.
 - Après un échec, lire les logs, corriger et tester la cause avant toute nouvelle tentative. Aucun retry aveugle, aucun contournement par un nouveau commit.
 - Maintenir le cache. Ne pas utiliser `force` ou désactiver le cache sans cause établie.
-- Conserver la publication des contenus finaux validés à minuit, fuseau `Europe/Paris`, ainsi que les identifiants, URL, images, validations et fonctions utiles du CMS.
+- Conserver la publication des contenus finaux validés à 23 h, fuseau `Europe/Paris`, ainsi que les identifiants, URL, images, validations et fonctions utiles du CMS.
 - Tracer pour chaque livraison : assistant/session, commit, branche, tests, canal Git/API, identifiant du déploiement et résultat. Ne pas déduire l'auteur d'un nom de branche ou d'un compte partagé.

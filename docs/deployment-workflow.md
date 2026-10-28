@@ -6,7 +6,7 @@ Règles établies le 28 octobre 2026 à la demande de Serge Hapita.
 
 La préparation conserve les validations texte puis image. Les fichiers finaux sont déposés dans « À publier » et publiés par le CMS existant. Aucun commit, push ni reconstruction n'est nécessaire pour une publication ou une retouche éditoriale. Le travail quotidien n'a pas le droit de changer le pipeline pour contourner un accès manquant : signaler l'erreur d'accès et reprendre uniquement l'étape échouée via le CMS.
 
-Le cron `/api/cron/ready` est l'unique moteur automatique de mise en ligne. Il est appelé à 22 h et 23 h UTC, et son garde horaire n'autorise la publication qu'à 00 h dans `Europe/Paris`, avec la date locale du nouveau jour. Un appel est donc sans traitement métier selon la saison. La tâche ChatGPT contrôle le résultat ; elle ne lance pas une deuxième publication. Le mécanisme existant de détection d'une version déjà publiée et les verrous sont conservés.
+Le cron `/api/cron/ready` est l'unique moteur automatique de mise en ligne. Il est appelé à 21 h et 22 h UTC, et son garde horaire n'autorise la publication qu'à 23 h dans `Europe/Paris`, avec la date locale du jour. Un appel est donc sans traitement métier selon la saison. La tâche ChatGPT contrôle le résultat ; elle ne lance pas une deuxième publication. Le mécanisme existant de détection d'une version déjà publiée et les verrous sont conservés.
 
 ## Code
 
