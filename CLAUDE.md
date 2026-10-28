@@ -1,5 +1,14 @@
 # Consignes permanentes pour Claude — économie des builds Vercel
 
+## 0. Responsabilité sur ce dépôt
+- `sergehapitaministries-site` et son automatisation sont sous la responsabilité de
+  GPT / Workflow, qui applique ses propres règles. Une session Claude n'y intervient
+  que sur demande explicite de Serge, sur sa propre branche `claude/…`, sans fusion
+  dans `main`, sans déploiement et sans modifier la configuration Vercel ou
+  l'automatisation existante.
+- Les règles ci-dessous s'imposent aux sessions Claude ; elles sont proposées, non
+  imposées, aux autres intervenants.
+
 Contexte (28 oct. 2026) : les sites de l'équipe Vercel « adfdd » ont été suspendus
 après dépassement du crédit mensuel partagé (20 $). 86 % de la dépense venait des
 builds. Chaque push sur une branche reliée à Vercel et chaque « redeploy » lance un
