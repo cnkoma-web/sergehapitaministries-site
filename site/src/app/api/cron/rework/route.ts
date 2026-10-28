@@ -14,7 +14,7 @@ export async function POST(request:Request){
  const job=found.data as EditorialJob;
  try{
   let current=job;
-  if(!job.draft?.editorial_audit){
+  if(!job.draft?.editorial_audit||allChecks(job.draft,job.source).length){
    const draft=await writeDraft(job,'Reprise expressément demandée par Serge Hapita le 28 octobre. Refaire analyse, traduction fidèle, enrichissement selon modèles avant le 20 octobre et contrôle. Conserver le titre existant.');
    draft.title=job.draft?.title??draft.title;
    // Les images déjà prêtes illustrent les mêmes sources et restent associées à la reprise.
