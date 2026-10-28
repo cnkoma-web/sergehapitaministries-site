@@ -13,11 +13,11 @@ import {publishThroughCms} from './native';
 import type {EditorialJob} from './types';
 const ROOT='1LxnH_dpGPFGRZ3upwDpaCh1k15euRfL9';
 const stem=(s:string)=>s.replace(/\.(jpg|jpeg|png|webp)$/i,'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
-export async function publishReadyDrive(db:SupabaseClient,date:string,dryRun=false){
+export async function publishReadyDrive(db:SupabaseClient,date:string,dryRun=false,onlyType?:"qdlb"|"rm"|"jc"){
  const token=await googleReadToken(),started=new Date().toISOString();
  const list=async(parent:string)=>{const files:any[]=[];let page='';do{const q=new URLSearchParams({q:"'"+parent+"' in parents and trashed = false",fields:'files(id,name,mimeType,size,description),nextPageToken',pageSize:'100'});if(page)q.set('pageToken',page);const r=await googleJson('https://www.googleapis.com/drive/v3/files?'+q,token);files.push(...(r.files??[]));page=r.nextPageToken??'';}while(page);return files;};
  const candidates:{file:any;siblings:any[]}[]=[];
- const walk=async(parent:string,depth:number)=>{const siblings=await list(parent);for(const f of siblings){if(f.mimeType==='application/vnd.google-apps.folder'&&depth<3)await walk(f.id,depth+1);else if(f.mimeType==='application/vnd.google-apps.document'&&new RegExp('^Publication-(jc|rm|qdlb)-'+date+'$').test(f.name))candidates.push({file:f,siblings});}};
+ const walk=async(parent:string,depth:number)=>{const siblings=await list(parent);for(const f of siblings){if(f.mimeType==='application/vnd.google-apps.folder'&&depth<3)await walk(f.id,depth+1);else if(f.mimeType==='application/vnd.google-apps.document'&&new RegExp('^Publication-(jc|rm|qdlb)-'+date+'$').test(f.name)&&(!onlyType||f.name.startsWith('Publication-'+onlyType+'-')))candidates.push({file:f,siblings});}};
  await walk(ROOT,0);
  const outcomes:any[]=[];
  for(const {file,siblings}of candidates){let lease:string|null=null,job:EditorialJob|null=null;
