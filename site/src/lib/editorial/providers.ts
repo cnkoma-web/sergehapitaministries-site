@@ -76,7 +76,7 @@ export async function writeDraft(job: EditorialJob, corrections?: string): Promi
       let response;try{response=await invoke();}catch(e){if(!process.env.EDITORIAL_PIPELINE_MODEL&&String(e).includes("HTTP 403")){pipelineModel=process.env.EDITORIAL_TEXT_MODEL??"openai/gpt-5-mini";response=await invoke();}else throw e;}
       const content=response.choices?.[0]?.message?.content;if(typeof content!=="string")throw Error("Réponse du moteur éditorial absente.");return JSON.parse(content);
     },
-    async record(stage,detail){const r=await db.from("editorial_runs").insert({started_at:new Date().toISOString(),target_date:job.article_date,status:"ok",detail:JSON.stringify({job_id:job.id,type:job.type,stage,detail})});if(r.error)throw r.error;},
+    async record(stage,detail){const r=await db.from("editorial_runs").insert({started_at:new Date().toISOString(),target_date:job.article_date,status:"ok",detail:JSON.stringify({job_id:job.id,type:job.type,source_hash:job.source_hash,model:pipelineModel,stage,detail})});if(r.error)throw r.error;},
     validate:draft=>editorialChecks(draft,job.source),
   },corrections);
 }
