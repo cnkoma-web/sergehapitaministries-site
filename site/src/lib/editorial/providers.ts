@@ -1,6 +1,6 @@
 import "server-only";
 import { createServiceRoleClient } from "@/lib/supabase/serviceRole";
-import { runEditorialPipeline, REFERENCE_CUTOFF, stageSchema } from "./editorialPipeline";
+import { runEditorialPipeline, REFERENCE_CUTOFF, stageSchema, referenceProfile } from "./editorialPipeline";
 import { editorialChecks } from "./checks";
 import { assertDraftShape, fingerprint } from "./checks";
 import { publicationJpeg } from "./imageEncoding";
@@ -69,14 +69,21 @@ export async function writeDraft(job: EditorialJob, corrections?: string): Promi
   const db=createServiceRoleClient();
   const result=await db.from("articles").select("id,article_date,title,body,excerpt,verse_text,verse_reference,prayer,further_verses").eq("type",job.type).eq("status","published").lt("article_date",REFERENCE_CUTOFF).order("article_date",{ascending:false}).limit(5);
   if(result.error)throw result.error;
+  const refs=result.data??[],profile=referenceProfile(job.type,refs),referencesHash=fingerprint(refs);
+  const history=await db.from("editorial_runs").select("detail").eq("target_date",job.article_date).like("detail",'%"job_id":"'+job.id+'"%').order("started_at",{ascending:false}).limit(100);
+  if(history.error)throw history.error;
+  const checkpoints=(history.data??[]).flatMap(r=>{try{return[JSON.parse(r.detail)];}catch{return[];}}).filter(r=>r.source_hash===job.source_hash);
+  const previousAnalysis=checkpoints.find(r=>r.stage==="1-analyse"&&(r.references_hash===referencesHash||(!r.references_hash&&job.article_date==="2026-10-28"&&JSON.stringify(r.detail?.profile?.reference_ids)===JSON.stringify(profile.reference_ids)&&JSON.stringify(r.detail?.profile?.reference_words)===JSON.stringify(profile.reference_words))));
+  const previousTranslation=checkpoints.find(r=>r.stage==="2-traduction"&&typeof r.detail?.translation?.texte_traduit==="string");
   let pipelineModel=process.env.EDITORIAL_PIPELINE_MODEL??"openai/gpt-5.4-mini";
-  return runEditorialPipeline(job,result.data??[],RULES+"\nRègles officielles actualisées :\n"+currentRules,{
+  return runEditorialPipeline(job,refs,RULES+"\nRègles officielles actualisées :\n"+currentRules,{
+    initialAnalysis:previousAnalysis?.detail?.analysis,initialTranslation:previousTranslation?.detail?.translation,
     async ask(system,input,stage){
-      const invoke=()=>gateway("chat/completions",{model:pipelineModel,reasoning_effort:"medium",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_schema",json_schema:{name:stage??"editorial_draft",strict:true,schema:stageSchema(stage??"enrichment")}},max_completion_tokens:14000});
+      const invoke=()=>gateway("chat/completions",{model:pipelineModel,reasoning_effort:"medium",messages:[{role:"system",content:system},{role:"user",content:JSON.stringify(input)}],response_format:{type:"json_schema",json_schema:{name:stage??"editorial_draft",strict:true,schema:stageSchema(stage??"enrichment",job.type,job.article_date)}},max_completion_tokens:14000});
       let response;try{response=await invoke();}catch(e){if(!process.env.EDITORIAL_PIPELINE_MODEL&&String(e).includes("HTTP 403")){pipelineModel=process.env.EDITORIAL_TEXT_MODEL??"openai/gpt-5-mini";response=await invoke();}else throw e;}
       const content=response.choices?.[0]?.message?.content;if(typeof content!=="string")throw Error("Réponse du moteur éditorial absente.");return JSON.parse(content);
     },
-    async record(stage,detail){const r=await db.from("editorial_runs").insert({started_at:new Date().toISOString(),target_date:job.article_date,status:"ok",detail:JSON.stringify({job_id:job.id,type:job.type,source_hash:job.source_hash,model:pipelineModel,stage,detail})});if(r.error)throw r.error;},
+    async record(stage,detail){const r=await db.from("editorial_runs").insert({started_at:new Date().toISOString(),target_date:job.article_date,status:"ok",detail:JSON.stringify({job_id:job.id,type:job.type,source_hash:job.source_hash,references_hash:referencesHash,model:pipelineModel,stage,detail})});if(r.error)throw r.error;},
     validate:draft=>editorialChecks(draft,job.source),
   },corrections);
 }
