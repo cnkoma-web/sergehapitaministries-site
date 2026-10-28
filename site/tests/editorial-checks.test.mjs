@@ -54,3 +54,8 @@ test("QDLB enrichi et verset sans doublon",()=>{
  assert.deepEqual(editorialChecks({...draft,body:"<p>"+Array(750).fill("mot").join(" ")+"</p>"},"Source brève"),[]);
  assert.ok(editorialChecks({...draft,body:"<blockquote>"+draft.verse_text+"</blockquote>"}).some(s=>s.includes("verset d’ouverture")));
 });
+
+test("les détours négatifs et croyant sont rejetés hors citations",()=>{
+ for(const body of ["Ce n’est pas une aide. C’est une union.","Il ne s’agit pas de cela.","Le croyant avance.","Cela ne supprime pas la difficulté, mais transforme la vie."]){assert.ok(editorialChecks({...draft,body}).length);}
+ assert.deepEqual(editorialChecks({...draft,body:"<p>« Dieu n’est pas un homme » : cette parole établit sa fidélité.</p>"}),[]);
+});
