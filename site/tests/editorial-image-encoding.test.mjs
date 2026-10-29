@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {randomBytes} from 'node:crypto';import sharp from 'sharp';
+import {publicationJpeg} from '../src/lib/editorial/imageEncoding.ts';
+test('un fichier bruité volumineux devient un JPEG paysage de moins de 800 Ko',async()=>{const png=await sharp(randomBytes(1800*1200*3),{raw:{width:1800,height:1200,channels:3}}).png().toBuffer();assert.ok(png.length>800000);const result=await publicationJpeg(png);assert.ok(result.bytes.length<=800000);const meta=await sharp(result.bytes).metadata();assert.equal(meta.format,'jpeg');assert.ok(meta.width>=1200);assert.equal(meta.width/meta.height,16/9);});

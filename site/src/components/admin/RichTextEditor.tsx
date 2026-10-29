@@ -24,7 +24,7 @@ type Props = {
 // produit ni ne dépend de H2, son ajout à cette liste blanche ne change le
 // comportement d'aucun format déjà en place (vérifié par les tests de
 // non-régression du 13/09 — voir le commentaire au-dessus de sanitize()).
-const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "LI", "BLOCKQUOTE", "FIGURE", "A", "BR", "DIV", "H2"]);
+const ALLOWED_TAGS = new Set(["P", "B", "STRONG", "I", "EM", "U", "UL", "OL", "LI", "BLOCKQUOTE", "FIGURE", "A", "BR", "DIV", "H2", "CITE"]);
 
 // Nettoie le HTML produit par contentEditable : retire les styles/polices
 // ramenés par un copier-coller depuis une autre source (Word, un site...) et

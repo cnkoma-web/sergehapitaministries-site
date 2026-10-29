@@ -1304,6 +1304,14 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .admin-main{padding:32px 40px 80px;}
 .admin-main h1{font-size:26px;margin-bottom:8px;}
 .admin-main .admin-lede{color:var(--ink-soft);font-size:14.5px;margin-bottom:32px;}
+.admin-page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:24px;}
+.admin-page-header .admin-lede{margin:6px 0 0;}
+.admin-notice{margin:0 0 20px;padding:13px 15px;border:1px solid #ddd6fe;border-radius:9px;background:#f5f3ff;color:#5b21b6;font-size:13px;line-height:1.55;}
+.admin-form-section-title{margin:30px -24px 18px;padding:15px 24px 10px;border-top:1px solid var(--line);font-family:Georgia,serif;font-size:18px;color:var(--ink);}
+.admin-form-section-title:first-child{margin-top:-8px;border-top:0;}
+.field-hint{margin:-2px 0 7px;color:var(--ink-soft);font-size:12px;line-height:1.45;}
+.admin-action-bar{display:flex;align-items:center;justify-content:flex-end;gap:12px;}
+.admin-edit-actions{position:sticky;bottom:0;z-index:6;margin:0 -8px;padding:14px 8px;background:linear-gradient(to top,var(--lavender) 72%,rgba(245,243,255,0));}
 .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .admin-header h2{font-family:Georgia,serif;font-size:26px;}
 .btn-add{background:var(--purple);color:#fff;border:0;padding:11px 20px;border-radius:100px;font-size:13.5px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
@@ -1335,6 +1343,7 @@ section.product-desc{padding-top:0;padding-bottom:56px;max-width:var(--content-c
 .item-actions a, .item-actions button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;color:inherit;}
 .item-actions a:hover, .item-actions button:hover{border-color:var(--purple);color:var(--purple);}
 .item-actions .danger:hover{border-color:#C0392B;color:#C0392B;}
+.admin-pages-table .item-row{grid-template-columns:220px minmax(0,1fr) 130px;}
 
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:16px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft);flex-wrap:wrap;gap:10px;}
 .pagination .pages{display:flex;gap:6px;}
@@ -2056,7 +2065,8 @@ footer.footer--dark{
 .v2-ds-formation-years{display:flex;flex-direction:column;align-items:flex-start;gap:12px;}
 .v2-ds-formation-years span{color:var(--v2-violet);font-family:var(--v2-serif);font-size:40px;font-weight:500;line-height:1;}
 .v2-ds-formation-years i{width:54px;height:1px;display:block;background:var(--v2-line);}
-.v2-ds-formation>div:last-child>p:last-child{max-width:760px;margin:0;color:var(--v2-ink-soft);font-size:17px;line-height:1.85;}
+.v2-ds-formation-copy{max-width:760px;color:var(--v2-ink-soft);font-size:17px;line-height:1.85;}
+.v2-ds-formation-copy p{margin:0;}
 .v2-ds-today{display:grid;grid-template-columns:240px 1fr;gap:70px;margin-bottom:72px;}
 .v2-ds-today-mark{color:var(--v2-violet);font-family:var(--v2-serif);font-size:31px;font-style:italic;}
 .v2-ds-today p{max-width:770px;margin:0;color:var(--v2-ink-soft);font-size:17px;line-height:1.85;}
@@ -2089,7 +2099,8 @@ footer.footer--dark{
 .v2-ds-association{position:relative;overflow:hidden;padding-block:120px;background:#efebff;}
 .v2-ds-association::after{content:"ADFDD";position:absolute;right:-40px;bottom:-82px;color:rgba(109,49,242,.05);font-family:var(--v2-serif);font-size:clamp(150px,24vw,330px);line-height:1;letter-spacing:-.06em;}
 .v2-ds-association-grid{position:relative;z-index:1;display:grid;grid-template-columns:.8fr 1.2fr;gap:100px;}
-.v2-ds-association-copy p{max-width:680px;margin:0 0 30px;color:var(--v2-ink-soft);font-size:17px;line-height:1.85;}
+.v2-ds-association-copy>div{max-width:680px;margin:0 0 30px;color:var(--v2-ink-soft);font-size:17px;line-height:1.85;}
+.v2-ds-association-copy>div p{margin:0;}
 
 .v2-ds-book{padding-block:120px;display:grid;grid-template-columns:minmax(260px,390px) 1fr;gap:clamp(50px,8vw,115px);align-items:center;}
 .v2-ds-book-cover{box-shadow:0 30px 70px rgba(23,20,45,.24);}
@@ -2162,7 +2173,7 @@ footer.footer--dark{
   .v2-ds-portrait-copy>p:not(.v2-eyebrow){font-size:26px;}
   .v2-ds-milestone,.v2-ds-formation,.v2-ds-today{grid-template-columns:1fr;gap:24px;}
   .v2-ds-milestone{padding-block:38px;}
-  .v2-ds-milestone>p,.v2-ds-milestone-copy p,.v2-ds-formation>div:last-child>p:last-child,.v2-ds-today p{font-size:16px;}
+  .v2-ds-milestone>p,.v2-ds-milestone-copy p,.v2-ds-formation-copy,.v2-ds-today p{font-size:16px;}
   .v2-ds-scripture{margin:55px 0;padding:42px 28px;font-size:29px;}
   .v2-ds-today{margin-bottom:55px;}
   .v2-ds-formation-years{flex-direction:row;align-items:center;}
@@ -5067,6 +5078,14 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
 }
 @media (max-width:720px){
   .admin-main{padding-inline:18px;}
+  .admin-page-header{align-items:flex-start;flex-direction:column;}
+  .admin-page-header .admin-btn-ghost{align-self:flex-start;}
+  .admin-pages-table{overflow:visible;background:transparent;border:0;}
+  .admin-pages-table .item-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 12px;margin-bottom:10px;padding:15px;border:1px solid var(--line);border-radius:10px;background:#fff;}
+  .admin-pages-table .item-row.head{display:none;}
+  .admin-pages-table .item-row>div:nth-child(2){grid-column:1/-1;color:var(--ink-soft);font-size:13px;line-height:1.5;}
+  .admin-pages-table .item-actions{grid-column:2;grid-row:1;}
+  .admin-form-section-title{font-size:17px;}
   .fulfillment-timeline,.v2-dashboard-page .account-fulfillment ol{grid-template-columns:1fr;gap:12px;}
   .fulfillment-timeline li,.v2-dashboard-page .account-fulfillment li{grid-template-columns:22px 1fr;justify-items:start;text-align:left;}
   .fulfillment-timeline li::before,.v2-dashboard-page .account-fulfillment li::before{top:-12px;left:8px;width:2px;height:24px;}
@@ -5230,3 +5249,4 @@ button.v2-jc-audio-icon:focus-visible{outline:2px solid #b995ff;outline-offset:3
     min-height:42px;
   }
 }
+

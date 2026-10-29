@@ -71,19 +71,19 @@ export default async function PublicationsPage({
             <nav className="v2-pub-hero-links" aria-label="Catégories de publications">
               <Link href="/publications/que-dit-la-bible">
                 <small>{pageContent.qdlb_kicker}</small>
-                <strong>Que dit la Bible ?</strong>
+                <strong>{pageContent.qdlb_label}</strong>
               </Link>
               <Link href="/publications/la-vie-superieure">
                 <small>{pageContent.vs_kicker}</small>
-                <strong>La Vie Supérieure</strong>
+                <strong>{pageContent.vs_label}</strong>
               </Link>
               <Link href="/rosee-matinale">
                 <small>{pageContent.rm_kicker}</small>
-                <strong>Rosée Matinale</strong>
+                <strong>{pageContent.rm_label}</strong>
               </Link>
               <Link href="/publications/je-confesse-et-declare">
                 <small>{pageContent.jc_kicker}</small>
-                <strong>Je Confesse</strong>
+                <strong>{pageContent.jc_label}</strong>
               </Link>
             </nav>
             <p className="v2-pub-hero-copy">{pageContent.intro}</p>
@@ -146,3 +146,4 @@ export default async function PublicationsPage({
     </div>
   );
 }
+

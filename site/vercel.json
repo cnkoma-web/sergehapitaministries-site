@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm run build",
+  "ignoreCommand": "case \"$VERCEL_ENV:$VERCEL_GIT_COMMIT_REF\" in preview:feature/automatisation-editoriale-shm|preview:automation/*|preview:automatisation/*|preview:content/*|preview:contenu/*|preview:editorial/*|preview:publication/*) exit 0 ;; *) exit 1 ;; esac",
+  "crons": [
+    {
+      "path": "/api/cron/ready",
+      "schedule": "0 21,22 * * *"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "feat/cms-pages-completes": false
+    }
+  }
+}

@@ -8,7 +8,6 @@ import Footer from "@/components/layout/Footer";
 
 const title = "La Vie Supérieure | Serge Hapita Ministries";
 const description = "Des enseignements approfondis consacrés à la nouvelle création, la vie de Dieu, la justice, l'identité en Christ, la connaissance spirituelle, la sagesse et l'œuvre du Saint-Esprit.";
-const motto = "Une connaissance destinée à devenir l'expérience de la vie en Christ.";
 const PER_PAGE = 4; // Règle fixe (retour du 05/09) — 4 par page partout où ce flux apparaît.
 
 export const metadata: Metadata = {
@@ -40,7 +39,7 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
         <div className="v2-wrap v2-category-hub-hero-inner">
           <div className="v2-category-hub-mark">02</div>
           <div>
-            <span className="v2-category-hub-badge">La Vie Supérieure</span>
+            <span className="v2-category-hub-badge">{pageContent.badge}</span>
             <h1>{pageContent.title}</h1>
             <p>{pageContent.intro}</p>
             <p className="v2-category-hub-motto">{pageContent.motto}</p>
@@ -74,3 +73,4 @@ export default async function LaVieSuperieurePage({ searchParams }: { searchPara
     </div>
   );
 }
+

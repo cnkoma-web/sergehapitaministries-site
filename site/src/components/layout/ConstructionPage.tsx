@@ -3,15 +3,28 @@ import Link from "next/link";
 import Footer from "@/components/layout/Footer";
 
 type ConstructionPageProps = {
-  section: "Boutique" | "Vidéos" | "Podcast";
+  section: string;
   eyebrow: string;
+  status?: string;
+  messageLine1?: string;
+  messageLine2?: string;
+  blessing?: string;
+  backAction?: string;
 };
 
 export const constructionMetadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function ConstructionPage({ section, eyebrow }: ConstructionPageProps) {
+export default function ConstructionPage({
+  section,
+  eyebrow,
+  status = "En construction",
+  messageLine1 = "Cet espace est en cours de préparation.",
+  messageLine2 = "Revenez bientôt.",
+  blessing = "Que Dieu vous bénisse.",
+  backAction = "Retour à l’accueil",
+}: ConstructionPageProps) {
   return (
     <div className="v2-construction-page">
       <main className="v2-construction-main">
@@ -25,20 +38,20 @@ export default function ConstructionPage({ section, eyebrow }: ConstructionPageP
             {eyebrow}
           </p>
           <h1 id="construction-title">{section}</h1>
-          <p className="v2-construction-status">En construction</p>
+          <p className="v2-construction-status">{status}</p>
           <div className="v2-construction-rule" aria-hidden="true">
             <span />
           </div>
           <p className="v2-construction-message">
-            Cet espace est en cours de préparation.
+            {messageLine1}
             <br />
-            Revenez bientôt.
+            {messageLine2}
             <strong>
-              <em>Que Dieu vous bénisse.</em>
+              <em>{blessing}</em>
             </strong>
           </p>
           <Link href="/" className="v2-construction-link">
-            Retour à l’accueil <span aria-hidden="true">→</span>
+            {backAction} <span aria-hidden="true">→</span>
           </Link>
         </section>
       </main>
@@ -46,3 +59,4 @@ export default function ConstructionPage({ section, eyebrow }: ConstructionPageP
     </div>
   );
 }
+
