@@ -11,10 +11,7 @@ import JeConfesseContent from "./JeConfesseContent";
 // V2 (Lot 4, 11/09) — calqué sur rosee-matinale/page.tsx (même principe
 // exact : route fixe "aujourd'hui" + /[date] pour l'archive).
 export async function generateMetadata(): Promise<Metadata> {
-  const [entries, pageContent] = await Promise.all([
-    getPublishedArticles("jc"),
-    getPageContent("je-confesse"),
-  ]);
+  const entries = await getPublishedArticles("jc");
   const current = entries[0];
   const title = `${current?.title ?? "Je Confesse"} | Serge Hapita Ministries`;
   const description = current?.verse_text || "La proclamation du jour — Je Confesse.";
@@ -97,3 +94,4 @@ export default async function JeConfessePage({
     </>
   );
 }
+

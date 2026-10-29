@@ -180,7 +180,7 @@ export default async function HomePage() {
             <article className="v2-category-card dew">
               <div className="v2-category-number">01</div>
               <div className="v2-category-copy">
-                <p className="v2-category-name">Rosée Matinale</p>
+                <p className="v2-category-name">{content.dew_name}</p>
                 <h3>{content.dew_title}</h3>
                 <p>{content.dew_text}</p>
               </div>
@@ -189,7 +189,7 @@ export default async function HomePage() {
             <article className="v2-category-card bible">
               <div className="v2-category-number">02</div>
               <div className="v2-category-copy">
-                <p className="v2-category-name">Que dit la Bible ?</p>
+                <p className="v2-category-name">{content.bible_name}</p>
                 <h3>{content.bible_title}</h3>
                 <p>{content.bible_text}</p>
               </div>
@@ -198,7 +198,7 @@ export default async function HomePage() {
             <article className="v2-category-card confess">
               <div className="v2-category-number">03</div>
               <div className="v2-category-copy">
-                <p className="v2-category-name">Je Confesse</p>
+                <p className="v2-category-name">{content.confess_name}</p>
                 <h3>{content.confess_title}</h3>
                 <p>{content.confess_text}</p>
               </div>
@@ -207,7 +207,7 @@ export default async function HomePage() {
             <article className="v2-category-card life">
               <div className="v2-category-number">04</div>
               <div className="v2-category-copy">
-                <p className="v2-category-name">La Vie Supérieure</p>
+                <p className="v2-category-name">{content.life_name}</p>
                 <h3>{content.life_title}</h3>
                 <p>{content.life_text}</p>
               </div>
@@ -232,7 +232,7 @@ export default async function HomePage() {
           </Link>
         </div>
         {latestBooks.length === 0 ? (
-          <p className="empty-state">Le catalogue est en cours de préparation.</p>
+          <p className="empty-state">{content.books_empty}</p>
         ) : (
           <div className="v2-books-grid">
             {latestBooks.map((book, i) => (
@@ -254,7 +254,7 @@ export default async function HomePage() {
                       <PublisherLink publisher={book.publisher} />
                     </p>
                   )}
-                  <Link href={`/livres/${book.slug}`}>Découvrir {i === 0 ? "le livre" : ""} →</Link>
+                  <Link href={`/livres/${book.slug}`}>{i === 0 ? content.book_discover_featured : content.book_discover} →</Link>
                 </div>
               </article>
             ))}
@@ -285,16 +285,16 @@ export default async function HomePage() {
 
           <div className="v2-events-grid">
             <article className="v2-next-event">
-              <div className="v2-event-kicker">Prochain rendez-vous</div>
+              <div className="v2-event-kicker">{content.events_next_label}</div>
               <div className="v2-event-date">
-                <strong>{nextEvent ? formatEventDateRange(nextEvent.start_date, nextEvent.end_date) : "À venir"}</strong>
-                {!nextEvent && <span>Prochaines dates annoncées ici</span>}
+                <strong>{nextEvent ? formatEventDateRange(nextEvent.start_date, nextEvent.end_date) : content.events_coming}</strong>
+                {!nextEvent && <span>{content.events_coming_note}</span>}
               </div>
               <div className="v2-event-body">
-                <p>{nextEvent?.type ?? "Conférence"}</p>
-                <h3>{nextEvent?.title ?? "La Vie Supérieure"}</h3>
+                <p>{nextEvent?.type ?? content.events_default_type}</p>
+                <h3>{nextEvent?.title ?? content.events_default_title}</h3>
                 <span>
-                  {nextEvent?.description ?? "Un temps d'enseignement consacré aux réalités de la vie en Christ."}
+                  {nextEvent?.description ?? content.events_default_text}
                 </span>
               </div>
               {nextEvent?.external_url && (
@@ -304,9 +304,9 @@ export default async function HomePage() {
               )}
             </article>
             <div className="v2-past-events">
-              <p className="micro-label">À revivre</p>
+              <p className="micro-label">{content.events_replay_label}</p>
               {pastEvents.length === 0 ? (
-                <p className="empty-state">Les premiers événements passés apparaîtront ici.</p>
+                <p className="empty-state">{content.events_past_empty}</p>
               ) : (
                 pastEvents.map((e) => {
                   const content = (
@@ -371,22 +371,22 @@ export default async function HomePage() {
             <div>
               <b>01</b>
               <p>
-                <strong>Un ministère libre</strong>
-                <span>Entièrement soutenu par la générosité.</span>
+                <strong>{content.support_point_1_title}</strong>
+                <span>{content.support_point_1_text}</span>
               </p>
             </div>
             <div>
               <b>02</b>
               <p>
-                <strong>Une Parole accessible</strong>
-                <span>Des enseignements diffusés au plus grand nombre.</span>
+                <strong>{content.support_point_2_title}</strong>
+                <span>{content.support_point_2_text}</span>
               </p>
             </div>
             <div>
               <b>03</b>
               <p>
-                <strong>Une œuvre en mouvement</strong>
-                <span>Des livres, des missions et des actions concrètes.</span>
+                <strong>{content.support_point_3_title}</strong>
+                <span>{content.support_point_3_text}</span>
               </p>
             </div>
           </div>
@@ -426,3 +426,4 @@ export default async function HomePage() {
     </div>
   );
 }
+

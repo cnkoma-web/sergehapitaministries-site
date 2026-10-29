@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { EXTENDED_PAGE_CONTENT_DEFINITIONS } from "./extendedPageDefinitions";
 
 export type PageContentField = {
   key: string;
@@ -22,6 +23,7 @@ export type PageContentDefinition = {
 };
 
 export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
+  ...EXTENDED_PAGE_CONTENT_DEFINITIONS,
   {
     slug: "accueil",
     label: "Accueil",
@@ -52,15 +54,19 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
       { key: "publications_eyebrow", label: "Sur-titre", kind: "text", section: "Univers de publication", defaultValue: "Quatre expressions de la Parole" },
       { key: "publications_title", label: "Titre", kind: "text", section: "Univers de publication", defaultValue: "Une Parole pour chaque besoin" },
       { key: "publications_action", label: "Lien général", kind: "text", section: "Univers de publication", defaultValue: "Toutes les publications →" },
+      { key: "dew_name", label: "Rosée — nom", kind: "text", section: "Univers de publication", defaultValue: "Rosée Matinale" },
       { key: "dew_title", label: "Rosée — titre", kind: "text", section: "Univers de publication", defaultValue: "Mieux penser, mieux choisir et mieux vivre." },
       { key: "dew_text", label: "Rosée — présentation", kind: "textarea", section: "Univers de publication", defaultValue: "Des pensées courtes et percutantes qui apportent sagesse, recul et inspiration pour la vie quotidienne." },
       { key: "dew_action", label: "Rosée — lien", kind: "text", section: "Univers de publication", defaultValue: "Lire la pensée du jour →" },
+      { key: "bible_name", label: "Bible — nom", kind: "text", section: "Univers de publication", defaultValue: "Que dit la Bible ?" },
       { key: "bible_title", label: "Bible — titre", kind: "text", section: "Univers de publication", defaultValue: "Dieu a dit, alors nous disons aussi" },
       { key: "bible_text", label: "Bible — présentation", kind: "textarea", section: "Univers de publication", defaultValue: "Un examen quotidien des Écritures pour construire la véritable connaissance de Dieu dans la vie de ceux qui nous suivent." },
       { key: "bible_action", label: "Bible — lien", kind: "text", section: "Univers de publication", defaultValue: "Examiner les Écritures →" },
+      { key: "confess_name", label: "Je Confesse — nom", kind: "text", section: "Univers de publication", defaultValue: "Je Confesse" },
       { key: "confess_title", label: "Je Confesse — titre", kind: "text", section: "Univers de publication", defaultValue: "La Parole de Dieu dans votre bouche." },
       { key: "confess_text", label: "Je Confesse — présentation", kind: "textarea", section: "Univers de publication", defaultValue: "Des déclarations et des proclamations fondées sur la Parole de Dieu, à affirmer avec foi sur votre vie." },
       { key: "confess_action", label: "Je Confesse — lien", kind: "text", section: "Univers de publication", defaultValue: "Découvrir Je Confesse →" },
+      { key: "life_name", label: "Vie Supérieure — nom", kind: "text", section: "Univers de publication", defaultValue: "La Vie Supérieure" },
       { key: "life_title", label: "Vie Supérieure — titre", kind: "text", section: "Univers de publication", defaultValue: "Une connaissance destinée à devenir l'expérience de la vie en Christ." },
       { key: "life_text", label: "Vie Supérieure — présentation", kind: "textarea", section: "Univers de publication", defaultValue: "Des enseignements approfondis consacrés aux réalités de la nouvelle création et à leur manifestation dans la vie du chrétien." },
       { key: "life_action", label: "Vie Supérieure — lien", kind: "text", section: "Univers de publication", defaultValue: "Entrer dans l'enseignement →" },
@@ -69,14 +75,31 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
       { key: "books_title_prefix", label: "Titre — début", kind: "text", section: "Livres", defaultValue: "Dernières" },
       { key: "books_title_emphasis", label: "Titre — mot accentué", kind: "text", section: "Livres", defaultValue: "parutions" },
       { key: "books_action", label: "Lien catalogue", kind: "text", section: "Livres", defaultValue: "Voir tout le catalogue →" },
+      { key: "books_empty", label: "Message si aucun livre", kind: "text", section: "Livres", defaultValue: "Le catalogue est en cours de préparation." },
+      { key: "book_discover", label: "Lien des livres", kind: "text", section: "Livres", defaultValue: "Découvrir" },
+      { key: "book_discover_featured", label: "Lien du premier livre", kind: "text", section: "Livres", defaultValue: "Découvrir le livre" },
       { key: "events_eyebrow", label: "Sur-titre", kind: "text", section: "Agenda", defaultValue: "Agenda" },
       { key: "events_title", label: "Titre", kind: "text", section: "Agenda", defaultValue: "Rencontres et conférences" },
       { key: "events_intro", label: "Présentation", kind: "textarea", section: "Agenda", defaultValue: "Retrouvez les prochains rendez-vous du ministère et revivez les événements qui ont marqué La Vie Supérieure." },
+      { key: "events_next_label", label: "Libellé prochain événement", kind: "text", section: "Agenda", defaultValue: "Prochain rendez-vous" },
+      { key: "events_coming", label: "Date si aucun événement", kind: "text", section: "Agenda", defaultValue: "À venir" },
+      { key: "events_coming_note", label: "Précision si aucun événement", kind: "text", section: "Agenda", defaultValue: "Prochaines dates annoncées ici" },
+      { key: "events_default_type", label: "Type par défaut", kind: "text", section: "Agenda", defaultValue: "Conférence" },
+      { key: "events_default_title", label: "Titre par défaut", kind: "text", section: "Agenda", defaultValue: "La Vie Supérieure" },
+      { key: "events_default_text", label: "Présentation par défaut", kind: "textarea", section: "Agenda", defaultValue: "Un temps d'enseignement consacré aux réalités de la vie en Christ." },
+      { key: "events_replay_label", label: "Libellé des événements passés", kind: "text", section: "Agenda", defaultValue: "À revivre" },
+      { key: "events_past_empty", label: "Message si aucun événement passé", kind: "text", section: "Agenda", defaultValue: "Les premiers événements passés apparaîtront ici." },
 
       { key: "support_eyebrow", label: "Sur-titre", kind: "text", section: "Soutien", defaultValue: "Soutenir" },
       { key: "support_title", label: "Titre", kind: "text", section: "Soutien", defaultValue: "Associez-vous à cette œuvre du Royaume de Dieu" },
       { key: "support_text", label: "Présentation", kind: "textarea", rows: 4, section: "Soutien", defaultValue: "Depuis des générations, la Parole de Dieu apporte la guérison, le salut et la lumière dans la vie de milliers de personnes. Votre générosité permet à cette œuvre de poursuivre sa mission." },
       { key: "support_action", label: "Bouton", kind: "text", section: "Soutien", defaultValue: "Devenir semeur de la Parole" },
+      { key: "support_point_1_title", label: "Point 1 — titre", kind: "text", section: "Soutien", defaultValue: "Un ministère libre" },
+      { key: "support_point_1_text", label: "Point 1 — texte", kind: "text", section: "Soutien", defaultValue: "Entièrement soutenu par la générosité." },
+      { key: "support_point_2_title", label: "Point 2 — titre", kind: "text", section: "Soutien", defaultValue: "Une Parole accessible" },
+      { key: "support_point_2_text", label: "Point 2 — texte", kind: "text", section: "Soutien", defaultValue: "Des enseignements diffusés au plus grand nombre." },
+      { key: "support_point_3_title", label: "Point 3 — titre", kind: "text", section: "Soutien", defaultValue: "Une œuvre en mouvement" },
+      { key: "support_point_3_text", label: "Point 3 — texte", kind: "text", section: "Soutien", defaultValue: "Des livres, des missions et des actions concrètes." },
       { key: "community_eyebrow", label: "Sur-titre", kind: "text", section: "Communauté", defaultValue: "Rester connecté" },
       { key: "community_title", label: "Titre", kind: "textarea", rows: 2, section: "Communauté", defaultValue: "La Parole continue\nau fil de la semaine." },
     ],
@@ -174,6 +197,7 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
       { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Des enseignements approfondis consacrés à la nouvelle création, la vie de Dieu, la justice, l'identité en Christ, la connaissance spirituelle, la sagesse et l'œuvre du Saint-Esprit." },
       { key: "motto", label: "Phrase d’accroche", kind: "textarea", defaultValue: "Une connaissance destinée à devenir l'expérience de la vie en Christ." },
       { key: "empty_state", label: "Message si aucun enseignement", kind: "text", defaultValue: "Les premiers enseignements arrivent bientôt." },
+      { key: "badge", label: "Badge", kind: "text", defaultValue: "La Vie Supérieure" },
     ],
   },
   {
@@ -209,6 +233,9 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
       { key: "intro", label: "Introduction", kind: "textarea", defaultValue: "Les ouvrages de Serge publiés sous amDG Éditions." },
       { key: "catalog_intro", label: "Présentation du catalogue", kind: "textarea", defaultValue: "Chaque livre est un compagnon de route, un outil de transformation, un appel à vivre selon la justice du Royaume." },
       { key: "empty_state", label: "Message si aucun livre", kind: "text", defaultValue: "Le catalogue est en cours de préparation." },
+      { key: "catalog_count_label", label: "Libellé du nombre de livres", kind: "text", defaultValue: "livres au catalogue" },
+      { key: "independent_value", label: "Valeur édition indépendante", kind: "text", defaultValue: "100%" },
+      { key: "independent_label", label: "Libellé édition indépendante", kind: "text", defaultValue: "édition indépendante" },
     ],
   },
   {
@@ -222,6 +249,12 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
       { key: "library_title", label: "Titre de la bibliothèque", kind: "text", defaultValue: "La bibliothèque audio" },
       { key: "library_intro", label: "Introduction de la bibliothèque", kind: "textarea", defaultValue: "Choisis un univers, retrouve un thème et lance l’écoute." },
       { key: "empty_state", label: "Message si aucun épisode", kind: "text", defaultValue: "Les premiers épisodes arrivent bientôt." },
+      { key: "eyebrow", label: "Sur-titre", kind: "text", defaultValue: "Audio" },
+      { key: "filter_all", label: "Filtre Tous", kind: "text", defaultValue: "Tous" },
+      { key: "filter_jc", label: "Filtre Je Confesse", kind: "text", defaultValue: "Je Confesse" },
+      { key: "filter_qdlb", label: "Filtre Que dit la Bible ?", kind: "text", defaultValue: "Que dit la Bible ?" },
+      { key: "filter_rm", label: "Filtre Rosée Matinale", kind: "text", defaultValue: "Rosée Matinale" },
+      { key: "filter_vs", label: "Filtre La Vie Supérieure", kind: "text", defaultValue: "La Vie Supérieure" },
     ],
   },
   {
@@ -237,6 +270,10 @@ export const PAGE_CONTENT_DEFINITIONS: PageContentDefinition[] = [
       { key: "rm_kicker", label: "Accroche Rosée Matinale", kind: "text", defaultValue: "Commencer le jour" },
       { key: "jc_kicker", label: "Accroche Je Confesse", kind: "text", defaultValue: "Proclamer" },
       { key: "empty_state", label: "Message si aucune publication", kind: "textarea", defaultValue: "Les premières publications arrivent bientôt." },
+      { key: "qdlb_label", label: "Nom Que dit la Bible ?", kind: "text", defaultValue: "Que dit la Bible ?" },
+      { key: "vs_label", label: "Nom La Vie Supérieure", kind: "text", defaultValue: "La Vie Supérieure" },
+      { key: "rm_label", label: "Nom Rosée Matinale", kind: "text", defaultValue: "Rosée Matinale" },
+      { key: "jc_label", label: "Nom Je Confesse", kind: "text", defaultValue: "Je Confesse" },
     ],
   },
 ];
@@ -261,3 +298,4 @@ export async function getPageContent(slug: string): Promise<Record<string, strin
   }
   return defaults;
 }
+
