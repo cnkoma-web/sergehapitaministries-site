@@ -25,7 +25,7 @@ export async function GET(request:Request){
   document:item.document,type:item.type,status:item.status,imageBytes:item.bytes,...(item.error?{error:item.error}:{})
  }));
  const ready=["jc","rm","qdlb"].every(type=>outcomes.some((item:{document?:string;status?:string})=>
-  item.document==="Publication-"+type+"-"+date && ["texte final et image prêts","déjà publié, version conservée"].includes(item.status??"")
+  item.document==="Publication-"+type+"-"+date && ["texte final et image prêts","texte final prêt ; image à compléter","déjà publié, version conservée"].includes(item.status??"")
  ));
  return Response.json({
   success:response.status===200 && result.success===true && result.dryRun===true && result.date===date && ready,
