@@ -15,7 +15,13 @@ function setup(withImage=false){
  const db={storage:{from(){return {async upload(){state.uploads++;return {error:state.uploadError?Error("Image indisponible"):null};},getPublicUrl(){return {data:{publicUrl:"https://images.example/cover.jpg"}};}};}},from(table){
   const conditions=[];let change=null,addition=null;
   const chain={select(){return chain;},eq(key,value){conditions.push(row=>row[key]===value);return chain;},or(){return chain;},
-   update(value){assert.notEqual(table,"articles","les articles doivent passer par le CMS natif");change=value;return chain;},
+   update(value){assert.notEqual(table,"articles","les articles doivent passer par le CMS natif");
+    if(table==='editorial_jobs'&&value.status==='publishing'){
+     // Reproduit la contrainte réellement présente en production, sans la désactiver.
+     assert.ok(value.approved_hash,'validation requise avant publishing');assert.equal(value.approved_hash,value.draft_hash);
+     assert.ok(value.approved_by);assert.ok(value.approved_at);assert.ok(value.draft);assert.ok(value.source_hash);
+    }
+    change=value;return chain;},
    insert(value){assert.notEqual(table,"articles","les articles doivent passer par le CMS natif");addition=value;return chain;},
    async maybeSingle(){if(addition){const row={id:"job",lease_until:null,...addition};rows[table].push(row);return {data:structuredClone(row),error:null};}
     const row=rows[table].find(row=>conditions.every(f=>f(row)));

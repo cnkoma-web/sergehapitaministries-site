@@ -49,7 +49,10 @@ export async function publishReadyDrive(db:SupabaseClient,date:string,dryRun=fal
   const previous=await db.from('articles').select('*').eq('type',draft.type).eq('article_date',date).maybeSingle();if(previous.error)throw previous.error;
   if(!job){const inserted=await db.from('editorial_jobs').insert({type:draft.type,article_date:date,source:'Contenu final Drive : '+file.id,source_hash:contentHash,source_revision:String(doc.revisionId??''),article_id:previous.data?.id??null,status:'review'}).select('*').single();if(inserted.error)throw inserted.error;job=inserted.data;}
   if(!job)throw Error('Travail de publication absent.');
-  lease=crypto.randomUUID();const lock=await db.from('editorial_jobs').update({status:'publishing',lease_token:lease,lease_until:new Date(Date.now()+600000).toISOString()}).eq('id',job.id).eq('status',job.status).or('lease_until.is.null,lease_until.lt.'+started).select('id').single();if(lock.error)throw Error('Publication déjà en cours.');
+  // La contrainte SQL exige la validation de cette version avant le passage à publishing.
+  // contentHash lie déjà le texte final et les octets du visuel fourni dans À publier.
+  const approvalHash=fingerprint({source_hash:contentHash,draft});
+  lease=crypto.randomUUID();const lock=await db.from('editorial_jobs').update({status:'publishing',source:'Contenu final Drive : '+file.id,source_hash:contentHash,source_revision:String(doc.revisionId??''),draft,draft_hash:approvalHash,approved_hash:approvalHash,approved_by:actor,approved_at:started,lease_token:lease,lease_until:new Date(Date.now()+600000).toISOString()}).eq('id',job.id).eq('status',job.status).or('lease_until.is.null,lease_until.lt.'+started).select('id').single();if(lock.error)throw Error(lock.error.code==='PGRST116'?'Publication déjà en cours.':'Prise de publication refusée : '+lock.error.message);
   draft.cover_url=previous.data?.cover_url??null;draft.cover_alt=draft.cover_url?(previous.data?.cover_alt??draft.title):null;
   if(asset)try{
    const {bytes,info,hash:assetHash}=asset;
