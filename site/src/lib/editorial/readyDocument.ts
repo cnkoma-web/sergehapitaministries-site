@@ -13,14 +13,25 @@ export function readReadyPublication(doc:any,name:string):EditorialDraft{
  const alt=meta.find(r=>/^Texte alternatif\s*:/i.test(r.text));if(alt)draft.cover_alt=alt.text.replace(/^[^:]+:\s*/,'');
  const opening=(text:string)=>{const m=/^«\s*([\s\S]+?)\s*»\s*[—–-]\s*(.+)$/.exec(text);if(!m)throw Error('Verset d’ouverture et référence non reconnus.');draft.verse_text=m[1];draft.verse_reference=m[2];};
  if(type==='rm'){draft.verse_text=main[1].text;draft.body=html(main.slice(2));return draft;}
- if(type==='jc'){opening(main[1].text);draft.body=html(main.slice(2));return draft;}
- draft.excerpt=main[1].text;opening(main[2].text);
+ const openingAt=(start:number)=>{
+  let at=start;
+  if(/^parce qu[’']il est ecrit\s*:?$/.test(key(main[at]?.text??'')))at++;
+  const text=main[at]?.text??'';
+  if(/^«[\s\S]*»\s*[—–-]\s*.+$/.test(text)){opening(text);return at+1;}
+  const reference=main[at+1]?.text??'';
+  if(/^«[\s\S]*»$/.test(text)&&/^[—–-]\s*.+\d+:\d+/.test(reference)){
+   opening(text+' '+reference);return at+2;
+  }
+  throw Error('Verset d’ouverture et référence non reconnus.');
+ };
+ if(type==='jc'){const start=openingAt(1);draft.body=html(main.slice(start));return draft;}
+ draft.excerpt=main[1].text;const bodyStart=openingAt(2);
  const prayer=main.findIndex(r=>/^(priere|affirmation|declaration)$/.test(key(r.text)));
  const further=main.findIndex(r=>key(r.text)==='pour aller plus loin');
  let bodyEnd=prayer>=0?prayer:further>=0?further:main.length;
  if(prayer>=0)draft.prayer=main.slice(prayer+1,further>=0?further:main.length).filter(r=>r.text!=='Serge Hapita').map(r=>r.text).join('\n\n');
- else if(further>3&&/^(Cher |Père|Seigneur|Je confesse)/i.test(main[further-1].text)){bodyEnd=further-1;draft.prayer=main[further-1].text;}
- draft.body=html(main.slice(3,bodyEnd).filter(r=>r.text!=='Serge Hapita'));
+ else if(further>bodyStart&&/^(Cher |Père|Seigneur|Je confesse)/i.test(main[further-1].text)){bodyEnd=further-1;draft.prayer=main[further-1].text;}
+ draft.body=html(main.slice(bodyStart,bodyEnd).filter(r=>r.text!=='Serge Hapita'));
  if(further>=0){const verses=main.slice(further+1).filter(r=>r.text!=='Serge Hapita');for(let i=0;i<verses.length;i++){
   const combined=/^(.+?\d+:\d+(?:-\d+)?)\s*[—–]\s*(.+)$/.exec(verses[i].text);
   if(combined){draft.further_verses!.push({reference:combined[1],text:combined[2].replace(/^«\s*|\s*»$/g,'')});continue;}
@@ -38,4 +49,5 @@ export function readyWindow(now=new Date()){
  publicationDate.setUTCDate(publicationDate.getUTCDate()+1);
  return{date:publicationDate.toISOString().slice(0,10),due:localDate>='2026-10-28'&&get('hour')==='23'};
 }
+
 
