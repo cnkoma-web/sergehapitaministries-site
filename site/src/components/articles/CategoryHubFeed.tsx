@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { articleHref, formatArticleDate } from "@/lib/content/articlePresentation";
 import type { Article } from "@/lib/content/articles";
 import { stripHtml } from "@/lib/richtext";
 
@@ -32,12 +33,8 @@ function truncateExcerpt(text: string, maxChars: number): { text: string; trunca
   return { text: clean.trimEnd(), truncated: true };
 }
 
-function articleHref(article: Article): string {
-  return `/publications/${article.slug}`;
-}
-
 function CategoryHubMeta({ article }: { article: Article }) {
-  const dateLabel = new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const dateLabel = formatArticleDate(article);
   return (
     <div className="hub-entry-meta">
       <time dateTime={article.article_date}>{dateLabel}</time>

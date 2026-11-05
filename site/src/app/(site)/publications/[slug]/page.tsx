@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { officialUrl, socialImageUrl } from "@/lib/socialMetadata";
 import Link from "next/link";
+import { formatArticleDate } from "@/lib/content/articlePresentation";
 import { notFound } from "next/navigation";
 import {
   getArticleBySlugAnyType,
@@ -161,7 +162,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <span className="views">
                 {article.view_count} vue{article.view_count > 1 ? "s" : ""}
               </span>
-              <span>{capitalizeFirst(new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}</span>
+              <span>{capitalizeFirst(formatArticleDate(article))}</span>
             </div>
           </div>
         </section>
@@ -349,7 +350,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <span className="views">
               {article.view_count} vue{article.view_count > 1 ? "s" : ""}
             </span>
-            <span>{capitalizeFirst(new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }))}</span>
+            <span>{capitalizeFirst(formatArticleDate(article))}</span>
           </div>
         </div>
       </section>
