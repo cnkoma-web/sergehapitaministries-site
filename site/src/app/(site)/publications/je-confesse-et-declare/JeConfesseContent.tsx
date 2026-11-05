@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatArticleDate } from "@/lib/content/articlePresentation";
 import type { Article } from "@/lib/content/articles";
 import { getJeConfesseSettings } from "@/lib/content/interfaceTexts";
 import { extractParagraphs, stripHtml } from "@/lib/richtext";
@@ -79,15 +80,8 @@ export default async function JeConfesseContent({
               pas un guillemet ajouté séparément juste après). */}
           <div className="v2-jc-hero-context">
             <span className="v2-jc-badge">Je Confesse</span>
-            <time className="v2-jc-date">
-              {new Date(current.created_at).toLocaleDateString("fr-FR", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+            <time className="v2-jc-date" dateTime={current.article_date}>
+              {formatArticleDate(current)}
             </time>
             <ArticleMeta viewCount={current.view_count} readingTimeMinutes={current.reading_time_minutes} />
           </div>
@@ -208,7 +202,7 @@ export default async function JeConfesseContent({
               <div className="rm-list">
                 {archivePaged.map((entry) => (
                   <Link href={dayHref(entry.article_date)} className="rm-item" key={entry.id}>
-                    <div className="date">{new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</div>
+                    <div className="date">{formatArticleDate(entry, "short")}</div>
                     <div className="excerpt">{entry.title}</div>
                   </Link>
                 ))}
@@ -234,4 +228,3 @@ export default async function JeConfesseContent({
     </div>
   );
 }
-

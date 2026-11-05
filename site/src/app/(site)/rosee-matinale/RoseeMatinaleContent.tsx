@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatArticleDate } from "@/lib/content/articlePresentation";
 import type { Article } from "@/lib/content/articles";
 import { extractParagraphs } from "@/lib/richtext";
 import ArticleMeta from "@/components/articles/ArticleMeta";
@@ -78,7 +79,7 @@ export default function RoseeMatinaleContent({
           <h1 className="entry-title">{current.title}</h1>
           <div className="cat">Rosée Matinale</div>
           <div className="date">
-            {new Date(current.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            {formatArticleDate(current)}
           </div>
           <ArticleMeta viewCount={current.view_count} readingTimeMinutes={current.reading_time_minutes} />
         </div>
@@ -205,7 +206,7 @@ export default function RoseeMatinaleContent({
                 {archivePaged.map((entry) => (
                   <Link href={dayHref(entry.article_date)} className="rm-item" key={entry.id}>
                     <div className="date">
-                      {new Date(entry.article_date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                      {formatArticleDate(entry, "short")}
                     </div>
                     <div className="excerpt">{entry.verse_text}</div>
                   </Link>

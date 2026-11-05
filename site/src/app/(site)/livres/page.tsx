@@ -59,11 +59,11 @@ export default async function LivresPage() {
         <div className="v2-catalog-facts v2-catalog-conclusion">
           <div>
             <strong>{books.length}</strong>
-            <span>livres au catalogue</span>
+            <span>{pageContent.catalog_count_label}</span>
           </div>
           <div>
-            <strong>100%</strong>
-            <span>édition indépendante</span>
+            <strong>{pageContent.independent_value}</strong>
+            <span>{pageContent.independent_label}</span>
           </div>
         </div>
       </section>
@@ -81,3 +81,4 @@ export default async function LivresPage() {
     </div>
   );
 }
+

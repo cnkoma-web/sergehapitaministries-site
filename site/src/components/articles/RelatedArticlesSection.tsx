@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { articleHref, formatArticleDate } from "@/lib/content/articlePresentation";
 import type { Article } from "@/lib/content/articles";
 import { stripHtml, nbspBeforeClosingGuillemet } from "@/lib/richtext";
 
@@ -6,15 +7,6 @@ import { stripHtml, nbspBeforeClosingGuillemet } from "@/lib/richtext";
 // Bible / La Vie Supérieure et par Rosée Matinale, pour ne jamais dupliquer
 // ce rendu (cahier : "réutilise le mécanisme existant, n'en construis pas
 // un nouveau").
-
-// Chaque type de publication a sa propre URL — jamais /publications/[slug]
-// pour une entrée Rosée Matinale (page dédiée par jour). Un article Rosée
-// Matinale peut atterrir ici via un lien manuel ("Articles similaires" dans
-// l'éditeur n'a pas de filtre par type) : sans ceci, son lien pointerait
-// vers une URL qui n'existe pas (404).
-function hrefFor(a: Article): string {
-  return a.type === "rm" ? `/rosee-matinale/${a.article_date}` : `/publications/${a.slug}`;
-}
 
 // Repli identique à celui déjà utilisé pour le partage (chapeau au corps de
 // l'article si aucun extrait explicite) — bug corrigé (retour du 07/09) :
@@ -37,13 +29,6 @@ export default function RelatedArticlesSection({
 }) {
   if (articles.length === 0) return null;
 
-  const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
-    weekday: includeWeekday ? "long" : undefined,
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
   return (
     <section className="related-articles">
       <div className="wrap">
@@ -53,7 +38,7 @@ export default function RelatedArticlesSection({
         <div className="related-grid">
           {articles.map((a) => {
             const excerpt = displayExcerpt(a);
-            const href = hrefFor(a);
+            const href = articleHref(a);
             return (
               // Corrigé (retour du 05/09, 2e signalement) : plus de lien
               // unique étiré sur toute la carte (métadonnées et espace vide
@@ -63,7 +48,7 @@ export default function RelatedArticlesSection({
                 {/* Rosée Matinale et Je Confesse affichent aussi le jour de
                     la semaine, conformément à leurs maquettes V35. */}
                 <time className="verse" dateTime={a.article_date}>
-                  {dateFormatter.format(new Date(a.article_date))}
+                  {formatArticleDate(a, includeWeekday ? "full" : "long")}
                 </time>
                 <h3>
                   <Link href={href}>{a.title}</Link>

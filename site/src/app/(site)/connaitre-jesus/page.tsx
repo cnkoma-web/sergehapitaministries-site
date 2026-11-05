@@ -3,6 +3,7 @@ import Newsletter from "@/components/layout/Newsletter";
 import Footer from "@/components/layout/Footer";
 import ShareCartouche from "@/components/articles/ShareCartouche";
 import PrayerForm from "@/components/forms/PrayerForm";
+import { getPageContent } from "@/lib/content/pageContent";
 
 const title = "Connaître Jésus | Serge Hapita Ministries";
 const description = "Découvrez qui est Jésus, pourquoi il est venu et la vie qu'il offre aujourd'hui.";
@@ -30,21 +31,27 @@ export const metadata: Metadata = {
 // zone de partage (ShareCartouche) et le formulaire de prière (PrayerForm)
 // restent les vrais composants déjà câblés — jamais les faux boutons
 // statiques du prototype.
-const THEMES: { id?: string; wide?: boolean; variant?: "dark" | "accent"; title: string; text: string }[] = [
-  { id: "naissance", wide: true, title: "Sa naissance miraculeuse", text: "Jésus est né d'une vierge. Cela constitue un miracle et un signe." },
-  { id: "oeuvre", title: "Ses actes miraculeux", text: "Jésus montra, par de nombreux actes extraordinaires, qu'il venait de Dieu." },
-  { title: "Ses apparitions", text: "Jésus apparut à plus de cinq cents personnes après sa mort." },
-  { title: "Dieu témoigne de Jésus", text: "Par sa naissance, sa vie, sa mort volontaire, sa résurrection et son ascension visible." },
-  { wide: true, variant: "dark", title: "Sa déclaration personnelle", text: "Jésus déclara lui-même qu'il avait été envoyé de Dieu comme Fils de Dieu." },
-  { title: "Sa mort sacrificielle", text: "Jésus mourut pour nous comme un sacrifice, conformément à ce que la Bible annonçait." },
-  { id: "resurrection", title: "Sa résurrection", text: "Dieu le ressuscita le troisième jour — la preuve qu'il venait de Dieu." },
-  { title: "Son ascension physique", text: "Il monta au ciel à travers les nuages, sous les yeux d'environ cent vingt personnes." },
-  { wide: true, variant: "accent", title: "Son nom aujourd'hui", text: "Dieu a investi de la puissance dans le nom de Jésus, qui agit encore aujourd'hui." },
-  { title: "La nature de Dieu donnée", text: "Celui qui croit en Lui reçoit la vie éternelle dans son cœur, par la foi." },
-  { title: "La purification du péché", text: "La vie éternelle entre dans le cœur, et la nature du péché disparaît." },
+const THEME_LAYOUT: { id?: string; wide?: boolean; variant?: "dark" | "accent" }[] = [
+  { id: "naissance", wide: true },
+  { id: "oeuvre" },
+  {},
+  {},
+  { wide: true, variant: "dark" },
+  {},
+  { id: "resurrection" },
+  {},
+  { wide: true, variant: "accent" },
+  {},
+  {},
 ];
 
-export default function ConnaitreJesusPage() {
+export default async function ConnaitreJesusPage() {
+  const content = await getPageContent("connaitre-jesus");
+  const themes = THEME_LAYOUT.map((layout, index) => ({
+    ...layout,
+    title: content[`theme_${index + 1}_title`],
+    text: content[`theme_${index + 1}_text`],
+  }));
   return (
     <div className="v2-cj-page">
       <section className="v2-cj-hero">
@@ -52,38 +59,38 @@ export default function ConnaitreJesusPage() {
         <div className="v2-cj-orbit two" aria-hidden="true" />
         <div className="v2-wrap v2-cj-hero-inner">
           <p className="v2-eyebrow light">
-            <span /> Découvrez celui qui donne la vie
+            <span /> {content.hero_eyebrow}
           </p>
           <h1>
-            Connaître
+            {content.hero_title_1}
             <br />
-            <em>Jésus</em>
+            <em>{content.hero_title_2}</em>
           </h1>
-          <p>Une histoire incroyable. Et pourtant…</p>
+          <p>{content.hero_intro}</p>
           <a className="v2-cj-scroll" href="#commencer">
-            Commencer le parcours <span>↓</span>
+            {content.hero_action} <span>↓</span>
           </a>
         </div>
       </section>
 
       <nav className="v2-cj-subnav" aria-label="Parcours Connaître Jésus">
         <div className="v2-wrap">
-          <a href="#commencer">Son histoire</a>
-          <a href="#pourquoi">Pourquoi il est venu</a>
-          <a href="#decouvrir">Le découvrir</a>
-          <a href="#recevoir">Recevoir Jésus</a>
+          <a href="#commencer">{content.nav_story}</a>
+          <a href="#pourquoi">{content.nav_purpose}</a>
+          <a href="#decouvrir">{content.nav_discover}</a>
+          <a href="#recevoir">{content.nav_receive}</a>
         </div>
       </nav>
 
       <section className="v2-cj-story v2-wrap" id="commencer">
         <div className="v2-cj-story-heading">
           <p className="v2-eyebrow">
-            <span /> Le récit intégral
+            <span /> {content.story_eyebrow}
           </p>
           <h2>
-            Qui est cet homme
+            {content.story_title_1}
             <br />
-            appelé Jésus ?
+            {content.story_title_2}
           </h2>
         </div>
         <div className="v2-cj-story-body">
@@ -99,9 +106,7 @@ export default function ConnaitreJesusPage() {
             />
           </div>
           <div className="v2-cj-lead">
-            <p>
-              Il y a presque deux mille ans, un homme du nom de <strong>Jésus est né d&apos;une vierge.</strong>
-            </p>
+            <div dangerouslySetInnerHTML={{ __html: content.story_lead }} />
           </div>
         </div>
 
@@ -109,41 +114,29 @@ export default function ConnaitreJesusPage() {
           <article className="v2-cj-journey-step">
             <div className="v2-cj-step-marker">
               <span>01</span>
-              <small>Sa venue</small>
+              <small>{content.step_1_label}</small>
             </div>
             <div className="v2-cj-step-copy">
-              <h3>Jésus est né d&apos;une vierge.</h3>
-              <p>
-                Il a déclaré qu&apos;il avait été envoyé de Dieu pour donner sa vie en rançon des péchés de
-                l&apos;humanité. Sa naissance elle-même était un miracle, parce qu&apos;il est venu au monde sans
-                intervention d&apos;un homme. Et tout au long de sa vie, il a montré, par plusieurs signes
-                extraordinaires, qu&apos;il venait réellement de Dieu et qu&apos;il apportait un message venant de
-                Dieu.
-              </p>
+              <h3>{content.step_1_title}</h3>
+              <p>{content.step_1_body}</p>
             </div>
           </article>
 
           <article className="v2-cj-journey-step">
             <div className="v2-cj-step-marker">
               <span>02</span>
-              <small>Son sacrifice</small>
+              <small>{content.step_2_label}</small>
             </div>
             <div className="v2-cj-step-copy">
-              <h3>Jésus est mort pour nous comme un sacrifice.</h3>
-              <p>
-                La Bible raconte que Jésus est mort pour nous comme un sacrifice. Cela veut dire qu&apos;il a pris sur
-                lui la condamnation qui revenait à l&apos;humanité. Il a porté la séparation, la culpabilité et le
-                poids du péché à notre place. Il est mort comme celui qui assume la faute afin que nous puissions
-                recevoir le pardon.
-              </p>
+              <h3>{content.step_2_title}</h3>
+              <p>{content.step_2_body}</p>
               <blockquote>
-                « Christ est mort pour nos péchés, selon les Écritures ; il a été enseveli, et il est ressuscité le
-                troisième jour, selon les Écritures. »
-                <cite>1 Corinthiens 15:3-4</cite>
+                {content.step_2_quote_1}
+                <cite>{content.step_2_ref_1}</cite>
               </blockquote>
               <blockquote>
-                « Lui qui a été livré pour nos offenses et est ressuscité pour notre justification. »
-                <cite>Romains 4:25</cite>
+                {content.step_2_quote_2}
+                <cite>{content.step_2_ref_2}</cite>
               </blockquote>
             </div>
           </article>
@@ -151,48 +144,30 @@ export default function ConnaitreJesusPage() {
           <article className="v2-cj-journey-step">
             <div className="v2-cj-step-marker">
               <span>03</span>
-              <small>Sa résurrection</small>
+              <small>{content.step_3_label}</small>
             </div>
             <div className="v2-cj-step-copy">
-              <h3>Le troisième jour, Dieu l&apos;a ressuscité.</h3>
-              <p>
-                Il a été enterré. Et le troisième jour, Dieu a confirmé qu&apos;il venait véritablement de Lui en le
-                ressuscitant d&apos;entre les morts. Sa résurrection était la preuve que sa mort avait accompli sa
-                mission : ouvrir à l&apos;humanité un chemin de pardon et de réconciliation avec Dieu.
-              </p>
+              <h3>{content.step_3_title}</h3>
+              <p>{content.step_3_body}</p>
             </div>
           </article>
 
           <article className="v2-cj-journey-step">
             <div className="v2-cj-step-marker">
               <span>04</span>
-              <small>Son ascension</small>
+              <small>{content.step_4_label}</small>
             </div>
             <div className="v2-cj-step-copy">
-              <h3>Il est monté au ciel.</h3>
-              <p>
-                Après cela, Jésus est apparu à de nombreuses personnes : plus de cinq cents témoins l&apos;ont vu
-                vivant après sa résurrection. Puis il est monté au ciel devant cent vingt personnes qui ont vu son
-                ascension de leurs propres yeux. Il est monté physiquement, à travers les nuages — une preuve
-                supplémentaire qu&apos;il était réellement le Fils de Dieu.
-              </p>
-              <p>
-                Et c&apos;est pour cela que nous parlons de Jésus. Parce qu&apos;il était plus qu&apos;un simple
-                leader religieux. Dieu Tout-Puissant a témoigné de Lui par sa naissance miraculeuse, par sa vie
-                extraordinaire, par sa mort — où il a volontairement remis son esprit — par sa résurrection, et enfin
-                par son ascension au ciel. Il n&apos;a pas disparu : des témoins l&apos;ont vu monter et traverser les
-                nuées sous leurs yeux. Et ces mêmes témoins, pour la plupart, ont préféré être exécutés plutôt que de
-                renoncer à ce qu&apos;ils avaient vu.
-              </p>
+              <h3>{content.step_4_title}</h3>
+              <p>{content.step_4_body_1}</p>
+              <p>{content.step_4_body_2}</p>
               <blockquote>
-                « Après avoir dit cela, il fut élevé pendant qu&apos;ils le regardaient, et une nuée le déroba à leurs
-                yeux. […] »
-                <cite>Actes 1:9</cite>
+                {content.step_4_quote_1}
+                <cite>{content.step_4_ref_1}</cite>
               </blockquote>
               <blockquote>
-                « …déclaré Fils de Dieu avec puissance, selon l&apos;Esprit de sainteté, par sa résurrection
-                d&apos;entre les morts… »
-                <cite>Romains 1:4</cite>
+                {content.step_4_quote_2}
+                <cite>{content.step_4_ref_2}</cite>
               </blockquote>
             </div>
           </article>
@@ -203,41 +178,25 @@ export default function ConnaitreJesusPage() {
         <div className="v2-wrap v2-cj-purpose-grid">
           <div>
             <p className="v2-eyebrow light">
-              <span /> Ce que cela change aujourd&apos;hui
+              <span /> {content.purpose_eyebrow}
             </p>
-            <h2>Son nom agit encore.</h2>
+            <h2>{content.purpose_title}</h2>
           </div>
           <div className="v2-cj-purpose-copy">
-            <p>
-              Mais il y a plus encore : Dieu a investi de la puissance dans son nom et a élevé ce nom au-dessus de
-              tout autre nom. Aujourd&apos;hui, presque deux mille ans après ces événements, le nom de Jésus agit
-              encore en faveur de quiconque croit et invoque ce nom. À la mention de son nom, il se produit des
-              miracles. À la mention de son nom, les esprits mauvais tremblent. Son nom possède toujours la même
-              puissance.
-            </p>
-            <p>
-              Et si quelqu&apos;un croit en ce Jésus de Nazareth, Jésus lui donne la vie éternelle en le transférant
-              du domaine des ténèbres, du domaine de la mort, au royaume de la vie : le royaume du Fils de Dieu.
-            </p>
-            <p>
-              Pas besoin de le voir avec les yeux physiques. Il suffit de croire. On croit avec le cœur. Dieu a doté
-              chaque être humain de la capacité de croire en un Dieu invisible. C&apos;est pourquoi croire est un
-              choix. Personne ne pourra se tenir devant Dieu et dire qu&apos;il n&apos;a pas pu croire. C&apos;est une
-              vérité simple, mais d&apos;une puissance immense. Aujourd&apos;hui, tu peux recevoir la vie que ce Jésus
-              offre en confessant sa Seigneurie : Lui seul est Dieu.
-            </p>
+            <p>{content.purpose_paragraph_1}</p>
+            <p>{content.purpose_paragraph_2}</p>
+            <p>{content.purpose_paragraph_3}</p>
             <blockquote>
-              « Si tu confesses de ta bouche le Seigneur Jésus, et si tu crois dans ton cœur que Dieu l&apos;a
-              ressuscité des morts, tu seras sauvé. Car c&apos;est en croyant du cœur qu&apos;on devient juste, et
-              c&apos;est en confessant de la bouche qu&apos;on parvient au salut. »
-              <br />
-              <br />
-              « Car quiconque invoquera le nom du Seigneur sera sauvé. »
-              <cite>Romains 10:9-10, 13</cite>
+              {content.purpose_quote.split("\n").map((line, index) => (
+                <span key={`${index}-${line}`}>
+                  {line}
+                  {index < content.purpose_quote.split("\n").length - 1 && <br />}
+                </span>
+              ))}
+              <cite>{content.purpose_reference}</cite>
             </blockquote>
             <p className="v2-cj-grace-note">
-              Par sa grâce, Dieu a déjà fait tout ce qu&apos;il fallait pour réconcilier l&apos;humanité avec Lui. Ta
-              part est simplement de croire et de recevoir son pardon.
+              {content.purpose_grace}
             </p>
           </div>
         </div>
@@ -247,14 +206,14 @@ export default function ConnaitreJesusPage() {
         <div className="v2-section-heading">
           <div>
             <p className="v2-eyebrow">
-              <span /> Les repères du récit
+              <span /> {content.discover_eyebrow}
             </p>
-            <h2>Découvrir Jésus</h2>
+            <h2>{content.discover_title}</h2>
           </div>
-          <p>Onze repères permettent de relire le même récit, sans remplacer le texte qui en constitue le cœur.</p>
+          <p>{content.discover_intro}</p>
         </div>
         <div className="v2-cj-theme-grid">
-          {THEMES.map((theme, i) => (
+          {themes.map((theme, i) => (
             <article
               key={theme.title}
               id={theme.id}
@@ -279,9 +238,9 @@ export default function ConnaitreJesusPage() {
       <section className="share-zone">
         <div className="content-col">
           <ShareCartouche
-            title="Connaître Jésus"
+            title={`${content.hero_title_1} ${content.hero_title_2}`}
             url={PAGE_URL}
-            invite="Partage ce message avec une personne qui désire connaître Jésus."
+            invite={content.share_invite}
           />
         </div>
       </section>
@@ -290,15 +249,12 @@ export default function ConnaitreJesusPage() {
         <div className="v2-wrap v2-cj-receive-grid">
           <div className="v2-cj-receive-copy">
             <p className="v2-eyebrow light">
-              <span /> Une décision personnelle
+              <span /> {content.receive_eyebrow}
             </p>
-            <h2>Je veux recevoir Jésus</h2>
-            <p>
-              Aujourd&apos;hui peut marquer un jour historique pour vous. Vous pouvez recevoir la vie que Jésus offre
-              en croyant dans votre cœur et en invoquant son nom.
-            </p>
+            <h2>{content.receive_title}</h2>
+            <p>{content.receive_body}</p>
             <p className="v2-cj-promise">
-              « Car quiconque invoquera le nom du Seigneur sera sauvé. » <span>Romains 10:13</span>
+              {content.receive_promise} <span>{content.receive_reference}</span>
             </p>
           </div>
           <PrayerForm />
@@ -310,3 +266,4 @@ export default function ConnaitreJesusPage() {
     </div>
   );
 }
+

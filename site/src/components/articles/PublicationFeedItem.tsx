@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { articleHref, formatArticleDate } from "@/lib/content/articlePresentation";
 import type { Article } from "@/lib/content/articles";
 import { ARTICLE_TYPE_LABEL } from "@/lib/content/articles";
 import { stripHtml } from "@/lib/richtext";
@@ -113,12 +114,7 @@ export default function PublicationFeedItem({
   // Je Confesse (Lot 4) suit le même principe que Rosée Matinale — une
   // page dédiée par jour, jamais /publications/[slug] (pas de titre
   // éditorial propre, donc pas de vrai slug porteur de sens ici).
-  const href =
-    article.type === "rm"
-      ? `/rosee-matinale/${article.article_date}`
-      : article.type === "jc"
-        ? `/publications/je-confesse-et-declare/${article.article_date}`
-        : `/publications/${article.slug}`;
+  const href = articleHref(article);
   // Je Confesse (retour de validation humaine, 13/09) : article.title vaut
   // toujours "Je Confesse — [date]" (voir admin/publications/actions.ts),
   // une étiquette technique interne, jamais un vrai titre éditorial — la
@@ -139,7 +135,7 @@ export default function PublicationFeedItem({
   const rawExcerpt = isConfession
     ? confessionRest
     : article.excerpt || (article.body ? stripHtml(article.body) : article.verse_text || "");
-  const dateLabel = new Date(article.article_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const dateLabel = formatArticleDate(article);
   const ctaLabel = variant === "home" ? HOME_CTA_LABEL[article.type] : CTA_LABEL[article.type];
   // 3 lignes minimum (retour du 05/09) — plancher appliqué ici, un seul
   // endroit pour l'accueil ET les hubs, quelle que soit la valeur du
