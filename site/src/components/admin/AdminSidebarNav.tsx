@@ -8,6 +8,7 @@ const SECTIONS = [
   { href: "/admin/livres", label: "Livres" },
   { href: "/admin/boutique", label: "Boutique" },
   { href: "/admin/publications", label: "Publications" },
+  { href: "/admin/automatisation", label: "Automatisation éditoriale" },
   { href: "/admin/categories", label: "Catégories" },
   { href: "/admin/rosee-matinale", label: "Rosée Matinale" },
   { href: "/admin/je-confesse", label: "Je Confesse" },

@@ -21,11 +21,13 @@ export default function LegalPageLayout({
   lastUpdate,
   currentHref,
   children,
+  html,
 }: {
   title: string;
   lastUpdate: string;
   currentHref: (typeof PAGES)[number]["href"];
-  children: ReactNode;
+  children?: ReactNode;
+  html?: string;
 }) {
   return (
     <div className="v2-legal-page">
@@ -45,10 +47,15 @@ export default function LegalPageLayout({
             </Link>
           ))}
         </nav>
-        <article className="v2-legal-body">{children}</article>
+        {html ? (
+          <article className="v2-legal-body" dangerouslySetInnerHTML={{ __html: html }} />
+        ) : (
+          <article className="v2-legal-body">{children}</article>
+        )}
       </div>
 
       <Footer variant="dark" />
     </div>
   );
 }
+

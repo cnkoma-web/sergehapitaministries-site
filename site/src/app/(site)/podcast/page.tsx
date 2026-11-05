@@ -25,14 +25,6 @@ export const metadata: Metadata = {
 // Ordre + libellés des filtres = prototype-html/podcast/index.html §
 // .podcast-filters : Tous, Je Confesse, Que dit la Bible ?, Rosée Matinale,
 // La Vie Supérieure.
-const FILTERS: { value: PodcastUniverse | "all"; label: string }[] = [
-  { value: "all", label: "Tous" },
-  { value: "jc", label: ARTICLE_TYPE_LABEL.jc },
-  { value: "qdlb", label: ARTICLE_TYPE_LABEL.qdlb },
-  { value: "rm", label: ARTICLE_TYPE_LABEL.rm },
-  { value: "vs", label: ARTICLE_TYPE_LABEL.vs },
-];
-
 const SITE_URL = "https://sergehapitaministries.org";
 
 export default async function PodcastPage({
@@ -55,6 +47,13 @@ export default async function PodcastPage({
     .filter((id): id is string => Boolean(id));
   const linkedArticles = await getArticlesByIds(linkedArticleIds);
   const linkedArticlesById = new Map(linkedArticles.map((article) => [article.id, article]));
+  const filters: { value: PodcastUniverse | "all"; label: string }[] = [
+    { value: "all", label: pageContent.filter_all },
+    { value: "jc", label: pageContent.filter_jc },
+    { value: "qdlb", label: pageContent.filter_qdlb },
+    { value: "rm", label: pageContent.filter_rm },
+    { value: "vs", label: pageContent.filter_vs },
+  ];
 
   return (
     // V2 (Lot 9, 11/09) — reproduit prototype-html/podcast/index.html §
@@ -67,12 +66,12 @@ export default async function PodcastPage({
       <section className="v2-podcast-hero">
         <div className="v2-wrap v2-podcast-hero-inner">
           <p className="v2-eyebrow light">
-            <span /> Audio
+            <span /> {pageContent.eyebrow}
           </p>
           <h1>{pageContent.title}</h1>
           <p>{pageContent.intro}</p>
           <nav className="v2-podcast-filters" aria-label="Filtrer les podcasts">
-            {FILTERS.map((f) => (
+            {filters.map((f) => (
               <Link
                 key={f.value}
                 href={f.value === "all" ? "/podcast" : `/podcast?univers=${f.value}`}
@@ -166,4 +165,5 @@ export default async function PodcastPage({
     </div>
   );
 }
+
 
