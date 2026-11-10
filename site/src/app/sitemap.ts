@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { getBooks } from "@/lib/content/books";
-import { getGoodies } from "@/lib/content/goodies";
 import { getPublishedArticles } from "@/lib/content/articles";
 import { getPublishedPodcastEpisodesForSitemap } from "@/lib/content/podcast";
 
@@ -21,7 +20,6 @@ const STATIC_ROUTES = [
   "/publications/la-vie-superieure",
   "/publications/je-confesse-et-declare",
   "/rosee-matinale",
-  "/boutique",
   "/contact",
   "/mentions-legales",
   "/politique-de-confidentialite",
@@ -30,9 +28,8 @@ const STATIC_ROUTES = [
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [books, goodies, qdlb, vs, rm, jc, podcasts] = await Promise.all([
+  const [books, qdlb, vs, rm, jc, podcasts] = await Promise.all([
     getBooks(),
-    getGoodies(),
     getPublishedArticles("qdlb"),
     getPublishedArticles("vs"),
     getPublishedArticles("rm"),
@@ -60,12 +57,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${SITE_URL}/livres/${book.slug}`,
     changeFrequency: "monthly",
     priority: 0.7,
-  }));
-
-  const goodieEntries: MetadataRoute.Sitemap = goodies.map((goodie) => ({
-    url: `${SITE_URL}/boutique/${goodie.slug}`,
-    changeFrequency: "monthly",
-    priority: 0.5,
   }));
 
   const articleEntries: MetadataRoute.Sitemap = [...qdlb, ...vs].map((article) => ({
@@ -99,7 +90,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticEntries,
     ...bookEntries,
-    ...goodieEntries,
     ...articleEntries,
     ...roseeEntries,
     ...confessionEntries,
